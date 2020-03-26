@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Tabs, Button, Row, Col, Card } from 'antd';
+import { Layout, Tabs, Button, Row, Col, Input } from 'antd';
 import { Link } from 'react-router-dom';
 const { Header, Content, Footer } = Layout;
 const { TabPane } = Tabs;
@@ -8,15 +8,16 @@ function PlaceholderFields() {
     return (
         <>
             <Col
-                className="w-full"
+                className="w-full mx-auto"
+                style={{ padding: "0 25px" }}
                 span={20}
             >
-                <input
+                <Input
                     type="text"
                     placeholder="USERNAME"
                     className="mb-1 p-3 w-full"
                 />
-                <input
+                <Input
                     type="password"
                     className="p-3 w-full"
                     placeholder="PASSWORD"
@@ -44,9 +45,7 @@ function LoginRegisterPage() {
                             <TabPane tab="Provider" key="2" />
                         </Tabs>
                     </Header>
-                    <Content
-                        style={{ padding: "0 50px" }}
-                    >
+                    <Content>
                         <PlaceholderFields />
                     </Content>
                     <Footer className="bg-gray-100">
@@ -58,23 +57,30 @@ function LoginRegisterPage() {
                                         className="bg-gray-500 border-gray-500"
                                     >
                                         <Link to="/">
-                                            <i class="fas fa-arrow-left"></i>
+                                            <i className="fas fa-arrow-left"></i>
                                         </Link>
                                     </Button>
                                 </Col>
                                 <Col span={18}>
                                     <Button type="primary" className="w-full">
-                                        Login
+                                        <Link to="/admin">
+                                            Login
+                                        </Link>
                                     </Button>
                                 </Col>
                             </Row>
                             <Row className="justify-center">
-                                <Link disabled>
+                                <Link
+                                    to="/"
+                                    disabled
+                                >
                                     Can't sign in?
                                 </Link>
                             </Row>
                             <Row className="justify-center">
-                                <Link disabled>
+                                <Link
+                                    to="/"
+                                    disabled>
                                     Create account
                                 </Link>
                             </Row>

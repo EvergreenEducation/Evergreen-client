@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Layout, Row, Col, Button } from 'antd';
+
 const { Header, Content } = Layout;
 
 function HomePage() {
@@ -23,7 +24,7 @@ function HomePage() {
                                     type="primary"
                                     shape="circle"
                                 >
-                                    <i class="fas fa-sign-in-alt"></i>
+                                    <i className="fas fa-sign-in-alt"></i>
                                 </Button>
                             </Link>
                         </Col>

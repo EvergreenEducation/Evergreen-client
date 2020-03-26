@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import HomePage from 'pages/HomePage';
 import LoginRegisterPage from 'pages/LoginRegisterPage';
+import AdminDashboardPage from 'pages/AdminDashboardPage';
 import './App.css';
 
 class App extends Component {
@@ -21,6 +22,10 @@ class App extends Component {
           <Route
             path="/auth"
             component={LoginRegisterPage}
+          />
+          <Route
+            path="/admin"
+            component={AdminDashboardPage}
           />
         </Switch>
       </Router>

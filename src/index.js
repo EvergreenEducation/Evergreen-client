@@ -8,9 +8,7 @@ import * as serviceWorker from './serviceWorker';
 const render = (Component) => {
   Component = hot(Component); 
   return ReactDOM.render(
-    <React.StrictMode>
-      <Component />
-    </React.StrictMode>,
+    <Component />,
     document.getElementById("root")
   );  
 }
