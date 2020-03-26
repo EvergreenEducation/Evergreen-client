@@ -1,35 +1,36 @@
-import React from 'react';
-import { hot } from 'react-hot-loader/root';
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch
+} from 'react-router-dom';
+import HomePage from 'pages/HomePage';
+import LoginRegisterPage from 'pages/LoginRegisterPage';
+import AdminDashboardPage from 'pages/AdminDashboardPage';
 import './App.css';
-import { Button } from 'antd';
-const dayjs = require('dayjs');
 
-function App() {
-  const date = dayjs().format('MMMM DD, YYYY');
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Today is {date}
-        </p>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <Button type="link">
-          <a
-            className="App-link text-3xl"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </Button>
-      </header>
-    </div>
-  );
+class App extends Component {
+  render() {
+    return (
+      <Router>
+        <Switch>
+          <Route
+            exact
+            path="/"
+            component={HomePage}
+          />
+          <Route
+            path="/auth"
+            component={LoginRegisterPage}
+          />
+          <Route
+            path="/admin"
+            component={AdminDashboardPage}
+          />
+        </Switch>
+      </Router>
+    );
+  }
 }
 
-export default hot(App);
+export default App;
