@@ -1,6 +1,8 @@
 import React from 'react';
 import { Layout, Tabs, Button, Row, Col, Input } from 'antd';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 const { Header, Content, Footer } = Layout;
 const { TabPane } = Tabs;
 
@@ -17,8 +19,7 @@ function PlaceholderFields() {
                     placeholder="USERNAME"
                     className="mb-1 p-3 w-full"
                 />
-                <Input
-                    type="password"
+                <Input.Password
                     className="p-3 w-full"
                     placeholder="PASSWORD"
                 />
@@ -34,15 +35,15 @@ function callback(key) {
 function LoginRegisterPage() {
     return (
         <div className="w-screen h-screen flex justify-center items-center bg-green-500">
-            <main className="w-1/5 h-auto shadow-xl p-0">
-                <Layout className="h-full w-full bg-gray-100">
+            <main className="w-72 h-auto shadow-xl p-0">
+                <Layout className="h-full w-72 bg-gray-100">
                     <Header className="bg-gray-100">
                         <Tabs
                             defaultActiveKey="2"
                             onChange={callback}
                         >
                             <TabPane tab="Student" key="1" />
-                            <TabPane tab="Provider" key="2" />
+                            <TabPane tab="Admin" key="2" />
                         </Tabs>
                     </Header>
                     <Content>
@@ -57,7 +58,10 @@ function LoginRegisterPage() {
                                         className="bg-gray-500 border-gray-500"
                                     >
                                         <Link to="/">
-                                            <i className="fas fa-arrow-left"></i>
+                                            <FontAwesomeIcon
+                                                className="text-white"
+                                                icon={faArrowLeft}
+                                            />
                                         </Link>
                                     </Button>
                                 </Col>

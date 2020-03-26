@@ -22,7 +22,6 @@ const columns = [
         dataIndex: 'topics',
         key: 'topics',
         render: tags => {
-            console.log(tags);
             return (
                 <span>
                     {
