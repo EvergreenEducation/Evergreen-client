@@ -1,11 +1,12 @@
 import React from 'react';
-import { Layout, Form, Input, Row, Col, Select, AutoComplete, Button, DatePicker } from 'antd';
+import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
 import ImageUploadAndNameInputs from 'components/inputs/ImageUploadAndNameInputs';
 import SearchFunnel from 'components/inputs/SearchFunnel';
+import TitleDivider from './TitleDivider';
 
 const { Option } = Select;
 
-const OfferForm = React.forwardRef((props, ref) => {
+const PathwayForm = React.forwardRef((props, ref) => {
     const [ form ] = Form.useForm();
 
     return (
@@ -14,44 +15,15 @@ const OfferForm = React.forwardRef((props, ref) => {
                 form={form}
             >
                 <ImageUploadAndNameInputs>
-                    <Row gutter={8}>
-                        <Col span={18}>
-                            <Form.Item
-                                label="Provider"
-                                name="provider"
-                                labelAlign={"left"}
-                                colon={false}
-                                className="mb-0 inherit"
-                            >
-                                <Row>
-                                    <Col span={17}>
-                                        <AutoComplete />
-                                    </Col>
-                                    <Col type={5}>
-                                        <Button type="primary">
-                                                Use Image
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                            <Form.Item
-                                label="Generic Offer"
-                                name="generic_offer"
-                                labelAlign={"left"}
-                                colon={false}
-                                className="mb-0 inherit"
-                            >
-                                <Select>
-                                    <Option value="save_the_planet">Save the Planet</Option>
-                                    <Option value="web_development">Web Development</Option>
-                                    <Option value="science_offers">Science Offers</Option>
-                                    <Option value="finance_and_business">Finance &#38; Business</Option>
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                    </Row>
+                    <Form.Item
+                        label="Description"
+                        name="description"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                    >
+                        <Input.TextArea rows={2} />
+                    </Form.Item>
                     <Row gutter={8}>
                         <Col span={10}>
                             <Form.Item
@@ -80,21 +52,21 @@ const OfferForm = React.forwardRef((props, ref) => {
                         </Col>
                     </Row>
                 </ImageUploadAndNameInputs>
-                <Form.Item
-                    label="Description"
-                    name="description"
-                    labelAlign={"left"}
-                    colon={false}
-                    className="mb-0 inherit"
-                >
-                    <Input.TextArea rows={4} />
-                </Form.Item>
-                <SearchFunnel
-                    title={"Related Offers"}
-                />
-                <SearchFunnel
-                    title={"Pre-requisites"}
-                />
+                <TitleDivider title={"Add Offers Group"} />
+                <Row>
+                    <Col span={8}>
+                        <Input
+                            className="w-full"
+                            placeholder="Group Name"
+                        />
+                    </Col>
+                    <Col type={4}>
+                        <Button type="primary">
+                            Add Group
+                        </Button>
+                    </Col>
+                </Row>
+                <TitleDivider title={"Pathway Offers Groups"} />
                 <SearchFunnel
                     title={"Topics"}
                 />
@@ -116,16 +88,53 @@ const OfferForm = React.forwardRef((props, ref) => {
                     </Col>
                     <Col span={6}>
                         <Form.Item
-                            label="Day &#38; Time"
-                            name="datetime"
+                            label="Generic Type"
+                            name="type"
+                            labelAlign={"left"}
+                            colon={false}
+                            className="mb-0 inherit"
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            label="Earnings"
+                            name="earnings"
+                            labelAlign={"left"}
+                            colon={false}
+                            className="mb-0 inherit"
+                        >
+                            <Input type="number" />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row gutter={8}>
+                <Col span={6}>
+                        <Form.Item
+                            label="Length"
+                            name="length"
+                            labelAlign={"left"}
+                            colon={false}
+                            className="mb-0 inherit"
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                        <Form.Item
+                            label="Length Unit"
+                            name="length_unit"
                             labelAlign={"left"}
                             colon={false}
                             className="mb-0 inherit"
                         >
                             <Select>
-                                <Option value="morning">Morning</Option>
-                                <Option value="afternoon">Afternoon</Option>
-                                <Option value="evening">Evening</Option>
+                                <Option value="weeks">Weeks</Option>
+                                <Option value="biweek">Biweeks</Option>
+                                <Option value="months">Months</Option>
+                                <Option value="quarters">Quarters</Option>
+                                <Option value="semesters">Semesters</Option>
                             </Select>
                         </Form.Item>
                     </Col>
@@ -159,28 +168,6 @@ const OfferForm = React.forwardRef((props, ref) => {
                 <Row gutter={8}>
                     <Col span={6}>
                         <Form.Item
-                            label="Cost"
-                            name="cost"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Cost Unit"
-                            name="cost_unit"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item
                             label="Credit"
                             name="credit"
                             labelAlign={"left"}
@@ -207,8 +194,6 @@ const OfferForm = React.forwardRef((props, ref) => {
                             </Select>
                         </Form.Item>
                     </Col>
-                </Row>
-                <Row gutter={8}>
                     <Col span={6}>
                         <Form.Item
                             label="Pay"
@@ -237,38 +222,21 @@ const OfferForm = React.forwardRef((props, ref) => {
                             </Select>
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Length"
-                            name="length"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Length Unit"
-                            name="length_unit"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Select>
-                                <Option value="weeks">Weeks</Option>
-                                <Option value="biweek">Biweeks</Option>
-                                <Option value="months">Months</Option>
-                                <Option value="quarters">Quarters</Option>
-                                <Option value="semesters">Semesters</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
                 </Row>
+                <Col span={12}>
+                    <Form.Item
+                        label="Outlook"
+                        name="outlook"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                    >
+                        <Input />
+                    </Form.Item>
+                </Col>
             </Form>
         </Layout>
     );
 });
 
-export default OfferForm;
+export default PathwayForm;

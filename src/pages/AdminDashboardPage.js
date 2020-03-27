@@ -9,11 +9,13 @@ import {
 import 'scss/antd-overrides.scss';
 import Sidebar from 'components/Sidebar';
 
+const PathwayForm = importedComponent(() => import('components/PathwayForm'));
 const Modal = importedComponent(() => import('antd/lib/modal'))
 const ProviderCreationScreen = importedComponent(() => import('screens/ProviderCreationScreen'));
 const OfferCreationScreen = importedComponent(() => import('screens/OfferCreationScreen'));
 const ProvidersScreen = importedComponent(() => import('screens/ProvidersScreen'));
 const OffersScreen = importedComponent(() => import('screens/OffersScreen'));
+const PathwaysScreen = importedComponent(() => import('screens/PathwaysScreen'));
 const { Content, Header } = Layout;
 const { Search } = Input;
 
@@ -32,6 +34,10 @@ class AdminDashboardPage extends Component {
 
         if (pathname === "/admin/offers") {
             formType = "offers";
+        }
+
+        if (pathname === "/admin/pathways") {
+            formType = "pathways";
         }
 
         this.setState({
@@ -66,6 +72,10 @@ class AdminDashboardPage extends Component {
 
         if (formType === "offers") {
             FormScreen = <OfferCreationScreen />;
+        }
+
+        if (formType === "pathways") {
+            FormScreen = <PathwayForm />;
         }
 
         return (
@@ -169,6 +179,11 @@ class AdminDashboardPage extends Component {
                                 exact
                                 path="/admin/offers"
                                 render={() => <OffersScreen />}
+                            />
+                            <Route
+                                exact
+                                path="/admin/pathways"
+                                render={() => <PathwaysScreen />}
                             />
                         </Content>
                     </Col>
