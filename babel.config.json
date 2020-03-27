@@ -1,0 +1,22 @@
+{
+    "presets": [
+        "react-app"
+    ],
+    "plugins": [
+        [
+            "react-hot-loader/babel",
+            {
+                "safetyNet": true
+            }
+        ],
+        [
+            "imports",
+            {
+                "libraryName": "antd",
+                "libraryDirectory": "es",
+                "style": true
+            },
+            "antd"
+        ]
+    ]
+}
