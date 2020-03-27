@@ -1,7 +1,6 @@
 import { keyBy } from 'lodash';
 
 export default (currentState, setState) => {
-  let idKey = currentState.idKey;
 
   const addOne = (payload) => {
     addMany([payload]);
@@ -9,9 +8,11 @@ export default (currentState, setState) => {
 
   const addMany = (payload) => {
     setState(currentState => {
+      let idKey = currentState.idKey;
       let newItems = keyBy(payload, idKey);
 
       return {
+        ...currentState,
         entities: {
           ...currentState.entities,
           ...newItems
@@ -23,6 +24,7 @@ export default (currentState, setState) => {
 
   const removeOne = (payload) => {
     setState(currentState => {
+      let idKey = currentState.idKey;
       let newEntities = {
         ...currentState.entities,
       }
@@ -30,6 +32,7 @@ export default (currentState, setState) => {
       delete newEntities[payload[idKey]];
 
       return {
+        ...currentState,
         entities: newEntities,
         items: Object.keys(newEntities)
       }
@@ -38,9 +41,11 @@ export default (currentState, setState) => {
 
   const addAll = (payload) => {
     setState(currentState => {
+      let idKey = currentState.idKey;
       let newEntities = keyBy(payload, idKey);
 
       return {
+        ...currentState,
         entities: newEntities,
         items: Object.keys(newEntities)
       }

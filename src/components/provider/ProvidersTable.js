@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Table, Tag } from 'antd';
+import { Table, Tag } from 'antd';
 
 const columns = [
     {
@@ -17,30 +17,30 @@ const columns = [
         dataIndex: 'industry',
         key: 'industry',
     },
-    {
-        title: 'Topics',
-        dataIndex: 'topics',
-        key: 'topics',
-        render: tags => {
-            return (
-                <span>
-                    {
-                        tags.map(tag => {
-                        let color = tag.length > 5 ? 'geekblue' : 'green';
-                        if (tag === 'loser') {
-                            color = 'volcano';
-                        }
-                            return (
-                                <Tag color={color} key={tag}>
-                                {tag.toUpperCase()}
-                                </Tag>
-                            );
-                        })
-                    }
-                </span>
-            );
-        }
-    },
+    // {
+    //     title: 'Topics',
+    //     dataIndex: 'topics',
+    //     key: 'topics',
+    //     render: tags => {
+    //         return (
+    //             <span>
+    //                 {
+    //                     tags.map(tag => {
+    //                     let color = tag.length > 5 ? 'geekblue' : 'green';
+    //                     if (tag === 'loser') {
+    //                         color = 'volcano';
+    //                     }
+    //                         return (
+    //                             <Tag color={color} key={tag}>
+    //                             {tag.toUpperCase()}
+    //                             </Tag>
+    //                         );
+    //                     })
+    //                 }
+    //             </span>
+    //         );
+    //     }
+    // },
     {
         title: 'Type',
         dataIndex: 'type',
@@ -48,25 +48,13 @@ const columns = [
     },
 ];
 
-const data = [
-    {
-        key: '1',
-        name: 'Biological Advance South',
-        location: 'Switzerland',
-        industry: 'Biotech',
-        topics: ['Education', 'Computer Science'],
-        type: 'International',
-    }
-];
-
-function ProvidersTable() {
+function ProvidersTable({ data = [] }) {
     return (
-        <Card className="h-full rounded-md shadow">
-            <Table
-                columns={columns}
-                dataSource={data}
-            />
-        </Card>
+      <Table
+        rowKey="id"
+        columns={columns}
+        dataSource={data}
+      />
     );
 }
 
