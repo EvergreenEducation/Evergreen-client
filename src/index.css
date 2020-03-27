@@ -17,6 +17,10 @@ code {
     monospace;
 }
 
+.inherit {
+  display: inherit;
+}
+
 .w-72 {
   width: 18rem;
 }
@@ -31,8 +35,8 @@ code {
 
 .line-title > div:nth-of-type(1){
   width: 2vw;
-  height: 4px;
-  background-color: #949cb9;
+  height: 1px;
+  background-color: #cbd5e0;
   margin-right: 0.5vw;
 }
 
@@ -41,8 +45,8 @@ code {
 }
 
 .line-title > div:nth-of-type(2) {
-  height: 4px;
-  background-color: #949cb9;
+  height: 1px;
+  background-color: #cbd5e0;
   margin-left: 0.5vw;
   flex-grow: 1;
 }

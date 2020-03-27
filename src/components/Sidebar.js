@@ -59,7 +59,6 @@ function Sidebar() {
                     className="bg-green-500 text-center text-white bg-green-800-selected"
                     style={{ marginTop: 0, marginBottom: 0 }}
                     key="2"
-                    disabled
                 >
                     <Link to="/admin/offers">
                         <FontAwesomeIcon
@@ -77,7 +76,7 @@ function Sidebar() {
                     key="3"
                     disabled
                 >
-                    <Link to="/admin/offers">
+                    <Link to="/admin/local_offers">
                         <FontAwesomeIcon
                             className="text-white"
                             icon={faHandHoldingUsd}
@@ -91,9 +90,8 @@ function Sidebar() {
                     className="bg-green-500 text-center text-white bg-green-800-selected"
                     style={{ marginTop: 0, marginBottom: 0 }}
                     key="4"
-                    disabled
                 >
-                    <Link to="/admin/offers">
+                    <Link to="/admin/pathways">
                         <FontAwesomeIcon
                             className="text-white"
                             icon={faRoute}

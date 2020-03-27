@@ -4,9 +4,10 @@ import {
   Route,
   Switch
 } from 'react-router-dom';
+import importedComponent from 'react-imported-component';
 import HomePage from 'pages/HomePage';
-import LoginRegisterPage from 'pages/LoginRegisterPage';
-import AdminDashboardPage from 'pages/AdminDashboardPage';
+const LoginRegisterPage = importedComponent(() => import('pages/LoginRegisterPage'));
+const AdminDashboardPage = importedComponent(() => import('pages/AdminDashboardPage'));
 
 class App extends Component {
   render() {

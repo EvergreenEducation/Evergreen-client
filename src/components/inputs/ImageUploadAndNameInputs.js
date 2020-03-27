@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { Upload, Layout, Row, Col, Skeleton, Input, Form } from 'antd';
+import { Layout, Row, Col, Input, Form, Upload } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
+import importedComponent from 'react-imported-component';
+
+const Skeleton = importedComponent(() => import('antd/lib/skeleton'));
 
 function getBase64(image, callback) {
     const reader = new FileReader();
@@ -16,13 +19,17 @@ function handleBeforeUpload(file) {
 
 class ImageUploadAndNameInputs extends Component {
     state = {
-        imageUrl: null,
+        imageUrl: "",
         loading: false,
-        file: null,
+        file: {},
     };
 
     handleChange = (info) => {
+        if (!info) {
+            return;
+        }
         const { status } = info.file;
+        console.log(this);
         if (status === 'uploading') {
             this.setState({ loading: true })
         }
@@ -34,7 +41,6 @@ class ImageUploadAndNameInputs extends Component {
                     loading: false 
                 });
             });
-            console.log(this.state.file);
             this.setState({ loading: true, file: info.file });
         }
     }
@@ -53,11 +59,11 @@ class ImageUploadAndNameInputs extends Component {
                             shape={"square"}
                             style={{
                                 width: "15rem",
-                                height: "9rem"
+                                height: "11rem"
                             }}
                         />
                         : <FontAwesomeIcon
-                            className="text-black text-4xl"
+                            className="text-black text-6xl"
                             icon={faCloudUploadAlt}
                         />
                 }
@@ -66,7 +72,10 @@ class ImageUploadAndNameInputs extends Component {
         return (
             <Layout className="h-auto">
                 <Row>
-                    <Col span={7}>
+                    <Col
+                        span={7}
+                        className="h-48"
+                    >
                         <Form.Item>
                             <Upload
                                 className="custom-antd-upload"
@@ -75,7 +84,7 @@ class ImageUploadAndNameInputs extends Component {
                                 showUploadList={false}
                                 action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                                 beforeUpload={handleBeforeUpload}
-                                onChange={this.handleChange}
+                                // onChange={this.handleChange}
                             >
                                 {
                                     imageUrl

@@ -1,4 +1,5 @@
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const AntdDayjsWebpackPlugin = require('antd-dayjs-webpack-plugin');
 
 const logConfig = config => {
     console.log(config);
@@ -16,6 +17,7 @@ module.exports = [
             if (config.mode === 'production') {
                 config.plugins = [
                     ...config.plugins,
+                    new AntdDayjsWebpackPlugin(),
                     new BundleAnalyzerPlugin({
                         analyzerMode: 'static',
                         reportFilename: 'analyzed-bundle.html'
