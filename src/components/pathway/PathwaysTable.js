@@ -78,17 +78,15 @@ const data = [
     }
 ];
 
-function PathwaysScreen() {
+function PathwaysTable() {
     return (
-        <>
-            <Card className="h-full rounded-md shadow">
-                <Table
-                    columns={columns}
-                    dataSource={data}
-                />
-            </Card>
-        </>
+        <Card className="h-full rounded-md shadow">
+            <Table
+                columns={columns}
+                dataSource={data}
+            />
+        </Card>
     );
 }
 
-export default PathwaysScreen;
+export default PathwaysTable;

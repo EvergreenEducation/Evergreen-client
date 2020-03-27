@@ -3,19 +3,17 @@ import { Link, Route } from 'react-router-dom';
 import importedComponent from 'react-imported-component';
 import { Layout, Button, Col, Row, Input } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-    faPlusCircle, faSignOutAlt
-} from '@fortawesome/free-solid-svg-icons'
+import { faPlusCircle, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import 'scss/antd-overrides.scss';
 import Sidebar from 'components/Sidebar';
 
-const PathwayForm = importedComponent(() => import('components/PathwayForm'));
+const PathwayForm = importedComponent(() => import('components/pathway/PathwayForm'));
 const Modal = importedComponent(() => import('antd/lib/modal'))
-const ProviderCreationScreen = importedComponent(() => import('screens/ProviderCreationScreen'));
-const OfferCreationScreen = importedComponent(() => import('screens/OfferCreationScreen'));
-const ProvidersScreen = importedComponent(() => import('screens/ProvidersScreen'));
-const OffersScreen = importedComponent(() => import('screens/OffersScreen'));
-const PathwaysScreen = importedComponent(() => import('screens/PathwaysScreen'));
+const ProviderCreationScreen = importedComponent(() => import('components/provider/ProviderCreationScreen'));
+const ProvidersTable = importedComponent(() => import('components/provider/ProvidersTable'));
+const OfferCreationScreen = importedComponent(() => import('components/offer/OfferCreationScreen'));
+const OffersTable = importedComponent(() => import('components/offer/OffersTable'));
+const PathwaysTable = importedComponent(() => import('components/pathway/PathwaysTable'));
 const { Content, Header } = Layout;
 const { Search } = Input;
 
@@ -173,17 +171,17 @@ class AdminDashboardPage extends Component {
                             <Route
                                 exact
                                 path="/admin/providers"
-                                render={() => <ProvidersScreen />}
+                                render={() => <ProvidersTable />}
                             />
                             <Route
                                 exact
                                 path="/admin/offers"
-                                render={() => <OffersScreen />}
+                                render={() => <OffersTable />}
                             />
                             <Route
                                 exact
                                 path="/admin/pathways"
-                                render={() => <PathwaysScreen />}
+                                render={() => <PathwaysTable />}
                             />
                         </Content>
                     </Col>
