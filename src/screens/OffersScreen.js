@@ -3,19 +3,19 @@ import { Card, Table, Tag } from 'antd';
 
 const columns = [
     {
-        title: 'Name',
+        title: 'Name / ID',
         dataIndex: 'name',
         key: 'name',
     },
     {
-        title: 'Location',
-        dataIndex: 'location',
-        key: 'location',
+        title: 'Category',
+        dataIndex: 'category',
+        key: 'category',
     },
     {
-        title: 'Industry',
-        dataIndex: 'industry',
-        key: 'industry',
+        title: 'Provider',
+        dataIndex: 'provider',
+        key: 'provider',
     },
     {
         title: 'Topics',
@@ -42,24 +42,24 @@ const columns = [
         }
     },
     {
-        title: 'Type',
-        dataIndex: 'type',
-        key: 'type',
+        title: 'Start Date',
+        dataIndex: 'start_date',
+        key: 'start_date',
     },
 ];
 
 const data = [
     {
         key: '1',
-        name: 'Biological Advance South',
-        location: 'Switzerland',
-        industry: 'Biotech',
+        name: 'Maths differential equations solving curse [156625906]',
+        category: 'Web Development',
+        provider: 'Unicore Technology Vision',
         topics: ['Education', 'Computer Science'],
-        type: 'International',
+        start_date: '2020-02-18',
     }
 ];
 
-function ProvidersScreen() {
+function OffersScreen() {
     return (
         <>
             <Card className="h-full rounded-md shadow">
@@ -72,4 +72,4 @@ function ProvidersScreen() {
     );
 }
 
-export default ProvidersScreen;
+export default OffersScreen;

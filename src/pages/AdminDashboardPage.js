@@ -1,71 +1,42 @@
 import React, { Component } from 'react';
 import { Link, Route } from 'react-router-dom';
-import loadable from '@loadable/component';
-import { Layout, Button, Col, Row, Input, Table } from 'antd';
+import importedComponent from 'react-imported-component';
+import { Layout, Button, Col, Row, Input } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faPlusCircle, faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons'
 import 'scss/antd-overrides.scss';
-import ProvidersScreen from 'screens/ProvidersScreen';
-import ProviderForm from 'components/ProviderForm';
 import Sidebar from 'components/Sidebar';
 
-const Modal = loadable(() => import('antd/lib/modal'))
+const Modal = importedComponent(() => import('antd/lib/modal'))
+const ProviderCreationScreen = importedComponent(() => import('screens/ProviderCreationScreen'));
+const OfferCreationScreen = importedComponent(() => import('screens/OfferCreationScreen'));
+const ProvidersScreen = importedComponent(() => import('screens/ProvidersScreen'));
+const OffersScreen = importedComponent(() => import('screens/OffersScreen'));
 const { Content, Header } = Layout;
 const { Search } = Input;
 
-const offerColumns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Offer Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Offer Description',
-        dataIndex: 'description',
-        key: 'description',
-    }
-];
-
-const pathwayColumns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Pathways Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Pathways Description',
-        dataIndex: 'description',
-        key: 'description',
-    }
-];
-
 class AdminDashboardPage extends Component {
-    constructor(props) {
-        super(props);
-        this.uploadRef = React.createRef();
-        this.formRef = React.createRef();
-    }
-
     state = {
         isModalVisible: false,
         formType: "providers"
     }
 
     openModal = () => {
+        console.log(this.props.location.pathname);
+
+        const { pathname } = this.props.location;
+
+        let formType = "providers";
+
+        if (pathname === "/admin/offers") {
+            formType = "offers";
+        }
+
         this.setState({
-            isModalVisible: true
+            isModalVisible: true,
+            formType
         })
     }
 
@@ -81,19 +52,22 @@ class AdminDashboardPage extends Component {
         });
     };
 
-    getFormData = (results) => {
-        const formData = this.formRef.current.getFieldsValue(["name"]);
-        console.log(formData);
-
-        const uploadData = this.uploadRef.current.state.file;
-        console.log(uploadData);
-    }
-
     componentDidMount() {
         this.props.history.push('/admin/providers');
     }
 
     render() {
+        const { formType } = this.state;
+        let FormScreen = null;
+
+        if (formType === "providers") {
+            FormScreen = <ProviderCreationScreen />;
+        }
+
+        if (formType === "offers") {
+            FormScreen = <OfferCreationScreen />;
+        }
+
         return (
             <>
                 <Layout className="w-full h-min-full flex flex-row bg-gray-300">
@@ -120,7 +94,55 @@ class AdminDashboardPage extends Component {
                                                     className="text-white mr-1"
                                                     icon={faPlusCircle}
                                                 />
-                                                PROVIDERS
+                                                PROVIDER
+                                            </Button>
+                                        </Row>
+                                    )}
+                                />
+                                <Route
+                                    exact
+                                    path="/admin/offers"
+                                    render={() => (
+                                        <Row className="items-center">
+                                            <span className="mr-2">OFFERS / OPPORTUNITIES</span>
+                                            <Search
+                                                onSearch={value => console.log(value)}
+                                                enterButton
+                                                className="w-56 h-8 custom-search mr-2"
+                                            />
+                                            <Button
+                                                type="primary"
+                                                onClick={this.openModal}
+                                            >
+                                                <FontAwesomeIcon
+                                                    className="text-white mr-1"
+                                                    icon={faPlusCircle}
+                                                />
+                                                OFFER
+                                            </Button>
+                                        </Row>
+                                    )}
+                                />
+                                <Route
+                                    exact
+                                    path="/admin/pathways"
+                                    render={() => (
+                                        <Row className="items-center">
+                                            <span className="mr-2">PATHWAYS</span>
+                                            <Search
+                                                onSearch={value => console.log(value)}
+                                                enterButton
+                                                className="w-56 h-8 custom-search mr-2"
+                                            />
+                                            <Button
+                                                type="primary"
+                                                onClick={this.openModal}
+                                            >
+                                                <FontAwesomeIcon
+                                                    className="text-white mr-1"
+                                                    icon={faPlusCircle}
+                                                />
+                                                PATHWAY
                                             </Button>
                                         </Row>
                                     )}
@@ -142,6 +164,11 @@ class AdminDashboardPage extends Component {
                                 exact
                                 path="/admin/providers"
                                 render={() => <ProvidersScreen />}
+                            />
+                            <Route
+                                exact
+                                path="/admin/offers"
+                                render={() => <OffersScreen />}
                             />
                         </Content>
                     </Col>
@@ -169,38 +196,7 @@ class AdminDashboardPage extends Component {
                         </Button>,
                     ]}
                 >
-                    <Route
-                        exact
-                        path="/admin/providers"
-                        render={() => (
-                            <>
-                                <ProviderForm
-                                    ref={{
-                                        formRef: this.formRef,
-                                        uploadRef: this.uploadRef
-                                    }}
-                                />
-                                <section className="mt-2">
-                                    <label className="mb-2 block">
-                                        Offers - Table
-                                    </label>
-                                    <Table
-                                        columns={offerColumns}
-                                        dataSource={[]}
-                                    />
-                                </section>
-                                <section className="mt-2">
-                                    <label className="mb-2 block">
-                                        Pathways -Table
-                                    </label>
-                                    <Table
-                                        columns={pathwayColumns}
-                                        dataSource={[]}
-                                    />
-                                </section>
-                            </>
-                        )}
-                    />
+                    { FormScreen }
                 </Modal>
             </>
         );

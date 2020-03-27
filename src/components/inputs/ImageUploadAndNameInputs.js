@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Layout, Row, Col, Input, Form } from 'antd';
+import { Layout, Row, Col, Input, Form, Upload } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
-import loadable from '@loadable/component';
+import importedComponent from 'react-imported-component';
 
-const Upload = loadable(() => import('antd/lib/upload'));
-const Skeleton = loadable(() => import('antd/lib/skeleton'));
+const Skeleton = importedComponent(() => import('antd/lib/skeleton'));
 
 function getBase64(image, callback) {
     const reader = new FileReader();
@@ -20,13 +19,17 @@ function handleBeforeUpload(file) {
 
 class ImageUploadAndNameInputs extends Component {
     state = {
-        imageUrl: null,
+        imageUrl: "",
         loading: false,
-        file: null,
+        file: {},
     };
 
     handleChange = (info) => {
+        if (!info) {
+            return;
+        }
         const { status } = info.file;
+        console.log(this);
         if (status === 'uploading') {
             this.setState({ loading: true })
         }
@@ -38,7 +41,6 @@ class ImageUploadAndNameInputs extends Component {
                     loading: false 
                 });
             });
-            console.log(this.state.file);
             this.setState({ loading: true, file: info.file });
         }
     }
@@ -82,7 +84,7 @@ class ImageUploadAndNameInputs extends Component {
                                 showUploadList={false}
                                 action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                                 beforeUpload={handleBeforeUpload}
-                                onChange={this.handleChange}
+                                // onChange={this.handleChange}
                             >
                                 {
                                     imageUrl
