@@ -1,7 +1,6 @@
 import React from 'react';
 import { Layout, Form, Input, Row, Col, Select, AutoComplete } from 'antd';
-import ImageUploadAndNameInputs from 'components/inputs/ImageUploadAndNameInputs';
-import SearchFunnel from 'components/inputs/SearchFunnel';
+import { SearchFunnel, ImageUploadAndNameInputs } from 'components/shared';
 
 const { Option } = Select;
 

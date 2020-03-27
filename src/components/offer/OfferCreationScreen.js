@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import OfferForm from 'components/OfferForm';
+import OfferForm from 'components/offer/OfferForm';
 import { Table } from 'antd';
 
 const pathwayColumns = [

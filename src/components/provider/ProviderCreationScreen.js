@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ProviderForm from 'components/ProviderForm';
+import ProviderForm from 'components/provider/ProviderForm';
 import { Table } from 'antd';
 
 const offerColumns = [
