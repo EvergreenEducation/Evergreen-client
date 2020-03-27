@@ -7,10 +7,13 @@ import { faPlusCircle, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import 'scss/antd-overrides.scss';
 import Sidebar from 'components/Sidebar';
 
+import ProviderStore from 'store/Provider';
+
 const PathwayForm = importedComponent(() => import('components/pathway/PathwayForm'));
 const Modal = importedComponent(() => import('antd/lib/modal'))
-const ProviderCreationScreen = importedComponent(() => import('components/provider/ProviderCreationScreen'));
-const ProvidersTable = importedComponent(() => import('components/provider/ProvidersTable'));
+const ProviderCreationContainer = importedComponent(() => import('components/provider/ProviderCreationContainer'));
+const ProviderContainer = importedComponent(() => import('components/provider/ProviderContainer'));
+const ProviderHeader = importedComponent(() => import('components/provider/ProviderHeader'));
 const OfferCreationScreen = importedComponent(() => import('components/offer/OfferCreationScreen'));
 const OffersTable = importedComponent(() => import('components/offer/OffersTable'));
 const PathwaysTable = importedComponent(() => import('components/pathway/PathwaysTable'));
@@ -63,17 +66,19 @@ class AdminDashboardPage extends Component {
     render() {
         const { formType } = this.state;
         let FormScreen = null;
+        let HeaderContent = null;
 
         if (formType === "providers") {
-            FormScreen = <ProviderCreationScreen />;
+            FormScreen = <ProviderCreationContainer />;
+            HeaderContent = ProviderHeader;
         }
 
         if (formType === "offers") {
-            FormScreen = <OfferCreationScreen />;
+            HeaderContent = <OfferCreationScreen />;
         }
 
         if (formType === "pathways") {
-            FormScreen = <PathwayForm />;
+            HeaderContent = <PathwayForm />;
         }
 
         return (
@@ -83,78 +88,7 @@ class AdminDashboardPage extends Component {
                     <Col className="w-full">
                         <Header className="px-6 bg-white h-12 flex items-center">
                             <Col span={12}>
-                                <Route
-                                    exact
-                                    path="/admin/providers"
-                                    render={() => (
-                                        <Row className="items-center">
-                                            <span className="mr-2">PROVIDERS</span>
-                                            <Search
-                                                onSearch={value => console.log(value)}
-                                                enterButton
-                                                className="w-56 h-8 custom-search mr-2"
-                                            />
-                                            <Button
-                                                type="primary"
-                                                onClick={this.openModal}
-                                            >
-                                                <FontAwesomeIcon
-                                                    className="text-white mr-1"
-                                                    icon={faPlusCircle}
-                                                />
-                                                PROVIDER
-                                            </Button>
-                                        </Row>
-                                    )}
-                                />
-                                <Route
-                                    exact
-                                    path="/admin/offers"
-                                    render={() => (
-                                        <Row className="items-center">
-                                            <span className="mr-2">OFFERS / OPPORTUNITIES</span>
-                                            <Search
-                                                onSearch={value => console.log(value)}
-                                                enterButton
-                                                className="w-56 h-8 custom-search mr-2"
-                                            />
-                                            <Button
-                                                type="primary"
-                                                onClick={this.openModal}
-                                            >
-                                                <FontAwesomeIcon
-                                                    className="text-white mr-1"
-                                                    icon={faPlusCircle}
-                                                />
-                                                OFFER
-                                            </Button>
-                                        </Row>
-                                    )}
-                                />
-                                <Route
-                                    exact
-                                    path="/admin/pathways"
-                                    render={() => (
-                                        <Row className="items-center">
-                                            <span className="mr-2">PATHWAYS</span>
-                                            <Search
-                                                onSearch={value => console.log(value)}
-                                                enterButton
-                                                className="w-56 h-8 custom-search mr-2"
-                                            />
-                                            <Button
-                                                type="primary"
-                                                onClick={this.openModal}
-                                            >
-                                                <FontAwesomeIcon
-                                                    className="text-white mr-1"
-                                                    icon={faPlusCircle}
-                                                />
-                                                PATHWAY
-                                            </Button>
-                                        </Row>
-                                    )}
-                                />
+                                <HeaderContent createHandler={this.openModal}/>
                             </Col>
                             <Col span={12} className="flex justify-end">
                                 <Button type="link">
@@ -171,7 +105,12 @@ class AdminDashboardPage extends Component {
                             <Route
                                 exact
                                 path="/admin/providers"
-                                render={() => <ProvidersTable />}
+                                render={() => (
+                                    <ProviderStore.Provider>
+                                      <ProviderContainer />
+                                    </ProviderStore.Provider>
+                                  )
+                                }
                             />
                             <Route
                                 exact

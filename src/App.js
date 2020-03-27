@@ -7,7 +7,7 @@ import {
 import importedComponent from 'react-imported-component';
 import HomePage from 'screens/HomePage';
 const LoginRegisterPage = importedComponent(() => import('screens/LoginRegisterPage'));
-const AdminDashboardPage = importedComponent(() => import('screens/AdminDashboardPage'));
+const AdminDashboardScreen = importedComponent(() => import('screens/AdminDashboardScreen'));
 
 class App extends Component {
   render() {
@@ -25,7 +25,7 @@ class App extends Component {
           />
           <Route
             path="/admin"
-            component={AdminDashboardPage}
+            component={AdminDashboardScreen}
           />
         </Switch>
       </Router>

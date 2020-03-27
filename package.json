@@ -13,6 +13,8 @@
     "antd": "^4.0.4",
     "antd-dayjs-webpack-plugin": "^1.0.0",
     "autoprefixer": "^9.7.5",
+    "axios": "^0.19.2",
+    "axios-hooks": "^1.9.0",
     "babel-plugin-import": "^1.13.0",
     "babel-plugin-imports": "^0.2.4",
     "dayjs": "^1.8.23",
@@ -25,7 +27,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "tailwindcss": "^1.2.0",
-    "unstated": "^2.1.1"
+    "unstated-next": "^1.1.0"
   },
   "scripts": {
     "start": "rescripts start",
