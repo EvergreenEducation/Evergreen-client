@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Route } from 'react-router-dom';
-import { Layout, Button, Col, Row, Input, Modal } from 'antd';
+import loadable from '@loadable/component';
+import { Layout, Button, Col, Row, Input, Table } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faPlusCircle, faSignOutAlt
@@ -10,8 +11,45 @@ import ProvidersScreen from 'screens/ProvidersScreen';
 import ProviderForm from 'components/ProviderForm';
 import Sidebar from 'components/Sidebar';
 
+const Modal = loadable(() => import('antd/lib/modal'))
 const { Content, Header } = Layout;
 const { Search } = Input;
+
+const offerColumns = [
+    {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+    },
+    {
+        title: 'Offer Name',
+        dataIndex: 'name',
+        key: 'name',
+    },
+    {
+        title: 'Offer Description',
+        dataIndex: 'description',
+        key: 'description',
+    }
+];
+
+const pathwayColumns = [
+    {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+    },
+    {
+        title: 'Pathways Name',
+        dataIndex: 'name',
+        key: 'name',
+    },
+    {
+        title: 'Pathways Description',
+        dataIndex: 'description',
+        key: 'description',
+    }
+];
 
 class AdminDashboardPage extends Component {
     constructor(props) {
@@ -135,12 +173,32 @@ class AdminDashboardPage extends Component {
                         exact
                         path="/admin/providers"
                         render={() => (
-                            <ProviderForm
-                                ref={{
-                                    formRef: this.formRef,
-                                    uploadRef: this.uploadRef
-                                }}
-                            />
+                            <>
+                                <ProviderForm
+                                    ref={{
+                                        formRef: this.formRef,
+                                        uploadRef: this.uploadRef
+                                    }}
+                                />
+                                <section className="mt-2">
+                                    <label className="mb-2 block">
+                                        Offers - Table
+                                    </label>
+                                    <Table
+                                        columns={offerColumns}
+                                        dataSource={[]}
+                                    />
+                                </section>
+                                <section className="mt-2">
+                                    <label className="mb-2 block">
+                                        Pathways -Table
+                                    </label>
+                                    <Table
+                                        columns={pathwayColumns}
+                                        dataSource={[]}
+                                    />
+                                </section>
+                            </>
                         )}
                     />
                 </Modal>

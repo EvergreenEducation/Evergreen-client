@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
-import { Upload, Layout, Row, Col, Skeleton, Input, Form } from 'antd';
+import { Layout, Row, Col, Input, Form } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
+import loadable from '@loadable/component';
+
+const Upload = loadable(() => import('antd/lib/upload'));
+const Skeleton = loadable(() => import('antd/lib/skeleton'));
 
 function getBase64(image, callback) {
     const reader = new FileReader();
@@ -53,11 +57,11 @@ class ImageUploadAndNameInputs extends Component {
                             shape={"square"}
                             style={{
                                 width: "15rem",
-                                height: "9rem"
+                                height: "11rem"
                             }}
                         />
                         : <FontAwesomeIcon
-                            className="text-black text-4xl"
+                            className="text-black text-6xl"
                             icon={faCloudUploadAlt}
                         />
                 }
@@ -66,7 +70,10 @@ class ImageUploadAndNameInputs extends Component {
         return (
             <Layout className="h-auto">
                 <Row>
-                    <Col span={7}>
+                    <Col
+                        span={7}
+                        className="h-48"
+                    >
                         <Form.Item>
                             <Upload
                                 className="custom-antd-upload"

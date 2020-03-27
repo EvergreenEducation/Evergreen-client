@@ -17,6 +17,10 @@ code {
     monospace;
 }
 
+.inherit {
+  display: inherit;
+}
+
 .w-72 {
   width: 18rem;
 }
