@@ -29,7 +29,29 @@ export default (currentState, setState) => {
         ...currentState.entities,
       }
 
+      console.log(newEntities);
+
       delete newEntities[payload[idKey]];
+
+      return {
+        ...currentState,
+        entities: newEntities,
+        items: Object.keys(newEntities)
+      }
+    });
+  }
+
+  const removeOneByIdKey = (idKey) => {
+    setState(currentState => {
+      let newEntities = {
+        ...currentState.entities,
+      }
+
+      console.log(newEntities);
+
+      delete newEntities[idKey];
+
+      console.log(newEntities);
 
       return {
         ...currentState,
@@ -66,6 +88,7 @@ export default (currentState, setState) => {
     addMany, 
     addAll, 
     updateMany: addMany, 
-    updateOne: addOne
+    updateOne: addOne,
+    removeOneByIdKey
   }
 }

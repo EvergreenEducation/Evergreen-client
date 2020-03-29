@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
   Route,
-  Switch
+  Switch,
 } from 'react-router-dom';
-import importedComponent from 'react-imported-component';
+import { imported } from 'react-imported-component/macro';
 import HomePage from 'screens/HomePage';
-const LoginRegisterPage = importedComponent(() => import('screens/LoginRegisterPage'));
-const AdminDashboardScreen = importedComponent(() => import('screens/AdminDashboardScreen'));
+const LoginRegisterPage = imported(() => import('screens/LoginRegisterPage'));
+const AdminDashboardScreen = imported(() => import('screens/AdminDashboardScreen'));
 
 class App extends Component {
   render() {

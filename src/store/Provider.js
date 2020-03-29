@@ -18,6 +18,4 @@ function useProvider() {
   }
 }
 
-export default createContainer(useProvider)
-
-
+export default createContainer(useProvider);

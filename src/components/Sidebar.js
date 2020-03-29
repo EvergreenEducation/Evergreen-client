@@ -18,7 +18,7 @@ function Sidebar() {
 
     return (
         <Sider
-            className="h-screen bg-green-500"
+            className="h-auto bg-green-500"
             trigger={null}
             collapsible
             collapsed={collapsed}

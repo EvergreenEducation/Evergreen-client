@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Layout, Row, Col, Input, Form, Upload } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
-import importedComponent from 'react-imported-component';
+import { imported } from 'react-imported-component/macro';
 
-const Skeleton = importedComponent(() => import('antd/lib/skeleton'));
+const Skeleton = imported(() => import('antd/lib/skeleton'));
 
 function getBase64(image, callback) {
     const reader = new FileReader();

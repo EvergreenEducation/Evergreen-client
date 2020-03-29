@@ -2,9 +2,11 @@ import React from 'react';
 import { Layout, Form, Input, Row, Col, Select, AutoComplete } from 'antd';
 import { SearchFunnel, ImageUploadAndNameInputs } from 'components/shared';
 
+
 const { Option } = Select;
 
 const ProviderForm = React.forwardRef((props, ref) => {
+    const { types } = props;
     const { formRef, uploadRef } = ref;
     const [ form ] = Form.useForm();
 
@@ -38,8 +40,18 @@ const ProviderForm = React.forwardRef((props, ref) => {
                                 className="mb-0 inherit"
                             >
                                 <Select>
-                                    <Option value="international">international</Option>
-                                    <Option value="second">Second</Option>
+                                    {
+                                        types.map(({type_name}, index) => {
+                                            console.log(type_name);
+                                            return (
+                                                <Option
+                                                    key={type_name + index}
+                                                    value={type_name}>
+                                                    {type_name}
+                                                </Option>
+                                            )
+                                        })
+                                    }
                                 </Select>
                             </Form.Item>
                         </Col>

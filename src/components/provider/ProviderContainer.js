@@ -15,12 +15,12 @@ export default function ProviderContainer() {
     
     const tableData = Object.values(entities);
 
-    const [{ data = [], loading, error }] = useAxios(
+    const [{ data = []}] = useAxios(
       '/providers'
     );
 
     useEffect(() => {
-      store.addAll(data); // eslint-disable-next-line react-hooks/exhaustive-deps
+      store.addAll(data);
     }, [data]);
 
     return (

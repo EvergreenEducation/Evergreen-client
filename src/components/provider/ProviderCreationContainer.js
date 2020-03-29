@@ -1,6 +1,13 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import ProviderForm from 'components/provider/ProviderForm';
 import { Table } from 'antd';
+import ProviderTypeStore from 'store/ProviderType';
+import useAxios, { configure } from 'axios-hooks';
+import axiosInstance from 'services/AxiosInstance';
+
+configure({
+    axios: axiosInstance,
+})
 
 const offerColumns = [
     {
@@ -38,51 +45,43 @@ const pathwayColumns = [
     }
 ];
 
-class ProviderCreationScreen extends Component {
-    constructor(props) {
-        super(props);
-        this.uploadRef = React.createRef();
-        this.formRef = React.createRef();
-    }
+function ProviderCreationContainer(props, refs)  {
+    const uploadRef = React.createRef();
+    const formRef = React.createRef();
+    
+    const store = ProviderTypeStore.useContainer();
+    const { entities } = store;
+    let types = Object.values(entities);
 
-    getFormData = (results) => {
-        const formData = this.formRef.current.getFieldsValue(["name"]);
-        console.log(formData);
-
-        const uploadData = this.uploadRef.current.state.file;
-        console.log(uploadData);
-    }
-
-    render() {
-        return (
-            <>
-                <ProviderForm
-                    ref={{
-                        formRef: this.formRef,
-                        uploadRef: this.uploadRef
-                    }}
+    return (
+        <>
+            <ProviderForm
+                types={types}
+                ref={{
+                    formRef: formRef,
+                    uploadRef: uploadRef
+                }}
+            />
+            <section className="mt-2">
+                <label className="mb-2 block">
+                    Offers - Table
+                </label>
+                <Table
+                    columns={offerColumns}
+                    dataSource={[]}
                 />
-                <section className="mt-2">
-                    <label className="mb-2 block">
-                        Offers - Table
-                    </label>
-                    <Table
-                        columns={offerColumns}
-                        dataSource={[]}
-                    />
-                </section>
-                <section className="mt-2">
-                    <label className="mb-2 block">
-                        Pathways -Table
-                    </label>
-                    <Table
-                        columns={pathwayColumns}
-                        dataSource={[]}
-                    />
-                </section>
-            </>
-        );
-    }
+            </section>
+            <section className="mt-2">
+                <label className="mb-2 block">
+                    Pathways -Table
+                </label>
+                <Table
+                    columns={pathwayColumns}
+                    dataSource={[]}
+                />
+            </section>
+        </>
+    );
 }
 
-export default ProviderCreationScreen;
+export default ProviderCreationContainer;

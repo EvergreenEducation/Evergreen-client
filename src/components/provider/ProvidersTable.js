@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Tag } from 'antd';
+import { Table, Tag, Card } from 'antd';
 
 const columns = [
     {
@@ -50,11 +50,14 @@ const columns = [
 
 function ProvidersTable({ data = [] }) {
     return (
-      <Table
-        rowKey="id"
-        columns={columns}
-        dataSource={data}
-      />
+        <Card className="shadow-md rounded-md">
+            <Table
+                pagination={{ pageSize: 7 }}
+                rowKey="id"
+                columns={columns}
+                dataSource={data}
+            />
+        </Card>
     );
 }
 
