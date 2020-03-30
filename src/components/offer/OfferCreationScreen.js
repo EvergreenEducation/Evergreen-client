@@ -24,10 +24,8 @@ class OfferCreationScreen extends Component {
 
     getFormData = (results) => {
         const formData = this.formRef.current.getFieldsValue(["name"]);
-        console.log(formData);
 
         const uploadData = this.uploadRef.current.state.file;
-        console.log(uploadData);
     }
 
     render() {

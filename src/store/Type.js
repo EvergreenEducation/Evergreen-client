@@ -8,7 +8,7 @@ const initialState = {
 	items: []
 }
 
-function useProviderType() {
+function useType() {
 	let [ state, setState ] = useState(initialState);
 
 	return { 
@@ -18,4 +18,4 @@ function useProviderType() {
 	}
 }
 
-export default createContainer(useProviderType);
+export default createContainer(useType);

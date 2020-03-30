@@ -29,8 +29,6 @@ export default (currentState, setState) => {
         ...currentState.entities,
       }
 
-      console.log(newEntities);
-
       delete newEntities[payload[idKey]];
 
       return {
@@ -47,11 +45,7 @@ export default (currentState, setState) => {
         ...currentState.entities,
       }
 
-      console.log(newEntities);
-
       delete newEntities[idKey];
-
-      console.log(newEntities);
 
       return {
         ...currentState,

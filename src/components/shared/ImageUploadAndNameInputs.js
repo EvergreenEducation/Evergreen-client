@@ -29,7 +29,6 @@ class ImageUploadAndNameInputs extends Component {
             return;
         }
         const { status } = info.file;
-        console.log(this);
         if (status === 'uploading') {
             this.setState({ loading: true })
         }
@@ -105,6 +104,7 @@ class ImageUploadAndNameInputs extends Component {
                             labelAlign={"left"}
                             colon={false}
                             className="mb-0"
+                            rules={[{ required: true, message: "Please enter a provider name" }]}
                         >
                             <Input />
                         </Form.Item>

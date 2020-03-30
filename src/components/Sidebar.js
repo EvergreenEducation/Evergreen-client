@@ -9,6 +9,45 @@ import {
 
 const { Sider } = Layout;
 
+const routes = [
+    {
+        path: '/admin/providers',
+        name: ' Providers',
+        icon: faTree,
+        disabled: false
+    },
+    {
+        path: '/admin/offers',
+        name: ' Offers',
+        icon: faDollarSign,
+        disabled: false
+    },
+    {
+        path: '/admin/local_offers',
+        name: ' Local Offers',
+        icon: faHandHoldingUsd,
+        disabled: true
+    },
+    {
+        path: '/admin/pathways',
+        name: ' Pathways',
+        icon: faRoute,
+        disabled: false
+    },
+    {
+        path: '/admin/settings',
+        name: ' Settings',
+        icon: faCog,
+        disabled: false
+    },
+    {
+        path: '/admin/database',
+        name: ' Database',
+        icon: faDatabase,
+        disabled: true
+    }
+];
+
 function Sidebar() {
     const [collapsed, setCollapse] = useState(true);
 
@@ -18,7 +57,7 @@ function Sidebar() {
 
     return (
         <Sider
-            className="h-auto bg-green-500"
+            className="min-h-full bg-green-500"
             trigger={null}
             collapsible
             collapsed={collapsed}
@@ -40,98 +79,26 @@ function Sidebar() {
                 theme="dark"
                 defaultSelectedKeys={['1']}
             >
-                <Menu.Item
-                    className="bg-green-500 text-center text-white bg-green-800-selected"
-                    style={{ marginTop: 0, marginBottom: 0 }}
-                    key="1"
-                >
-                    <Link to="/admin/providers">
-                        <FontAwesomeIcon
-                            className="text-white"
-                            icon={faTree}
-                        />
-                        {
-                            collapsed ? null : " Providers"
-                        }
-                    </Link>
-                </Menu.Item>
-                <Menu.Item
-                    className="bg-green-500 text-center text-white bg-green-800-selected"
-                    style={{ marginTop: 0, marginBottom: 0 }}
-                    key="2"
-                >
-                    <Link to="/admin/offers">
-                        <FontAwesomeIcon
-                            className="text-white"
-                            icon={faDollarSign}
-                        />
-                        {
-                            collapsed ? null : " Offers"
-                        }
-                    </Link>
-                </Menu.Item>
-                <Menu.Item
-                    className="bg-green-500 text-center text-white bg-green-800-selected"
-                    style={{ marginTop: 0, marginBottom: 0 }}
-                    key="3"
-                    disabled
-                >
-                    <Link to="/admin/local_offers">
-                        <FontAwesomeIcon
-                            className="text-white"
-                            icon={faHandHoldingUsd}
-                        />
-                        {
-                            collapsed ? null : " Local offers"
-                        }
-                    </Link>
-                </Menu.Item>
-                <Menu.Item
-                    className="bg-green-500 text-center text-white bg-green-800-selected"
-                    style={{ marginTop: 0, marginBottom: 0 }}
-                    key="4"
-                >
-                    <Link to="/admin/pathways">
-                        <FontAwesomeIcon
-                            className="text-white"
-                            icon={faRoute}
-                        />
-                        {
-                            collapsed ? null : " Pathways"
-                        }
-                    </Link>
-                </Menu.Item>
-                <Menu.Item
-                    className="bg-green-500 text-center text-white bg-green-800-selected"
-                    style={{ marginTop: 0, marginBottom: 0 }}
-                    key="5"
-                >
-                    <Link to="/admin/settings">
-                        <FontAwesomeIcon
-                            className="text-white"
-                            icon={faCog}
-                        />
-                        {
-                            collapsed ? null : " Settings"
-                        }
-                    </Link>
-                </Menu.Item>
-                <Menu.Item
-                    className="bg-green-500 text-center text-white bg-green-800-selected"
-                    style={{ marginTop: 0, marginBottom: 0 }}
-                    key="6"
-                    disabled
-                >
-                    <Link to="/admin/database">
-                        <FontAwesomeIcon
-                            className="text-white"
-                            icon={faDatabase}
-                        />
-                        {
-                            collapsed ? null : " Database"
-                        }
-                    </Link>
-                </Menu.Item>
+                {
+                    routes.map(({ path, name, icon, disabled }, index) => (
+                        <Menu.Item
+                            className="bg-green-500 text-center text-white bg-green-800-selected"
+                            style={{ marginTop: 0, marginBottom: 0 }}
+                            key={index}
+                            disabled={disabled}
+                        >
+                            <Link to={path}>
+                                <FontAwesomeIcon
+                                    className="text-white"
+                                    icon={icon}
+                                />
+                                {
+                                    collapsed ? null : name
+                                }
+                            </Link>
+                        </Menu.Item> 
+                    ))
+                }
             </Menu>
         </Sider>
     );

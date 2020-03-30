@@ -1,24 +1,38 @@
-import React from 'react';
-import { Layout, Form, Input, Row, Col, Select, AutoComplete } from 'antd';
+import React, { useState } from 'react';
+import { Layout, Form, Input, Row, Col, Select, AutoComplete, Tag } from 'antd';
 import { SearchFunnel, ImageUploadAndNameInputs } from 'components/shared';
+
+const { Search } = Input;
 
 
 const { Option } = Select;
 
 const ProviderForm = React.forwardRef((props, ref) => {
-    const { types } = props;
-    const { formRef, uploadRef } = ref;
-    const [ form ] = Form.useForm();
+    const { types, topics = [], form } = props;
+    const [ funnel, setFunnel ] = useState([]);
+    
+    const options = topics.map((item, index) => ({
+        ...item,
+        label: item.name,
+        value: item.name,
+        key: item.id + item.name + index
+    }));
+
+    const onSelect = (item) => {
+        console.log(item);
+        setFunnel([ ...funnel, item ]);
+    }
+
+    const handleClose = (index) => {
+        const newFunnel = funnel.slice();
+        newFunnel.splice(index, 1);
+        setFunnel(newFunnel)
+    }
 
     return (
         <Layout>
-            <Form
-                form={form}
-                ref={formRef}
-            >
-                <ImageUploadAndNameInputs
-                    ref={uploadRef}
-                >
+            <Form form={form} ref={ref}>
+                <ImageUploadAndNameInputs>
                     <Row gutter={8}>
                         <Col span={18}>
                             <Form.Item
@@ -27,8 +41,9 @@ const ProviderForm = React.forwardRef((props, ref) => {
                                 labelAlign={"left"}
                                 colon={false}
                                 className="mb-0 inherit"
+                                rules={[{ required: true, message: "Please enter a location" }]}
                             >
-                                <AutoComplete />
+                                <Input />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
@@ -38,16 +53,16 @@ const ProviderForm = React.forwardRef((props, ref) => {
                                 labelAlign={"left"}
                                 colon={false}
                                 className="mb-0 inherit"
+                                rules={[{ required: true, message: "Please select a type" }]}
                             >
                                 <Select>
                                     {
-                                        types.map(({type_name}, index) => {
-                                            console.log(type_name);
+                                        types.map(({name}, index) => {
                                             return (
                                                 <Option
-                                                    key={type_name + index}
-                                                    value={type_name}>
-                                                    {type_name}
+                                                    key={name + index}
+                                                    value={name}>
+                                                    {name}
                                                 </Option>
                                             )
                                         })
@@ -60,10 +75,11 @@ const ProviderForm = React.forwardRef((props, ref) => {
                         <Col span={8}>
                             <Form.Item
                                 label="Learn/Earn"
-                                name="learn_or_earn"
+                                name="learn_and_earn"
                                 labelAlign={"left"}
                                 colon={false}
                                 className="mb-0 inherit"
+                                rules={[{ required: true, message: "Please select an option" }]}
                             >
                                 <Select>
                                     <Option value="learn">Learn</Option>
@@ -75,14 +91,15 @@ const ProviderForm = React.forwardRef((props, ref) => {
                         <Col span={8}>
                             <Form.Item
                                 label="Public/Private"
-                                name="public_or_private"
+                                name="is_public"
                                 labelAlign={"left"}
                                 colon={false}
                                 className="mb-0 inherit"
+                                rules={[{ required: true, message: "Please select an option" }]}
                             >
                                 <Select>
-                                    <Option value="public">Public</Option>
-                                    <Option value="private">Private</Option>
+                                    <Option value={true}>Public</Option>
+                                    <Option value={false}>Private</Option>
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -118,11 +135,70 @@ const ProviderForm = React.forwardRef((props, ref) => {
                     <Input />
                 </Form.Item>
                 <SearchFunnel
+                    form={form}
                     title={"Related Provider Images"}
                 />
                 <SearchFunnel
                     title={"Topics"}
+                    data={topics}
                 />
+                {/* <section>
+                    <Row className="mb-2 items-center mt-2">
+                        <span
+                            className="mr-2 text-gray-700 relative"
+                            style={{ bottom: 2 }}
+                        >
+                            Topics
+                        </span>
+                        <Form.Item name="topics">
+                            <AutoComplete
+                                options={options}
+                                className="custom-search"
+                                onSelect={onSelect}
+                            >
+                                <Search
+                                    onSearch={value => console.log(value)}
+                                    enterButton
+                                />
+                            </AutoComplete>
+                        </Form.Item>
+                    </Row>
+                    <div
+                        className="rounded-sm h-32 bg-white p-2"
+                        style={{
+                            borderWidth: 1,
+                            borderColor: "#d9d9d9"
+                        }}
+                    >
+                        {
+                            funnel.map((item, index)=> {
+                                if (index % 2) {
+                                    return (
+                                        <Tag
+                                            closable={true}
+                                            color="green"
+                                            className="mb-1"
+                                            onClose={() => handleClose(index)}
+                                            key={item + index}
+                                        >
+                                            {item}
+                                        </Tag>
+                                    );
+                                }
+                                return (
+                                    <Tag
+                                        closable={true}
+                                        color="cyan"
+                                        className="mb-1"
+                                        onClose={() => handleClose(index)}
+                                    >
+                                        {item}
+                                    </Tag>
+                                );
+                            })
+                        }
+                    </div>
+                </section> */}
                 <Row gutter={8}>
                     <Col span={12}>
                         <Form.Item
@@ -154,7 +230,7 @@ const ProviderForm = React.forwardRef((props, ref) => {
                             colon={false}
                             className="mb-0 inherit"
                         >
-                            <Input />
+                            <Input type="number" />
                         </Form.Item>
                     </Col>
                     <Col span={4}>
@@ -165,7 +241,7 @@ const ProviderForm = React.forwardRef((props, ref) => {
                             colon={false}
                             className="mb-0 inherit"
                         >
-                            <Input />
+                            <Input type="number" />
                         </Form.Item>
                     </Col>
                 </Row>

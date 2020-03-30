@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import ProviderForm from 'components/provider/ProviderForm';
-import { Table } from 'antd';
-import ProviderTypeStore from 'store/ProviderType';
+import { Table, Button, Form } from 'antd';
+import TypeStore from 'store/Type';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 
@@ -45,22 +45,37 @@ const pathwayColumns = [
     }
 ];
 
-function ProviderCreationContainer(props, refs)  {
-    const uploadRef = React.createRef();
-    const formRef = React.createRef();
-    
-    const store = ProviderTypeStore.useContainer();
+const ProviderCreationContainer = React.forwardRef((props, ref) => {
+    const [ form ] = Form.useForm();    
+    const store = TypeStore.useContainer();
     const { entities } = store;
-    let types = Object.values(entities);
+
+    const data = [];
+
+    useEffect(() => {
+        async function fetchTopicsProviderTypes() {
+            try {
+                const response = await axiosInstance.get('/datafields?type=topic&type=provider')
+                store.addMany(response.data);
+            } catch(e) {
+                console.error(e);
+            }
+        }
+        if (!Object.keys(entities).length) {
+            fetchTopicsProviderTypes();
+        }
+    }, [data]);
+
+    const types = Object.values(entities).filter(({ type }) => type === 'provider');
+    const topics = Object.values(entities).filter(({ type }) => type === 'topic');
 
     return (
-        <>
+        <div>
             <ProviderForm
                 types={types}
-                ref={{
-                    formRef: formRef,
-                    uploadRef: uploadRef
-                }}
+                topics={topics}
+                form={form}
+                ref={ref}
             />
             <section className="mt-2">
                 <label className="mb-2 block">
@@ -80,8 +95,8 @@ function ProviderCreationContainer(props, refs)  {
                     dataSource={[]}
                 />
             </section>
-        </>
+        </div>
     );
-}
+})
 
 export default ProviderCreationContainer;

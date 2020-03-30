@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import ProviderTypeTable from 'components/provider/ProviderTypeTable';
-import ProviderTypeStore from 'store/ProviderType';
+import TypeStore from 'store/Type';
 import axiosInstance from 'services/AxiosInstance';
+import DataFieldTable from 'components/DataFieldTable';
 
 import useAxios, { configure } from 'axios-hooks'
 import { Card } from "antd";
@@ -11,27 +11,51 @@ configure({
 })
 
 export default function ProviderTypeContainer() {
-    const store = ProviderTypeStore.useContainer();
+    const store = TypeStore.useContainer();
     const { entities } = store;
     
-    const tableData = Object.values(entities);
+    const tableData = Object.values(entities).filter(item => item.type === 'provider');
 
     const [{ data = [], loading } ] = useAxios(
-      '/provider_types'
+      '/datafields?type=provider'
     );
 
     useEffect(() => {
-      store.addAll(data);
+        store.addMany(data);
     }, [data]);
 
     return (
         <Card
             title={"Provider Type List"}
-            className="shadow-md rounded-md"
+            className="shadow-md rounded-md mb-4"
         >
-            <ProviderTypeTable
+            <DataFieldTable
                 data={tableData}
                 loading={loading}
+                store={store}
+                type="provider"
+                columns={[
+                  {
+                      title: 'Cod',
+                      dataIndex: 'id',
+                      key: 'id',
+                  },
+                  {
+                      title: 'Type Name',
+                      dataIndex: 'name',
+                      key: 'name',
+                  },
+                  {
+                      title: 'Type Description',
+                      dataIndex: 'description',
+                      key: 'description',
+                  },
+                  {
+                      title: 'add',
+                      dataIndex: 'add',
+                      key: 'add',
+                  }
+              ]}
             />
         </Card>
     );
