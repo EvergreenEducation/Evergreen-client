@@ -1,7 +1,15 @@
-import React from 'react';
-import { Table, Tag, Card, Button } from 'antd';
+import React, { useState } from 'react';
+import { Table, Tag, Card, Button, Skeleton } from 'antd';
+import { imported } from 'react-imported-component/macro';
 
-function ProvidersTable({ data = [], topics, providerTypes, loading }) {
+const ProviderUpdateModal = imported(() => import('components/provider/ProviderUpdateModal'), {
+    LoadingComponent: () => (<Skeleton className="p-6" paragraph={{ rows: 15 }} active/>),
+});
+
+function ProvidersTable({ data = [], topics, providerTypes, loading, store }) {
+    console.log(data);
+    const [ modalVisibility, setModalVisibility ] = useState(false);
+    const [ selectedProvider, setSelectedProvider ] = useState({});
     const columns = [
         {
             title: 'Name',
@@ -62,19 +70,24 @@ function ProvidersTable({ data = [], topics, providerTypes, loading }) {
                 return null;
             }
         },
-        // {
-        //     title: 'Update',
-        //     dataIndex: 'update',
-        //     key: 'update',
-        //     render: (text, record) => {
-        //         console.log(text, record);
-        //         return (
-        //             <Button type="link">
-        //                 Update
-        //             </Button>
-        //         );
-        //     }
-        // },
+        {
+            title: null,
+            dataIndex: 'update',
+            key: 'update',
+            render: (text, record) => {
+                return (
+                    <Button
+                        type="link"
+                        onClick={() => {
+                            setSelectedProvider(record);
+                            setModalVisibility(true);
+                        }}
+                    >
+                        Update
+                    </Button>
+                );
+            }
+        },
     ];
 
     return (
@@ -85,6 +98,14 @@ function ProvidersTable({ data = [], topics, providerTypes, loading }) {
                 rowKey="id"
                 columns={columns}
                 dataSource={data}
+            />
+            <ProviderUpdateModal
+                provider={selectedProvider}
+                visible={modalVisibility}
+                topics={Object.values(topics)}
+                types={Object.values(providerTypes)}
+                onCancel={() => setModalVisibility(false)}
+                store={store}
             />
         </Card>
     );

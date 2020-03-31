@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout, Menu, Button } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faBars, faDollarSign, faHandHoldingUsd,
     faTree, faRoute, faCog, faDatabase,
@@ -48,7 +48,7 @@ const routes = [
     }
 ];
 
-function Sidebar() {
+function Sidebar(props) {
     const [collapsed, setCollapse] = useState(true);
 
     const toggleSider = () => {

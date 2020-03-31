@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
+import { Modal, Form, Table, Button } from 'antd';
 import ProviderForm from 'components/provider/ProviderForm';
-import { Table, Button, Form } from 'antd';
-import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
-import { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import { isNil } from 'lodash';
+import { configure } from 'axios-hooks';
+import ProviderStore from 'store/Provider';
+import 'scss/antd-overrides.scss';
 
 configure({
-    axios: axiosInstance,
-})
+  axios: axiosInstance
+});
 
 const offerColumns = [
     {
@@ -46,17 +47,45 @@ const pathwayColumns = [
     }
 ];
 
-const ProviderCreationContainer = (({ className, closeModal }, ref) => {
+export default function ProviderUpdateModal(props) {
+    const { provider, types, topics, onCancel, visible } = props;
     const [ form ] = Form.useForm();
-    const store = useProviderDataFieldStore();
-    const { datafield: datafieldStore, provider: providerStore } = store;
-    const { typeEqualsProvider, typeEqualsTopic } = datafieldStore;
+    const formRef = React.createRef();
 
-    const typeEntities = Object.values(datafieldStore.entities);
-    const types = typeEntities.filter(typeEqualsProvider);
-    const topics = typeEntities.filter(typeEqualsTopic);
+    const providerStore = ProviderStore.useContainer();
     
-    const submit = async () => {
+    let setTopics = [];
+
+    if (provider.topics) {
+        setTopics = JSON.parse(provider.topics);
+    }
+    
+    function populateFields(p, ref) {    
+        ref.current.setFieldsValue({
+            name: p.name,
+            type: p.type,
+            learn_and_earn: p.learn_and_earn,
+            industry: p.industry,
+            location: p.location,
+            description: p.description,
+            topics: setTopics,
+            cost: p.cost,
+            pay: p.pay,
+            credit: p.credit,
+            contact: p.contact,
+            is_public: p.is_public,
+            financial_aid: p.financial_aid,
+        });
+    }
+
+    useEffect(() => {
+        formRef.current = form;
+        if (formRef.current) {
+            populateFields(provider, formRef);
+        }
+    }, [form, provider]);
+
+    const submitUpdate = async () => {
         const values = form.getFieldsValue([
             "name",
             "location",
@@ -81,14 +110,14 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
             name && location && type && learn_and_earn && !isNil(is_public)
         ) {
             try {
-                const response = await axiosInstance.post('/providers', {
+                const response = await axiosInstance.put(`/providers/${provider.id}`, {
                     ...values,
-                    topics: JSON.stringify(values.topics),
+                    topics: JSON.stringify(values.topics) || [],
                 });
 
-                if (response.status === 201) {
-                    providerStore.addOne(response.data);
-                    closeModal();
+                if (response.status === 200) {
+                    providerStore.updateOne(response.data);
+                    onCancel();
                 }
             } catch(e) {
                 console.error(e);
@@ -96,15 +125,21 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
         }
     }
 
-    useEffect(() => {
-        
-    }, [providerStore]);
-
     return (
-        <div>
+        <Modal
+            forceRender={true}
+            className="custom-modal"
+            title={"Update Provider"}
+            visible={visible}
+            width={998}
+            bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
+            footer={true}
+            onCancel={onCancel}
+        >
             <Form
+                ref={formRef}
                 form={form}
-                name="providerForm"
+                name="updateProviderForm"
             >
                 <div className="p-6">
                     <ProviderForm
@@ -140,21 +175,19 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
                         className="mr-3 px-20"
                         type="primary"
                         htmlType="submit"
-                        onClick={submit}
+                        onClick={() => submitUpdate()}
                     >
-                        Create
+                        Update
                     </Button>
                     <Button
                         className="px-20"
                         type="dashed"
-                        onClick={() => closeModal()}
+                        onClick={() => onCancel()}
                     >
                         Cancel
                     </Button>
                 </section>
             </Form>
-        </div>
+        </Modal>
     );
-})
-
-export default ProviderCreationContainer;
+}

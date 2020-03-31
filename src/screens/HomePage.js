@@ -4,7 +4,7 @@ import { Layout, Row, Col, Button } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import ProviderStore from 'store/Provider';
-import TypeStore from 'store/Type';
+import DataFieldStore from 'store/DataField';
 
 const { Header, Content } = Layout;
 
@@ -12,7 +12,7 @@ function HomePage() {
     return (
         <>
             <ProviderStore.Provider>
-                <TypeStore.Provider>
+                <DataFieldStore.Provider>
                     <Layout className="h-full white">
                         <div className="w-full bg-white">
                             <Content className="mx-auto max-w-4xl h-screen bg-gray-100">
@@ -44,7 +44,7 @@ function HomePage() {
                             </Row>
                         </Header>
                     </Layout>
-                </TypeStore.Provider>
+                </DataFieldStore.Provider>
             </ProviderStore.Provider>
         </>
     );

@@ -7,6 +7,10 @@ const { Option } = Select;
 const ProviderForm = (props) => {
     const { types, topics = [] } = props;
 
+    const handleChange = (results) => {
+        console.log(results);
+    }
+
     return (
         <Layout>
             <ImageUploadAndNameInputs className="mb-2">
@@ -34,7 +38,8 @@ const ProviderForm = (props) => {
                         >
                             <Select name="type">
                                 {
-                                    types.map(({name, id}, index) => {
+                                    types.map((item, index) => {
+                                        const { name, id } = item;
                                         return (
                                             <Option
                                                 key={name + index}
@@ -145,6 +150,7 @@ const ProviderForm = (props) => {
                         showSearch
                         className="w-full"
                         mode="multiple"
+                        onChange={handleChange}
                     >
                         {
                             topics.map((topic, index) => (
@@ -179,7 +185,10 @@ const ProviderForm = (props) => {
                         colon={false}
                         className="mb-0 inherit"
                     >
-                        <Input type="number" />
+                        <Input
+                            type="number"
+                            addonBefore="$"
+                        />
                     </Form.Item>
                 </Col>
                 <Col span={4}>
@@ -190,7 +199,10 @@ const ProviderForm = (props) => {
                         colon={false}
                         className="mb-0 inherit"
                     >
-                        <Input type="number" />
+                        <Input
+                            type="number"
+                            addonBefore="$"
+                        />
                     </Form.Item>
                 </Col>
                 <Col span={4}>
@@ -201,7 +213,10 @@ const ProviderForm = (props) => {
                         colon={false}
                         className="mb-0 inherit"
                     >
-                        <Input type="number" />
+                        <Input
+                            type="number"
+                            addonBefore="$"
+                        />
                     </Form.Item>
                 </Col>
             </Row>

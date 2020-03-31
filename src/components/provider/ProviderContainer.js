@@ -1,52 +1,52 @@
-import React, { useEffect} from "react";
+import React, { useEffect } from 'react';
 import ProvidersTable from './ProvidersTable';
 import axiosInstance from 'services/AxiosInstance';
-import useProviderAndTypeStore from 'components/provider/useProviderAndTypeStore';
-import { indexBy, prop } from 'ramda';
+import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
+import { keyBy } from 'lodash';
 
-import useAxios, { configure } from 'axios-hooks'
+import useAxios, { configure } from 'axios-hooks';
 
 configure({
   axios: axiosInstance
 })
 
 export default function ProviderContainer() {
-    const store = useProviderAndTypeStore();
-    const {
-      type: typeStore,
-      provider: providerStore,
-    } = store;
+  const store = useProviderDataFieldStore();
+  const {
+    datafield: datafieldStore,
+    provider: providerStore,
+  } = store;
 
-    const { typeEqualsProvider, typeEqualsTopic } = typeStore;
+  const { typeEqualsProvider, typeEqualsTopic } = datafieldStore;
 
-    const [{ data: providers = {} }] = useAxios(
-      '/providers'
-    );
+  const [{ data: providers = {} }] = useAxios(
+    '/providers'
+  );
 
-    const [{ data: datafields = {} }] = useAxios(
-      '/datafields?type=provider&type=topic'
-    );
+  const [{ data: datafields = {} }] = useAxios(
+    '/datafields?type=provider&type=topic'
+  );
 
-    useEffect(() => {
-    	providerStore.addMany(providers);
-    	typeStore.addMany(datafields);
-    }, [providers, datafields]);
+  useEffect(() => {
+    providerStore.addMany(providers);
+    datafieldStore.addMany(datafields);
+  }, [providers, datafields]);
 
-    const tableData = Object.values(providers);
-    const datafieldsData = Object.values(datafields);
+  const tableData = Object.values(providerStore.entities);
+  const datafieldsData = Object.values(datafieldStore.entities);
 
-    let topics = datafieldsData.filter(typeEqualsTopic);
-      topics = indexBy(prop('id'), topics);
+  let topics = datafieldsData.filter(typeEqualsTopic);
+    topics = keyBy(topics, 'id');
 
-    let providerTypes = datafieldsData.filter(typeEqualsProvider);
-    	providerTypes = indexBy(prop('id'), providerTypes);
+  let providerTypes = datafieldsData.filter(typeEqualsProvider);
+    providerTypes = keyBy(providerTypes, 'id');
 
-    return (
-    	<ProvidersTable 
-        	data={tableData}
-        	topics={topics}
-        	providerTypes={providerTypes}
-      />
-    ) 
-
+  return (
+    <ProvidersTable 
+        data={tableData}
+        topics={topics}
+        providerTypes={providerTypes}
+        store={store}
+    />
+  ); 
 }

@@ -8,8 +8,16 @@ export default (currentState, setState) => {
 
   const addMany = (payload) => {
     setState(currentState => {
+      console.log(currentState.entities);
       let idKey = currentState.idKey;
       let newItems = keyBy(payload, idKey);
+
+      const newEntities = {
+        ...currentState.entities,
+        ...newItems,
+      };
+      
+      console.log(newEntities);
 
       return {
         ...currentState,

@@ -1,6 +1,6 @@
-import { useState } from "react";
-import CrudHelper from "./CrudHelper";
-import { createContainer } from "unstated-next";
+import { useState } from 'react';
+import CrudHelper from './CrudHelper';
+import { createContainer } from 'unstated-next';
 
 const initialState = {
 	idKey: 'id',
@@ -8,7 +8,7 @@ const initialState = {
 	items: []
 }
 
-function useType() {
+function useDataField() {
 	let [ state, setState ] = useState(initialState);
 
 	return { 
@@ -16,12 +16,12 @@ function useType() {
 		items: state.items,
 		...CrudHelper(state, setState),
 		typeEqualsProvider: function(datafield) {
-			return datafield.type === 'provider';
+			return datafield.type === "provider";
 		},
 		typeEqualsTopic: function(datafield) {
-			return datafield.type === 'topic';
+			return datafield.type === "topic";
 		}
 	}
 }
 
-export default createContainer(useType);
+export default createContainer(useDataField);

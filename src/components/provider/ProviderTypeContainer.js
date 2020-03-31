@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import TypeStore from 'store/Type';
+import React, { useEffect } from 'react';
+import DataFieldStore from 'store/DataField';
 import axiosInstance from 'services/AxiosInstance';
 import DataFieldTable from 'components/DataFieldTable';
 
@@ -11,7 +11,7 @@ configure({
 })
 
 export default function ProviderTypeContainer() {
-    const store = TypeStore.useContainer();
+    const store = DataFieldStore.useContainer();
     const { entities, typeEqualsProvider } = store;
     
     const tableData = Object.values(entities).filter(typeEqualsProvider);
