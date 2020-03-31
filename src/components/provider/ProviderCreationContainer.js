@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ProviderForm from 'components/provider/ProviderForm';
 import { Table, Button, Form } from 'antd';
-import TypeStore from 'store/Type';
+import useProviderAndTypeStore from 'components/provider/useProviderAndTypeStore';
 import { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
+import { isNil } from 'ramda';
 
 configure({
     axios: axiosInstance,
@@ -46,30 +47,14 @@ const pathwayColumns = [
 ];
 
 const ProviderCreationContainer = (({ className, closeModal }, ref) => {
-    const [ form ] = Form.useForm();    
-    const store = TypeStore.useContainer();
-    const { entities } = store;
+    const [ form ] = Form.useForm();
+    const store = useProviderAndTypeStore();
+    const { type: typeStore, provider: providerStore } = store;
+    const { typeEqualsProvider, typeEqualsTopic } = typeStore;
 
-
-    const data = [];
-
-    useEffect(() => {
-        async function fetchTopicsProviderTypes() {
-            try {
-                const response = await axiosInstance.get('/datafields?type=topic&type=provider')
-                store.addMany(response.data);
-            } catch(e) {
-                console.error(e);
-            }
-        }
-        if (!Object.keys(entities).length) {
-            fetchTopicsProviderTypes();
-        }
-    }, [data]);
-
-    const types = Object.values(entities).filter(({ type }) => type === 'provider');
-    const topics = Object.values(entities).filter(({ type }) => type === 'topic');
-
+    const typeEntities = Object.values(typeStore.entities);
+    const types = typeEntities.filter(typeEqualsProvider);
+    const topics = typeEntities.filter(typeEqualsTopic);
     
     const submit = async () => {
         const values = form.getFieldsValue([
@@ -93,15 +78,22 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
         const { name, location, type, learn_and_earn, is_public } = values;
 
         if (
-            name && location && type && learn_and_earn && is_public
+            name && location && type && learn_and_earn && !isNil(is_public)
         ) {
-            const response = await axiosInstance.post('/providers', {
-                ...values,
-                topics: JSON.stringify(values.topics),
-            });
-            console.log(response);
+            try {
+                const response = await axiosInstance.post('/providers', {
+                    ...values,
+                    topics: JSON.stringify(values.topics),
+                });
+
+                if (response.status === 201) {
+                    providerStore.addOne(response.data);
+                    closeModal();
+                }
+            } catch(e) {
+                console.error(e);
+            }
         }
-        // console.log(response);
     }
 
     return (

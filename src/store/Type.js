@@ -14,7 +14,13 @@ function useType() {
 	return { 
 		entities: state.entities,
 		items: state.items,
-		...CrudHelper(state, setState)
+		...CrudHelper(state, setState),
+		typeEqualsProvider: function(datafield) {
+			return datafield.type === 'provider';
+		},
+		typeEqualsTopic: function(datafield) {
+			return datafield.type === 'topic';
+		}
 	}
 }
 

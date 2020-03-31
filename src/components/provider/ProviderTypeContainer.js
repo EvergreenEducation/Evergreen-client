@@ -12,9 +12,9 @@ configure({
 
 export default function ProviderTypeContainer() {
     const store = TypeStore.useContainer();
-    const { entities } = store;
+    const { entities, typeEqualsProvider } = store;
     
-    const tableData = Object.values(entities).filter(item => item.type === 'provider');
+    const tableData = Object.values(entities).filter(typeEqualsProvider);
 
     const [{ data = [], loading } ] = useAxios(
       '/datafields?type=provider'

@@ -20,7 +20,7 @@ const routes = [
         path: '/admin/offers',
         name: ' Offers',
         icon: faDollarSign,
-        disabled: false
+        disabled: true
     },
     {
         path: '/admin/local_offers',
@@ -32,7 +32,7 @@ const routes = [
         path: '/admin/pathways',
         name: ' Pathways',
         icon: faRoute,
-        disabled: false
+        disabled: true
     },
     {
         path: '/admin/settings',
@@ -84,7 +84,7 @@ function Sidebar() {
                         <Menu.Item
                             className="bg-green-500 text-center text-white bg-green-800-selected"
                             style={{ marginTop: 0, marginBottom: 0 }}
-                            key={index}
+                            key={index + 1}
                             disabled={disabled}
                         >
                             <Link to={path}>

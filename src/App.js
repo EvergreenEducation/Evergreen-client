@@ -27,6 +27,10 @@ class App extends Component {
             path="/admin"
             component={AdminDashboardScreen}
           />
+          <Route
+            path="/provider/:id"
+            children={() => (<div>test</div>)}
+          />
         </Switch>
       </Router>
     );

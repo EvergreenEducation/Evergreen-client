@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Route, Redirect } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
-import { Layout, Button, Col } from 'antd';
+import { Layout, Button, Col, Skeleton } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import Sidebar from 'components/Sidebar';
@@ -12,12 +12,12 @@ import TopicContainer from 'components/topic/TopicContainer';
 import 'scss/antd-overrides.scss';
 
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
-// const PathwayForm = imported(() => import('components/pathway/PathwayForm'));
-const ProviderCreationContainer = imported(() => import('components/provider/ProviderCreationContainer'));
+const ProviderCreationContainer = imported(() => import('components/provider/ProviderCreationContainer'), {
+    LoadingComponent: () => (<Skeleton className="p-6" paragraph={{ rows: 15 }} active/>),
+});
 const Modal = imported(() => import('antd/lib/modal'))
 const ProviderContainer = imported(() => import('components/provider/ProviderContainer'));
 const ProviderHeader = imported(() => import('components/provider/ProviderHeader'));
-// const OfferCreationScreen = imported(() => import('components/offer/OfferCreationScreen'));
 const OffersTable = imported(() => import('components/offer/OffersTable'));
 const PathwaysTable = imported(() => import('components/pathway/PathwaysTable'));
 const { Content, Header } = Layout;
@@ -80,86 +80,85 @@ class AdminDashboardPage extends Component {
         // }
 
         return (
-            <>
+            <>  
                 <TypeStore.Provider>
-                    <Route
-                        exact
-                        path="/admin/"
-                    >
-                        <Redirect to="/admin/providers"/>
-                    </Route>
-                    <Layout
-                        className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
-                    >
-                        <Sidebar />
-                        <Col className="w-full">
-                            <Header className="px-6 bg-white h-12 flex items-center">
-                                <Col span={14}>
+                    <ProviderStore.Provider>
+                        <Route
+                            exact
+                            path="/admin/"
+                        >
+                            <Redirect to="/admin/providers"/>
+                        </Route>
+                        <Layout
+                            className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
+                        >
+                            <Sidebar />
+                            <Col className="w-full">
+                                <Header className="px-6 bg-white h-12 flex items-center">
+                                    <Col span={14}>
+                                        <Route
+                                            exact
+                                            path="/admin/providers"
+                                            render={() => <HeaderContent createHandler={this.openModal}/>}
+                                        />
+                                    </Col>
+                                    <Col span={10} className="flex justify-end">
+                                        <Button type="link">
+                                            <Link to="/auth">
+                                                <FontAwesomeIcon
+                                                    className="text-black"
+                                                    icon={faSignOutAlt}
+                                                />
+                                            </Link>
+                                        </Button>
+                                    </Col>
+                                </Header>
+                                <Content className="p-6 h-min-full">
+                                    <Route
+                                        exact
+                                        path="/admin/offers"
+                                        render={() => <OffersTable />}
+                                    />
+                                    <Route
+                                        exact
+                                        path="/admin/pathways"
+                                        render={() => <PathwaysTable />}
+                                    />
                                     <Route
                                         exact
                                         path="/admin/providers"
-                                        render={() => <HeaderContent createHandler={this.openModal}/>}
-                                    />
-                                </Col>
-                                <Col span={10} className="flex justify-end">
-                                    <Button type="link">
-                                        <Link to="/auth">
-                                            <FontAwesomeIcon
-                                                className="text-black"
-                                                icon={faSignOutAlt}
-                                            />
-                                        </Link>
-                                    </Button>
-                                </Col>
-                            </Header>
-                            <Content className="p-6 h-min-full">
-                                <Route
-                                    exact
-                                    path="/admin/offers"
-                                    render={() => <OffersTable />}
-                                />
-                                <Route
-                                    exact
-                                    path="/admin/pathways"
-                                    render={() => <PathwaysTable />}
-                                />
-                                <Route
-                                    exact
-                                    path="/admin/providers"
-                                    render={() => (
-                                        <ProviderStore.Provider>
+                                        render={() => (
                                             <ProviderContainer />
-                                        </ProviderStore.Provider>
-                                    )
-                                    }
-                                />
-                                <Route
-                                    exact
-                                    path="/admin/settings"
-                                    render={() => {
-                                        return (
-                                            <div>
-                                                <ProviderTypeContainer />
-                                                <TopicContainer />
-                                            </div>
-                                        )
-                                    }}
-                                />
-                            </Content>
-                        </Col>
-                    </Layout>
-                    <Modal
-                        className="custom-modal"
-                        title={"New Provider"}
-                        visible={this.state.isModalVisible}
-                        onOk={this.handleOk}
-                        onCancel={this.handleCancel}
-                        bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
-                        width={998}
-                        footer={true}
-                    >
-                        { FormContent }
-                    </Modal>
+                                        )}
+                                    />
+                                    <Route
+                                        exact
+                                        path="/admin/settings"
+                                        render={() => {
+                                            return (
+                                                <div>
+                                                    <ProviderTypeContainer />
+                                                    <TopicContainer />
+                                                </div>
+                                            )
+                                        }}
+                                    />
+                                </Content>
+                            </Col>
+                        </Layout>
+                        <Modal
+                            className="custom-modal"
+                            title={"New Provider"}
+                            visible={this.state.isModalVisible}
+                            onOk={this.handleOk}
+                            onCancel={this.handleCancel}
+                            bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
+                            width={998}
+                            footer={true}
+                        >
+                            { FormContent }
+                        </Modal>
+                    </ProviderStore.Provider>
                 </TypeStore.Provider>
             </>
         );

@@ -34,11 +34,12 @@ const ProviderForm = (props) => {
                         >
                             <Select name="type">
                                 {
-                                    types.map(({name}, index) => {
+                                    types.map(({name, id}, index) => {
                                         return (
                                             <Option
                                                 key={name + index}
-                                                value={name}>
+                                                value={id}
+                                            >
                                                 {name}
                                             </Option>
                                         )

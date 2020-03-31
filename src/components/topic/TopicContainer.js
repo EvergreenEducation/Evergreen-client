@@ -4,7 +4,7 @@ import axiosInstance from 'services/AxiosInstance';
 import DataFieldTable from 'components/DataFieldTable';
 
 import useAxios, { configure } from 'axios-hooks'
-import { Card } from "antd";
+import { Card } from 'antd';
 
 configure({
   axios: axiosInstance
@@ -12,9 +12,9 @@ configure({
 
 export default function TopicContainer() {
     const store = TypeStore.useContainer();
-    const { entities } = store;
+    const { entities, typeEqualsTopic } = store;
     
-    const tableData = Object.values(entities).filter(item => item.type === 'topic');
+    const tableData = Object.values(entities).filter(typeEqualsTopic);
 
     const [{ data = [], loading } ] = useAxios(
       '/datafields?type=topic'
