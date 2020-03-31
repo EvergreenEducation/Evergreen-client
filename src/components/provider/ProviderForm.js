@@ -1,121 +1,99 @@
-import React, { useState } from 'react';
-import { Layout, Form, Input, Row, Col, Select, AutoComplete, Tag } from 'antd';
-import { SearchFunnel, ImageUploadAndNameInputs } from 'components/shared';
-
-const { Search } = Input;
-
+import React from 'react';
+import { Layout, Form, Input, Row, Col, Select } from 'antd';
+import { ImageUploadAndNameInputs } from 'components/shared';
 
 const { Option } = Select;
 
-const ProviderForm = React.forwardRef((props, ref) => {
-    const { types, topics = [], form } = props;
-    const [ funnel, setFunnel ] = useState([]);
-    
-    const options = topics.map((item, index) => ({
-        ...item,
-        label: item.name,
-        value: item.name,
-        key: item.id + item.name + index
-    }));
-
-    const onSelect = (item) => {
-        console.log(item);
-        setFunnel([ ...funnel, item ]);
-    }
-
-    const handleClose = (index) => {
-        const newFunnel = funnel.slice();
-        newFunnel.splice(index, 1);
-        setFunnel(newFunnel)
-    }
+const ProviderForm = (props) => {
+    const { types, topics = [] } = props;
 
     return (
         <Layout>
-            <Form form={form} ref={ref}>
-                <ImageUploadAndNameInputs>
-                    <Row gutter={8}>
-                        <Col span={18}>
-                            <Form.Item
-                                label="Location"
-                                name="location"
-                                labelAlign={"left"}
-                                colon={false}
-                                className="mb-0 inherit"
-                                rules={[{ required: true, message: "Please enter a location" }]}
-                            >
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                            <Form.Item
-                                label="Type"
-                                name="type"
-                                labelAlign={"left"}
-                                colon={false}
-                                className="mb-0 inherit"
-                                rules={[{ required: true, message: "Please select a type" }]}
-                            >
-                                <Select>
-                                    {
-                                        types.map(({name}, index) => {
-                                            return (
-                                                <Option
-                                                    key={name + index}
-                                                    value={name}>
-                                                    {name}
-                                                </Option>
-                                            )
-                                        })
-                                    }
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col span={8}>
-                            <Form.Item
-                                label="Learn/Earn"
-                                name="learn_and_earn"
-                                labelAlign={"left"}
-                                colon={false}
-                                className="mb-0 inherit"
-                                rules={[{ required: true, message: "Please select an option" }]}
-                            >
-                                <Select>
-                                    <Option value="learn">Learn</Option>
-                                    <Option value="earn">Earn</Option>
-                                    <Option value="both">Learn and Earn</Option>
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                            <Form.Item
-                                label="Public/Private"
-                                name="is_public"
-                                labelAlign={"left"}
-                                colon={false}
-                                className="mb-0 inherit"
-                                rules={[{ required: true, message: "Please select an option" }]}
-                            >
-                                <Select>
-                                    <Option value={true}>Public</Option>
-                                    <Option value={false}>Private</Option>
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                            <Form.Item
-                                label="Industry"
-                                name="industry"
-                                labelAlign={"left"}
-                                colon={false}
-                                className="mb-0 inherit"
-                            >
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                </ImageUploadAndNameInputs>
+            <ImageUploadAndNameInputs className="mb-2">
+                <Row gutter={8}>
+                    <Col span={18}>
+                        <Form.Item
+                            label="Location"
+                            name="location"
+                            labelAlign={"left"}
+                            colon={false}
+                            className="mb-0 inherit"
+                            rules={[{ required: true, message: "Please enter a location" }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Col>
+                    <Col span={6}>
+                        <Form.Item
+                            label="Type"
+                            name="type"
+                            labelAlign={"left"}
+                            colon={false}
+                            className="mb-0 inherit"
+                            rules={[{ required: true, message: "Please select a type" }]}
+                        >
+                            <Select name="type">
+                                {
+                                    types.map(({name}, index) => {
+                                        return (
+                                            <Option
+                                                key={name + index}
+                                                value={name}>
+                                                {name}
+                                            </Option>
+                                        )
+                                    })
+                                }
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row gutter={8}>
+                    <Col span={8}>
+                        <Form.Item
+                            label="Learn/Earn"
+                            name="learn_and_earn"
+                            labelAlign={"left"}
+                            colon={false}
+                            className="mb-0 inherit"
+                            rules={[{ required: true, message: "Please select an option" }]}
+                        >
+                            <Select name="learn_and_earn">
+                                <Option value="learn">Learn</Option>
+                                <Option value="earn">Earn</Option>
+                                <Option value="both">Learn and Earn</Option>
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                        <Form.Item
+                            label="Public/Private"
+                            name="is_public"
+                            labelAlign={"left"}
+                            colon={false}
+                            className="mb-0 inherit"
+                            rules={[{ required: true, message: "Please select an option" }]}
+                        >
+                            <Select name="is_public">
+                                <Option value={true}>Public</Option>
+                                <Option value={false}>Private</Option>
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                        <Form.Item
+                            label="Industry"
+                            name="industry"
+                            labelAlign={"left"}
+                            colon={false}
+                            className="mb-0 inherit"
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Col>
+                </Row>
+            </ImageUploadAndNameInputs>
+            <Col span={24}>
                 <Form.Item
                     label="Description"
                     name="description"
@@ -125,6 +103,8 @@ const ProviderForm = React.forwardRef((props, ref) => {
                 >
                     <Input />
                 </Form.Item>
+            </Col>
+            <Col span={24}>
                 <Form.Item
                     label="Keywords"
                     name="keywords"
@@ -134,117 +114,97 @@ const ProviderForm = React.forwardRef((props, ref) => {
                 >
                     <Input />
                 </Form.Item>
-                <SearchFunnel
-                    form={form}
-                    title={"Related Provider Images"}
-                />
-                <SearchFunnel
-                    title={"Topics"}
-                    data={topics}
-                />
-                {/* <section>
-                    <Row className="mb-2 items-center mt-2">
-                        <span
-                            className="mr-2 text-gray-700 relative"
-                            style={{ bottom: 2 }}
-                        >
-                            Topics
-                        </span>
-                        <Form.Item name="topics">
-                            <AutoComplete
-                                options={options}
-                                className="custom-search"
-                                onSelect={onSelect}
-                            >
-                                <Search
-                                    onSearch={value => console.log(value)}
-                                    enterButton
-                                />
-                            </AutoComplete>
-                        </Form.Item>
-                    </Row>
-                    <div
-                        className="rounded-sm h-32 bg-white p-2"
-                        style={{
-                            borderWidth: 1,
-                            borderColor: "#d9d9d9"
-                        }}
+            </Col>
+            <Row className="items-center mt-2 mb-0">
+                <span
+                    className="text-gray-700 relative"
+                    style={{ bottom: 2 }}
+                >
+                    Related Provider Images
+                </span>
+                <Form.Item
+                    name="Related Provider Images"
+                    className="w-full"
+                >
+                    <Input />
+                </Form.Item>
+            </Row>
+            <Row className="items-center mb-0">
+                <span
+                    className="text-gray-700 relative"
+                    style={{ bottom: 2 }}
+                >
+                    Topics
+                </span>
+                <Form.Item
+                    name="topics"
+                    className="w-full"
+                >
+                    <Select
+                        showSearch
+                        className="w-full"
+                        mode="multiple"
                     >
                         {
-                            funnel.map((item, index)=> {
-                                if (index % 2) {
-                                    return (
-                                        <Tag
-                                            closable={true}
-                                            color="green"
-                                            className="mb-1"
-                                            onClose={() => handleClose(index)}
-                                            key={item + index}
-                                        >
-                                            {item}
-                                        </Tag>
-                                    );
-                                }
-                                return (
-                                    <Tag
-                                        closable={true}
-                                        color="cyan"
-                                        className="mb-1"
-                                        onClose={() => handleClose(index)}
-                                    >
-                                        {item}
-                                    </Tag>
-                                );
-                            })
+                            topics.map((topic, index) => (
+                                <Option
+                                    key={topic.name + index}
+                                    value={topic.id}
+                                >
+                                    {topic.name}
+                                </Option>
+                            ))
                         }
-                    </div>
-                </section> */}
-                <Row gutter={8}>
-                    <Col span={12}>
-                        <Form.Item
-                            label="Financial Aid"
-                            name="financial_aid"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={4}>
-                        <Form.Item
-                            label="Cost"
-                            name="cost"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Input type="number" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={4}>
-                        <Form.Item
-                            label="Pay"
-                            name="pay"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Input type="number" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={4}>
-                        <Form.Item
-                            label="Credit"
-                            name="credit"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Input type="number" />
-                        </Form.Item>
-                    </Col>
-                </Row>
+                    </Select>
+                </Form.Item>
+            </Row>
+            <Row gutter={8}>
+                <Col span={12}>
+                    <Form.Item
+                        label="Financial Aid"
+                        name="financial_aid"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                    >
+                        <Input />
+                    </Form.Item>
+                </Col>
+                <Col span={4}>
+                    <Form.Item
+                        label="Cost"
+                        name="cost"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                    >
+                        <Input type="number" />
+                    </Form.Item>
+                </Col>
+                <Col span={4}>
+                    <Form.Item
+                        label="Pay"
+                        name="pay"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                    >
+                        <Input type="number" />
+                    </Form.Item>
+                </Col>
+                <Col span={4}>
+                    <Form.Item
+                        label="Credit"
+                        name="credit"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                    >
+                        <Input type="number" />
+                    </Form.Item>
+                </Col>
+            </Row>
+            <Col span={24}>
                 <Form.Item
                     label="News"
                     name="news"
@@ -254,6 +214,8 @@ const ProviderForm = React.forwardRef((props, ref) => {
                 >
                     <Input />
                 </Form.Item>
+            </Col>
+            <Col span={24}>
                 <Form.Item
                     label="Contact"
                     name="contact"
@@ -263,9 +225,9 @@ const ProviderForm = React.forwardRef((props, ref) => {
                 >
                     <Input />
                 </Form.Item>
-            </Form>
+            </Col>
         </Layout>
     );
-});
+}
 
 export default ProviderForm;

@@ -4,13 +4,12 @@ import { imported } from 'react-imported-component/macro';
 import { Layout, Button, Col } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
-import 'scss/antd-overrides.scss';
 import Sidebar from 'components/Sidebar';
 
 import ProviderStore from 'store/Provider';
 import TypeStore from 'store/Type';
 import TopicContainer from 'components/topic/TopicContainer';
-import axiosInstance from 'services/AxiosInstance';
+import 'scss/antd-overrides.scss';
 
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
 // const PathwayForm = imported(() => import('components/pathway/PathwayForm'));
@@ -24,10 +23,6 @@ const PathwaysTable = imported(() => import('components/pathway/PathwaysTable'))
 const { Content, Header } = Layout;
 
 class AdminDashboardPage extends Component {
-    constructor(props) {
-        super(props);
-        this.formRef = React.createRef();
-    }
     state = {
         isModalVisible: false,
         type: "providers"
@@ -64,39 +59,6 @@ class AdminDashboardPage extends Component {
         });
     };
 
-    submitProvider = async () => {
-        const values = this.formRef.current.getFieldsValue([
-            "name",
-            "location",
-            "type",
-            "learn_and_earn",
-            "is_public",
-            "industry",
-            "description",
-            "industry",
-            "financial_aid",
-            "credit",
-            "news",
-            "contact",
-            "pay",
-            "cost",
-            "topics"
-        ]);
-
-        const { name, location, learn_and_earn, is_public, type } = values;
-
-        console.log(values.topics);
-
-        if (
-            name && location && learn_and_earn && is_public && type
-        ) {
-            const response = await axiosInstance.post('providers', values);
-            console.log(response);
-        } else {
-            console.log('reject');
-        }
-    }
-
     render() {
         const { type } = this.state;
         let FormContent = null;
@@ -104,7 +66,7 @@ class AdminDashboardPage extends Component {
 
         if (type === "providers") {
             FormContent = (
-                <ProviderCreationContainer ref={this.formRef} />
+                <ProviderCreationContainer closeModal={this.handleCancel} />
             );
             HeaderContent = ProviderHeader;
         }
@@ -116,8 +78,6 @@ class AdminDashboardPage extends Component {
         // if (type === "pathways") {
         //     HeaderContent = <PathwayForm />;
         // }
-
-        console.log(this.formRef);
 
         return (
             <>
@@ -189,32 +149,17 @@ class AdminDashboardPage extends Component {
                         </Col>
                     </Layout>
                     <Modal
+                        className="custom-modal"
                         title={"New Provider"}
                         visible={this.state.isModalVisible}
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
-                        bodyStyle={{ backgroundColor: "#f0f2f5" }}
+                        bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
                         width={998}
-                        footer={[
-                            <Button
-                                key="submit"
-                                type="primary"
-                                htmlType="submit"
-                                onClick={() => this.submitProvider()}
-                            >
-                                Create
-                            </Button>,
-                            <Button
-                                key="back"
-                                onClick={this.handleCancel}
-                            >
-                                Close
-                            </Button>,
-                        ]}
+                        footer={true}
                     >
                         { FormContent }
                     </Modal>
-
                 </TypeStore.Provider>
             </>
         );

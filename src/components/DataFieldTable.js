@@ -39,9 +39,7 @@ export default function DataFieldTable({ data = [], store, loading, type = null,
             renderInputs: true,
             id: (
                 <Form.Item className="mb-0">
-                    <Input
-                        disabled
-                    />
+                    <Input disabled />
                 </Form.Item>
             ),
             name: (

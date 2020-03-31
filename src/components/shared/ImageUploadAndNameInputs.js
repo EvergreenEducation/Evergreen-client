@@ -69,7 +69,7 @@ class ImageUploadAndNameInputs extends Component {
             </>
         );
         return (
-            <Layout className="h-auto">
+            <Layout className="h-auto mb-6">
                 <Row>
                     <Col
                         span={7}

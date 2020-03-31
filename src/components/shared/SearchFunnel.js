@@ -38,17 +38,6 @@ function SearchFunnel(props) {
                     {title}
                 </span>
                 <Form.Item name="topics" className="w-full">
-                    {/* <AutoComplete
-                        mode="multiple"
-                        options={options}
-                        className="custom-search"
-                        onSelect={onSelect}
-                    >
-                        <Search
-                            onSearch={value => console.log(value)}
-                            enterButton
-                        />
-                    </AutoComplete> */}
                     <Select
                         className="w-full"
                         style={{ width: 100 }}
