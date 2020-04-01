@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ProviderForm from 'components/provider/ProviderForm';
 import { Table, Button, Form } from 'antd';
 import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
@@ -50,11 +50,13 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
     const [ form ] = Form.useForm();
     const store = useProviderDataFieldStore();
     const { datafield: datafieldStore, provider: providerStore } = store;
+    
     const { typeEqualsProvider, typeEqualsTopic } = datafieldStore;
 
-    const typeEntities = Object.values(datafieldStore.entities);
-    const types = typeEntities.filter(typeEqualsProvider);
-    const topics = typeEntities.filter(typeEqualsTopic);
+    const datafieldEntities = Object.values(datafieldStore.entities);
+
+    const types = datafieldEntities.filter(typeEqualsProvider);
+    const topics = datafieldEntities.filter(typeEqualsTopic);
     
     const submit = async () => {
         const values = form.getFieldsValue([
@@ -83,7 +85,7 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
             try {
                 const response = await axiosInstance.post('/providers', {
                     ...values,
-                    topics: JSON.stringify(values.topics),
+                    topics: values.topics,
                 });
 
                 if (response.status === 201) {
@@ -95,10 +97,6 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
             }
         }
     }
-
-    useEffect(() => {
-        
-    }, [providerStore]);
 
     return (
         <div>

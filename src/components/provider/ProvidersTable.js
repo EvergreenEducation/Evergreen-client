@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import { Table, Tag, Card, Button, Skeleton } from 'antd';
+import { Table, Tag, Card, Button } from 'antd';
 import { imported } from 'react-imported-component/macro';
 
-const ProviderUpdateModal = imported(() => import('components/provider/ProviderUpdateModal'), {
-    LoadingComponent: () => (<Skeleton className="p-6" paragraph={{ rows: 15 }} active/>),
-});
+const ProviderUpdateModal = imported(() => import('components/provider/ProviderUpdateModal'));
 
 function ProvidersTable({ data = [], topics, providerTypes, loading, store }) {
-    console.log(data);
     const [ modalVisibility, setModalVisibility ] = useState(false);
     const [ selectedProvider, setSelectedProvider ] = useState({});
     const columns = [

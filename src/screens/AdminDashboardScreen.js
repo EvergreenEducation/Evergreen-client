@@ -23,34 +23,32 @@ const PathwaysTable = imported(() => import('components/pathway/PathwaysTable'))
 const { Content, Header } = Layout;
 
 export default function AdminDashboardPage(props) {
+    const { pathname } = props.location;
     const [ modalVisibility, setModalVisibility ] = useState(false);
-    const [ view, setView ] = useState('providers');
+    
+    let HeaderContent = () => null;
+    let FormContent = () => null;
 
     const openModal = () => {
-        const { pathname } = props.location;
-
-        let type = 'providers';
-
-        if (pathname === '/admin/offers') {
-            type = 'offers';
-        }
-
-        if (pathname === '/admin/pathways') {
-            type = 'pathways';
-        }
-
         setModalVisibility(true);
-        setView(type);
     }
     
     const handleCancel = e => {
         setModalVisibility(false);
     };
 
-    let FormContent = null;
-    let HeaderContent = null;
 
-    if (view === 'providers') {
+    if (pathname === '/admin/offers') {
+        HeaderContent = () => null;
+        FormContent = () => null;
+    }
+
+    if (pathname === '/admin/pathways') {
+        HeaderContent = () => null;
+        FormContent = () => null;
+    }
+
+    if (pathname === '/admin/providers') {
         FormContent = (
             <ProviderCreationContainer
                 closeModal={handleCancel}
@@ -60,85 +58,76 @@ export default function AdminDashboardPage(props) {
     }
 
     return (
-        <>  
-            <DataFieldStore.Provider>
-                <ProviderStore.Provider>
-                    <Route
-                        exact
-                        path="/admin/"
-                    >
-                        <Redirect to="/admin/providers"/>
-                    </Route>
-                    <Layout
-                        className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
-                    >
-                        <Sidebar />
-                        <Col className="w-full">
-                            <Header className="px-6 bg-white h-12 flex items-center">
-                                <Col span={14}>
-                                    <Route
-                                        exact
-                                        path="/admin/providers"
-                                    >
-                                        <HeaderContent createHandler={openModal}/>
-                                    </Route>
-                                </Col>
-                                <Col span={10} className="flex justify-end">
-                                    <Button type="link">
-                                        <Link to="/auth">
-                                            <FontAwesomeIcon
-                                                className="text-black"
-                                                icon={faSignOutAlt}
-                                            />
-                                        </Link>
-                                    </Button>
-                                </Col>
-                            </Header>
-                            <Content className="p-6 h-min-full">
-                                <Route
-                                    exact
-                                    path="/admin/offers"
-                                >
-                                    <OffersTable />
-                                </Route>
-                                <Route
-                                    exact
-                                    path="/admin/pathways"
-                                >
-                                    <PathwaysTable />
-                                </Route>
-                                <Route
-                                    exact
-                                    path="/admin/providers"
-                                >
-                                    <ProviderContainer />
-                                </Route>
-                                <Route
-                                    exact
-                                    path="/admin/settings"
-                                >
-                                    <>
-                                        <ProviderTypeContainer />
-                                        <TopicContainer />
-                                    </>
-                                </Route>
-                            </Content>
-                        </Col>
-                    </Layout>
-                    <Modal
-                        className="custom-modal"
-                        title={"New Provider"}
-                        visible={modalVisibility}
-                        onCancel={handleCancel}
-                        bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
-                        width={998}
-                        footer={true}
-                        forceRender={true}
-                    >
-                        { FormContent }
-                    </Modal>
-                </ProviderStore.Provider>
-            </DataFieldStore.Provider>
-        </>
+        <DataFieldStore.Provider>
+            <ProviderStore.Provider>
+                <Route
+                    exact
+                    path="/admin/"
+                >
+                    <Redirect to="/admin/providers"/>
+                </Route>
+                <Layout
+                    className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
+                >
+                    <Sidebar />
+                    <Col className="w-full">
+                        <Header className="px-6 bg-white h-12 flex items-center">
+                            <Col span={14}>
+                                <HeaderContent createHandler={openModal} />
+                            </Col>
+                            <Col span={10} className="flex justify-end">
+                                <Button type="link">
+                                    <Link to="/auth">
+                                        <FontAwesomeIcon
+                                            className="text-black"
+                                            icon={faSignOutAlt}
+                                        />
+                                    </Link>
+                                </Button>
+                            </Col>
+                        </Header>
+                        <Content className="p-6 h-min-full">
+                            <Route
+                                exact
+                                path="/admin/offers"
+                            >
+                                <OffersTable />
+                            </Route>
+                            <Route
+                                exact
+                                path="/admin/pathways"
+                            >
+                                <PathwaysTable />
+                            </Route>
+                            <Route
+                                exact
+                                path="/admin/providers"
+                            >
+                                <ProviderContainer />
+                            </Route>
+                            <Route
+                                exact
+                                path="/admin/settings"
+                            >
+                                <ProviderTypeContainer />
+                                <TopicContainer />
+                            </Route>
+                        </Content>
+                    </Col>
+                </Layout>
+                <Modal
+                    className="custom-modal"
+                    title={"New Provider"}
+                    visible={modalVisibility}
+                    onCancel={handleCancel}
+                    bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
+                    width={998}
+                    footer={true}
+                    forceRender={true}
+                >
+                    { FormContent }
+                </Modal>
+            </ProviderStore.Provider>
+        </DataFieldStore.Provider>
     );
 }

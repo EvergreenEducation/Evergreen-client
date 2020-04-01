@@ -7,10 +7,6 @@ const { Option } = Select;
 const ProviderForm = (props) => {
     const { types, topics = [] } = props;
 
-    const handleChange = (results) => {
-        console.log(results);
-    }
-
     return (
         <Layout>
             <ImageUploadAndNameInputs className="mb-2">
@@ -150,7 +146,6 @@ const ProviderForm = (props) => {
                         showSearch
                         className="w-full"
                         mode="multiple"
-                        onChange={handleChange}
                     >
                         {
                             topics.map((topic, index) => (

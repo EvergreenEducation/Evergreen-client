@@ -20,8 +20,10 @@ export default function ProviderContainer() {
   const { typeEqualsProvider, typeEqualsTopic } = datafieldStore;
 
   const [{ data: providers = {} }] = useAxios(
-    '/providers'
+    '/providers?scope=with_datafields'
   );
+
+  console.log(providers);
 
   const [{ data: datafields = {} }] = useAxios(
     '/datafields?type=provider&type=topic'
