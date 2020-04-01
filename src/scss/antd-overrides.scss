@@ -11,3 +11,9 @@
     width: 16rem;
     height: 12rem;
 }
+
+.custom-modal {
+    .ant-modal-footer {
+        border-top: 0;
+    }
+}

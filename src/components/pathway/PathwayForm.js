@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
-import { SearchFunnel, ImageUploadAndNameInputs } from 'components/shared';
 import TitleDivider from 'components/TitleDivider';
+import { ImageUploadAndNameInputs } from 'components/shared';
 
 const { Option } = Select;
 
@@ -66,9 +66,6 @@ const PathwayForm = React.forwardRef((props, ref) => {
                     </Col>
                 </Row>
                 <TitleDivider title={"Pathway Offers Groups"} />
-                <SearchFunnel
-                    title={"Topics"}
-                />
                 <Row gutter={8}>
                     <Col span={6}>
                         <Form.Item

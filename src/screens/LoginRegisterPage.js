@@ -28,10 +28,6 @@ function PlaceholderFields() {
     );
 }
 
-function callback(key) {
-    console.log(key);
-}
-
 function LoginRegisterPage() {
     return (
         <div className="w-screen h-screen flex justify-center items-center bg-green-500">
@@ -40,7 +36,6 @@ function LoginRegisterPage() {
                     <Header className="bg-gray-100">
                         <Tabs
                             defaultActiveKey="2"
-                            onChange={callback}
                         >
                             <TabPane tab="Student" key="1" />
                             <TabPane tab="Admin" key="2" />

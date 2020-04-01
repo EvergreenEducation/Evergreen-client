@@ -1,32 +1,57 @@
-import React, { useEffect} from "react";
-import ProvidersTable from './ProvidersTable';
-import ProviderStore from 'store/Provider';
+import React, { useEffect, useState } from 'react';
 import axiosInstance from 'services/AxiosInstance';
-
-import useAxios, { configure } from 'axios-hooks'
+import useAxios, { configure } from 'axios-hooks';
+import { Card } from 'antd';
+import { imported } from 'react-imported-component/macro';
+import { ProvidersTable, useProviderDataFieldStore } from 'components/provider';
+const ProviderUpdateModal = imported(() => import('components/provider/ProviderUpdateModal'));
 
 configure({
   axios: axiosInstance
 })
 
 export default function ProviderContainer() {
-    const store = ProviderStore.useContainer();
-    const { entities } = store;
-    
-    const tableData = Object.values(entities);
+  const [ modalVisibility, setModalVisibility ] = useState(false);
+  const [ selectedProvider, setSelectedProvider ] = useState({});
+  const store = useProviderDataFieldStore();
+  const { datafield, provider } = store;
 
-    const [{ data = [], loading, error }] = useAxios(
-      '/providers'
-    );
+  const [{ data = {}, loading }] = useAxios(
+    '/providers?scope=with_datafields'
+  );
 
-    useEffect(() => {
-      store.addAll(data); // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data]);
+  const [{ data: datafieldsData = {}, loading: loadingDataFields }] = useAxios(
+    '/datafields?type=provider&type=topic'
+  );
 
-    return (
-      <ProvidersTable 
-        data={tableData}
+  const openAndPopulateUpdateModal = (provider) => {
+    setSelectedProvider(provider);
+    setModalVisibility(true);
+  }
+
+  useEffect(() => {
+    provider.addMany(data);
+    datafield.addMany(datafieldsData);
+  }, [data, datafieldsData]);
+
+  const entities = Object.values(provider.entities);
+
+  return (
+    <Card className="shadow-md rounded-md">
+      <ProvidersTable
+          data={entities}
+          store={store}
+          loading={loading && loadingDataFields}
+          datafields={Object.values(datafield.entities)}
+          handleUpdateModal={openAndPopulateUpdateModal}
       />
-    ) 
-
+      <ProviderUpdateModal
+        datafields={Object.values(datafield.entities)}
+        provider={selectedProvider}
+        visible={modalVisibility}
+        onCancel={() => setModalVisibility(false)}
+        store={store}
+      />
+    </Card>
+  ); 
 }

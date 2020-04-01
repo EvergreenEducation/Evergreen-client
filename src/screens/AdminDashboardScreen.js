@@ -1,96 +1,81 @@
-import React, { Component } from 'react';
-import { Link, Route } from 'react-router-dom';
-import importedComponent from 'react-imported-component';
-import { Layout, Button, Col, Row, Input } from 'antd';
+import React, { useState } from 'react';
+import { Link, Route, Redirect } from 'react-router-dom';
+import { imported } from 'react-imported-component/macro';
+import { Layout, Button, Col, Skeleton } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlusCircle, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
-import 'scss/antd-overrides.scss';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import Sidebar from 'components/Sidebar';
 
 import ProviderStore from 'store/Provider';
+import DataFieldStore from 'store/DataField';
+import TopicContainer from 'components/topic/TopicContainer';
+import 'scss/antd-overrides.scss';
 
-const PathwayForm = importedComponent(() => import('components/pathway/PathwayForm'));
-const Modal = importedComponent(() => import('antd/lib/modal'))
-const ProviderCreationContainer = importedComponent(() => import('components/provider/ProviderCreationContainer'));
-const ProviderContainer = importedComponent(() => import('components/provider/ProviderContainer'));
-const ProviderHeader = importedComponent(() => import('components/provider/ProviderHeader'));
-const OfferCreationScreen = importedComponent(() => import('components/offer/OfferCreationScreen'));
-const OffersTable = importedComponent(() => import('components/offer/OffersTable'));
-const PathwaysTable = importedComponent(() => import('components/pathway/PathwaysTable'));
+const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
+const ProviderCreationContainer = imported(() => import('components/provider/ProviderCreationContainer'), {
+    LoadingComponent: () => (<Skeleton className="p-6" paragraph={{ rows: 15 }} active/>),
+});
+const Modal = imported(() => import('antd/lib/modal'));
+const ProviderContainer = imported(() => import('components/provider/ProviderContainer'));
+const ProviderHeader = imported(() => import('components/provider/ProviderHeader'));
+const OffersTable = imported(() => import('components/offer/OffersTable'));
+const PathwaysTable = imported(() => import('components/pathway/PathwaysTable'));
 const { Content, Header } = Layout;
-const { Search } = Input;
 
-class AdminDashboardPage extends Component {
-    state = {
-        isModalVisible: false,
-        formType: "providers"
-    }
-
-    openModal = () => {
-        console.log(this.props.location.pathname);
-
-        const { pathname } = this.props.location;
-
-        let formType = "providers";
-
-        if (pathname === "/admin/offers") {
-            formType = "offers";
-        }
-
-        if (pathname === "/admin/pathways") {
-            formType = "pathways";
-        }
-
-        this.setState({
-            isModalVisible: true,
-            formType
-        })
-    }
-
-    handleOk = e => {
-        this.setState({
-          isModalVisible: false
-        });
-    };
+export default function AdminDashboardPage(props) {
+    const { pathname } = props.location;
+    const [ modalVisibility, setModalVisibility ] = useState(false);
     
-    handleCancel = e => {
-        this.setState({
-            isModalVisible: false
-        });
+    let HeaderContent = () => null;
+    let FormContent = () => null;
+
+    const openModal = () => {
+        setModalVisibility(true);
+    }
+    
+    const handleCancel = e => {
+        setModalVisibility(false);
     };
 
-    componentDidMount() {
-        this.props.history.push('/admin/providers');
+
+    if (pathname === '/admin/offers') {
+        HeaderContent = () => null;
+        FormContent = () => null;
     }
 
-    render() {
-        const { formType } = this.state;
-        let FormScreen = null;
-        let HeaderContent = null;
+    if (pathname === '/admin/pathways') {
+        HeaderContent = () => null;
+        FormContent = () => null;
+    }
 
-        if (formType === "providers") {
-            FormScreen = <ProviderCreationContainer />;
-            HeaderContent = ProviderHeader;
-        }
+    if (pathname === '/admin/providers') {
+        FormContent = (
+            <ProviderCreationContainer
+                closeModal={handleCancel}
+            />
+        );
+        HeaderContent = ProviderHeader;
+    }
 
-        if (formType === "offers") {
-            HeaderContent = <OfferCreationScreen />;
-        }
-
-        if (formType === "pathways") {
-            HeaderContent = <PathwayForm />;
-        }
-
-        return (
-            <>
-                <Layout className="w-full h-min-full flex flex-row bg-gray-300">
+    return (
+        <DataFieldStore.Provider>
+            <ProviderStore.Provider>
+                <Route
+                    exact
+                    path="/admin/"
+                >
+                    <Redirect to="/admin/providers"/>
+                </Route>
+                <Layout
+                    className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
+                >
                     <Sidebar />
                     <Col className="w-full">
                         <Header className="px-6 bg-white h-12 flex items-center">
-                            <Col span={12}>
-                                <HeaderContent createHandler={this.openModal}/>
+                            <Col span={14}>
+                                <HeaderContent createHandler={openModal} />
                             </Col>
-                            <Col span={12} className="flex justify-end">
+                            <Col span={10} className="flex justify-end">
                                 <Button type="link">
                                     <Link to="/auth">
                                         <FontAwesomeIcon
@@ -104,55 +89,45 @@ class AdminDashboardPage extends Component {
                         <Content className="p-6 h-min-full">
                             <Route
                                 exact
-                                path="/admin/providers"
-                                render={() => (
-                                    <ProviderStore.Provider>
-                                      <ProviderContainer />
-                                    </ProviderStore.Provider>
-                                  )
-                                }
-                            />
-                            <Route
-                                exact
                                 path="/admin/offers"
-                                render={() => <OffersTable />}
-                            />
+                            >
+                                <OffersTable />
+                            </Route>
                             <Route
                                 exact
                                 path="/admin/pathways"
-                                render={() => <PathwaysTable />}
-                            />
+                            >
+                                <PathwaysTable />
+                            </Route>
+                            <Route
+                                exact
+                                path="/admin/providers"
+                            >
+                                <ProviderContainer />
+                            </Route>
+                            <Route
+                                exact
+                                path="/admin/settings"
+                            >
+                                <ProviderTypeContainer />
+                                <TopicContainer />
+                            </Route>
                         </Content>
                     </Col>
                 </Layout>
                 <Modal
+                    className="custom-modal"
                     title={"New Provider"}
-                    visible={this.state.isModalVisible}
-                    onOk={this.handleOk}
-                    onCancel={this.handleCancel}
-                    bodyStyle={{ backgroundColor: "#f0f2f5" }}
+                    visible={modalVisibility}
+                    onCancel={handleCancel}
+                    bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
                     width={998}
-                    footer={[
-                        <Button
-                            key="submit"
-                            type="primary"
-                            onClick={this.getFormData}
-                        >
-                          Create
-                        </Button>,
-                        <Button
-                            key="back"
-                            onClick={this.handleCancel}
-                        >
-                          Close
-                        </Button>,
-                    ]}
+                    footer={true}
+                    forceRender={true}
                 >
-                    { FormScreen }
+                    { FormContent }
                 </Modal>
-            </>
-        );
-    }
+            </ProviderStore.Provider>
+        </DataFieldStore.Provider>
+    );
 }
-
-export default AdminDashboardPage;

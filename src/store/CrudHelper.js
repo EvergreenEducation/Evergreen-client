@@ -10,7 +10,6 @@ export default (currentState, setState) => {
     setState(currentState => {
       let idKey = currentState.idKey;
       let newItems = keyBy(payload, idKey);
-
       return {
         ...currentState,
         entities: {
@@ -30,6 +29,22 @@ export default (currentState, setState) => {
       }
 
       delete newEntities[payload[idKey]];
+
+      return {
+        ...currentState,
+        entities: newEntities,
+        items: Object.keys(newEntities)
+      }
+    });
+  }
+
+  const removeOneByIdKey = (idKey) => {
+    setState(currentState => {
+      let newEntities = {
+        ...currentState.entities,
+      }
+
+      delete newEntities[idKey];
 
       return {
         ...currentState,
@@ -66,6 +81,7 @@ export default (currentState, setState) => {
     addMany, 
     addAll, 
     updateMany: addMany, 
-    updateOne: addOne
+    updateOne: addOne,
+    removeOneByIdKey
   }
 }

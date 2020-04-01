@@ -7,10 +7,9 @@ const { Search } = Input;
 
 export default function ProviderHeader({ onSearch, createHandler }) {
   return (
-    <Row className="items-center">
+    <Row className="items-center flex-no-wrap">
       <h2 className="mr-2">PROVIDERS</h2>
       <Search
-        onSearch={value => console.log(value)}
         enterButton
         className="w-56 h-8 custom-search mr-2"
       />

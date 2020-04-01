@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Layout, Row, Col, Input, Form, Upload } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
-import importedComponent from 'react-imported-component';
+import { imported } from 'react-imported-component/macro';
 
-const Skeleton = importedComponent(() => import('antd/lib/skeleton'));
+const Skeleton = imported(() => import('antd/lib/skeleton'));
 
 function getBase64(image, callback) {
     const reader = new FileReader();
@@ -12,10 +12,7 @@ function getBase64(image, callback) {
     reader.readAsDataURL(image);
 }
 
-function handleBeforeUpload(file) {
-    // console.log(file);
-}
-
+function handleBeforeUpload(file) {}
 
 class ImageUploadAndNameInputs extends Component {
     state = {
@@ -29,7 +26,6 @@ class ImageUploadAndNameInputs extends Component {
             return;
         }
         const { status } = info.file;
-        console.log(this);
         if (status === 'uploading') {
             this.setState({ loading: true })
         }
@@ -70,7 +66,7 @@ class ImageUploadAndNameInputs extends Component {
             </>
         );
         return (
-            <Layout className="h-auto">
+            <Layout className="h-auto mb-6">
                 <Row>
                     <Col
                         span={7}
@@ -105,6 +101,7 @@ class ImageUploadAndNameInputs extends Component {
                             labelAlign={"left"}
                             colon={false}
                             className="mb-0"
+                            rules={[{ required: true, message: "Please enter a provider name" }]}
                         >
                             <Input />
                         </Form.Item>

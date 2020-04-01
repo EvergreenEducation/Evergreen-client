@@ -1,8 +1,10 @@
 {
     "presets": [
-        "react-app"
+        "react-app",
+        ["@babel/env", { "targets": { "node": 6 } }]
     ],
     "plugins": [
+        "lodash",
         [
             "react-hot-loader/babel",
             {
@@ -17,6 +19,7 @@
                 "style": true
             },
             "antd"
-        ]
+        ],
+        "ramda"
     ]
 }

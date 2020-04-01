@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Form, Input, Row, Col, Select, AutoComplete, Button, DatePicker } from 'antd';
-import { SearchFunnel, ImageUploadAndNameInputs } from 'components/shared';
+import { ImageUploadAndNameInputs } from 'components/shared';
 
 const { Option } = Select;
 
@@ -88,15 +88,6 @@ const OfferForm = React.forwardRef((props, ref) => {
                 >
                     <Input.TextArea rows={4} />
                 </Form.Item>
-                <SearchFunnel
-                    title={"Related Offers"}
-                />
-                <SearchFunnel
-                    title={"Pre-requisites"}
-                />
-                <SearchFunnel
-                    title={"Topics"}
-                />
                 <Row gutter={8}>
                     <Col span={6}>
                         <Form.Item

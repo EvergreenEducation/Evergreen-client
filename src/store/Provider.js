@@ -1,6 +1,6 @@
-import { useState } from "react"
-import CrudHelper from "./CrudHelper";
-import { createContainer } from "unstated-next"
+import { useState } from 'react'
+import CrudHelper from './CrudHelper';
+import { createContainer } from 'unstated-next'
 
 const initialState = {
   idKey: 'id',
@@ -18,6 +18,4 @@ function useProvider() {
   }
 }
 
-export default createContainer(useProvider)
-
-
+export default createContainer(useProvider);
