@@ -1,11 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Layout, Form, Input, Row, Col, Select } from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
+import { groupBy, isNil } from 'lodash';
 
 const { Option } = Select;
 
 const ProviderForm = (props) => {
-    const { types, topics = [] } = props;
+    const { datafields = [] } = props;
+
+    useEffect(() => {}, [props.datafields]);
+    
+    const groupedDataFields = groupBy(datafields, 'type') || [];
+    let { topic = [], provider = [] } = groupedDataFields;
+
+    let providerTypeOptions = null;
+
+    if (!isNil(provider) && provider.length) {
+        providerTypeOptions = provider.map(({ name, id }, index) => {
+        return(
+            <Option
+                value={id}
+                key={index.toString()}
+            >
+                {name}
+            </Option>
+        )});
+    }
+
+    let topicOptions = null;
+
+    if (!isNil(topic) && topic.length) {
+        topicOptions = topic.map(({ name, id }, index) => (
+            <Option
+                value={id}
+                key={index.toString()}
+            >
+                {name}
+            </Option>
+        ));
+    }
 
     return (
         <Layout>
@@ -33,19 +66,7 @@ const ProviderForm = (props) => {
                             rules={[{ required: true, message: "Please select a type" }]}
                         >
                             <Select name="type">
-                                {
-                                    types.map((item, index) => {
-                                        const { name, id } = item;
-                                        return (
-                                            <Option
-                                                key={name + index}
-                                                value={id}
-                                            >
-                                                {name}
-                                            </Option>
-                                        )
-                                    })
-                                }
+                                {providerTypeOptions}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -147,16 +168,7 @@ const ProviderForm = (props) => {
                         className="w-full"
                         mode="multiple"
                     >
-                        {
-                            topics.map((topic, index) => (
-                                <Option
-                                    key={topic.name + index}
-                                    value={topic.id}
-                                >
-                                    {topic.name}
-                                </Option>
-                            ))
-                        }
+                        {topicOptions}
                     </Select>
                 </Form.Item>
             </Row>

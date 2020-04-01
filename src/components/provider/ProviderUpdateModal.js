@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Modal, Form, Table, Button } from 'antd';
 import ProviderForm from 'components/provider/ProviderForm';
 import axiosInstance from 'services/AxiosInstance';
-import { isNil } from 'lodash';
+import { isNil, groupBy } from 'lodash';
 import { configure } from 'axios-hooks';
 import ProviderStore from 'store/Provider';
 import 'scss/antd-overrides.scss';
@@ -48,27 +48,39 @@ const pathwayColumns = [
 ];
 
 export default function ProviderUpdateModal(props) {
-    const { provider, types, topics, onCancel, visible } = props;
     const [ form ] = Form.useForm();
     const formRef = React.createRef();
+    const { provider, onCancel, visible, datafields } = props;
+
+    const groupedDataFields = groupBy(provider.DataFields, 'type') || [];
+    let providerType = null;
+    if (groupedDataFields.provider && groupedDataFields.provider.length) {
+        providerType = groupedDataFields.provider[0].id
+    }
+
+    let topics = [];
+
+    if (!isNil(groupedDataFields.topic)) {
+        topics = groupedDataFields.topic.reduce((acc, curr, index) => {
+            if (isNil(acc)) {
+                return [];
+            }
+            acc.push(curr.id);
+            return acc;
+        }, []);
+    }
 
     const providerStore = ProviderStore.useContainer();
     
-    let setTopics = [];
-
-    if (provider.topics) {
-        setTopics = JSON.parse(provider.topics);
-    }
-    
-    function populateFields(p, ref) {    
+    function populateFields(p, ref) {
         ref.current.setFieldsValue({
             name: p.name,
-            type: p.type,
+            type: providerType,
             learn_and_earn: p.learn_and_earn,
             industry: p.industry,
             location: p.location,
             description: p.description,
-            topics: setTopics,
+            topics: topics,
             cost: p.cost,
             pay: p.pay,
             credit: p.credit,
@@ -83,7 +95,7 @@ export default function ProviderUpdateModal(props) {
         if (formRef.current) {
             populateFields(provider, formRef);
         }
-    }, [form, provider]);
+    }, [props, form, provider]);
 
     const submitUpdate = async () => {
         const values = form.getFieldsValue([
@@ -112,7 +124,7 @@ export default function ProviderUpdateModal(props) {
             try {
                 const response = await axiosInstance.put(`/providers/${provider.id}`, {
                     ...values,
-                    topics: JSON.stringify(values.topics) || [],
+                    topics: values.topics,
                 });
 
                 if (response.status === 200) {
@@ -136,15 +148,10 @@ export default function ProviderUpdateModal(props) {
             footer={true}
             onCancel={onCancel}
         >
-            <Form
-                ref={formRef}
-                form={form}
-                name="updateProviderForm"
-            >
+            <Form form={form}>
                 <div className="p-6">
                     <ProviderForm
-                        types={types}
-                        topics={topics}
+                        datafields={datafields}
                     />
                     <section className="mt-2">
                         <label className="mb-2 block">
@@ -176,6 +183,7 @@ export default function ProviderUpdateModal(props) {
                         type="primary"
                         htmlType="submit"
                         onClick={() => submitUpdate()}
+                        disabled
                     >
                         Update
                     </Button>

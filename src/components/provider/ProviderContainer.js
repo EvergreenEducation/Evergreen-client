@@ -1,54 +1,57 @@
-import React, { useEffect } from 'react';
-import ProvidersTable from './ProvidersTable';
+import React, { useEffect, useState } from 'react';
 import axiosInstance from 'services/AxiosInstance';
-import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
-import { keyBy } from 'lodash';
-
 import useAxios, { configure } from 'axios-hooks';
+import { Card } from 'antd';
+import { imported } from 'react-imported-component/macro';
+import { ProvidersTable, useProviderDataFieldStore } from 'components/provider';
+const ProviderUpdateModal = imported(() => import('components/provider/ProviderUpdateModal'));
 
 configure({
   axios: axiosInstance
 })
 
 export default function ProviderContainer() {
+  const [ modalVisibility, setModalVisibility ] = useState(false);
+  const [ selectedProvider, setSelectedProvider ] = useState({});
   const store = useProviderDataFieldStore();
-  const {
-    datafield: datafieldStore,
-    provider: providerStore,
-  } = store;
+  const { datafield, provider } = store;
 
-  const { typeEqualsProvider, typeEqualsTopic } = datafieldStore;
-
-  const [{ data: providers = {} }] = useAxios(
+  const [{ data = {}, loading }] = useAxios(
     '/providers?scope=with_datafields'
   );
 
-  console.log(providers);
-
-  const [{ data: datafields = {} }] = useAxios(
+  const [{ data: datafieldsData = {}, loading: loadingDataFields }] = useAxios(
     '/datafields?type=provider&type=topic'
   );
 
+  const openAndPopulateUpdateModal = (provider) => {
+    setSelectedProvider(provider);
+    setModalVisibility(true);
+  }
+
   useEffect(() => {
-    providerStore.addMany(providers);
-    datafieldStore.addMany(datafields);
-  }, [providers, datafields]);
+    provider.addMany(data);
+    datafield.addMany(datafieldsData);
+  }, [data, datafieldsData]);
 
-  const tableData = Object.values(providerStore.entities);
-  const datafieldsData = Object.values(datafieldStore.entities);
-
-  let topics = datafieldsData.filter(typeEqualsTopic);
-    topics = keyBy(topics, 'id');
-
-  let providerTypes = datafieldsData.filter(typeEqualsProvider);
-    providerTypes = keyBy(providerTypes, 'id');
+  const entities = Object.values(provider.entities);
 
   return (
-    <ProvidersTable 
-        data={tableData}
-        topics={topics}
-        providerTypes={providerTypes}
+    <Card className="shadow-md rounded-md">
+      <ProvidersTable
+          data={entities}
+          store={store}
+          loading={loading && loadingDataFields}
+          datafields={Object.values(datafield.entities)}
+          handleUpdateModal={openAndPopulateUpdateModal}
+      />
+      <ProviderUpdateModal
+        datafields={Object.values(datafield.entities)}
+        provider={selectedProvider}
+        visible={modalVisibility}
+        onCancel={() => setModalVisibility(false)}
         store={store}
-    />
+      />
+    </Card>
   ); 
 }

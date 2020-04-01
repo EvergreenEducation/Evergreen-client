@@ -51,13 +51,6 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
     const store = useProviderDataFieldStore();
     const { datafield: datafieldStore, provider: providerStore } = store;
     
-    const { typeEqualsProvider, typeEqualsTopic } = datafieldStore;
-
-    const datafieldEntities = Object.values(datafieldStore.entities);
-
-    const types = datafieldEntities.filter(typeEqualsProvider);
-    const topics = datafieldEntities.filter(typeEqualsTopic);
-    
     const submit = async () => {
         const values = form.getFieldsValue([
             "name",
@@ -98,6 +91,7 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
         }
     }
 
+
     return (
         <div>
             <Form
@@ -106,8 +100,7 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
             >
                 <div className="p-6">
                     <ProviderForm
-                        types={types}
-                        topics={topics}
+                        datafields={Object.values(datafieldStore.entities)}
                     />
                     <section className="mt-2">
                         <label className="mb-2 block">

@@ -12,10 +12,7 @@ function getBase64(image, callback) {
     reader.readAsDataURL(image);
 }
 
-function handleBeforeUpload(file) {
-    // console.log(file);
-}
-
+function handleBeforeUpload(file) {}
 
 class ImageUploadAndNameInputs extends Component {
     state = {

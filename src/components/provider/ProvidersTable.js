@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { Table, Tag, Card, Button } from 'antd';
 import { imported } from 'react-imported-component/macro';
+import { find, matchesProperty, isNil } from 'lodash';
 
-const ProviderUpdateModal = imported(() => import('components/provider/ProviderUpdateModal'));
-
-function ProvidersTable({ data = [], topics, providerTypes, loading, store }) {
-    const [ modalVisibility, setModalVisibility ] = useState(false);
-    const [ selectedProvider, setSelectedProvider ] = useState({});
+function ProvidersTable({ data = [], loading, handleUpdateModal }) {
     const columns = [
         {
             title: 'Name',
@@ -25,29 +22,25 @@ function ProvidersTable({ data = [], topics, providerTypes, loading, store }) {
         },
         {
             title: 'Topics',
-            dataIndex: 'topics',
-            key: 'topics',
-            render: topicIds => {
-                if (!topicIds) {
-                    return null;
-                }
-                topicIds = JSON.parse(topicIds);
+            dataIndex: 'DataFields',
+            key: 'DataFields',
+            render: (datafields) => {
                 return (
                     <>
                         {
-                            topicIds.map((id, index) => {
-                                if (topics[id]) {
-                                    return (
-                                        <Tag
-                                            color={index % 2 ? "blue" : "orange"}
-                                            key={id}
-                                        >
-                                            {topics[id].name}
-                                        </Tag>
-                                    );
+                            datafields.map((datafield, index) => {
+                                if (datafield.type !== 'topic') {
+                                    return null;
                                 }
-                                return null;
-                            })
+                                return (
+                                    <Tag
+                                        color={index % 2 ? "blue" : "orange"}
+                                        key={datafield.id}
+                                    >
+                                        { datafield.name }
+                                    </Tag>
+                                );
+                            }) || null
                         }
                     </>
                 );
@@ -55,16 +48,14 @@ function ProvidersTable({ data = [], topics, providerTypes, loading, store }) {
         },
         {
             title: 'Type',
-            dataIndex: 'type',
-            key: 'type',
-            render: id => {
-                if (!id) {
+            dataIndex: 'DataFields',
+            key: 'DataFields',
+            render: (datafields = []) => {
+                const datafield = find(datafields, matchesProperty('type', 'provider'));
+                if (isNil(datafield)) {
                     return null;
                 }
-                if (providerTypes[id]) {
-                    return providerTypes[id].name;
-                }
-                return null;
+                return datafield.name;
             }
         },
         {
@@ -75,10 +66,7 @@ function ProvidersTable({ data = [], topics, providerTypes, loading, store }) {
                 return (
                     <Button
                         type="link"
-                        onClick={() => {
-                            setSelectedProvider(record);
-                            setModalVisibility(true);
-                        }}
+                        onClick={() => handleUpdateModal(record)}
                     >
                         Update
                     </Button>
@@ -88,23 +76,13 @@ function ProvidersTable({ data = [], topics, providerTypes, loading, store }) {
     ];
 
     return (
-        <Card className="shadow-md rounded-md">
-            <Table
-                loading={loading}
-                pagination={{ pageSize: 10 }}
-                rowKey="id"
-                columns={columns}
-                dataSource={data}
-            />
-            <ProviderUpdateModal
-                provider={selectedProvider}
-                visible={modalVisibility}
-                topics={Object.values(topics)}
-                types={Object.values(providerTypes)}
-                onCancel={() => setModalVisibility(false)}
-                store={store}
-            />
-        </Card>
+        <Table
+            loading={loading}
+            pagination={{ pageSize: 10 }}
+            rowKey="id"
+            columns={columns}
+            dataSource={data}
+        />
     );
 }
 
