@@ -41,7 +41,7 @@ class App extends Component {
               <Result
                 status="500"
                 title="500"
-                subTitle="Something went wrong with our server, come back later."
+                subTitle={"Either our server's asleep or something went wrong with it. Check back again later."}
                 extra={
                   <Button
                     className="rounded"
