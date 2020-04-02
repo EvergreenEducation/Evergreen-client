@@ -3,6 +3,7 @@ import { Layout, Row, Col, Input, Form, Upload } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 import { imported } from 'react-imported-component/macro';
+import 'scss/antd-overrides.scss';
 
 const Skeleton = imported(() => import('antd/lib/skeleton'));
 
@@ -67,14 +68,14 @@ class ImageUploadAndNameInputs extends Component {
         );
         return (
             <Layout className="h-auto mb-6">
-                <Row>
+                <Row gutter={8}>
                     <Col
                         span={7}
                         className="h-48"
                     >
-                        <Form.Item>
+                        <Form.Item className="w-full h-full form-item-control-input-h-full-w-full">
                             <Upload
-                                className="custom-antd-upload"
+                                className="custom-ant-upload"
                                 name="file"
                                 listType="picture-card"
                                 showUploadList={false}
@@ -103,7 +104,7 @@ class ImageUploadAndNameInputs extends Component {
                             className="mb-0"
                             rules={[{ required: true, message: "Please enter a provider name" }]}
                         >
-                            <Input />
+                            <Input className="rounded" />
                         </Form.Item>
                         {this.props.children}
                     </Col>

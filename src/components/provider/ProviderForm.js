@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Layout, Form, Input, Row, Col, Select } from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
 import { groupBy, isNil } from 'lodash';
+import 'scss/antd-overrides.scss';
 
 const { Option } = Select;
 
@@ -53,7 +54,10 @@ const ProviderForm = (props) => {
                             className="mb-0 inherit"
                             rules={[{ required: true, message: "Please enter a location" }]}
                         >
-                            <Input />
+                            <Input
+                                name="location"
+                                className="rounded"
+                            />
                         </Form.Item>
                     </Col>
                     <Col span={6}>
@@ -65,7 +69,10 @@ const ProviderForm = (props) => {
                             className="mb-0 inherit"
                             rules={[{ required: true, message: "Please select a type" }]}
                         >
-                            <Select name="type">
+                            <Select
+                                name="type"
+                                className="rounded custom-select"
+                            >
                                 {providerTypeOptions}
                             </Select>
                         </Form.Item>
@@ -81,7 +88,10 @@ const ProviderForm = (props) => {
                             className="mb-0 inherit"
                             rules={[{ required: true, message: "Please select an option" }]}
                         >
-                            <Select name="learn_and_earn">
+                            <Select
+                                name="learn_and_earn"
+                                className="custom-select"
+                            >
                                 <Option value="learn">Learn</Option>
                                 <Option value="earn">Earn</Option>
                                 <Option value="both">Learn and Earn</Option>
@@ -97,7 +107,10 @@ const ProviderForm = (props) => {
                             className="mb-0 inherit"
                             rules={[{ required: true, message: "Please select an option" }]}
                         >
-                            <Select name="is_public">
+                            <Select
+                                name="is_public"
+                                className="custom-select"
+                            >
                                 <Option value={true}>Public</Option>
                                 <Option value={false}>Private</Option>
                             </Select>
@@ -111,7 +124,10 @@ const ProviderForm = (props) => {
                             colon={false}
                             className="mb-0 inherit"
                         >
-                            <Input />
+                            <Input
+                                name="industry"
+                                className="rounded"
+                            />
                         </Form.Item>
                     </Col>
                 </Row>
@@ -124,7 +140,7 @@ const ProviderForm = (props) => {
                     colon={false}
                     className="mb-0 inherit"
                 >
-                    <Input />
+                    <Input className="rounded" />
                 </Form.Item>
             </Col>
             <Col span={24}>
@@ -135,7 +151,7 @@ const ProviderForm = (props) => {
                     colon={false}
                     className="mb-0 inherit"
                 >
-                    <Input />
+                    <Input className="rounded" />
                 </Form.Item>
             </Col>
             <Row className="items-center mt-2 mb-0">
@@ -149,7 +165,7 @@ const ProviderForm = (props) => {
                     name="Related Provider Images"
                     className="w-full"
                 >
-                    <Input />
+                    <Input  className="rounded" />
                 </Form.Item>
             </Row>
             <Row className="items-center mb-0">
@@ -165,7 +181,7 @@ const ProviderForm = (props) => {
                 >
                     <Select
                         showSearch
-                        className="w-full"
+                        className="w-full custom-select"
                         mode="multiple"
                     >
                         {topicOptions}
@@ -181,7 +197,7 @@ const ProviderForm = (props) => {
                         colon={false}
                         className="mb-0 inherit"
                     >
-                        <Input />
+                        <Input className="rounded" />
                     </Form.Item>
                 </Col>
                 <Col span={4}>
@@ -195,6 +211,7 @@ const ProviderForm = (props) => {
                         <Input
                             type="number"
                             addonBefore="$"
+                            className="custom-ant-input-wrapper"
                         />
                     </Form.Item>
                 </Col>
@@ -209,6 +226,7 @@ const ProviderForm = (props) => {
                         <Input
                             type="number"
                             addonBefore="$"
+                            className="custom-ant-input-wrapper"
                         />
                     </Form.Item>
                 </Col>
@@ -223,6 +241,7 @@ const ProviderForm = (props) => {
                         <Input
                             type="number"
                             addonBefore="$"
+                            className="custom-ant-input-wrapper"
                         />
                     </Form.Item>
                 </Col>
@@ -235,7 +254,7 @@ const ProviderForm = (props) => {
                     colon={false}
                     className="mb-0 inherit"
                 >
-                    <Input />
+                    <Input className="rounded" />
                 </Form.Item>
             </Col>
             <Col span={24}>
@@ -246,7 +265,7 @@ const ProviderForm = (props) => {
                     colon={false}
                     className="mb-0 inherit"
                 >
-                    <Input />
+                    <Input className="rounded" />
                 </Form.Item>
             </Col>
         </Layout>

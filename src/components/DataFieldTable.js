@@ -39,7 +39,7 @@ export default function DataFieldTable({ data = [], store, loading, type = null,
             renderInputs: true,
             id: (
                 <Form.Item className="mb-0">
-                    <Input disabled />
+                    <Input className="rounded" disabled />
                 </Form.Item>
             ),
             name: (
@@ -48,7 +48,7 @@ export default function DataFieldTable({ data = [], store, loading, type = null,
                     name="name"
                     rules={[{ required: true, message: "Please enter provider type name" }]}
                 >
-                    <Input name="name"/>
+                    <Input className="rounded" name="name"/>
                 </Form.Item>
             ),
             description: (
@@ -56,19 +56,20 @@ export default function DataFieldTable({ data = [], store, loading, type = null,
                     className="mb-0"
                     name="description"
                 >
-                    <Input name="description"/>
+                    <Input className="rounded" name="description"/>
                 </Form.Item>
             ),
             add: (
                 <Button
+                    className="flex justify-center"
                     type="primary"
                     shape="circle"
-                    size="middle"
+                    size="small"
                     onClick={submit}
                     htmlType="submit"
                 >
                     <FontAwesomeIcon
-                        className="text-xl"
+                        className="text-xs"
                         icon={faPlus}
                     />
                 </Button>
@@ -84,14 +85,15 @@ export default function DataFieldTable({ data = [], store, loading, type = null,
             ...row,
             add: (
                 <Button
+                    className="flex justify-center"
                     type="primary"
                     shape="circle"
-                    size="middle"
+                    size="small"
                     danger
                     onClick={() => deleteDataField(row)}
                 >
                     <FontAwesomeIcon
-                        className="text-xl"
+                        className="text-xs"
                         icon={faMinus}
                     />
                 </Button>

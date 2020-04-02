@@ -50,3 +50,7 @@ code {
   margin-left: 0.5vw;
   flex-grow: 1;
 }
+
+.rounded-xl {
+  border-radius: 0.75rem;
+}
