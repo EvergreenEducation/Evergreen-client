@@ -65,7 +65,7 @@ export default function DataFieldTable({ data = [], store, loading, type = null,
                     type="primary"
                     shape="circle"
                     size="small"
-                    onClick={submit}
+                    onClick={() => submit()}
                     htmlType="submit"
                 >
                     <FontAwesomeIcon

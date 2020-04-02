@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Table, Tag, Card, Button } from 'antd';
-import { imported } from 'react-imported-component/macro';
+import React from 'react';
+import { Table, Tag, Button } from 'antd';
 import { find, matchesProperty, isNil } from 'lodash';
 
 function ProvidersTable({ data = [], loading, handleUpdateModal }) {
