@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import DataFieldStore from 'store/DataField';
 import axiosInstance from 'services/AxiosInstance';
 import DataFieldTable from 'components/DataFieldTable';
@@ -11,17 +12,24 @@ configure({
 })
 
 export default function ProviderTypeContainer() {
+    const history = useHistory();
     const store = DataFieldStore.useContainer();
     const { entities, typeEqualsProvider } = store;
     
     const tableData = Object.values(entities).filter(typeEqualsProvider);
 
-    const [{ data = [], loading } ] = useAxios(
+    const [{ data, loading, error } ] = useAxios(
       '/datafields?type=provider'
     );
 
+    if (error) {
+        history.push('/error/500');
+    }
+
     useEffect(() => {
-        store.addMany(data);
+        if (data) {
+            store.addMany(data);
+        }
     }, [data]);
 
     return (
@@ -30,7 +38,7 @@ export default function ProviderTypeContainer() {
             className="shadow-md rounded-md mb-4"
         >
             <DataFieldTable
-                data={tableData}
+                data={error ? [] : tableData}
                 loading={loading}
                 store={store}
                 type="provider"

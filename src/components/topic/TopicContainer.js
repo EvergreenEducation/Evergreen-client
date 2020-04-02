@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import DataFieldStore from 'store/DataField';
 import axiosInstance from 'services/AxiosInstance';
 import DataFieldTable from 'components/DataFieldTable';
@@ -10,18 +11,25 @@ configure({
   axios: axiosInstance
 })
 
-export default function TopicContainer() {
+export default function TopicContainer(props) {
+    const history = useHistory();
     const store = DataFieldStore.useContainer();
     const { entities, typeEqualsTopic } = store;
     
     const tableData = Object.values(entities).filter(typeEqualsTopic);
 
-    const [{ data = [], loading } ] = useAxios(
+    const [{ data, loading, error } ] = useAxios(
       '/datafields?type=topic'
     );
 
+    if (error) {
+        history.push('/error/500');
+    }
+
     useEffect(() => {
-      store.addMany(data);
+        if (data) {
+            store.addMany(data);
+        }
     }, [data]);
 
     return (
@@ -30,7 +38,7 @@ export default function TopicContainer() {
             className="shadow-md rounded-md"
         >
             <DataFieldTable
-                data={tableData}
+                data={error ? [] : tableData}
                 store={store}
                 type="topic"
                 loading={loading}
