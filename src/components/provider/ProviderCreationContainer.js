@@ -98,7 +98,10 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
                 form={form}
                 name="providerForm"
             >
-                <div className="p-6">
+                <div
+                    className="p-6 overflow-y-auto"
+                    style={{ maxHeight: "32rem" }}
+                >
                     <ProviderForm
                         datafields={Object.values(datafieldStore.entities)}
                     />
@@ -122,21 +125,23 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
                     </section>
                 </div>
                 <section
-                    className="bg-white px-6 pt-6 pb-1 flex justify-center"
+                    className="bg-white px-6 pt-5 pb-1 flex justify-center"
                     style={{
                         borderTop: "1px solid #f0f0f0"
                     }}
                 >
                     <Button
-                        className="mr-3 px-20"
+                        className="mr-3 px-10 rounded"
                         type="primary"
+                        size="small"
                         htmlType="submit"
                         onClick={submit}
                     >
                         Create
                     </Button>
                     <Button
-                        className="px-20"
+                        className="px-10 rounded"
+                        size="small"
                         type="dashed"
                         onClick={() => closeModal()}
                     >

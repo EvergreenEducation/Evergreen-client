@@ -2,9 +2,41 @@
     background-color: #276749 !important;
 }
 
-.custom-search .ant-input-search-button {
+.custom-select {
+    .ant-select-selector {
+        border-radius: 0.25rem !important;
+    }
+}
+
+.custom-ant-upload {
+    width: 100%;
+    height: 100%;
+    .ant-upload {
+        height: 100%;
+        width: 100%;
+        border-radius: 0.25rem !important;
+    }
+}
+
+.custom-search {
     display: flex;
-    justify-content: center;
+    height: 24px;
+    .ant-input {
+        border-radius: 0.25rem;
+        height: 24px;
+    }
+    .ant-input-search-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 0.25rem;
+        height: 24px;
+
+        .anticon.anticon-search {
+            position: relative;
+            bottom: 1px;
+        }
+    }
 }
 
 .custom-antd-upload .ant-upload.ant-upload-select {
@@ -13,7 +45,41 @@
 }
 
 .custom-modal {
+    position: initial;
+    margin-top: 2rem;
     .ant-modal-footer {
         border-top: 0;
+    }
+}
+
+.ant-modal-content  {
+  border-radius: 5px;
+}
+
+.ant-modal-header {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+
+.form-item-control-input-h-full-w-full {
+    .ant-form-item-control-input {
+        height: 100%;
+        width: 100%;
+    }
+    .ant-form-item-control-input-content {
+        height: 100%;
+        width: 100%;
+    }
+}
+
+.custom-ant-input-wrapper {
+    .ant-input-group-addon {
+        border-top-left-radius: 0.25rem;
+        border-bottom-left-radius: 0.25rem;
+    }
+    .ant-input {
+        border-top-right-radius: 0.25rem;
+        border-bottom-right-radius: 0.25rem;
     }
 }

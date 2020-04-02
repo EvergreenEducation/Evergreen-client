@@ -11,14 +11,16 @@ export default function ProviderHeader({ onSearch, createHandler }) {
       <h2 className="mr-2">PROVIDERS</h2>
       <Search
         enterButton
-        className="w-56 h-8 custom-search mr-2"
+        className="w-56 custom-search mr-2 rounded"
       />
       <Button
+        className="rounded text-xs flex items-center"
         type="primary"
+        size="small"
         onClick={createHandler}
       >
         <FontAwesomeIcon
-          className="text-white mr-1"
+          className="text-white mr-1 text-xs"
           icon={faPlusCircle}
         />
           PROVIDER

@@ -149,7 +149,10 @@ export default function ProviderUpdateModal(props) {
             onCancel={onCancel}
         >
             <Form form={form}>
-                <div className="p-6">
+                <div
+                    className="p-6 overflow-y-auto"
+                    style={{ maxHeight: "32rem" }}
+                >
                     <ProviderForm
                         datafields={datafields}
                     />
@@ -173,22 +176,23 @@ export default function ProviderUpdateModal(props) {
                     </section>
                 </div>
                 <section
-                    className="bg-white px-6 pt-6 pb-1 flex justify-center"
+                    className="bg-white px-6 pt-5 pb-1 flex justify-center"
                     style={{
                         borderTop: "1px solid #f0f0f0"
                     }}
                 >
                     <Button
-                        className="mr-3 px-20"
+                        className="mr-3 px-10 rounded"
+                        size="small"
                         type="primary"
                         htmlType="submit"
                         onClick={() => submitUpdate()}
-                        disabled
                     >
                         Update
                     </Button>
                     <Button
-                        className="px-20"
+                        className="px-10 rounded"
+                        size="small"
                         type="dashed"
                         onClick={() => onCancel()}
                     >
