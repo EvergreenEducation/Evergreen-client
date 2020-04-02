@@ -4,7 +4,9 @@ const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const webpack = require('webpack');
 
 const logConfig = config => {
-    console.log(config);
+    // if (config.mode === 'development') {
+    //     console.log(config);
+    // }
     return config;
 }
 
