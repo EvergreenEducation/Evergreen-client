@@ -120,6 +120,7 @@ export default function AdminDashboardPage(props) {
                     title={"New Provider"}
                     visible={modalVisibility}
                     onCancel={handleCancel}
+                    style={{ borderRadius: 5 }}
                     bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
                     width={998}
                     footer={true}

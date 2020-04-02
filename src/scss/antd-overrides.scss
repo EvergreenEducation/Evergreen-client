@@ -17,3 +17,12 @@
         border-top: 0;
     }
 }
+
+.ant-modal-content  {
+  border-radius: 5px;
+}
+
+.ant-modal-header {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}

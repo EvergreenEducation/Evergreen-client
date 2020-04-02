@@ -14,6 +14,7 @@ export default function ProviderHeader({ onSearch, createHandler }) {
         className="w-56 h-8 custom-search mr-2"
       />
       <Button
+        className="rounded"
         type="primary"
         onClick={createHandler}
       >
