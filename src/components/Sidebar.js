@@ -20,19 +20,19 @@ const routes = [
         path: '/admin/offers',
         name: ' Offers',
         icon: faDollarSign,
-        disabled: true
+        disabled: false
     },
     {
         path: '/admin/local_offers',
         name: ' Local Offers',
         icon: faHandHoldingUsd,
-        disabled: true
+        disabled: false
     },
     {
         path: '/admin/pathways',
         name: ' Pathways',
         icon: faRoute,
-        disabled: true
+        disabled: false
     },
     {
         path: '/admin/settings',
@@ -48,8 +48,22 @@ const routes = [
     }
 ];
 
-function Sidebar(props) {
+function onPathSelectKey(pathname, routes) {
+    for (let i = 0; routes.length; i++) {
+        // if (routes[i]) {
+        //     break;
+        // }
+        if (pathname === routes[i].path) {
+            return [(i + 1).toString()];
+        }
+    }
+    return ['1'];
+}
+
+function Sidebar({ pathname }) {
     const [collapsed, setCollapse] = useState(true);
+
+    const selectedKey = onPathSelectKey(pathname, routes);
 
     const toggleSider = () => {
         setCollapse(!collapsed);
@@ -77,7 +91,7 @@ function Sidebar(props) {
             <Menu
                 className="bg-green-500"
                 theme="dark"
-                defaultSelectedKeys={['1']}
+                defaultSelectedKeys={selectedKey}
             >
                 {
                     routes.map(({ path, name, icon, disabled }, index) => (

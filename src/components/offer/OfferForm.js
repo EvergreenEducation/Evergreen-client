@@ -84,10 +84,70 @@ const OfferForm = React.forwardRef((props, ref) => {
                     name="description"
                     labelAlign={"left"}
                     colon={false}
-                    className="mb-0 inherit"
+                    className="inherit"
                 >
                     <Input.TextArea rows={4} />
                 </Form.Item>
+                <Row className="items-center mb-0">
+                    <span
+                        className="text-gray-700 relative"
+                        style={{ bottom: 2 }}
+                    >
+                        Related Offers
+                    </span>
+                    <Form.Item
+                        name="related_offers"
+                        className="w-full"
+                    >
+                        <Select
+                            showSearch
+                            className="w-full custom-select"
+                            mode="multiple"
+                        >
+                            
+                        </Select>
+                    </Form.Item>
+                </Row>
+                <Row className="items-center mb-0">
+                    <span
+                        className="text-gray-700 relative"
+                        style={{ bottom: 2 }}
+                    >
+                        Prerequisites
+                    </span>
+                    <Form.Item
+                        name="prerequisites"
+                        className="w-full"
+                    >
+                        <Select
+                            showSearch
+                            className="w-full custom-select"
+                            mode="multiple"
+                        >
+                            
+                        </Select>
+                    </Form.Item>
+                </Row>
+                <Row className="items-center mb-0">
+                    <span
+                        className="text-gray-700 relative"
+                        style={{ bottom: 2 }}
+                    >
+                        Topics
+                    </span>
+                    <Form.Item
+                        name="topics"
+                        className="w-full"
+                    >
+                        <Select
+                            showSearch
+                            className="w-full custom-select"
+                            mode="multiple"
+                        >
+                            
+                        </Select>
+                    </Form.Item>
+                </Row>
                 <Row gutter={8}>
                     <Col span={6}>
                         <Form.Item

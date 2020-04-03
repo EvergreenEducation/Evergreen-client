@@ -1,33 +1,43 @@
 import React, { useState } from 'react';
-import { Link, Route, Redirect } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import { Layout, Button, Col, Skeleton, Tooltip } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import Sidebar from 'components/Sidebar';
+import { SearchModalHeader } from 'components/shared';
 
 import ProviderStore from 'store/Provider';
 import DataFieldStore from 'store/DataField';
-import TopicContainer from 'components/topic/TopicContainer';
 import 'scss/antd-overrides.scss';
 
+const Modal = imported(() => import('antd/lib/modal'));
+
+const TopicContainer = imported(() => import('components/topic/TopicContainer'));
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
 const ProviderCreationContainer = imported(() => import('components/provider/ProviderCreationContainer'), {
     LoadingComponent: () => (<Skeleton className="p-6" paragraph={{ rows: 15 }} active/>),
 });
-const Modal = imported(() => import('antd/lib/modal'));
+
 const ProviderContainer = imported(() => import('components/provider/ProviderContainer'));
-const ProviderHeader = imported(() => import('components/provider/ProviderHeader'));
-const OffersTable = imported(() => import('components/offer/OffersTable'));
+
+const OfferContainer = imported(() => import('components/offer/OfferContainer'));
+const OfferCreationContainer = imported(() => import('components/offer/OfferCreationContainer'));
+const OfferCategoryContainer = imported(() => import('components/offer/OfferCategoryContainer'));
+
 const PathwaysTable = imported(() => import('components/pathway/PathwaysTable'));
+
 const { Content, Header } = Layout;
 
 export default function AdminDashboardPage(props) {
+    const history = useHistory();
     const { pathname } = props.location;
     const [ modalVisibility, setModalVisibility ] = useState(false);
     
     let HeaderContent = () => null;
     let FormContent = () => null;
+    let MainContent = () => null;
+    let modalTitle = '';
 
     const openModal = () => {
         setModalVisibility(true);
@@ -37,43 +47,68 @@ export default function AdminDashboardPage(props) {
         setModalVisibility(false);
     };
 
+    if (pathname === '/admin') {
+        history.replace('/admin/providers');
+    }
 
     if (pathname === '/admin/offers') {
+        modalTitle = 'New Offer / Opportunity';
         HeaderContent = () => null;
-        FormContent = () => null;
+        HeaderContent = () => (
+            <SearchModalHeader
+                createHandler={openModal}
+                title="OFFERS / OPPORTUNITIES"
+                buttonTitle="OFFER"
+            />
+        );
+        FormContent = (<OfferCreationContainer closeModal={handleCancel} />);
+        MainContent = () => <OfferContainer />;
     }
 
     if (pathname === '/admin/pathways') {
         HeaderContent = () => null;
         FormContent = () => null;
+        MainContent = () => <PathwaysTable />;
     }
 
     if (pathname === '/admin/providers') {
+        modalTitle = 'New Provider';
         FormContent = (
             <ProviderCreationContainer
                 closeModal={handleCancel}
             />
         );
-        HeaderContent = ProviderHeader;
+        HeaderContent = () => (
+            <SearchModalHeader
+                createHandler={openModal}
+                title="PROVIDERS"
+                buttonTitle="PROVIDER"
+            />
+        );
+        MainContent = () => <ProviderContainer />;
+    }
+
+    if (pathname === '/admin/settings') {
+        MainContent = () => (
+            <>
+                <ProviderTypeContainer />
+                <OfferCategoryContainer />
+                <TopicContainer />
+            </>
+        );
     }
 
     return (
         <DataFieldStore.Provider>
             <ProviderStore.Provider>
-                <Route
-                    exact
-                    path="/admin/"
-                >
-                    <Redirect to="/admin/providers"/>
-                </Route>
                 <Layout
                     className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
                 >
-                    <Sidebar />
+                    <Sidebar pathname={pathname} />
                     <Col className="w-full">
                         <Header className="px-6 bg-white h-12 flex items-center">
                             <Col span={14}>
-                                <HeaderContent createHandler={openModal} />
+                                <HeaderContent />
                             </Col>
                             <Col span={10} className="flex justify-end">
                                 <Button type="link">
@@ -89,37 +124,13 @@ export default function AdminDashboardPage(props) {
                             </Col>
                         </Header>
                         <Content className="p-6 h-min-full">
-                            <Route
-                                exact
-                                path="/admin/offers"
-                            >
-                                <OffersTable />
-                            </Route>
-                            <Route
-                                exact
-                                path="/admin/pathways"
-                            >
-                                <PathwaysTable />
-                            </Route>
-                            <Route
-                                exact
-                                path="/admin/providers"
-                            >
-                                <ProviderContainer />
-                            </Route>
-                            <Route
-                                exact
-                                path="/admin/settings"
-                            >
-                                <ProviderTypeContainer />
-                                <TopicContainer />
-                            </Route>
+                            <MainContent />
                         </Content>
                     </Col>
                 </Layout>
                 <Modal
                     className="custom-modal"
-                    title={"New Provider"}
+                    title={modalTitle}
                     visible={modalVisibility}
                     onCancel={handleCancel}
                     style={{ borderRadius: 5 }}

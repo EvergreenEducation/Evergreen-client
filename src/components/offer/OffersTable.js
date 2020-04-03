@@ -1,11 +1,17 @@
 import React from 'react';
 import { Card, Table, Tag } from 'antd';
+import dayjs from 'dayjs';
 
 const columns = [
     {
-        title: 'Name / ID',
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id'
+    },
+    {
+        title: 'Name',
         dataIndex: 'name',
-        key: 'name',
+        key: 'name'
     },
     {
         title: 'Category',
@@ -45,28 +51,20 @@ const columns = [
         title: 'Start Date',
         dataIndex: 'start_date',
         key: 'start_date',
+        render: date => {
+            console.log(date);
+            return dayjs(date).format('MMM DD, YYYY');
+        }
     },
 ];
 
-const data = [
-    {
-        key: '1',
-        name: 'Maths differential equations solving curse [156625906]',
-        category: 'Web Development',
-        provider: 'Unicore Technology Vision',
-        topics: ['Education', 'Computer Science'],
-        start_date: '2020-02-18',
-    }
-];
-
-function OffersTable() {
+function OffersTable(props) {
+    const { data } = props;
     return (
-        <Card className="h-full rounded-md shadow">
-            <Table
-                columns={columns}
-                dataSource={data}
-            />
-        </Card>
+        <Table
+            columns={columns}
+            dataSource={data}
+        />
     );
 }
 

@@ -167,7 +167,7 @@ export default function ProviderUpdateModal(props) {
                     </section>
                     <section className="mt-2">
                         <label className="mb-2 block">
-                            Pathways -Table
+                            Pathways - Table
                         </label>
                         <Table
                             columns={pathwayColumns}
