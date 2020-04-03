@@ -1,324 +1,470 @@
 import React from 'react';
-import { Layout, Form, Input, Row, Col, Select, AutoComplete, Button, DatePicker } from 'antd';
+import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
+import { groupBy, property, isNil } from 'lodash';
+import 'scss/antd-overrides.scss';
 
 const { Option } = Select;
 
-const OfferForm = React.forwardRef((props, ref) => {
-    const [ form ] = Form.useForm();
+const OfferForm = (props) => {
+    let { datafields = [], providers = {}, form } = props;
+    const { getFieldDecorator } = form;
+
+    datafields = Object.values(datafields);
+    const providersArr = Object.values(providers);
+
+    const grouped = groupBy(datafields, property('type'));
+    const {
+        offer_category = [], part_of_day_unit = [], payment_unit = [],
+        length_unit = [], credit_unit = [], topic = [], frequency_unit = [],
+        cost_unit = [],
+    } = grouped;
+
+    let topicOptions = null;
+
+    if (!isNil(topic) && topic.length) {
+        topicOptions = topic.map(({ name, id }, index) => (
+            <Option
+                value={id}
+                key={index.toString()}
+            >
+                {name}
+            </Option>
+        ));
+    }
+
+    const handleSelect = id => {
+        console.log(providers[id]);
+        return id;
+    }
 
     return (
         <Layout>
-            <Form
-                form={form}
-            >
-                <ImageUploadAndNameInputs>
-                    <Row gutter={8}>
-                        <Col span={18}>
-                            <Form.Item
-                                label="Provider"
-                                name="provider"
-                                labelAlign={"left"}
-                                colon={false}
-                                className="mb-0 inherit"
-                            >
-                                <Row>
-                                    <Col span={17}>
-                                        <AutoComplete />
-                                    </Col>
-                                    <Col type={5}>
-                                        <Button type="primary">
-                                                Use Image
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                            <Form.Item
-                                label="Generic Offer"
-                                name="generic_offer"
-                                labelAlign={"left"}
-                                colon={false}
-                                className="mb-0 inherit"
-                            >
-                                <Select>
-                                    <Option value="save_the_planet">Save the Planet</Option>
-                                    <Option value="web_development">Web Development</Option>
-                                    <Option value="science_offers">Science Offers</Option>
-                                    <Option value="finance_and_business">Finance &#38; Business</Option>
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row gutter={8}>
-                        <Col span={10}>
-                            <Form.Item
-                                label="Start Date"
-                                name="start_date"
-                                labelAlign={"left"}
-                                colon={false}
-                                className="mb-0 inherit"
-                            >
-                                <DatePicker
-                                    className="w-full"
-                                    placeholder=""
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col span={14}>
-                            <Form.Item
-                                label="Keywords"
-                                name="keywords"
-                                labelAlign={"left"}
-                                colon={false}
-                                className="mb-0 inherit"
-                            >
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                </ImageUploadAndNameInputs>
+            <ImageUploadAndNameInputs>
+                <Row gutter={8}>
+                    <Col span={15}>
+                        <Form.Item
+                            label="Provider"
+                            name="provider_id"
+                            labelAlign={"left"}
+                            colon={false}
+                            className="mb-0 inherit"
+                        >
+                            <div className="flex flex-row">
+                                <Col span={18}>
+                                    <Select
+                                        className="rounded-l custom-select-rounded-l-r-none rounded-r-none"
+                                        showSearch
+                                        name="provider_id"
+                                        onSelect={handleSelect}
+                                    >
+                                        {
+                                            providersArr.map((p, index) => {
+                                                return (
+                                                    <Option
+                                                        key={index}
+                                                        value={p.id}
+                                                    >
+                                                        {p.name}
+                                                    </Option>
+                                                );
+                                            })
+                                        }
+                                    </Select>
+                                </Col>
+                                <Col type={7}>
+                                    <Button
+                                        className="rounded-l-none"
+                                        type="primary"
+                                    >
+                                        Use Image
+                                    </Button>
+                                </Col>
+                            </div>
+                        </Form.Item>
+                    </Col>
+                    <Col span={9}>
+                        <Form.Item
+                            label="Generic Offer"
+                            name="category"
+                            labelAlign={"left"}
+                            colon={false}
+                            className="mb-0 inherit"
+                            rules={[{ required: true, message: "Please select a generic offer" }]}
+                        >
+                            <Select className="rounded custom-select" name="category">
+                                {
+                                    offer_category.map((category, index) => {
+                                        return (
+                                            <Option
+                                                key={index}
+                                                value={category.id}
+                                            >
+                                                {category.name}
+                                            </Option>
+                                        );
+                                    })
+                                }
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row gutter={8}>
+                    <Col span={10}>
+                        <Form.Item
+                            label="Start Date"
+                            name="start_date"
+                            labelAlign={"left"}
+                            colon={false}
+                            className="mb-0 inherit"
+                        >
+                            <DatePicker
+                                className="w-full"
+                                format="MM-DD-YYYY" 
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col span={14}>
+                        <Form.Item
+                            label="Keywords"
+                            name="keywords"
+                            labelAlign={"left"}
+                            colon={false}
+                            className="mb-0 inherit"
+                        >
+                            <Input className="rounded" />
+                        </Form.Item>
+                    </Col>
+                </Row>
+            </ImageUploadAndNameInputs>
+            <Col>
+                <span
+                    className="text-gray-700 relative"
+                    style={{ bottom: 2 }}
+                >
+                    Description
+                </span>
                 <Form.Item
-                    label="Description"
                     name="description"
                     labelAlign={"left"}
                     colon={false}
                     className="inherit"
+                    rules={[{ required: true, message: "Please provide a description" }]}
                 >
-                    <Input.TextArea rows={4} />
+                    <Input.TextArea
+                        rows={4}
+                        className="rounded"
+                    />
                 </Form.Item>
-                <Row className="items-center mb-0">
-                    <span
-                        className="text-gray-700 relative"
-                        style={{ bottom: 2 }}
+            </Col>
+            <Row className="items-center mb-0">
+                <span
+                    className="text-gray-700 relative"
+                    style={{ bottom: 2 }}
+                >
+                    Related Offers
+                </span>
+                <Form.Item
+                    name="related_offers"
+                    className="w-full"
+                >
+                    <Select
+                        className="w-full rounded custom-select"
+                        showSearch
+                        mode="multiple"
                     >
-                        Related Offers
-                    </span>
+                        
+                    </Select>
+                </Form.Item>
+            </Row>
+            <Row className="items-center mb-0">
+                <span
+                    className="text-gray-700 relative"
+                    style={{ bottom: 2 }}
+                >
+                    Prerequisites
+                </span>
+                <Form.Item
+                    name="prerequisites"
+                    className="w-full"
+                >
+                    <Select
+                        className="w-full rounded custom-select"
+                        showSearch
+                        mode="multiple"
+                    >
+                        
+                    </Select>
+                </Form.Item>
+            </Row>
+            <Row className="items-center mb-0">
+                <span
+                    className="text-gray-700 relative"
+                    style={{ bottom: 2 }}
+                >
+                    Topics
+                </span>
+                <Form.Item
+                    name="topics"
+                    className="w-full"
+                >
+                    <Select
+                        showSearch
+                        className="w-full custom-select"
+                        mode="multiple"
+                    >
+                        {topicOptions}
+                    </Select>
+                </Form.Item>
+            </Row>
+            <Row gutter={8}>
+                <Col span={6}>
                     <Form.Item
-                        name="related_offers"
-                        className="w-full"
+                        label="Learn/Earn"
+                        name="learn_and_earn"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                        rules={[{ required: true, message: "Please select an option" }]}
                     >
-                        <Select
-                            showSearch
-                            className="w-full custom-select"
-                            mode="multiple"
-                        >
-                            
+                        <Select className="rounded custom-select">
+                            <Option value="learn">Learn</Option>
+                            <Option value="earn">Earn</Option>
+                            <Option value="both">Learn and Earn</Option>
                         </Select>
                     </Form.Item>
-                </Row>
-                <Row className="items-center mb-0">
-                    <span
-                        className="text-gray-700 relative"
-                        style={{ bottom: 2 }}
-                    >
-                        Prerequisites
-                    </span>
+                </Col>
+                <Col span={6}>
                     <Form.Item
-                        name="prerequisites"
-                        className="w-full"
+                        label="Day &#38; Time"
+                        name="part_of_day"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                        rules={[{ required: true, message: "Please select an option" }]}
                     >
-                        <Select
-                            showSearch
-                            className="w-full custom-select"
-                            mode="multiple"
-                        >
-                            
+                        <Select className="rounded custom-select">
+                            {
+                                part_of_day_unit.map((part_of_day, index) => {
+                                    return (
+                                        <Option
+                                            key={index}
+                                            value={part_of_day.id}
+                                        >
+                                            {part_of_day.name}
+                                        </Option>
+                                    );
+                                })
+                            }
                         </Select>
                     </Form.Item>
-                </Row>
-                <Row className="items-center mb-0">
-                    <span
-                        className="text-gray-700 relative"
-                        style={{ bottom: 2 }}
-                    >
-                        Topics
-                    </span>
+                </Col>
+                <Col span={6}>
                     <Form.Item
-                        name="topics"
-                        className="w-full"
+                        label="Frequency"
+                        name="frequency"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                        rules={[{ required: true, message: "Please fill in this field" }]}
                     >
-                        <Select
-                            showSearch
-                            className="w-full custom-select"
-                            mode="multiple"
-                        >
-                            
+                        <Input
+                            className="rounded"
+                            type="number"
+                        />
+                    </Form.Item>
+                </Col>
+                <Col span={6}>
+                    <Form.Item
+                        label="Frequency Unit"
+                        name="frequency_unit"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                        rules={[{ required: true, message: "Please select an option" }]}
+                    >
+                        <Select className="rounded custom-select">
+                            {
+                                frequency_unit.map((f, index) => {
+                                    return (
+                                        <Option
+                                            key={index}
+                                            value={f.id}
+                                        >
+                                            {f.name}
+                                        </Option>
+                                    );
+                                })
+                            }
                         </Select>
                     </Form.Item>
-                </Row>
-                <Row gutter={8}>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Learn/Earn"
-                            name="learn_or_earn"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Select>
-                                <Option value="learn">Learn</Option>
-                                <Option value="earn">Earn</Option>
-                                <Option value="both">Learn and Earn</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Day &#38; Time"
-                            name="datetime"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Select>
-                                <Option value="morning">Morning</Option>
-                                <Option value="afternoon">Afternoon</Option>
-                                <Option value="evening">Evening</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Frequency"
-                            name="frequency"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Input type="number" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Frequency Unit"
-                            name="frequency_unit"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Select>
-                                <Option value="hours_per_day">hrs/day</Option>
-                                <Option value="hours_per_week">hrs/week</Option>
-                                <Option value="days_per_month">days/m</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row gutter={8}>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Cost"
-                            name="cost"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Cost Unit"
-                            name="cost_unit"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Credit"
-                            name="credit"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Credit Unit"
-                            name="credit_unit"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Select>
-                                <Option value="weekly">Weekly</Option>
-                                <Option value="biweekly">Biweekly</Option>
-                                <Option value="monthly">Monthly</Option>
-                                <Option value="every_quarter">Every Quarter</Option>
-                                <Option value="biannual">Biannual</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row gutter={8}>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Pay"
-                            name="pay"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Pay Unit"
-                            name="pay_unit"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Select>
-                                <Option value="weekly">Weekly</Option>
-                                <Option value="biweekly">Biweekly</Option>
-                                <Option value="monthly">Monthly</Option>
-                                <Option value="every_quarter">Every Quarter</Option>
-                                <Option value="biannual">Biannual</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Length"
-                            name="length"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            label="Length Unit"
-                            name="length_unit"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <Select>
-                                <Option value="weeks">Weeks</Option>
-                                <Option value="biweek">Biweeks</Option>
-                                <Option value="months">Months</Option>
-                                <Option value="quarters">Quarters</Option>
-                                <Option value="semesters">Semesters</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
+                </Col>
+            </Row>
+            <Row gutter={8}>
+                <Col span={6}>
+                    <Form.Item
+                        label="Cost"
+                        name="cost"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                        rules={[{ required: true, message: "Please fill in this field" }]}
+                    >
+                        <Input
+                            className="rounded"
+                            type="number"
+                        />
+                    </Form.Item>
+                </Col>
+                <Col span={6}>
+                    <Form.Item
+                        label="Cost Unit"
+                        name="cost_unit"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                    >
+                        <Select className="rounded custom-select">
+                            {
+                                cost_unit.map((unit, index) => {
+                                    return (
+                                        <Option
+                                            key={index}
+                                            value={unit.id}
+                                        >
+                                            {unit.name}
+                                        </Option>
+                                    );
+                                })
+                            }
+                        </Select>
+                    </Form.Item>
+                </Col>
+                <Col span={6}>
+                    <Form.Item
+                        label="Credit"
+                        name="credit"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                        rules={[{ required: true, message: "Please fill in this field" }]}
+                    >
+                        <Input
+                            className="rounded"
+                            type="number"
+                        />
+                    </Form.Item>
+                </Col>
+                <Col span={6}>
+                    <Form.Item
+                        label="Credit Unit"
+                        name="credit_unit"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                        rules={[{ required: true, message: "Please select an option" }]}
+                    >
+                        <Select className="rounded custom-select">
+                            {
+                                credit_unit.map((credit, index) => {
+                                    return (
+                                        <Option
+                                            key={index}
+                                            value={credit.id}
+                                        >
+                                            {credit.name}
+                                        </Option>
+                                    );
+                                })
+                            }
+                        </Select>
+                    </Form.Item>
+                </Col>
+            </Row>
+            <Row gutter={8}>
+                <Col span={6}>
+                    <Form.Item
+                        label="Pay"
+                        name="pay"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                        rules={[{ required: true, message: "Please fill in this field" }]}
+                    >
+                        <Input
+                            className="rounded"
+                            type="number"
+                        />
+                    </Form.Item>
+                </Col>
+                <Col span={6}>
+                    <Form.Item
+                        label="Pay Unit"
+                        name="pay_unit"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                        rules={[{ required: true, message: "Please select an option" }]}
+                    >
+                        <Select className="rounded custom-select">
+                            {
+                                payment_unit.map((credit, index) => {
+                                    return (
+                                        <Option
+                                            key={index}
+                                            value={credit.id}
+                                        >
+                                            {credit.name}
+                                        </Option>
+                                    );
+                                })
+                            }
+                        </Select>
+                    </Form.Item>
+                </Col>
+                <Col span={6}>
+                    <Form.Item
+                        label="Length"
+                        name="length"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                        rules={[{ required: true, message: "Please fill in this field" }]}
+                    >
+                        <Input
+                            className="rounded"
+                            type="number"
+                        />
+                    </Form.Item>
+                </Col>
+                <Col span={6}>
+                    <Form.Item
+                        label="Length Unit"
+                        name="length_unit"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                        rules={[{ required: true, message: "Please select an option" }]}
+                    >
+                        <Select className="rounded custom-select">
+                            {
+                                length_unit.map((l, index) => {
+                                    return (
+                                        <Option
+                                            key={index}
+                                            value={l.id}
+                                        >
+                                            {l.name}
+                                        </Option>
+                                    );
+                                })
+                            }
+                        </Select>
+                    </Form.Item>
+                </Col>
+            </Row>
         </Layout>
     );
-});
+}
 
 export default OfferForm;

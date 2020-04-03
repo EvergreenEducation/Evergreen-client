@@ -6,22 +6,11 @@ import { Card } from 'antd';
 import { imported } from 'react-imported-component/macro';
 import OffersTable from 'components/offer/OffersTable';
 import { useProviderDataFieldStore } from 'components/provider';
+import OfferStore from 'store/Offer';
 
 configure({
   axios: axiosInstance
 })
-
-const mockData = [
-    {
-        key: '1',
-        id: 1,
-        name: 'Maths differential equations solving curse [156625906]',
-        category: 'Web Development',
-        provider: 'Unicore Technology Vision',
-        topics: ['Education', 'Computer Science'],
-        start_date: '2020-02-18',
-    }
-];
 
 export default function OfferContainer() {
   const history = useHistory();
@@ -29,6 +18,8 @@ export default function OfferContainer() {
   const [ selectedProvider, setSelectedProvider ] = useState({});
   const store = useProviderDataFieldStore();
   const { datafield, provider } = store;
+  const offer = OfferStore.useContainer();
+  const { entities = [] } = offer;
 
   const [{
     data = [],
@@ -40,7 +31,13 @@ export default function OfferContainer() {
     data: datafieldsData,
     loading: loadingDataFields,
     error: datafieldError,
-  }] = useAxios('/datafields?type=provider&type=topic');
+  }] = useAxios('/datafields');
+
+  const [{
+    data: offersData,
+    loading: loadingOffers,
+    error: offerError,
+  }] = useAxios('/offers');
 
 //   const openAndPopulateUpdateModal = (provider) => {
 //     setSelectedProvider(provider);
@@ -58,12 +55,15 @@ export default function OfferContainer() {
     if (datafieldsData) {
       datafield.addMany(datafieldsData);
     }
-  }, [data, datafieldsData]);
+    if (offersData) {
+      offer.addMany(offersData);
+    }
+  }, [data, datafieldsData, offersData]);
 
   return (
     <Card className="shadow-md rounded-md">
         <OffersTable
-            data={mockData}
+            data={Object.values(entities)}
         />
     </Card>
   ); 

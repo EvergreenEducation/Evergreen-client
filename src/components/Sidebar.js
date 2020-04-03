@@ -9,7 +9,7 @@ import {
 
 const { Sider } = Layout;
 
-const routes = [
+const routesList = [
     {
         path: '/admin/providers',
         name: ' Providers',
@@ -50,7 +50,10 @@ const routes = [
 
 function onPathSelectKey(pathname, routes) {
     for (let i = 0; routes.length; i++) {
-        if (pathname === routes[i].path) {
+        if (!routes[i]) {
+            break;
+        }
+        if (routes[i] && (pathname === routes[i].path)) {
             return [(i + 1).toString()];
         }
     }
@@ -60,7 +63,7 @@ function onPathSelectKey(pathname, routes) {
 function Sidebar({ pathname }) {
     const [collapsed, setCollapse] = useState(true);
 
-    const selectedKey = onPathSelectKey(pathname, routes);
+    const selectedKey = onPathSelectKey(pathname, routesList);
 
     const toggleSider = () => {
         setCollapse(!collapsed);
@@ -91,7 +94,7 @@ function Sidebar({ pathname }) {
                 defaultSelectedKeys={selectedKey}
             >
                 {
-                    routes.map(({ path, name, icon, disabled }, index) => (
+                    routesList.map(({ path, name, icon, disabled }, index) => (
                         <Menu.Item
                             className="bg-green-500 text-center text-white bg-green-800-selected"
                             style={{ marginTop: 0, marginBottom: 0 }}

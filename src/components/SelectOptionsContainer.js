@@ -76,7 +76,8 @@ export default function SelectOptionsContainer(props) {
             datafield.type === 'part_of_day_unit' ||
             datafield.type === 'credit_unit' ||
             datafield.type === 'payment_unit' ||
-            datafield.type === 'length_unit'
+            datafield.type === 'length_unit' ||
+            datafield.type === 'cost_unit'
         ),
     );
 
@@ -84,7 +85,7 @@ export default function SelectOptionsContainer(props) {
 
     const {
         frequency_unit = [], part_of_day_unit = [], credit_unit = [],
-        payment_unit = [], length_unit = []
+        payment_unit = [], length_unit = [], cost_unit = []
     } = grouped;
 
     const fields = [
@@ -113,6 +114,11 @@ export default function SelectOptionsContainer(props) {
             title: 'Length Units Options',
             group: length_unit
         },
+        {
+            fieldName: 'cost_unit',
+            title: 'Cost Units Options',
+            group: cost_unit
+        },
     ];
 
     return (
@@ -127,7 +133,7 @@ export default function SelectOptionsContainer(props) {
                             return (
                                 <div key={index}>
                                     <TitleDivider title={title} />
-                                    <Row className="flex-wrap px-4" gutter={[10, 10]}>
+                                    <Row className="flex-wrap pr-2" gutter={[10, 10]}>
                                         {
                                             group.map((unit, index) => {
                                                 return (
@@ -135,6 +141,7 @@ export default function SelectOptionsContainer(props) {
                                                         lg={4}
                                                         md={6}
                                                         sm={24}
+                                                        xs={24}
                                                         key={index}
                                                         className="h-10"
                                                     >

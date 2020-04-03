@@ -46,22 +46,25 @@ export default function TopicContainer(props) {
                     {
                         title: 'Cod',
                         dataIndex: 'id',
-                        key: 'id'
+                        key: 'id',
+                        className: 'antd-col'
                     },
                     {
                         title: 'Topic Name',
                         dataIndex: 'name',
-                        key: 'name'
+                        key: 'name',
+                        className: 'antd-col'
                     },
                     {
                         title: 'Topic Description',
                         dataIndex: 'description',
-                        key: 'description'
+                        key: 'description',
+                        className: 'antd-col'
                     },
                     {
                         title: 'add',
                         dataIndex: 'add',
-                        key: 'add'
+                        key: 'add',
                     }
                 ]}
             />

@@ -20,39 +20,39 @@ const columns = [
     },
     {
         title: 'Provider',
-        dataIndex: 'provider',
-        key: 'provider',
+        dataIndex: 'provider_id',
+        key: 'provider_id',
     },
-    {
-        title: 'Topics',
-        dataIndex: 'topics',
-        key: 'topics',
-        render: tags => {
-            return (
-                <span>
-                    {
-                        tags.map(tag => {
-                        let color = tag.length > 5 ? 'geekblue' : 'green';
-                        if (tag === 'loser') {
-                            color = 'volcano';
-                        }
-                            return (
-                                <Tag color={color} key={tag}>
-                                {tag.toUpperCase()}
-                                </Tag>
-                            );
-                        })
-                    }
-                </span>
-            );
-        }
-    },
+    // {
+    //     title: 'Topics',
+    //     dataIndex: 'topics',
+    //     key: 'topics',
+    //     render: tags => {
+    //         return (
+    //             <span>
+    //                 {
+    //                     tags.map(tag => {
+    //                     let color = tag.length > 5 ? 'geekblue' : 'green';
+    //                     if (tag === 'loser') {
+    //                         color = 'volcano';
+    //                     }
+    //                         return (
+    //                             <Tag color={color} key={tag}>
+    //                             {tag.toUpperCase()}
+    //                             </Tag>
+    //                         );
+    //                     })
+    //                 }
+    //             </span>
+    //         );
+    //     }
+    // },
     {
         title: 'Start Date',
         dataIndex: 'start_date',
         key: 'start_date',
         render: date => {
-            console.log(date);
+            // console.log(date);
             return dayjs(date).format('MMM DD, YYYY');
         }
     },
