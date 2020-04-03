@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import DataFieldStore from 'store/DataField';
 import axiosInstance from 'services/AxiosInstance';
-import DataFieldTable from 'components/DataFieldTable';
+import DataFieldTable from 'components/shared/DataFieldTable';
 
 import useAxios, { configure } from 'axios-hooks'
 import { Card } from 'antd';
@@ -14,9 +14,9 @@ configure({
 export default function OfferCategoryContainer(props) {
     const history = useHistory();
     const store = DataFieldStore.useContainer();
-    const { entities, typeEqualsTopic } = store;
+    const { entities, typeEqualsOfferCategory } = store;
     
-    const tableData = Object.values(entities).filter(typeEqualsTopic);
+    const tableData = Object.values(entities).filter(typeEqualsOfferCategory);
 
     const [{ data, loading, error } ] = useAxios(
       '/datafields?type=offer_category'
@@ -40,7 +40,7 @@ export default function OfferCategoryContainer(props) {
             <DataFieldTable
                 data={error ? [] : tableData}
                 store={store}
-                type="topic"
+                type="offer_category"
                 loading={loading}
                 columns={[
                     {

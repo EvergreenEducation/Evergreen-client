@@ -26,7 +26,7 @@ const routes = [
         path: '/admin/local_offers',
         name: ' Local Offers',
         icon: faHandHoldingUsd,
-        disabled: false
+        disabled: true
     },
     {
         path: '/admin/pathways',
@@ -50,9 +50,6 @@ const routes = [
 
 function onPathSelectKey(pathname, routes) {
     for (let i = 0; routes.length; i++) {
-        // if (routes[i]) {
-        //     break;
-        // }
         if (pathname === routes[i].path) {
             return [(i + 1).toString()];
         }

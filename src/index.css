@@ -58,7 +58,7 @@ code {
 .line-title > div:nth-of-type(1){
   width: 2vw;
   height: 1px;
-  background-color: #cbd5e0;
+  background-color: #e2e8f0;
   margin-right: 0.5vw;
 }
 
@@ -68,7 +68,7 @@ code {
 
 .line-title > div:nth-of-type(2) {
   height: 1px;
-  background-color: #cbd5e0;
+  background-color: #e2e8f0;
   margin-left: 0.5vw;
   flex-grow: 1;
 }

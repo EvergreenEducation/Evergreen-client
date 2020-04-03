@@ -15,6 +15,8 @@ const Modal = imported(() => import('antd/lib/modal'));
 
 const TopicContainer = imported(() => import('components/topic/TopicContainer'));
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
+const SelectOptionsContainer = imported(() => import('components/SelectOptionsContainer'));
+
 const ProviderCreationContainer = imported(() => import('components/provider/ProviderCreationContainer'), {
     LoadingComponent: () => (<Skeleton className="p-6" paragraph={{ rows: 15 }} active/>),
 });
@@ -93,6 +95,7 @@ export default function AdminDashboardPage(props) {
             <>
                 <ProviderTypeContainer />
                 <OfferCategoryContainer />
+                <SelectOptionsContainer />
                 <TopicContainer />
             </>
         );
