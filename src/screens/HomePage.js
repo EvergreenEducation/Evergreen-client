@@ -29,17 +29,18 @@ function HomePage() {
                                     className="flex justify-end items-center h-full"
                                     span={12}
                                 >
-                                    <Link to="/auth">
-                                        <Button
-                                            type="primary"
-                                            shape="circle"
-                                        >
-                                            <FontAwesomeIcon
-                                                className="text-white"
-                                                icon={faSignInAlt}
-                                            />
-                                        </Button>
-                                    </Link>
+                                      <Button
+                                          type="primary"
+                                          shape="circle"
+                                          onClick={() => {
+                                            window.location.replace(`${process.env.REACT_APP_API_URL}/login`)
+                                          }}
+                                      >
+                                          <FontAwesomeIcon
+                                              className="text-white"
+                                              icon={faSignInAlt}
+                                          />
+                                      </Button>
                                 </Col>
                             </Row>
                         </Header>
