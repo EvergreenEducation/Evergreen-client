@@ -8,7 +8,8 @@ import {
 import { imported } from 'react-imported-component/macro';
 import HomePage from 'screens/HomePage';
 import { Button } from 'antd';
-const LoginRegisterPage = imported(() => import('screens/LoginRegisterPage'));
+const AuthScreen = imported(() => import('screens/AuthScreen'));
+const EmailNotVerifiedScreen = imported(() => import('screens/EmailNotVerifiedScreen'));
 const AdminDashboardScreen = imported(() => import('screens/AdminDashboardScreen'));
 const Result = imported(() => import('antd/lib/result'));
 
@@ -23,8 +24,14 @@ class App extends Component {
             component={HomePage}
           />
           <Route
+            exact
             path="/auth"
-            component={LoginRegisterPage}
+            component={AuthScreen}
+          />
+          <Route
+            exact
+            path="/auth/email_not_verified"
+            component={EmailNotVerifiedScreen}
           />
           <Route
             path="/admin"
