@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Table, Button, } from 'antd';
+import { Modal, Form, Table, Button, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
@@ -7,6 +7,8 @@ import OfferForm from 'components/offer/OfferForm';
 import OfferStore from 'store/Offer';
 import dayjs from 'dayjs';
 import 'scss/antd-overrides.scss';
+import moment from 'moment';
+import { groupBy, isNil } from 'lodash';
 
 configure({
   axios: axiosInstance
@@ -31,14 +33,12 @@ const pathwayColumns = [
 ];
 
 export default function OfferUpdateModal(props) {
-    const { offer, onCancel, visible } = props;
+    const { offer, onCancel, visible, offerStore } = props;
     const [ form ] = Form.useForm();
-    const [{ data: putData, error: putError }, executePut ] = useAxios({
-        url: '/offers',
+    const [{ data: putData, error: putError, response }, executePut ] = useAxios({
         method: 'PUT'
     }, { manual: true });
 
-    const offerStore = OfferStore.useContainer();
     const store = useProviderDataFieldStore();
     const { datafield: datafieldStore, provider: providerStore } = store;
 
@@ -46,33 +46,48 @@ export default function OfferUpdateModal(props) {
         const values = form.getFieldsValue([
             'category', 'description', 'learn_and_earn',
             'part_of_day', 'frequency', 'frequency_unit', 'cost', 'credit_unit',
-            'pay_unit', 'length_unit', 'name', 'start_date', 'provider_id',
+            'pay_unit', 'length', 'length_unit', 'name', 'start_date', 'provider_id',
             'topics', 'pay', 'credit'
         ]);
 
         const {
             category, description, learn_and_earn,
             part_of_day, frequency_unit, cost, credit, credit_unit,
-            pay, pay_unit, length_unit, name, start_date, frequency
+            pay, pay_unit, length, length_unit, name, start_date, frequency
         } = values;
 
         if (
             category && description && learn_and_earn &&
             part_of_day && frequency_unit && cost && credit && 
-            credit_unit && pay && pay_unit && length_unit && name
+            credit_unit && pay && pay_unit && length && length_unit && name
             && frequency
         ) {
             executePut({
+                url: `/offers/${offer.id}`,
                 data: {
                     ...values,
-                    start_date: start_date.toISOString() || null
+                    start_date: dayjs(start_date).toISOString() || null,
+                    updatedAt: new dayjs().toISOString()
                 }
             });
         }
     }
 
+    const groupedDataFields = groupBy(offer.DataFields, 'type') || [];
+
+    let myTopics = [];
+
+    if (!isNil(groupedDataFields.topic)) {
+        myTopics = groupedDataFields.topic.reduce((acc, curr, index) => {
+            if (isNil(acc)) {
+                return [];
+            }
+            acc.push(curr.id);
+            return acc;
+        }, []);
+    }
+
     function populateFields(o, formInstance) {
-        console.log(o);
         formInstance.setFieldsValue({
             category: o.category,
             description: o.description,
@@ -85,42 +100,31 @@ export default function OfferUpdateModal(props) {
             credit_unit: o.credit_unit,
             pay: o.pay,
             pay_unit: o.pay_unit,
+            length: o.length,
             length_unit: o.length_unit,
             name: o.name,
-            // start_date: dayjs(o.start_date),
+            start_date: moment(o.start_date),
             provider_id: o.provider_id,
-            topics: o.topics,
-            // name: p.name,
-            // type: providerType,
-            // learn_and_earn: p.learn_and_earn,
-            // industry: p.industry,
-            // location: p.location,
-            // description: p.description,
-            // topics: topics,
-            // cost: p.cost,
-            // pay: p.pay,
-            // credit: p.credit,
-            // contact: p.contact,
-            // is_public: p.is_public,
-            // financial_aid: p.financial_aid,
+            topics: myTopics,
         });
     }
 
     useEffect(() => {
-        if (putData) {
-            offerStore.addOne(putData);
-            onCancel();
-        }
         if (putError) {
-            console.log(putError);
+            const { status, statusText } = putError.request;
+            notification.error({
+                message: status,
+                description: statusText,
+            });
         }
         if (form) {
             populateFields(offer, form);
         }
-        if (offer) {
-            console.log(offer);
+        if (response && response.status === 200) {
+            offerStore.updateOne(putData);
+            onCancel();
         }
-    }, [putData, offer])
+    }, [putData, offer, putError, response])
 
     return (
         <Modal
@@ -164,7 +168,7 @@ export default function OfferUpdateModal(props) {
                         size="small"
                         type="primary"
                         htmlType="submit"
-                        onClick={() => submitUpdate()}
+                        onClick={submitUpdate}
                     >
                         Update
                     </Button>

@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { Table, Button, Form } from 'antd';
+import { Table, Button, Form, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
 import OfferForm from 'components/offer/OfferForm';
 import OfferStore from 'store/Offer';
+import dayjs from 'dayjs';
 
 configure({
     axios: axiosInstance,
@@ -30,7 +31,7 @@ const pathwayColumns = [
 
 const OfferCreationContainer = (({ className, closeModal }) => {
     const [ form ] = Form.useForm();
-    const [{ data: postData, error: postError }, executePost ] = useAxios({
+    const [{ data: postData, error: postError, response }, executePost ] = useAxios({
         url: '/offers',
         method: 'POST'
     }, { manual: true });
@@ -43,26 +44,26 @@ const OfferCreationContainer = (({ className, closeModal }) => {
         const values = form.getFieldsValue([
             'category', 'description', 'learn_and_earn',
             'part_of_day', 'frequency', 'frequency_unit', 'cost', 'credit_unit',
-            'pay_unit', 'length_unit', 'name', 'start_date', 'provider_id',
+            'pay_unit', 'length', 'length_unit', 'name', 'start_date', 'provider_id',
             'topics', 'pay', 'credit'
         ]);
 
         const {
             category, description, learn_and_earn,
             part_of_day, frequency_unit, cost, credit, credit_unit,
-            pay, pay_unit, length_unit, name, start_date, frequency
+            pay, pay_unit, length, length_unit, name, start_date, frequency
         } = values;
 
         if (
             category && description && learn_and_earn &&
             part_of_day && frequency_unit && cost && credit && 
-            credit_unit && pay && pay_unit && length_unit && name
+            credit_unit && pay && pay_unit && length && length_unit && name
             && frequency
         ) {
             executePost({
                 data: {
                     ...values,
-                    start_date: start_date.toISOString() || null
+                    start_date: dayjs(start_date).toISOString() || null
                 }
             });
         }

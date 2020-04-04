@@ -40,7 +40,7 @@ export default function OfferContainer() {
     data: offersData,
     loading: loadingOffers,
     error: offerError,
-  }] = useAxios('/offers');
+  }] = useAxios('/offers?scope=with_datafields');
 
   const openAndPopulateUpdateModal = (offer) => {
     setSelectedOffer(offer);
@@ -76,7 +76,7 @@ export default function OfferContainer() {
         offer={selectedOffer}
         visible={modalVisibility}
         onCancel={() => setModalVisibility(false)}
-        store={offerStore}
+        offerStore={offerStore}
       />
     </Card>
   );

@@ -30,9 +30,7 @@ module.exports = [
 
             config.plugins = [
                 ...config.plugins,
-                new AntdDayjsWebpackPlugin({
-                    replaceMoment: true
-                }),
+                new AntdDayjsWebpackPlugin(),
                 new LodashModuleReplacementPlugin({
                     shorthands: true,
                     collections: true,

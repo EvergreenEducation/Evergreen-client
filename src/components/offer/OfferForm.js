@@ -93,7 +93,7 @@ const OfferForm = (props) => {
                                     offer_category.map((category, index) => {
                                         return (
                                             <Option
-                                                key={index}
+                                                key={index.toString()}
                                                 value={category.id}
                                             >
                                                 {category.name}
@@ -244,7 +244,7 @@ const OfferForm = (props) => {
                                 part_of_day_unit.map((part_of_day, index) => {
                                     return (
                                         <Option
-                                            key={index}
+                                            key={index.toString()}
                                             value={part_of_day.id}
                                         >
                                             {part_of_day.name}
@@ -284,7 +284,7 @@ const OfferForm = (props) => {
                                 frequency_unit.map((f, index) => {
                                     return (
                                         <Option
-                                            key={index}
+                                            key={index.toString()}
                                             value={f.id}
                                         >
                                             {f.name}
@@ -325,7 +325,7 @@ const OfferForm = (props) => {
                                 cost_unit.map((unit, index) => {
                                     return (
                                         <Option
-                                            key={index}
+                                            key={index.toString()}
                                             value={unit.id}
                                         >
                                             {unit.name}
@@ -365,7 +365,7 @@ const OfferForm = (props) => {
                                 credit_unit.map((credit, index) => {
                                     return (
                                         <Option
-                                            key={index}
+                                            key={index.toString()}
                                             value={credit.id}
                                         >
                                             {credit.name}
@@ -407,7 +407,7 @@ const OfferForm = (props) => {
                                 payment_unit.map((credit, index) => {
                                     return (
                                         <Option
-                                            key={index}
+                                            key={index.toString()}
                                             value={credit.id}
                                         >
                                             {credit.name}
@@ -447,7 +447,7 @@ const OfferForm = (props) => {
                                 length_unit.map((l, index) => {
                                     return (
                                         <Option
-                                            key={index}
+                                            key={index.toString()}
                                             value={l.id}
                                         >
                                             {l.name}
