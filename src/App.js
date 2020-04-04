@@ -3,7 +3,9 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Link
+  Link,
+  useParams,
+  Redirect
 } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import HomePage from 'screens/HomePage';
@@ -12,6 +14,20 @@ const AuthScreen = imported(() => import('screens/AuthScreen'));
 const EmailNotVerifiedScreen = imported(() => import('screens/EmailNotVerifiedScreen'));
 const AdminDashboardScreen = imported(() => import('screens/AdminDashboardScreen'));
 const Result = imported(() => import('antd/lib/result'));
+
+function AuthAction() {
+  const params = useParams();
+  const { action } = params;
+  if (action === 'email_not_verified') {
+    return <EmailNotVerifiedScreen />
+  } else if (
+    action === 'logout'
+  ) {
+    window.location.replace(`${process.env.REACT_APP_API_URL}/logout`)
+  } else {
+    return <Redirect to={{ pathname: '/'}}/>
+  }
+}
 
 class App extends Component {
   render() {
@@ -30,8 +46,10 @@ class App extends Component {
           />
           <Route
             exact
-            path="/auth/email_not_verified"
-            component={EmailNotVerifiedScreen}
+            path="/auth/:action"
+            component={props => {
+              return <AuthAction />;
+            }}
           />
           <Route
             path="/admin"

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, Route, Redirect } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
-import { Layout, Button, Col, Skeleton } from 'antd';
+import { Layout, Button, Col, Skeleton, Tooltip } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import Sidebar from 'components/Sidebar';
@@ -77,12 +77,14 @@ export default function AdminDashboardPage(props) {
                             </Col>
                             <Col span={10} className="flex justify-end">
                                 <Button type="link">
-                                    <Link to="/auth">
+                                  <Tooltip title="Sign out">
+                                    <Link to="/auth/logout">
                                         <FontAwesomeIcon
                                             className="text-black"
                                             icon={faSignOutAlt}
                                         />
                                     </Link>
+                                  </Tooltip>
                                 </Button>
                             </Col>
                         </Header>

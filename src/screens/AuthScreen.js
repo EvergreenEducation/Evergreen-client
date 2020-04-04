@@ -2,12 +2,13 @@ import React from 'react';
 import AuthService from 'services/AuthService';
 import {
   Redirect,
-  useLocation
+  useLocation,
 } from 'react-router-dom';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
+
 
 function Auth() {
     let query = useQuery();
