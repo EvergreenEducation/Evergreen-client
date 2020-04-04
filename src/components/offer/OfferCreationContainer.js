@@ -35,9 +35,6 @@ const OfferCreationContainer = (({ className, closeModal }) => {
         method: 'POST'
     }, { manual: true });
 
-    const test = Form.create();
-    console.log(test);
-
     const offerStore = OfferStore.useContainer();
     const store = useProviderDataFieldStore();
     const { datafield: datafieldStore, provider: providerStore } = store;
@@ -46,13 +43,14 @@ const OfferCreationContainer = (({ className, closeModal }) => {
         const values = form.getFieldsValue([
             'category', 'description', 'learn_and_earn',
             'part_of_day', 'frequency_unit', 'cost', 'credit_unit',
-            'pay_unit', 'length_unit', 'name', 'start_date', 'provider_id'
+            'pay_unit', 'length_unit', 'name', 'start_date', 'provider_id',
+            // 'topics',
         ]);
 
         const {
             category, description, learn_and_earn,
             part_of_day, frequency_unit, cost, credit_unit,
-            pay_unit, length_unit, name, start_date,
+            pay_unit, length_unit, name, start_date
         } = values;
 
         console.log(values);
@@ -114,7 +112,7 @@ const OfferCreationContainer = (({ className, closeModal }) => {
                         className="mr-3 px-10 rounded"
                         type="primary"
                         size="small"
-                        htmlType="submit"
+                        // htmlType="submit"
                         onClick={submit}
                     >
                         Create

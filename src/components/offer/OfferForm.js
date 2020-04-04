@@ -8,7 +8,6 @@ const { Option } = Select;
 
 const OfferForm = (props) => {
     let { datafields = [], providers = {}, form } = props;
-    const { getFieldDecorator } = form;
 
     datafields = Object.values(datafields);
     const providersArr = Object.values(providers);
@@ -43,45 +42,42 @@ const OfferForm = (props) => {
             <ImageUploadAndNameInputs>
                 <Row gutter={8}>
                     <Col span={15}>
-                        <Form.Item
-                            label="Provider"
-                            name="provider_id"
-                            labelAlign={"left"}
-                            colon={false}
-                            className="mb-0 inherit"
-                        >
-                            <div className="flex flex-row">
-                                <Col span={18}>
-                                    <Select
-                                        className="rounded-l custom-select-rounded-l-r-none rounded-r-none"
-                                        showSearch
-                                        name="provider_id"
-                                        onSelect={handleSelect}
-                                    >
-                                        {
-                                            providersArr.map((p, index) => {
-                                                return (
-                                                    <Option
-                                                        key={index}
-                                                        value={p.id}
-                                                    >
-                                                        {p.name}
-                                                    </Option>
-                                                );
-                                            })
-                                        }
-                                    </Select>
-                                </Col>
-                                <Col type={7}>
-                                    <Button
-                                        className="rounded-l-none"
-                                        type="primary"
-                                    >
-                                        Use Image
-                                    </Button>
-                                </Col>
-                            </div>
-                        </Form.Item>
+                        <div className="flex flex-row">
+                            <Form.Item
+                                label="Provider"
+                                name="provider_id"
+                                labelAlign={"left"}
+                                colon={false}
+                                className="mb-0 inherit flex-col w-full"
+                            >
+                                <Select
+                                    className="custom-select-rounded-l-r-none"
+                                    showSearch
+                                    name="provider_id"
+                                    onSelect={handleSelect}
+                                >
+                                    {
+                                        providersArr.map((p, index) => {
+                                            return (
+                                                <Option
+                                                    key={index.toString()}
+                                                    value={p.id}
+                                                >
+                                                    {p.name}
+                                                </Option>
+                                            );
+                                        })
+                                    }
+                                </Select>
+                            </Form.Item>
+                            <Button
+                                className="rounded-l-none"
+                                type="primary"
+                                style={{ top: "2rem" }}
+                            >
+                                Use Image
+                            </Button>
+                        </div>
                     </Col>
                     <Col span={9}>
                         <Form.Item
