@@ -8,10 +8,9 @@ import { useProviderDataFieldStore } from 'components/provider';
 import PathwayStore from 'store/Pathway';
 import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
-import PathwayUpdateModal from 'components/pathway/PathwayUpdateModal';
-import { groupBy, property } from 'lodash';
+// import PathwayUpdateModal from 'components/pathway/PathwayUpdateModal';
 
-const OfferUpdateModal = imported(() => import('components/offer/OfferUpdateModal'));
+const PathwayUpdateModal = imported(() => import('components/pathway/PathwayUpdateModal'));
 
 configure({
   axios: axiosInstance

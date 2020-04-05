@@ -7,7 +7,6 @@ import OffersTable from 'components/offer/OffersTable';
 import { useProviderDataFieldStore } from 'components/provider';
 import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
-import { groupBy, property } from 'lodash';
 
 const OfferUpdateModal = imported(() => import('components/offer/OfferUpdateModal'));
 

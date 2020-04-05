@@ -74,7 +74,7 @@ function PathwaysTable(props) {
 				title="Topics"
 				dataIndex="DataFields"
 				key="DataFields"
-				render={(datafields, record) => ({
+				render={(datafields = [], record) => ({
 					children: (
                         <>
                             {
@@ -90,7 +90,7 @@ function PathwaysTable(props) {
                                             { datafield.name }
                                         </Tag>
                                     );
-                                }) || null
+                                }) || "N/A"
                             }
                         </>
                     ),
