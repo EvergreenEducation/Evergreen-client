@@ -19,6 +19,20 @@ const OfferForm = (props) => {
         cost_unit = [],
     } = grouped;
 
+    let offerCategoryOptions = null;
+
+    if (!isNil(offer_category) && offer_category.length) {
+        offerCategoryOptions = offer_category.map(({ name, id }, index) => {
+        return(
+            <Option
+                value={id}
+                key={index.toString()}
+            >
+                {name}
+            </Option>
+        )});
+    }
+
     let topicOptions = null;
 
     if (!isNil(topic) && topic.length) {
@@ -30,11 +44,6 @@ const OfferForm = (props) => {
                 {name}
             </Option>
         ));
-    }
-
-    const handleSelect = id => {
-        console.log(providers[id]);
-        return id;
     }
 
     return (
@@ -54,7 +63,6 @@ const OfferForm = (props) => {
                                     className="custom-select-rounded-l-r-none"
                                     showSearch
                                     name="provider_id"
-                                    onSelect={handleSelect}
                                 >
                                     {
                                         providersArr.map((p, index) => {
@@ -89,18 +97,7 @@ const OfferForm = (props) => {
                             rules={[{ required: true, message: "Please select a generic offer" }]}
                         >
                             <Select className="rounded custom-select" name="category">
-                                {
-                                    offer_category.map((category, index) => {
-                                        return (
-                                            <Option
-                                                key={index.toString()}
-                                                value={category.id}
-                                            >
-                                                {category.name}
-                                            </Option>
-                                        );
-                                    })
-                                }
+                                {offerCategoryOptions}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -404,13 +401,13 @@ const OfferForm = (props) => {
                     >
                         <Select className="rounded custom-select">
                             {
-                                payment_unit.map((credit, index) => {
+                                payment_unit.map((unit, index) => {
                                     return (
                                         <Option
                                             key={index.toString()}
-                                            value={credit.id}
+                                            value={unit.id}
                                         >
-                                            {credit.name}
+                                            {unit.name}
                                         </Option>
                                     );
                                 })

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
-import { Layout, Button, Col, Skeleton, Tooltip } from 'antd';
+import { Layout, Button, Col, Skeleton, Tooltip, Modal } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import Sidebar from 'components/Sidebar';
@@ -10,9 +10,8 @@ import { SearchModalHeader } from 'components/shared';
 import ProviderStore from 'store/Provider';
 import DataFieldStore from 'store/DataField';
 import OfferStore from 'store/Offer';
+import PathwayStore from 'store/Pathway';
 import 'scss/antd-overrides.scss';
-
-const Modal = imported(() => import('antd/lib/modal'));
 
 const TopicContainer = imported(() => import('components/topic/TopicContainer'));
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
@@ -25,10 +24,15 @@ const ProviderCreationContainer = imported(() => import('components/provider/Pro
 const ProviderContainer = imported(() => import('components/provider/ProviderContainer'));
 
 const OfferContainer = imported(() => import('components/offer/OfferContainer'));
-const OfferCreationContainer = imported(() => import('components/offer/OfferCreationContainer'));
+const OfferCreationContainer = imported(() => import('components/offer/OfferCreationContainer'), {
+    LoadingComponent: () => (<Skeleton className="p-6" paragraph={{ rows: 15 }} active/>),
+});
 const OfferCategoryContainer = imported(() => import('components/offer/OfferCategoryContainer'));
 
-const PathwaysTable = imported(() => import('components/pathway/PathwaysTable'));
+const PathwayContainer = imported(() => import('components/pathway/PathwayContainer'));
+const PathwayCreationContainer = imported(() => import('components/pathway/PathwayCreationContainer'), {
+    LoadingComponent: () => (<Skeleton className="p-6" paragraph={{ rows: 15 }} active/>),
+});
 
 const { Content, Header } = Layout;
 
@@ -54,26 +58,6 @@ export default function AdminDashboardPage(props) {
         history.replace('/admin/providers');
     }
 
-    if (pathname === '/admin/offers') {
-        modalTitle = 'New Offer / Opportunity';
-        HeaderContent = () => null;
-        HeaderContent = () => (
-            <SearchModalHeader
-                createHandler={openModal}
-                title="OFFERS / OPPORTUNITIES"
-                buttonTitle="OFFER"
-            />
-        );
-        FormContent = (<OfferCreationContainer closeModal={handleCancel} />);
-        MainContent = () => <OfferContainer />;
-    }
-
-    if (pathname === '/admin/pathways') {
-        HeaderContent = () => null;
-        FormContent = () => null;
-        MainContent = () => <PathwaysTable />;
-    }
-
     if (pathname === '/admin/providers') {
         modalTitle = 'New Provider';
         FormContent = (
@@ -91,6 +75,36 @@ export default function AdminDashboardPage(props) {
         MainContent = () => <ProviderContainer />;
     }
 
+    if (pathname === '/admin/offers') {
+        modalTitle = 'New Offer / Opportunity';
+        HeaderContent = () => (
+            <SearchModalHeader
+                createHandler={openModal}
+                title="OFFERS / OPPORTUNITIES"
+                buttonTitle="OFFER"
+            />
+        );
+        FormContent = (<OfferCreationContainer closeModal={handleCancel} />);
+        MainContent = () => <OfferContainer />;
+    }
+
+    if (pathname === '/admin/pathways') {
+        modalTitle = 'New Pathway';
+        HeaderContent = () => (
+            <SearchModalHeader
+                createHandler={openModal}
+                title="PATHWAYS"
+                buttonTitle="PATHWAY"
+            />
+        );
+        FormContent = (
+            <PathwayCreationContainer
+                closeModal={handleCancel}
+            />
+        );
+        MainContent = () => <PathwayContainer />;
+    }
+
     if (pathname === '/admin/settings') {
         MainContent = () => (
             <>
@@ -106,47 +120,48 @@ export default function AdminDashboardPage(props) {
         <DataFieldStore.Provider>
             <ProviderStore.Provider>
                 <OfferStore.Provider>
-
-                    <Layout
-                        className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
-                    >
-                        <Sidebar pathname={pathname} />
-                        <Col className="w-full">
-                            <Header className="px-6 bg-white h-12 flex items-center">
-                                <Col span={14}>
-                                    <HeaderContent />
-                                </Col>
-                                <Col span={10} className="flex justify-end">
-                                    <Button type="link">
-                                    <Tooltip title="Sign out">
-                                        <Link to="/auth/logout">
-                                            <FontAwesomeIcon
-                                                className="text-black"
-                                                icon={faSignOutAlt}
-                                            />
-                                        </Link>
-                                    </Tooltip>
-                                    </Button>
-                                </Col>
-                            </Header>
-                            <Content className="p-6 h-min-full">
-                                <MainContent />
-                            </Content>
-                        </Col>
-                    </Layout>
-                    <Modal
-                        className="custom-modal"
-                        title={modalTitle}
-                        visible={modalVisibility}
-                        onCancel={handleCancel}
-                        style={{ borderRadius: 5 }}
-                        bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
-                        width={998}
-                        footer={true}
-                        forceRender={true}
-                    >
-                        { FormContent }
-                    </Modal>
+                    <PathwayStore.Provider>
+                        <Layout
+                            className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
+                        >
+                            <Sidebar pathname={pathname} />
+                            <Col className="w-full">
+                                <Header className="px-6 bg-white h-12 flex items-center">
+                                    <Col span={14}>
+                                        <HeaderContent />
+                                    </Col>
+                                    <Col span={10} className="flex justify-end">
+                                        <Button type="link">
+                                        <Tooltip title="Sign out">
+                                            <Link to="/auth/logout">
+                                                <FontAwesomeIcon
+                                                    className="text-black"
+                                                    icon={faSignOutAlt}
+                                                />
+                                            </Link>
+                                        </Tooltip>
+                                        </Button>
+                                    </Col>
+                                </Header>
+                                <Content className="p-6 h-min-full">
+                                    <MainContent />
+                                </Content>
+                            </Col>
+                        </Layout>
+                        <Modal
+                            className="custom-modal"
+                            title={modalTitle}
+                            visible={modalVisibility}
+                            onCancel={handleCancel}
+                            style={{ borderRadius: 5 }}
+                            bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
+                            width={998}
+                            footer={true}
+                            forceRender={true}
+                        >
+                            { FormContent }
+                        </Modal>
+                    </PathwayStore.Provider>
                 </OfferStore.Provider>
             </ProviderStore.Provider>
         </DataFieldStore.Provider>

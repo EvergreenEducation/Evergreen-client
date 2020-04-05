@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { imported } from 'react-imported-component/macro';
 import { useHistory } from 'react-router-dom';
-import { Card } from 'antd';
+import { Card, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
-import OffersTable from 'components/offer/OffersTable';
+import PathwaysTable from 'components/pathway/PathwaysTable';
 import { useProviderDataFieldStore } from 'components/provider';
+import PathwayStore from 'store/Pathway';
 import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
+import PathwayUpdateModal from 'components/pathway/PathwayUpdateModal';
 import { groupBy, property } from 'lodash';
 
 const OfferUpdateModal = imported(() => import('components/offer/OfferUpdateModal'));
@@ -15,67 +17,69 @@ configure({
   axios: axiosInstance
 })
 
-export default function OfferContainer() {
+export default function PathwayContainer() {
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
-  const [ selectedOffer, setSelectedOffer ] = useState({});
+  const [ selectedPathway, setSelectedPathway ] = useState({});
   const store = useProviderDataFieldStore();
   const { datafield, provider } = store;
   const offerStore = OfferStore.useContainer();
+  const pathwayStore = PathwayStore.useContainer();
   const { entities = [] } = offerStore;
 
   const [{
-    data: getProviderData = [],
-    loading,
-    error: providerError,
-  }] = useAxios('/providers?scope=with_datafields');
+    data: getPathways,
+    loading: loadingPathways,
+    error: getPathwaysError,
+  }] = useAxios('/pathways?scope=with_datafields');
 
   const [{
-    data: datafieldsData,
+    data: getTopics,
     loading: loadingDataFields,
-    error: datafieldError,
-  }] = useAxios('/datafields');
+    error: getTopicsError,
+  }] = useAxios('/datafields?type=topic');
 
   const [{
-    data: offersData,
+    data: getOffers,
     loading: loadingOffers,
-    error: offerError,
+    error: getOffersError,
   }] = useAxios('/offers?scope=with_datafields');
 
-  const openAndPopulateUpdateModal = (offer) => {
-    setSelectedOffer(offer);
+  const openAndPopulateUpdateModal = (pathway) => {
+    setSelectedPathway(pathway);
     setModalVisibility(true);
   }
 
-  if (providerError || datafieldError || offerError) {
+  if (getPathwaysError || getOffersError || getTopicsError) {
     history.push('/error/500');
   }
 
   useEffect(() => {
-    if (getProviderData) {
-      provider.addMany(getProviderData);
+    if (getPathways) {
+        pathwayStore.addMany(getPathways);
     }
-    if (datafieldsData) {
-      datafield.addMany(datafieldsData);
+    if (getPathwaysError) {
+        const { status, statusText } = getPathwaysError.request;
+        notification.error({
+            message: status,
+            description: statusText,
+        })
     }
-    if (offersData) {
-      offerStore.addMany(offersData);
-    }
-  }, [getProviderData, datafieldsData, offersData]);
+  }, [getPathways]);
 
   return (
     <Card className="shadow-md rounded-md">
-      <OffersTable
+      <PathwaysTable
         datafields={datafield.entities}
         providers={provider.entities}
-        data={Object.values(entities)}
+        data={Object.values(pathwayStore.entities)}
         handleUpdateModal={openAndPopulateUpdateModal}
       />
-      <OfferUpdateModal
-        offer={selectedOffer}
+      <PathwayUpdateModal
+        pathway={selectedPathway}
         visible={modalVisibility}
         onCancel={() => setModalVisibility(false)}
-        offerStore={offerStore}
+        pathwayStore={pathwayStore}
       />
     </Card>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button } from 'antd';
+import { Table, Button, Tag } from 'antd';
 import dayjs from 'dayjs';
 
 function OffersTable(props) {
@@ -37,36 +37,37 @@ function OffersTable(props) {
                 return null;
             },
         },
-        // {
-        //     title: 'Topics',
-        //     dataIndex: 'topics',
-        //     key: 'topics',
-        //     render: tags => {
-        //         return (
-        //             <span>
-        //                 {
-        //                     tags.map(tag => {
-        //                     let color = tag.length > 5 ? 'geekblue' : 'green';
-        //                     if (tag === 'loser') {
-        //                         color = 'volcano';
-        //                     }
-        //                         return (
-        //                             <Tag color={color} key={tag}>
-        //                             {tag.toUpperCase()}
-        //                             </Tag>
-        //                         );
-        //                     })
-        //                 }
-        //             </span>
-        //         );
-        //     }
-        // },
+        {
+            title: 'Topics',
+            dataIndex: 'DataFields',
+            key: 'DataFields',
+            render: (datafields, record) => {
+                return (
+                    <>
+                        {
+                            datafields.map((datafield, index) => {
+                                if (datafield.type !== 'topic') {
+                                    return null;
+                                }
+                                return (
+                                    <Tag
+                                        color={index % 2 ? "blue" : "orange"}
+                                        key={datafield.id}
+                                    >
+                                        { datafield.name }
+                                    </Tag>
+                                );
+                            }) || null
+                        }
+                    </>
+                );
+            }
+        },
         {
             title: 'Start Date',
             dataIndex: 'start_date',
             key: 'start_date',
             render: date => {
-                // console.log(date);
                 return dayjs(date).format('MMM DD, YYYY');
             }
         },

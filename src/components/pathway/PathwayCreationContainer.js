@@ -1,64 +1,52 @@
 import React, { useEffect } from 'react';
-import { Table, Button, Form, notification } from 'antd';
+import { Button, Form, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
-import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
-import OfferForm from 'components/offer/OfferForm';
+import PathwayForm from 'components/pathway/PathwayForm';
 import OfferStore from 'store/Offer';
+import DataFieldStore from 'store/DataField';
+import PathwayStore from 'store/Pathway';
 import dayjs from 'dayjs';
 
 configure({
     axios: axiosInstance,
 })
 
-const pathwayColumns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Pathways Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Pathways Description',
-        dataIndex: 'description',
-        key: 'description',
-    }
-];
-
-const OfferCreationContainer = (({ className, closeModal }) => {
+const PathwayCreationContainer = (({ className, closeModal }) => {
     const [ form ] = Form.useForm();
+    const pathwayStore = PathwayStore.useContainer();
+
+    const [{
+        data: getDataFields,
+        error: getDataFieldsError,
+    }] = useAxios('/datafields');
+    
     const [{ data: postData, error: postError, response }, executePost ] = useAxios({
-        url: '/offers',
+        url: '/pathways',
         method: 'POST'
     }, { manual: true });
 
     const offerStore = OfferStore.useContainer();
-    const store = useProviderDataFieldStore();
-    const { datafield: datafieldStore, provider: providerStore } = store;
+    const datafieldStore = DataFieldStore.useContainer();
 
     const submit = async () => {
         const values = form.getFieldsValue([
-            'category', 'description', 'learn_and_earn',
-            'part_of_day', 'frequency', 'frequency_unit', 'cost', 'credit_unit',
-            'pay_unit', 'length', 'length_unit', 'name', 'start_date', 'provider_id',
-            'topics', 'pay', 'credit'
+            'description', 'learn_and_earn', 'frequency',
+            'frequency_unit', 'credit_unit', 'pay_unit',
+            'length', 'length_unit', 'name', 'start_date',
+            'topics', 'pay', 'credit', 'outlook', 'earnings',
+            'type'
         ]);
 
         const {
-            category, description, learn_and_earn,
-            part_of_day, frequency_unit, cost, credit, credit_unit,
-            pay, pay_unit, length, length_unit, name, start_date, frequency
+            description, learn_and_earn, credit, credit_unit,
+            pay, pay_unit, length, length_unit, name, start_date, type,
         } = values;
 
         if (
-            category && description && learn_and_earn &&
-            part_of_day && frequency_unit && cost && credit && 
+            description && learn_and_earn && credit && 
             credit_unit && pay && pay_unit && length && length_unit && name
-            && frequency
+            && type
         ) {
             const response = await executePost({
                 data: {
@@ -75,8 +63,8 @@ const OfferCreationContainer = (({ className, closeModal }) => {
     }
 
     useEffect(() => {
-        if (postData) {
-            offerStore.addOne(postData);
+        if (getDataFields) {
+            datafieldStore.addMany(getDataFields);
         }
         if (postError) {
             const { status, statusText } = postError.request;
@@ -85,13 +73,10 @@ const OfferCreationContainer = (({ className, closeModal }) => {
                 description: statusText,
             })
         }
-        if (response && response.status === 201) {
-            notification.success({
-                message: response.status,
-                description: 'Successfully created offer'
-            })
-        } 
-    }, [postData, response])
+        if (postData) {
+            pathwayStore.addOne(postData);
+        }
+    }, [getDataFields])
 
     return (
         <div>
@@ -100,20 +85,9 @@ const OfferCreationContainer = (({ className, closeModal }) => {
                     className="p-6 overflow-y-auto"
                     style={{ maxHeight: "32rem" }}
                 >
-                    <OfferForm
-                        form={form}
+                    <PathwayForm
                         datafields={datafieldStore.entities}
-                        providers={providerStore.entities}
                     />
-                    <section className="mt-2">
-                        <label className="mb-2 block">
-                            Pathways - Table
-                        </label>
-                        <Table
-                            columns={pathwayColumns}
-                            dataSource={[]}
-                        />
-                    </section>
                 </div>
                 <section
                     className="bg-white px-6 pt-5 pb-1 flex justify-center"
@@ -144,4 +118,4 @@ const OfferCreationContainer = (({ className, closeModal }) => {
     );
 })
 
-export default OfferCreationContainer;
+export default PathwayCreationContainer;

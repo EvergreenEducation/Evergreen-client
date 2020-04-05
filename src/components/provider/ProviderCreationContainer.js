@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ProviderForm from 'components/provider/ProviderForm';
-import { Table, Button, Form } from 'antd';
+import { Table, Button, Form, notification } from 'antd';
 import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
-import { configure } from 'axios-hooks';
+import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import { isNil } from 'lodash';
 
@@ -50,6 +50,10 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
     const [ form ] = Form.useForm();
     const store = useProviderDataFieldStore();
     const { datafield: datafieldStore, provider: providerStore } = store;
+    const [{ data: postData, error: postError, response }, executePost ] = useAxios({
+        url: '/providers',
+        method: 'POST'
+    }, { manual: true });
     
     const submit = async () => {
         const values = form.getFieldsValue([
@@ -75,21 +79,38 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
         if (
             name && location && type && learn_and_earn && !isNil(is_public)
         ) {
-            try {
-                const response = await axiosInstance.post('/providers', {
+            const response = await executePost({
+                data: {
                     ...values,
                     topics: values.topics,
-                });
-
-                if (response.status === 201) {
-                    providerStore.addOne(response.data);
-                    closeModal();
                 }
-            } catch(e) {
-                console.error(e);
+            });
+
+            if (response && response.status === 201) {
+                form.resetFields();
+                closeModal();
             }
         }
     }
+
+    useEffect(() => {
+        if (postData) {
+            providerStore.addOne(postData);
+        }
+        if (postError) {
+            const { status, statusText } = postError.request;
+            notification.error({
+                message: status,
+                description: statusText,
+            })
+        }
+        if (response && response.status === 201) {
+            notification.success({
+                message: response.status,
+                description: 'Successfully created provider'
+            })
+        }
+    }, [postData, response]);
 
 
     return (
