@@ -35,6 +35,18 @@ code {
   width: 18rem;
 }
 
+.h-72 {
+  height: 18rem;
+}
+
+.h-80 {
+  height: 20rem;
+}
+
+.h-88 {
+  height: 28rem;
+}
+
 .line-title {
   display: flex;
   align-items: center;

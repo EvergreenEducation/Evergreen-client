@@ -8,8 +8,9 @@ import {
   Redirect
 } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
-import HomePage from 'screens/HomePage';
 import { Button } from 'antd';
+import HomePage from 'screens/HomePage';
+import UserSelectionScreen from 'screens/UserSelectionScreen';
 const AuthScreen = imported(() => import('screens/AuthScreen'));
 const EmailNotVerifiedScreen = imported(() => import('screens/EmailNotVerifiedScreen'));
 const AdminDashboardScreen = imported(() => import('screens/AdminDashboardScreen'));
@@ -38,6 +39,11 @@ class App extends Component {
             exact
             path="/"
             component={HomePage}
+          />
+          <Route
+            exact
+            path="/user"
+            component={UserSelectionScreen}
           />
           <Route
             exact
