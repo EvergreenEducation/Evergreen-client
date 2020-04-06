@@ -19,7 +19,6 @@
                 "style": true
             },
             "antd"
-        ],
-        "ramda"
+        ]
     ]
 }

@@ -1,91 +1,124 @@
 import React from 'react';
-import { Card, Table, Tag } from 'antd';
+import { Table, Tag, Button } from 'antd';
+import 'scss/antd-overrides.scss';
 
-const columns = [
-    {
-        title: 'Name / ID',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Provider',
-        dataIndex: 'provider',
-        key: 'provider',
-    },
-    {
-        title: 'Generic Type',
-        dataIndex: 'type',
-        key: 'type',
-    },
-    {
-        title: 'Offer Groups',
-        dataIndex: 'groups',
-        key: 'groups',
-        render: tags => {
-            return (
-                <span>
-                    {
-                        tags.map(tag => {
-                        let color = tag.length > 5 ? 'geekblue' : 'green';
-                        if (tag === 'loser') {
-                            color = 'volcano';
-                        }
-                            return (
-                                <Tag color={color} key={tag}>
-                                    {tag.toUpperCase()}
-                                </Tag>
-                            );
-                        })
-                    }
-                </span>
-            );
-        }
-    },
-    {
-        title: 'Topics',
-        dataIndex: 'topics',
-        key: 'topics',
-        render: tags => {
-            return (
-                <span>
-                    {
-                        tags.map(tag => {
-                        let color = tag.length > 5 ? 'geekblue' : 'green';
-                        if (tag === 'loser') {
-                            color = 'volcano';
-                        }
-                            return (
-                                <Tag color={color} key={tag}>
-                                    {tag.toUpperCase()}
-                                </Tag>
-                            );
-                        })
-                    }
-                </span>
-            );
-        }
-    },
-];
+const { Column } = Table;
 
-const data = [
-    {
-        key: '1',
-        name: 'Heliophysics [161500697]',
-        provider: 'Provider from Texas',
-        type: "Astrophysics",
-        groups: ['Sun Physics (2)', 'Solar Weather (1)'],
-        topics: ["Physics", "Economics", "Biology", "Education"]
-    }
-];
-
-function PathwaysTable() {
+function PathwaysTable(props) {
+    const { data, handleUpdateModal } = props;
     return (
-        <Card className="h-full rounded-md shadow">
-            <Table
-                columns={columns}
-                dataSource={data}
-            />
-        </Card>
+        <Table
+            dataSource={data}
+            bordered
+            className="ant-table-wrapper--responsive"
+			rowClassName={() => "antd-row"}
+			rowKey="id"
+        >
+			<Column
+				className="antd-col"
+				title="ID"
+				dataIndex="id"
+				key="id"
+				render={(text, record) => ({
+					children: text,
+					props: {
+						"data-title": "ID",
+					}
+				})}
+			/>
+            <Column
+				className="antd-col"
+				title="Name"
+				dataIndex="name"
+				key="name"
+				render={(text, record) => ({
+					children: text,
+					props: {
+						"data-title": "Name",
+					}
+				})}
+			/>
+            <Column
+				className="antd-col"
+				title="Generic Type"
+				dataIndex="type"
+				key="type"
+				render={(text, record) => ({
+					children: text,
+					props: {
+						"data-title": "Generic Type",
+					}
+				})}
+			/>
+            <Column
+				className="antd-col"
+				title="Offer Groups"
+				dataIndex="groups_of_offers"
+				key="groups_of_offers"
+				render={(text, record) => {
+                    let children = "N/A";
+
+                    if (text && text.length) {
+                        children = text;
+                    }
+
+                    return {
+                        children: children,
+                        props: {
+                            "data-title": "Offer Groups",
+                        }
+                    }
+                }}
+			/>
+            <Column
+				className="antd-col"
+				title="Topics"
+				dataIndex="DataFields"
+				key="DataFields"
+				render={(datafields = [], record) => ({
+					children: (
+                        <>
+                            {
+                                datafields.map((datafield, index) => {
+                                    if (datafield.type !== 'topic') {
+                                        return null;
+                                    }
+                                    return (
+                                        <Tag
+                                            color={index % 2 ? "blue" : "orange"}
+                                            key={index.toString()}
+                                        >
+                                            { datafield.name }
+                                        </Tag>
+                                    );
+                                }) || "N/A"
+                            }
+                        </>
+                    ),
+					props: {
+						"data-title": "Topics",
+					}
+				})}
+			/>
+            <Column
+				className="antd-col"
+				title=""
+				key="update"
+				render={(text, record) => ({
+					children: (
+                        <Button
+                            type="link"
+                            onClick={() => handleUpdateModal(record)}
+                        >
+                            Update
+                        </Button>
+                    ),
+					props: {
+						"data-title": "",
+					}
+				})}
+			/>
+        </Table>
     );
 }
 

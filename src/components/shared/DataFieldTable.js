@@ -1,20 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Table, Button, Form, Input } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import axiosInstance from 'services/AxiosInstance';
+import useAxios, { configure } from 'axios-hooks';
+
+configure({
+    axios: axiosInstance
+})
 
 export default function DataFieldTable({ data = [], store, loading, type = null, columns }) {
     const [ form ] = Form.useForm();
 
-    async function createDataField(data) {
+    const [{ data: postData }, executePost ] = useAxios({
+        url: '/datafields',
+        method: 'POST',
+    }, { manual: true });
+
+    function createDataField(data) {
         if (!data.name) {
             return;
         }
-        const response = await axiosInstance.post('/datafields', data);
-        if (response.status === 201) {
-            store.addOne(response.data);
-        }
+        executePost({ data });
     }
 
     function submit() {
@@ -32,6 +39,13 @@ export default function DataFieldTable({ data = [], store, loading, type = null,
             store.removeOneByIdKey(id);
         }
     }
+
+    useEffect(() => {
+        if (postData) {
+            store.addOne(postData);
+            form.resetFields();
+        }
+    }, [postData]);
 
     let newData = data.slice();
     newData.unshift(
@@ -86,6 +100,7 @@ export default function DataFieldTable({ data = [], store, loading, type = null,
             add: (
                 <Button
                     className="flex justify-center"
+                    key={index.toString()}
                     type="primary"
                     shape="circle"
                     size="small"

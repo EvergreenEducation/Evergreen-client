@@ -1,32 +1,15 @@
 import React, { useEffect } from 'react';
-import ProviderForm from 'components/provider/ProviderForm';
 import { Table, Button, Form, notification } from 'antd';
-import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
-import { isNil } from 'lodash';
+import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
+import OfferForm from 'components/offer/OfferForm';
+import OfferStore from 'store/Offer';
+import dayjs from 'dayjs';
 
 configure({
     axios: axiosInstance,
 })
-
-const offerColumns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Offer Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Offer Description',
-        dataIndex: 'description',
-        key: 'description',
-    }
-];
 
 const pathwayColumns = [
     {
@@ -46,43 +29,41 @@ const pathwayColumns = [
     }
 ];
 
-const ProviderCreationContainer = (({ className, closeModal }, ref) => {
+const OfferCreationContainer = (({ className, closeModal }) => {
     const [ form ] = Form.useForm();
-    const store = useProviderDataFieldStore();
-    const { datafield: datafieldStore, provider: providerStore } = store;
     const [{ data: postData, error: postError, response }, executePost ] = useAxios({
-        url: '/providers',
+        url: '/offers',
         method: 'POST'
     }, { manual: true });
-    
+
+    const offerStore = OfferStore.useContainer();
+    const store = useProviderDataFieldStore();
+    const { datafield: datafieldStore, provider: providerStore } = store;
+
     const submit = async () => {
         const values = form.getFieldsValue([
-            "name",
-            "location",
-            "type",
-            "learn_and_earn",
-            "is_public",
-            "industry",
-            "description",
-            "industry",
-            "financial_aid",
-            "credit",
-            "news",
-            "contact",
-            "pay",
-            "cost",
-            "topics"
+            'category', 'description', 'learn_and_earn',
+            'part_of_day', 'frequency', 'frequency_unit', 'cost', 'credit_unit',
+            'pay_unit', 'length', 'length_unit', 'name', 'start_date', 'provider_id',
+            'topics', 'pay', 'credit'
         ]);
 
-        const { name, location, type, learn_and_earn, is_public } = values;
+        const {
+            category, description, learn_and_earn,
+            part_of_day, frequency_unit, cost, credit, credit_unit,
+            pay, pay_unit, length, length_unit, name, start_date, frequency
+        } = values;
 
         if (
-            name && location && type && learn_and_earn && !isNil(is_public)
+            category && description && learn_and_earn &&
+            part_of_day && frequency_unit && cost && credit && 
+            credit_unit && pay && pay_unit && length && length_unit && name
+            && frequency
         ) {
             const response = await executePost({
                 data: {
                     ...values,
-                    topics: values.topics,
+                    start_date: dayjs(start_date).toISOString() || null
                 }
             });
 
@@ -95,7 +76,7 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
 
     useEffect(() => {
         if (postData) {
-            providerStore.addOne(postData);
+            offerStore.addOne(postData);
         }
         if (postError) {
             const { status, statusText } = postError.request;
@@ -107,35 +88,23 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
         if (response && response.status === 201) {
             notification.success({
                 message: response.status,
-                description: 'Successfully created provider'
+                description: 'Successfully created offer'
             })
-        }
-    }, [postData, response, postError]);
-
+        } 
+    }, [postData, response, postError])
 
     return (
         <div>
-            <Form
-                form={form}
-                name="providerForm"
-            >
+            <Form form={form} name="offerForm">
                 <div
                     className="p-6 overflow-y-auto"
                     style={{ maxHeight: "32rem" }}
                 >
-                    <ProviderForm
-                        datafields={Object.values(datafieldStore.entities)}
+                    <OfferForm
+                        form={form}
+                        datafields={datafieldStore.entities}
+                        providers={providerStore.entities}
                     />
-                    <section className="mt-2">
-                        <label className="mb-2 block">
-                            Offers - Table
-                        </label>
-                        <Table
-                            columns={offerColumns}
-                            dataSource={[]}
-                            rowKey="id"
-                        />
-                    </section>
                     <section className="mt-2">
                         <label className="mb-2 block">
                             Pathways - Table
@@ -176,4 +145,4 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
     );
 })
 
-export default ProviderCreationContainer;
+export default OfferCreationContainer;

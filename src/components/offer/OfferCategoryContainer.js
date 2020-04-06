@@ -11,15 +11,15 @@ configure({
   axios: axiosInstance
 })
 
-export default function TopicContainer(props) {
+export default function OfferCategoryContainer(props) {
     const history = useHistory();
     const store = DataFieldStore.useContainer();
-    const { entities, typeEqualsTopic } = store;
+    const { entities, typeEqualsOfferCategory } = store;
     
-    const tableData = Object.values(entities).filter(typeEqualsTopic);
+    const tableData = Object.values(entities).filter(typeEqualsOfferCategory);
 
     const [{ data, loading, error } ] = useAxios(
-      '/datafields?type=topic'
+      '/datafields?type=offer_category'
     );
 
     if (error) {
@@ -34,37 +34,34 @@ export default function TopicContainer(props) {
 
     return (
         <Card
-            title="Topics"
-            className="shadow-md rounded-md"
+            title="Offer Categories"
+            className="shadow-md rounded-md mb-4"
         >
             <DataFieldTable
                 data={error ? [] : tableData}
                 store={store}
-                type="topic"
+                type="offer_category"
                 loading={loading}
                 columns={[
                     {
                         title: 'Cod',
                         dataIndex: 'id',
-                        key: 'id',
-                        className: 'antd-col'
+                        key: 'id'
                     },
                     {
-                        title: 'Topic Name',
+                        title: 'Category Name',
                         dataIndex: 'name',
-                        key: 'name',
-                        className: 'antd-col'
+                        key: 'name'
                     },
                     {
-                        title: 'Topic Description',
+                        title: 'Description',
                         dataIndex: 'description',
-                        key: 'description',
-                        className: 'antd-col'
+                        key: 'description'
                     },
                     {
                         title: 'add',
                         dataIndex: 'add',
-                        key: 'add',
+                        key: 'add'
                     }
                 ]}
             />

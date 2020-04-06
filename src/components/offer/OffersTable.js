@@ -1,72 +1,133 @@
 import React from 'react';
-import { Card, Table, Tag } from 'antd';
+import { Table, Button, Tag } from 'antd';
+import dayjs from 'dayjs';
+import 'scss/antd-overrides.scss';
 
-const columns = [
-    {
-        title: 'Name / ID',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Category',
-        dataIndex: 'category',
-        key: 'category',
-    },
-    {
-        title: 'Provider',
-        dataIndex: 'provider',
-        key: 'provider',
-    },
-    {
-        title: 'Topics',
-        dataIndex: 'topics',
-        key: 'topics',
-        render: tags => {
-            return (
-                <span>
-                    {
-                        tags.map(tag => {
-                        let color = tag.length > 5 ? 'geekblue' : 'green';
-                        if (tag === 'loser') {
-                            color = 'volcano';
-                        }
-                            return (
-                                <Tag color={color} key={tag}>
-                                {tag.toUpperCase()}
-                                </Tag>
-                            );
-                        })
-                    }
-                </span>
-            );
-        }
-    },
-    {
-        title: 'Start Date',
-        dataIndex: 'start_date',
-        key: 'start_date',
-    },
-];
+const { Column } = Table;
 
-const data = [
-    {
-        key: '1',
-        name: 'Maths differential equations solving curse [156625906]',
-        category: 'Web Development',
-        provider: 'Unicore Technology Vision',
-        topics: ['Education', 'Computer Science'],
-        start_date: '2020-02-18',
-    }
-];
+function OffersTable(props) {
+    const { data, providers, datafields, handleUpdateModal } = props;
 
-function OffersTable() {
     return (
-        <Card className="h-full rounded-md shadow">
-            <Table
-                columns={columns}
-                dataSource={data}
-            />
-        </Card>
+        <Table
+            dataSource={data}
+            bordered
+            className="ant-table-wrapper--responsive"
+			rowClassName={() => "antd-row"}
+			rowKey="id"
+        >
+            <Column
+				className="antd-col"
+				title="ID"
+				dataIndex="id"
+				key="id"
+				render={(text, record) => ({
+					children: text,
+					props: {
+						"data-title": "ID",
+					}
+				})}
+			/>
+            <Column
+				className="antd-col"
+				title="Name"
+				dataIndex="name"
+				key="name"
+				render={(text, record) => ({
+					children: text,
+					props: {
+						"data-title": "Name",
+					}
+				})}
+			/>
+            <Column
+				className="antd-col"
+				title="Category"
+				dataIndex="category"
+				key="category"
+				render={
+                    id => {
+                        if (!datafields[id]) {
+                            return null;
+                        }
+                        return datafields[id].name;
+                    }
+                }
+			/>
+            <Column
+				className="antd-col"
+				title="Provider"
+				dataIndex="provider_id"
+				key="provider_id"
+				render={
+                    id => {
+                        if (providers[id]) {
+                            return providers[id].name;
+                        }
+                        return null;
+                    }
+                }
+			/>
+            <Column
+				className="antd-col"
+				title="Topics"
+				dataIndex="DataFields"
+				key="DataFields"
+				render={(datafields, record) => ({
+					children: (
+                        <>
+                            {
+                                datafields.map((datafield, index) => {
+                                    if (datafield.type !== 'topic') {
+                                        return null;
+                                    }
+                                    return (
+                                        <Tag
+                                            color={index % 2 ? "blue" : "orange"}
+                                            key={index.toString()}
+                                        >
+                                            { datafield.name }
+                                        </Tag>
+                                    );
+                                }) || null
+                            }
+                        </>
+                    ),
+					props: {
+						"data-title": "Topics",
+					}
+				})}
+			/>
+            <Column
+				className="antd-col"
+				title="Start Date"
+				dataIndex="start_date"
+				key="start_date"
+				render={
+                    date => {
+                        return dayjs(date).format('MMM DD, YYYY');
+                    }
+                }
+			/>
+            <Column
+				className="antd-col"
+				title=""
+				key="update"
+				render={(text, record) => ({
+					children: (
+                        <Button
+                            type="link"
+                            onClick={() => handleUpdateModal(record)}
+                        >
+                            Update
+                        </Button>
+                    ),
+					props: {
+						"data-title": "",
+					}
+				})}
+			/>
+        </Table>
     );
 }
 

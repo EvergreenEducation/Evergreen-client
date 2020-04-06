@@ -1,87 +1,142 @@
 import React from 'react';
 import { Table, Tag, Button } from 'antd';
 import { find, matchesProperty, isNil } from 'lodash';
+import 'scss/antd-overrides.scss';
+
+const { Column } = Table;
 
 function ProvidersTable({ data = [], loading, handleUpdateModal }) {
-    const columns = [
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: 'Location',
-            dataIndex: 'location',
-            key: 'location',
-        },
-        {
-            title: 'Industry',
-            dataIndex: 'industry',
-            key: 'industry',
-        },
-        {
-            title: 'Topics',
-            dataIndex: 'DataFields',
-            key: 'DataFields',
-            render: (datafields) => {
-                return (
-                    <>
-                        {
-                            datafields.map((datafield, index) => {
-                                if (datafield.type !== 'topic') {
-                                    return null;
-                                }
-                                return (
-                                    <Tag
-                                        color={index % 2 ? "blue" : "orange"}
-                                        key={datafield.id}
-                                    >
-                                        { datafield.name }
-                                    </Tag>
-                                );
-                            }) || null
-                        }
-                    </>
-                );
-            }
-        },
-        {
-            title: 'Type',
-            dataIndex: 'DataFields',
-            key: 'DataFields',
-            render: (datafields = []) => {
-                const datafield = find(datafields, matchesProperty('type', 'provider'));
-                if (isNil(datafield)) {
-                    return null;
-                }
-                return datafield.name;
-            }
-        },
-        {
-            title: null,
-            dataIndex: 'update',
-            key: 'update',
-            render: (text, record) => {
-                return (
-                    <Button
-                        type="link"
-                        onClick={() => handleUpdateModal(record)}
-                    >
-                        Update
-                    </Button>
-                );
-            }
-        },
-    ];
-
     return (
         <Table
             loading={loading}
             pagination={{ pageSize: 10 }}
-            rowKey="id"
-            columns={columns}
             dataSource={data}
-        />
+            bordered
+            className="ant-table-wrapper--responsive"
+			rowClassName={() => "antd-row"}
+			rowKey="id"
+        >
+             <Column
+				className="antd-col"
+				title="ID"
+				dataIndex="id"
+				key="id"
+				render={(text, record) => ({
+					children: text,
+					props: {
+						"data-title": "ID",
+					}
+				})}
+			/>
+            <Column
+				className="antd-col"
+				title="Name"
+				dataIndex="name"
+				key="name"
+				render={(text, record) => ({
+					children: text,
+					props: {
+						"data-title": "Name",
+					}
+				})}
+			/>
+            <Column
+				className="antd-col"
+				title="Location"
+				dataIndex="location"
+				key="location"
+				render={(text, record) => ({
+					children: text,
+					props: {
+						"data-title": "Location",
+					}
+				})}
+			/>
+            <Column
+				className="antd-col"
+				title="Industry"
+				dataIndex="industry"
+				key="industry"
+				render={(text, record) => {
+                    let children = "N/A";
+                    if (text && text.length) {
+                        children = text;
+                    }
+                    return {
+                        children,
+                        props: {
+                            "data-title": "Industry",
+                        }
+                    }
+                }}
+			/>
+            <Column
+				className="antd-col"
+				title="Topics"
+				dataIndex="DataFields"
+				key="DataFields"
+				render={(datafields, record) => ({
+					children: (
+                        <>
+                            {
+                                datafields.map((datafield, index) => {
+                                    if (datafield.type !== 'topic') {
+                                        return null;
+                                    }
+                                    return (
+                                        <Tag
+                                            color={index % 2 ? "blue" : "orange"}
+                                            key={index.toString()}
+                                        >
+                                            { datafield.name }
+                                        </Tag>
+                                    );
+                                }) || null
+                            }
+                        </>
+                    ),
+					props: {
+						"data-title": "Topics",
+					}
+				})}
+			/>
+            <Column
+				className="antd-col"
+				title="Type"
+				dataIndex="DataFields"
+				key="DataFields"
+				render={(datafields = [], record) => {
+                    const datafield = find(datafields, matchesProperty('type', 'provider'));
+                    let children = "N/A";
+                    if (!isNil(datafield)) {
+                        children = datafield.name;
+                    }
+                    return {
+					children: children,
+					props: {
+						"data-title": "Type",
+					}
+				}}}
+			/>
+            <Column
+				className="antd-col"
+				title=""
+				key="update"
+				render={(text, record) => ({
+					children: (
+                        <Button
+                            type="link"
+                            onClick={() => handleUpdateModal(record)}
+                        >
+                            Update
+                        </Button>
+                    ),
+					props: {
+						"data-title": "",
+					}
+				})}
+			/>
+        </Table>
     );
 }
 

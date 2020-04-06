@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import DataFieldStore from 'store/DataField';
 import axiosInstance from 'services/AxiosInstance';
-import DataFieldTable from 'components/DataFieldTable';
+import DataFieldTable from 'components/shared/DataFieldTable';
 
 import useAxios, { configure } from 'axios-hooks'
 import { Card } from "antd";

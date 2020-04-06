@@ -23,7 +23,7 @@ class OfferCreationScreen extends Component {
     }
 
     getFormData = (results) => {
-        const formData = this.formRef.current.getFieldsValue(["name"]);
+        const formData = this.formRef.current.getFieldsValue(['name']);
 
         const uploadData = this.uploadRef.current.state.file;
     }
@@ -34,11 +34,12 @@ class OfferCreationScreen extends Component {
                 <OfferForm />
                 <section className="mt-2">
                     <label className="mb-2 block">
-                        Pathways -Table
+                        Pathways - Table
                     </label>
                     <Table
                         columns={pathwayColumns}
                         dataSource={[]}
+                        rowKey="id"
                     />
                 </section>
             </>

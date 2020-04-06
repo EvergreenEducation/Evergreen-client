@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Table, Button } from 'antd';
+import { Modal, Form, Table, Button, notification } from 'antd';
 import ProviderForm from 'components/provider/ProviderForm';
 import axiosInstance from 'services/AxiosInstance';
 import { isNil, groupBy } from 'lodash';
@@ -127,9 +127,13 @@ export default function ProviderUpdateModal(props) {
                     topics: values.topics,
                 });
 
-                if (response.status === 200) {
+                if (response && response.status === 200) {
                     providerStore.updateOne(response.data);
                     onCancel();
+                    notification.success({
+                        message: response.status,
+                        description: 'Successfully updated provider'
+                    })
                 }
             } catch(e) {
                 console.error(e);
@@ -163,15 +167,17 @@ export default function ProviderUpdateModal(props) {
                         <Table
                             columns={offerColumns}
                             dataSource={[]}
+                            rowKey="id"
                         />
                     </section>
                     <section className="mt-2">
                         <label className="mb-2 block">
-                            Pathways -Table
+                            Pathways - Table
                         </label>
                         <Table
                             columns={pathwayColumns}
                             dataSource={[]}
+                            rowKey="id"
                         />
                     </section>
                 </div>

@@ -8,7 +8,7 @@ const initialState = {
   items: []
 }
 
-function useOffer() {
+function usePathway() {
   let [ state, setState ] = useState(initialState);
 
   return { 
@@ -18,4 +18,4 @@ function useOffer() {
   }
 }
 
-export default createContainer(useOffer);
+export default createContainer(usePathway);

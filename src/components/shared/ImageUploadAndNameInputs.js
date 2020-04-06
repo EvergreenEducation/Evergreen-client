@@ -104,7 +104,7 @@ class ImageUploadAndNameInputs extends Component {
                             className="mb-0"
                             rules={[{ required: true, message: "Please enter a provider name" }]}
                         >
-                            <Input className="rounded" />
+                            <Input className="rounded" name="name" />
                         </Form.Item>
                         {this.props.children}
                     </Col>

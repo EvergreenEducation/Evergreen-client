@@ -9,7 +9,7 @@ import {
 
 const { Sider } = Layout;
 
-const routes = [
+const routesList = [
     {
         path: '/admin/providers',
         name: ' Providers',
@@ -20,7 +20,7 @@ const routes = [
         path: '/admin/offers',
         name: ' Offers',
         icon: faDollarSign,
-        disabled: true
+        disabled: false
     },
     {
         path: '/admin/local_offers',
@@ -32,7 +32,7 @@ const routes = [
         path: '/admin/pathways',
         name: ' Pathways',
         icon: faRoute,
-        disabled: true
+        disabled: false
     },
     {
         path: '/admin/settings',
@@ -48,8 +48,22 @@ const routes = [
     }
 ];
 
-function Sidebar(props) {
+function onPathSelectKey(pathname, routes) {
+    for (let i = 0; routes.length; i++) {
+        if (!routes[i]) {
+            break;
+        }
+        if (routes[i] && (pathname === routes[i].path)) {
+            return [(i + 1).toString()];
+        }
+    }
+    return ['1'];
+}
+
+function Sidebar({ pathname }) {
     const [collapsed, setCollapse] = useState(true);
+
+    const selectedKey = onPathSelectKey(pathname, routesList);
 
     const toggleSider = () => {
         setCollapse(!collapsed);
@@ -77,14 +91,14 @@ function Sidebar(props) {
             <Menu
                 className="bg-green-500"
                 theme="dark"
-                defaultSelectedKeys={['1']}
+                defaultSelectedKeys={selectedKey}
             >
                 {
-                    routes.map(({ path, name, icon, disabled }, index) => (
+                    routesList.map(({ path, name, icon, disabled }, index) => (
                         <Menu.Item
                             className="bg-green-500 text-center text-white bg-green-800-selected"
                             style={{ marginTop: 0, marginBottom: 0 }}
-                            key={index + 1}
+                            key={index.toString()}
                             disabled={disabled}
                         >
                             <Link to={path}>

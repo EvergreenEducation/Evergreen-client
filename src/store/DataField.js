@@ -16,10 +16,13 @@ function useDataField() {
 		items: state.items,
 		...CrudHelper(state, setState),
 		typeEqualsProvider: function(datafield) {
-			return datafield.type === "provider";
+			return datafield.type === 'provider';
 		},
 		typeEqualsTopic: function(datafield) {
-			return datafield.type === "topic";
+			return datafield.type === 'topic';
+		},
+		typeEqualsOfferCategory: function(datafield) {
+			return datafield.type === 'offer_category';
 		}
 	}
 }
