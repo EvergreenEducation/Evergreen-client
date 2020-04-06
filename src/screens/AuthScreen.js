@@ -4,6 +4,7 @@ import {
   Redirect,
   useLocation,
 } from 'react-router-dom';
+import { Spin } from 'antd';
 
 import axiosInstance from 'services/AxiosInstance';
 import useAxios, { configure } from 'axios-hooks'
@@ -24,8 +25,11 @@ function Auth() {
     const [{ data:myProfile, loading, error } ] = useAxios(`/users/${user_id}`);
 
     if (loading) {
-      // Kev help me put a loader screen here
-      return <div>Test</div>;
+      return (
+        <div className="w-full h-full flex justify-center items-center">
+          <Spin size="large" />
+        </div>
+      );
     } else if (error) {
       return <Redirect to={{ pathname: '/error/500'}}/>
     }
