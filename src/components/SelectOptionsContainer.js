@@ -21,7 +21,6 @@ export default function SelectOptionsContainer(props) {
 
     const [{
         data: getData,
-        loading: getDataLoading,
         error: getDataError
     }] = useAxios(
       '/datafields?type=frequency_unit&type=part_of_day_unit&type=credit_unit&type=payment_unit&type=length_unit'
@@ -142,7 +141,7 @@ export default function SelectOptionsContainer(props) {
                                                         md={6}
                                                         sm={24}
                                                         xs={24}
-                                                        key={index}
+                                                        key={index.toString()}
                                                         className="h-10"
                                                     >
                                                         <div className="flex row">

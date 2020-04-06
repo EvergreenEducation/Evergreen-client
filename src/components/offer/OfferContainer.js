@@ -25,19 +25,16 @@ export default function OfferContainer({ handleTableData }) {
 
   const [{
     data: getProviderData = [],
-    loading,
     error: providerError,
   }] = useAxios('/providers?scope=with_datafields');
 
   const [{
     data: datafieldsData,
-    loading: loadingDataFields,
     error: datafieldError,
   }] = useAxios('/datafields');
 
   const [{
     data: offersData,
-    loading: loadingOffers,
     error: offerError,
   }] = useAxios('/offers?scope=with_datafields');
 

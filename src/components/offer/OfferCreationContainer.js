@@ -112,6 +112,7 @@ const OfferCreationContainer = (({ className, closeModal }) => {
                         <Table
                             columns={pathwayColumns}
                             dataSource={[]}
+                            rowKey="id"
                         />
                     </section>
                 </div>

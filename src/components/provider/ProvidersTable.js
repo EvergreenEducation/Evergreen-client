@@ -13,7 +13,8 @@ function ProvidersTable({ data = [], loading, handleUpdateModal }) {
             dataSource={data}
             bordered
             className="ant-table-wrapper--responsive"
-            rowClassName={() => "antd-row"}
+			rowClassName={() => "antd-row"}
+			rowKey="id"
         >
              <Column
 				className="antd-col"
@@ -85,7 +86,7 @@ function ProvidersTable({ data = [], loading, handleUpdateModal }) {
                                     return (
                                         <Tag
                                             color={index % 2 ? "blue" : "orange"}
-                                            key={datafield.id}
+                                            key={index.toString()}
                                         >
                                             { datafield.name }
                                         </Tag>
@@ -113,7 +114,7 @@ function ProvidersTable({ data = [], loading, handleUpdateModal }) {
                     return {
 					children: children,
 					props: {
-						"data-title": "Topics",
+						"data-title": "Type",
 					}
 				}}}
 			/>

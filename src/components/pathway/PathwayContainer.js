@@ -6,7 +6,6 @@ import useAxios, { configure } from 'axios-hooks';
 import PathwaysTable from 'components/pathway/PathwaysTable';
 import { useProviderDataFieldStore } from 'components/provider';
 import PathwayStore from 'store/Pathway';
-import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
 
 const PathwayUpdateModal = imported(() => import('components/pathway/PathwayUpdateModal'));
@@ -21,25 +20,18 @@ export default function PathwayContainer({ handleTableData }) {
   const [ selectedPathway, setSelectedPathway ] = useState({});
   const store = useProviderDataFieldStore();
   const { datafield, provider } = store;
-  const offerStore = OfferStore.useContainer();
   const pathwayStore = PathwayStore.useContainer();
-  const { entities = [] } = offerStore;
 
   const [{
     data: getPathways,
-    loading: loadingPathways,
     error: getPathwaysError,
   }] = useAxios('/pathways?scope=with_datafields');
 
   const [{
-    data: getTopics,
-    loading: loadingDataFields,
     error: getTopicsError,
   }] = useAxios('/datafields?type=topic');
 
   const [{
-    data: getOffers,
-    loading: loadingOffers,
     error: getOffersError,
   }] = useAxios('/offers?scope=with_datafields');
 

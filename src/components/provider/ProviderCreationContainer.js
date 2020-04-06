@@ -133,6 +133,7 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
                         <Table
                             columns={offerColumns}
                             dataSource={[]}
+                            rowKey="id"
                         />
                     </section>
                     <section className="mt-2">
@@ -142,6 +143,7 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
                         <Table
                             columns={pathwayColumns}
                             dataSource={[]}
+                            rowKey="id"
                         />
                     </section>
                 </div>

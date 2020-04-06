@@ -7,7 +7,7 @@ import 'scss/antd-overrides.scss';
 const { Option } = Select;
 
 const OfferForm = (props) => {
-    let { datafields = [], providers = {}, form } = props;
+    let { datafields = [], providers = {} } = props;
 
     datafields = Object.values(datafields);
     const providersArr = Object.values(providers);

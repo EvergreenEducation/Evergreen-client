@@ -4,7 +4,6 @@ import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
 import OfferForm from 'components/offer/OfferForm';
-import OfferStore from 'store/Offer';
 import dayjs from 'dayjs';
 import 'scss/antd-overrides.scss';
 import moment from 'moment';
@@ -164,6 +163,7 @@ export default function OfferUpdateModal(props) {
                             Pathways - Table
                         </label>
                         <Table
+                            rowKey="id"
                             columns={pathwayColumns}
                             dataSource={[]}
                         />

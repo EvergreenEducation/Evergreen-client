@@ -167,6 +167,7 @@ export default function ProviderUpdateModal(props) {
                         <Table
                             columns={offerColumns}
                             dataSource={[]}
+                            rowKey="id"
                         />
                     </section>
                     <section className="mt-2">
@@ -176,6 +177,7 @@ export default function ProviderUpdateModal(props) {
                         <Table
                             columns={pathwayColumns}
                             dataSource={[]}
+                            rowKey="id"
                         />
                     </section>
                 </div>

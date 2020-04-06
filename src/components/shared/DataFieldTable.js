@@ -100,6 +100,7 @@ export default function DataFieldTable({ data = [], store, loading, type = null,
             add: (
                 <Button
                     className="flex justify-center"
+                    key={index.toString()}
                     type="primary"
                     shape="circle"
                     size="small"

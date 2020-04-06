@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axiosInstance from 'services/AxiosInstance';
 import useAxios, { configure } from 'axios-hooks';

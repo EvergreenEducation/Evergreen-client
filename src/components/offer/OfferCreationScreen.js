@@ -39,6 +39,7 @@ class OfferCreationScreen extends Component {
                     <Table
                         columns={pathwayColumns}
                         dataSource={[]}
+                        rowKey="id"
                     />
                 </section>
             </>

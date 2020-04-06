@@ -11,7 +11,8 @@ function PathwaysTable(props) {
             dataSource={data}
             bordered
             className="ant-table-wrapper--responsive"
-            rowClassName={() => "antd-row"}
+			rowClassName={() => "antd-row"}
+			rowKey="id"
         >
 			<Column
 				className="antd-col"
@@ -85,7 +86,7 @@ function PathwaysTable(props) {
                                     return (
                                         <Tag
                                             color={index % 2 ? "blue" : "orange"}
-                                            key={datafield.id}
+                                            key={index.toString()}
                                         >
                                             { datafield.name }
                                         </Tag>

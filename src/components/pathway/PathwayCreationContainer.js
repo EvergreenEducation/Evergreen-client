@@ -3,7 +3,6 @@ import { Button, Form, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import PathwayForm from 'components/pathway/PathwayForm';
-import OfferStore from 'store/Offer';
 import DataFieldStore from 'store/DataField';
 import PathwayStore from 'store/Pathway';
 import dayjs from 'dayjs';
@@ -18,7 +17,6 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
 
     const [{
         data: getDataFields,
-        error: getDataFieldsError,
     }] = useAxios('/datafields');
     
     const [{ data: postData, error: postError, response }, executePost ] = useAxios({
@@ -26,7 +24,6 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
         method: 'POST'
     }, { manual: true });
 
-    const offerStore = OfferStore.useContainer();
     const datafieldStore = DataFieldStore.useContainer();
 
     const submit = async () => {

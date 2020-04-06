@@ -98,7 +98,7 @@ function Sidebar({ pathname }) {
                         <Menu.Item
                             className="bg-green-500 text-center text-white bg-green-800-selected"
                             style={{ marginTop: 0, marginBottom: 0 }}
-                            key={index + 1}
+                            key={index.toString()}
                             disabled={disabled}
                         >
                             <Link to={path}>

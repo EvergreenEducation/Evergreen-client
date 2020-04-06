@@ -42,7 +42,6 @@ export default function AdminDashboardPage(props) {
     const { pathname } = props.location;
     const [ modalVisibility, setModalVisibility ] = useState(false);
     const [ searchString, setSearchString ] = useState('');
-    const [ tableData, setTableData ] = useState([]);
     
     let HeaderContent = () => null;
     let FormContent = () => null;
