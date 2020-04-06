@@ -12,6 +12,7 @@ import DataFieldStore from 'store/DataField';
 import OfferStore from 'store/Offer';
 import PathwayStore from 'store/Pathway';
 import 'scss/antd-overrides.scss';
+import matchSorter from "match-sorter";
 
 const TopicContainer = imported(() => import('components/topic/TopicContainer'));
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
@@ -40,6 +41,8 @@ export default function AdminDashboardPage(props) {
     const history = useHistory();
     const { pathname } = props.location;
     const [ modalVisibility, setModalVisibility ] = useState(false);
+    const [ searchString, setSearchString ] = useState('');
+    const [ tableData, setTableData ] = useState([]);
     
     let HeaderContent = () => null;
     let FormContent = () => null;
@@ -53,6 +56,15 @@ export default function AdminDashboardPage(props) {
     const handleCancel = e => {
         setModalVisibility(false);
     };
+
+    const search = (value) => {
+        setSearchString(value);
+    }
+
+    const handleTableDataForSearch = (data, keys = ['name']) => {
+        const results = matchSorter(data, searchString, { keys });
+        return results;
+    }
 
     if (pathname === '/admin') {
         history.replace('/admin/providers');
@@ -70,9 +82,14 @@ export default function AdminDashboardPage(props) {
                 createHandler={openModal}
                 title="PROVIDERS"
                 buttonTitle="PROVIDER"
+                handleSearch={search}
             />
         );
-        MainContent = () => <ProviderContainer />;
+        MainContent = () => (
+            <ProviderContainer
+                handleTableData={handleTableDataForSearch}
+            />
+        );
     }
 
     if (pathname === '/admin/offers') {
@@ -82,10 +99,15 @@ export default function AdminDashboardPage(props) {
                 createHandler={openModal}
                 title="OFFERS / OPPORTUNITIES"
                 buttonTitle="OFFER"
+                handleSearch={search}
             />
         );
         FormContent = (<OfferCreationContainer closeModal={handleCancel} />);
-        MainContent = () => <OfferContainer />;
+        MainContent = () => (
+            <OfferContainer
+                handleTableData={handleTableDataForSearch}
+            />
+        );
     }
 
     if (pathname === '/admin/pathways') {
@@ -95,6 +117,7 @@ export default function AdminDashboardPage(props) {
                 createHandler={openModal}
                 title="PATHWAYS"
                 buttonTitle="PATHWAY"
+                handleSearch={search}
             />
         );
         FormContent = (
@@ -102,7 +125,11 @@ export default function AdminDashboardPage(props) {
                 closeModal={handleCancel}
             />
         );
-        MainContent = () => <PathwayContainer />;
+        MainContent = () => (
+            <PathwayContainer
+                handleTableData={handleTableDataForSearch}
+            />
+        );
     }
 
     if (pathname === '/admin/settings') {

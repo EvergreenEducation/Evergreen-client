@@ -76,7 +76,13 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
         if (postData) {
             pathwayStore.addOne(postData);
         }
-    }, [getDataFields])
+        if (response && response.status === 201) {
+            notification.success({
+                message: response.status,
+                description: 'Successfully created pathway'
+            })
+        } 
+    }, [getDataFields, response, postError])
 
     return (
         <div>

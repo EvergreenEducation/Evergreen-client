@@ -58,7 +58,7 @@ function ProvidersTable({ data = [], loading, handleUpdateModal }) {
 				key="industry"
 				render={(text, record) => {
                     let children = "N/A";
-                    if (text.length) {
+                    if (text && text.length) {
                         children = text;
                     }
                     return {

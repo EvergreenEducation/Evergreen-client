@@ -91,7 +91,7 @@ const OfferCreationContainer = (({ className, closeModal }) => {
                 description: 'Successfully created offer'
             })
         } 
-    }, [postData, response])
+    }, [postData, response, postError])
 
     return (
         <div>

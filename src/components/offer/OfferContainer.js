@@ -14,7 +14,7 @@ configure({
   axios: axiosInstance
 })
 
-export default function OfferContainer() {
+export default function OfferContainer({ handleTableData }) {
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
   const [ selectedOffer, setSelectedOffer ] = useState({});
@@ -62,12 +62,14 @@ export default function OfferContainer() {
     }
   }, [getProviderData, datafieldsData, offersData]);
 
+  const showData = handleTableData(Object.values(entities));
+
   return (
     <Card className="shadow-md rounded-md">
       <OffersTable
         datafields={datafield.entities}
         providers={provider.entities}
-        data={Object.values(entities)}
+        data={showData}
         handleUpdateModal={openAndPopulateUpdateModal}
       />
       <OfferUpdateModal

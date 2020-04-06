@@ -8,7 +8,6 @@ import { useProviderDataFieldStore } from 'components/provider';
 import PathwayStore from 'store/Pathway';
 import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
-// import PathwayUpdateModal from 'components/pathway/PathwayUpdateModal';
 
 const PathwayUpdateModal = imported(() => import('components/pathway/PathwayUpdateModal'));
 
@@ -16,7 +15,7 @@ configure({
   axios: axiosInstance
 })
 
-export default function PathwayContainer() {
+export default function PathwayContainer({ handleTableData }) {
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
   const [ selectedPathway, setSelectedPathway ] = useState({});
@@ -66,12 +65,14 @@ export default function PathwayContainer() {
     }
   }, [getPathways]);
 
+  const showData = handleTableData(Object.values(pathwayStore.entities));
+
   return (
     <Card className="shadow-md rounded-md">
       <PathwaysTable
         datafields={datafield.entities}
         providers={provider.entities}
-        data={Object.values(pathwayStore.entities)}
+        data={showData}
         handleUpdateModal={openAndPopulateUpdateModal}
       />
       <PathwayUpdateModal

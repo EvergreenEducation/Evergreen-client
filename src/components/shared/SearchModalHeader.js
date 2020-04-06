@@ -5,7 +5,7 @@ import { Button, Row, Input } from 'antd';
 
 const { Search } = Input;
 
-export default function SearchModalHeader({ onSearch, createHandler, title, buttonTitle }) {
+export default function SearchModalHeader({ handleSearch, createHandler, title, buttonTitle }) {
   return (
     <Row className="items-center flex-no-wrap">
       <h2 className="mr-2">
@@ -14,6 +14,9 @@ export default function SearchModalHeader({ onSearch, createHandler, title, butt
       <Search
         enterButton
         className="w-56 custom-search mr-2 rounded"
+        onSearch={value => {
+          handleSearch(value);
+        }}
       />
       <Button
         className="rounded text-xs flex items-center"

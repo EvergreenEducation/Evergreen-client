@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import axiosInstance from 'services/AxiosInstance';
 import useAxios, { configure } from 'axios-hooks';
@@ -11,7 +11,7 @@ configure({
   axios: axiosInstance
 })
 
-export default function ProviderContainer() {
+export default function ProviderContainer({ handleTableData }) {
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
   const [ selectedProvider, setSelectedProvider ] = useState({});
@@ -51,10 +51,12 @@ export default function ProviderContainer() {
   const entities = Object.values(provider.entities);
   const dataFieldEntities = Object.values(datafield.entities);
 
+  const showData = handleTableData(entities);
+
   return (
     <Card className="shadow-md rounded-md">
       <ProvidersTable
-          data={providerError ? [] : entities}
+          data={providerError ? [] : showData}
           store={store}
           loading={loading && loadingDataFields}
           datafields={datafieldError ? [] : dataFieldEntities}

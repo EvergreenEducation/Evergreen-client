@@ -110,7 +110,7 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
                 description: 'Successfully created provider'
             })
         }
-    }, [postData, response]);
+    }, [postData, response, postError]);
 
 
     return (
