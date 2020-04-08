@@ -45,13 +45,15 @@ const OfferCreationContainer = (({ className, closeModal }) => {
             'category', 'description', 'learn_and_earn',
             'part_of_day', 'frequency', 'frequency_unit', 'cost', 'credit_unit',
             'pay_unit', 'length', 'length_unit', 'name', 'start_date', 'provider_id',
-            'topics', 'pay', 'credit'
+            'topics', 'pay', 'credit',
+            'related_offers',
+            'prerequisites'
         ]);
 
         const {
             category, description, learn_and_earn,
             part_of_day, frequency_unit, cost, credit, credit_unit,
-            pay, pay_unit, length, length_unit, name, start_date, frequency
+            pay, pay_unit, length, length_unit, name, start_date, frequency,
         } = values;
 
         if (
@@ -101,7 +103,7 @@ const OfferCreationContainer = (({ className, closeModal }) => {
                     style={{ maxHeight: "32rem" }}
                 >
                     <OfferForm
-                        form={form}
+                        offers={Object.values(offerStore.entities)}
                         datafields={datafieldStore.entities}
                         providers={providerStore.entities}
                     />

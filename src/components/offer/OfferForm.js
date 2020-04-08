@@ -1,15 +1,26 @@
 import React from 'react';
 import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
-import { groupBy, property, isNil } from 'lodash';
+import { groupBy, property, isNil, compact } from 'lodash';
 import 'scss/antd-overrides.scss';
 
 const { Option } = Select;
 
-const OfferForm = (props) => {
-    let { datafields = [], providers = {} } = props;
+const preloadOptions = (data = []) => data.map((item, index) => {
+    return (
+        <Option
+            value={item.id}
+            key={index.toString()}
+        >
+            {item.name}
+        </Option>
+    );
+});
 
+const OfferForm = (props) => {
+    let { datafields = [], providers = {}, offers = [] } = props;
     datafields = Object.values(datafields);
+
     const providersArr = Object.values(providers);
 
     const grouped = groupBy(datafields, property('type'));
@@ -22,28 +33,19 @@ const OfferForm = (props) => {
     let offerCategoryOptions = null;
 
     if (!isNil(offer_category) && offer_category.length) {
-        offerCategoryOptions = offer_category.map(({ name, id }, index) => {
-        return(
-            <Option
-                value={id}
-                key={index.toString()}
-            >
-                {name}
-            </Option>
-        )});
+        offerCategoryOptions = preloadOptions(offer_category);
     }
 
     let topicOptions = null;
 
     if (!isNil(topic) && topic.length) {
-        topicOptions = topic.map(({ name, id }, index) => (
-            <Option
-                value={id}
-                key={index.toString()}
-            >
-                {name}
-            </Option>
-        ));
+        topicOptions = preloadOptions(topic);
+    }
+
+    let offerOptions = null;
+
+    if (!isNil(offers) && offers.length) {
+        offerOptions = preloadOptions(offers);
     }
 
     return (
@@ -166,7 +168,7 @@ const OfferForm = (props) => {
                         showSearch
                         mode="multiple"
                     >
-                        
+                        {offerOptions}
                     </Select>
                 </Form.Item>
             </Row>
@@ -186,7 +188,7 @@ const OfferForm = (props) => {
                         showSearch
                         mode="multiple"
                     >
-                        
+                        {offerOptions}
                     </Select>
                 </Form.Item>
             </Row>

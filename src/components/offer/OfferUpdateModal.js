@@ -7,7 +7,7 @@ import OfferForm from 'components/offer/OfferForm';
 import dayjs from 'dayjs';
 import 'scss/antd-overrides.scss';
 import moment from 'moment';
-import { groupBy, isNil } from 'lodash';
+import { groupBy, isNil, compact } from 'lodash';
 
 configure({
   axios: axiosInstance
@@ -32,8 +32,39 @@ const pathwayColumns = [
 ];
 
 export default function OfferUpdateModal(props) {
-    const { offer, onCancel, visible, offerStore } = props;
+    const { offer = {}, onCancel, visible, offerStore } = props;
+    const { RelatedOffers = [], PrerequisiteOffers = [], DataFields = [] } = offer;
+
     const [ form ] = Form.useForm();
+
+    form.setFieldsValue({ name: offer.name });
+    form.setFieldsValue({ provider_id: offer.provider_id });
+    form.setFieldsValue({ name: offer.name });
+    form.setFieldsValue({ category: +offer.category });
+    form.setFieldsValue({ start_date: moment(offer.start_date) });
+    form.setFieldsValue({ keywords: offer.keywords });
+    form.setFieldsValue({ description: offer.description });
+    form.setFieldsValue({ related_offers: RelatedOffers.map(({ id }) => id) });
+    form.setFieldsValue({ prerequisites: PrerequisiteOffers.map(({ id }) => id) });
+    form.setFieldsValue({ topics: compact(DataFields.map(({ type, id }) => {
+        if (type === 'topic') {
+            return id;
+        }
+        return null;
+    }))});
+    form.setFieldsValue({ learn_and_earn: offer.learn_and_earn });
+    form.setFieldsValue({ part_of_day: offer.part_of_day });
+    form.setFieldsValue({ frequency: offer.frequency });
+    form.setFieldsValue({ frequency_unit: offer.frequency_unit });
+    form.setFieldsValue({ cost: offer.cost });
+    form.setFieldsValue({ cost_unit: offer.cost_unit });
+    form.setFieldsValue({ credit: offer.credit });
+    form.setFieldsValue({ credit_unit: offer.credit_unit });
+    form.setFieldsValue({ pay: offer.pay });
+    form.setFieldsValue({ pay_unit: offer.pay_unit });
+    form.setFieldsValue({ length: offer.length });
+    form.setFieldsValue({ length_unit: offer.length_unit });
+    
     const [{ data: putData, error: putError, response }, executePut ] = useAxios({
         method: 'PUT'
     }, { manual: true });
@@ -46,7 +77,7 @@ export default function OfferUpdateModal(props) {
             'category', 'description', 'learn_and_earn',
             'part_of_day', 'frequency', 'frequency_unit', 'cost', 'credit_unit',
             'pay_unit', 'length', 'length_unit', 'name', 'start_date', 'provider_id',
-            'topics', 'pay', 'credit'
+            'topics', 'pay', 'credit', 'keywords', 'related_offers', 'prerequisites'
         ]);
 
         const {
@@ -154,9 +185,10 @@ export default function OfferUpdateModal(props) {
                     style={{ maxHeight: "32rem" }}
                 >
                     <OfferForm
-                        form={form}
+                        offers={Object.values(offerStore.entities)}
                         datafields={datafieldStore.entities}
                         providers={providerStore.entities}
+                        offer={offer}
                     />
                     <section className="mt-2">
                         <label className="mb-2 block">

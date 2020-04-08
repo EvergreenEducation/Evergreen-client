@@ -12,7 +12,7 @@ import DataFieldStore from 'store/DataField';
 import OfferStore from 'store/Offer';
 import PathwayStore from 'store/Pathway';
 import 'scss/antd-overrides.scss';
-import matchSorter from "match-sorter";
+import matchSorter from 'match-sorter';
 
 const TopicContainer = imported(() => import('components/topic/TopicContainer'));
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
