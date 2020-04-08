@@ -51,6 +51,7 @@ export default function ProviderUpdateModal(props) {
     const [ form ] = Form.useForm();
     const formRef = React.createRef();
     const { provider, onCancel, visible, datafields } = props;
+    const { Offers = [] } = provider;
 
     const groupedDataFields = groupBy(provider.DataFields, 'type') || [];
     let providerType = null;
@@ -87,6 +88,8 @@ export default function ProviderUpdateModal(props) {
             contact: p.contact,
             is_public: p.is_public,
             financial_aid: p.financial_aid,
+            news: p.news,
+            keywords: p.keywords,
         });
     }
 
@@ -113,7 +116,8 @@ export default function ProviderUpdateModal(props) {
             "contact",
             "pay",
             "cost",
-            "topics"
+            "topics",
+            "keywords"
         ]);
 
         const { name, location, type, learn_and_earn, is_public } = values;
@@ -166,8 +170,9 @@ export default function ProviderUpdateModal(props) {
                         </label>
                         <Table
                             columns={offerColumns}
-                            dataSource={[]}
+                            dataSource={Offers}
                             rowKey="id"
+                            pagination={{ pageSize: 5 }}
                         />
                     </section>
                     <section className="mt-2">
@@ -178,6 +183,7 @@ export default function ProviderUpdateModal(props) {
                             columns={pathwayColumns}
                             dataSource={[]}
                             rowKey="id"
+                            pagination={{ pageSize: 5 }}
                         />
                     </section>
                 </div>

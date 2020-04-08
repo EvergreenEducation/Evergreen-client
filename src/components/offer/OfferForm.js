@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
-import { groupBy, property, isNil, compact } from 'lodash';
+import { groupBy, property, isNil, compact, remove, matchesProperty } from 'lodash';
 import 'scss/antd-overrides.scss';
 
 const { Option } = Select;
@@ -18,7 +18,7 @@ const preloadOptions = (data = []) => data.map((item, index) => {
 });
 
 const OfferForm = (props) => {
-    let { datafields = [], providers = {}, offers = [] } = props;
+    let { datafields = [], providers = {}, offers = [], offer = {} } = props;
     datafields = Object.values(datafields);
 
     const providersArr = Object.values(providers);
@@ -45,7 +45,10 @@ const OfferForm = (props) => {
     let offerOptions = null;
 
     if (!isNil(offers) && offers.length) {
-        offerOptions = preloadOptions(offers);
+        const updatedOffers = remove(offers, (o) => {
+            return !(o.id === offer.id)
+        });
+        offerOptions = preloadOptions(updatedOffers);
     }
 
     return (

@@ -36,34 +36,6 @@ export default function OfferUpdateModal(props) {
     const { RelatedOffers = [], PrerequisiteOffers = [], DataFields = [] } = offer;
 
     const [ form ] = Form.useForm();
-
-    form.setFieldsValue({ name: offer.name });
-    form.setFieldsValue({ provider_id: offer.provider_id });
-    form.setFieldsValue({ name: offer.name });
-    form.setFieldsValue({ category: +offer.category });
-    form.setFieldsValue({ start_date: moment(offer.start_date) });
-    form.setFieldsValue({ keywords: offer.keywords });
-    form.setFieldsValue({ description: offer.description });
-    form.setFieldsValue({ related_offers: RelatedOffers.map(({ id }) => id) });
-    form.setFieldsValue({ prerequisites: PrerequisiteOffers.map(({ id }) => id) });
-    form.setFieldsValue({ topics: compact(DataFields.map(({ type, id }) => {
-        if (type === 'topic') {
-            return id;
-        }
-        return null;
-    }))});
-    form.setFieldsValue({ learn_and_earn: offer.learn_and_earn });
-    form.setFieldsValue({ part_of_day: offer.part_of_day });
-    form.setFieldsValue({ frequency: offer.frequency });
-    form.setFieldsValue({ frequency_unit: offer.frequency_unit });
-    form.setFieldsValue({ cost: offer.cost });
-    form.setFieldsValue({ cost_unit: offer.cost_unit });
-    form.setFieldsValue({ credit: offer.credit });
-    form.setFieldsValue({ credit_unit: offer.credit_unit });
-    form.setFieldsValue({ pay: offer.pay });
-    form.setFieldsValue({ pay_unit: offer.pay_unit });
-    form.setFieldsValue({ length: offer.length });
-    form.setFieldsValue({ length_unit: offer.length_unit });
     
     const [{ data: putData, error: putError, response }, executePut ] = useAxios({
         method: 'PUT'
@@ -111,28 +83,9 @@ export default function OfferUpdateModal(props) {
         }
     }
 
-    const groupedDataFields = groupBy(offer.DataFields, 'type') || [];
-
-    let offerCategory = null;
-    if (groupedDataFields.offer_category && groupedDataFields.offer_category.length) {
-        offerCategory = groupedDataFields.offer_category[0].id
-    }
-
-    let myTopics = [];
-
-    if (!isNil(groupedDataFields.topic)) {
-        myTopics = groupedDataFields.topic.reduce((acc, curr, index) => {
-            if (isNil(acc)) {
-                return [];
-            }
-            acc.push(curr.id);
-            return acc;
-        }, []);
-    }
-
     function populateFields(o, formInstance) {
         formInstance.setFieldsValue({
-            category: offerCategory,
+            category: +o.category,
             description: o.description,
             learn_and_earn: o.learn_and_earn,
             part_of_day: o.part_of_day,
@@ -148,7 +101,15 @@ export default function OfferUpdateModal(props) {
             name: o.name,
             start_date: moment(o.start_date),
             provider_id: o.provider_id,
-            topics: myTopics,
+            topics: compact(DataFields.map(({ type, id }) => {
+                if (type === 'topic') {
+                    return id;
+                }
+                return null;
+            })),
+            related_offers: RelatedOffers.map(({ id }) => id),
+            prerequisites: PrerequisiteOffers.map(({ id }) => id),
+            keywords: o.keywords
         });
     }
 

@@ -45,9 +45,7 @@ const OfferCreationContainer = (({ className, closeModal }) => {
             'category', 'description', 'learn_and_earn',
             'part_of_day', 'frequency', 'frequency_unit', 'cost', 'credit_unit',
             'pay_unit', 'length', 'length_unit', 'name', 'start_date', 'provider_id',
-            'topics', 'pay', 'credit',
-            'related_offers',
-            'prerequisites'
+            'topics', 'pay', 'credit', 'related_offers', 'prerequisites', 'keywords'
         ]);
 
         const {

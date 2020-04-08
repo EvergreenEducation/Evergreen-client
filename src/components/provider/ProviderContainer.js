@@ -22,7 +22,7 @@ export default function ProviderContainer({ handleTableData }) {
     data = [],
     loading,
     error: providerError,
-  }] = useAxios('/providers?scope=with_datafields');
+  }] = useAxios('/providers?scope=with_datafields&scope=with_offers');
 
   const [{
     data: datafieldsData,
@@ -41,6 +41,7 @@ export default function ProviderContainer({ handleTableData }) {
 
   useEffect(() => {
     if (data) {
+      console.log(data);
       provider.addMany(data);
     }
     if (datafieldsData) {

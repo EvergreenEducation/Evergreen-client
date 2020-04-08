@@ -71,7 +71,8 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
             "contact",
             "pay",
             "cost",
-            "topics"
+            "topics",
+            "keywords"
         ]);
 
         const { name, location, type, learn_and_earn, is_public } = values;
