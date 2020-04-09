@@ -6,6 +6,7 @@ import PathwayForm from 'components/pathway/PathwayForm';
 import DataFieldStore from 'store/DataField';
 import PathwayStore from 'store/Pathway';
 import dayjs from 'dayjs';
+import OfferStore from 'store/Offer';
 
 configure({
     axios: axiosInstance,
@@ -14,10 +15,15 @@ configure({
 const PathwayCreationContainer = (({ className, closeModal }) => {
     const [ form ] = Form.useForm();
     const pathwayStore = PathwayStore.useContainer();
+    const offerStore = OfferStore.useContainer();
 
     const [{
         data: getDataFields,
     }] = useAxios('/datafields');
+
+    const [{
+        data: getOffers,
+    }] = useAxios('/offers');
     
     const [{ data: postData, error: postError, response }, executePost ] = useAxios({
         url: '/pathways',
@@ -78,7 +84,10 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
                 message: response.status,
                 description: 'Successfully created pathway'
             })
-        } 
+        }
+        if (getOffers) {
+            offerStore.addMany(getOffers);
+        }
     }, [getDataFields, response, postError])
 
     return (
@@ -90,6 +99,7 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
                 >
                     <PathwayForm
                         datafields={datafieldStore.entities}
+                        offers={Object.values(offerStore.entities)}
                     />
                 </div>
                 <section

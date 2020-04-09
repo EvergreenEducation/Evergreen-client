@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
 import TitleDivider from 'components/TitleDivider';
 import { ImageUploadAndNameInputs } from 'components/shared';
@@ -7,9 +7,35 @@ import 'scss/antd-overrides.scss';
 
 const { Option } = Select;
 
+const preloadOptions = (data = []) => data.map((item, index) => {
+    return (
+        <Option
+            value={item.id}
+            key={index.toString()}
+        >
+            {item.name}
+        </Option>
+    );
+});
+
 const PathwayForm = (props) => {
-    let { datafields = [] } = props;
+    let { datafields = [], offers = [] } = props;
+    const [ groupNameString, setGroupNameString ] = useState('');
+    const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
     datafields = Object.values(datafields);
+
+    function handleGroupName(e) {
+        return setGroupNameString(e.target.value);
+    }
+
+    function addGroupName() {
+        const updateGroupsOfOffers = [
+            ...groupsOfOffers,
+            { name: groupNameString }
+        ];
+
+        setGroupsOfOffers(updateGroupsOfOffers);
+    }
 
     const grouped = groupBy(datafields, property('type'));
 
@@ -30,6 +56,46 @@ const PathwayForm = (props) => {
             </Option>
         ));
     }
+
+    let offerOptions = null;
+
+    if (!isNil(offers) && offers.length) {
+        offerOptions = preloadOptions(offers);
+    }
+
+    let offerGroups = null;
+
+    offerGroups = groupsOfOffers.map(({ name }, index) => {
+        return (
+            <section
+                className="w-full"
+                key={index.toString()}
+            >
+                <div className="w-full flex justify-between">
+                    <label>{name}</label>
+                    <Button
+                        className="rounded-b-none"
+                        type="primary"
+                        size="small"
+                        danger
+                    >
+                        Remove
+                    </Button>
+                </div>
+                <Form.Item
+                    className="w-full"
+                >
+                    <Select
+                        className="w-full rounded custom-select-rounded-tr-none"
+                        showSearch
+                        mode="multiple"
+                    >
+                        {offerOptions}
+                    </Select>
+                </Form.Item>
+            </section>
+        );
+    });
 
     return (
         <Layout>
@@ -81,18 +147,39 @@ const PathwayForm = (props) => {
                     <Input
                         className="w-full rounded-l rounded-r-none"
                         placeholder="Group Name"
+                        name="add-group"
+                        onChange={handleGroupName}
                     />
                 </Col>
                 <Col type={4}>
                     <Button
                         className="rounded-l-none"
                         type="primary"
+                        onClick={() => addGroupName()}
                     >
                         Add Group
                     </Button>
                 </Col>
             </Row>
             <TitleDivider title={"Pathway Offers Groups"} />
+            <Row>
+                {
+                    offerGroups && offerGroups.length
+                        ? offerGroups
+                        : (
+                            <p className="mx-auto p-4 border-2 bg-gray-400 font-bold text-gray-600 border-dashed border-gray-500 w-4/5 text-center mb-6 mt-2 rounded">
+                            There are no offer groups, please add one.
+                            </p>
+                        )
+                }
+                <div
+                    className="w-full mb-4"
+                    style={{
+                        backgroundColor: '#e2e8f0',
+                        height: '1px',
+                    }}
+                />
+            </Row>
             <Row className="items-center mb-0">
                 <span
                     className="text-gray-700 relative"
