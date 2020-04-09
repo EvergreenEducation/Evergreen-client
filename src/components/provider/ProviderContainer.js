@@ -41,7 +41,6 @@ export default function ProviderContainer({ handleTableData }) {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       provider.addMany(data);
     }
     if (datafieldsData) {

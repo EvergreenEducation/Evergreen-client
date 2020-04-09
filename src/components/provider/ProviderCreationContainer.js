@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProviderForm from 'components/provider/ProviderForm';
 import { Table, Button, Form, notification } from 'antd';
 import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
+import useUserStore from 'store/User';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
-import { isNil } from 'lodash';
+import { isNil, head } from 'lodash';
 
 configure({
     axios: axiosInstance,
@@ -47,6 +48,27 @@ const pathwayColumns = [
 ];
 
 const ProviderCreationContainer = (({ className, closeModal }, ref) => {
+    const userStore = useUserStore.useContainer();
+
+    const [{ data: getUser }] = useAxios('/users');
+
+    const userStoreEntities = Object.values(userStore.entities);
+
+    let userId = null;
+
+    if (userStoreEntities && userStoreEntities.length) {
+        userId = head(userStoreEntities).id;
+    }
+
+    const [file, setFile] = useState({});
+    const onChangeUpload = (e) => {
+        const { file } = e;
+        if (file) {
+            setFile(file);
+        }
+        console.log(e);
+    }
+
     const [ form ] = Form.useForm();
     const store = useProviderDataFieldStore();
     const { datafield: datafieldStore, provider: providerStore } = store;
@@ -111,7 +133,10 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
                 description: 'Successfully created provider'
             })
         }
-    }, [postData, response, postError]);
+        if (getUser) {
+            userStore.addMany(getUser);
+        }
+    }, [postData, response, postError, getUser]);
 
 
     return (
@@ -125,7 +150,10 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
                     style={{ maxHeight: "32rem" }}
                 >
                     <ProviderForm
+                        userId={userId}
                         datafields={Object.values(datafieldStore.entities)}
+                        onChangeUpload={onChangeUpload}
+                        file={file}
                     />
                     <section className="mt-2">
                         <label className="mb-2 block">
