@@ -11,7 +11,6 @@ import ProviderStore from 'store/Provider';
 import DataFieldStore from 'store/DataField';
 import OfferStore from 'store/Offer';
 import PathwayStore from 'store/Pathway';
-import UserStore from 'store/User';
 import 'scss/antd-overrides.scss';
 import matchSorter from 'match-sorter';
 
@@ -144,55 +143,53 @@ export default function AdminDashboardPage(props) {
     }
 
     return (
-        <UserStore.Provider>
-            <DataFieldStore.Provider>
-                <ProviderStore.Provider>
-                    <OfferStore.Provider>
-                        <PathwayStore.Provider>
-                            <Layout
-                                className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
-                            >
-                                <Sidebar pathname={pathname} />
-                                <Col className="w-full">
-                                    <Header className="px-6 bg-white h-12 flex items-center">
-                                        <Col span={14}>
-                                            <HeaderContent />
-                                        </Col>
-                                        <Col span={10} className="flex justify-end">
-                                            <Button type="link">
-                                            <Tooltip title="Sign out">
-                                                <Link to="/auth/logout">
-                                                    <FontAwesomeIcon
-                                                        className="text-black"
-                                                        icon={faSignOutAlt}
-                                                    />
-                                                </Link>
-                                            </Tooltip>
-                                            </Button>
-                                        </Col>
-                                    </Header>
-                                    <Content className="p-6 h-min-full">
-                                        <MainContent />
-                                    </Content>
-                                </Col>
-                            </Layout>
-                            <Modal
-                                className="custom-modal"
-                                title={modalTitle}
-                                visible={modalVisibility}
-                                onCancel={handleCancel}
-                                style={{ borderRadius: 5 }}
-                                bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
-                                width={998}
-                                footer={true}
-                                forceRender={true}
-                            >
-                                { FormContent }
-                            </Modal>
-                        </PathwayStore.Provider>
-                    </OfferStore.Provider>
-                </ProviderStore.Provider>
-            </DataFieldStore.Provider>
-        </UserStore.Provider>
+        <DataFieldStore.Provider>
+            <ProviderStore.Provider>
+                <OfferStore.Provider>
+                    <PathwayStore.Provider>
+                        <Layout
+                            className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
+                        >
+                            <Sidebar pathname={pathname} />
+                            <Col className="w-full">
+                                <Header className="px-6 bg-white h-12 flex items-center">
+                                    <Col span={14}>
+                                        <HeaderContent />
+                                    </Col>
+                                    <Col span={10} className="flex justify-end">
+                                        <Button type="link">
+                                        <Tooltip title="Sign out">
+                                            <Link to="/auth/logout">
+                                                <FontAwesomeIcon
+                                                    className="text-black"
+                                                    icon={faSignOutAlt}
+                                                />
+                                            </Link>
+                                        </Tooltip>
+                                        </Button>
+                                    </Col>
+                                </Header>
+                                <Content className="p-6 h-min-full">
+                                    <MainContent />
+                                </Content>
+                            </Col>
+                        </Layout>
+                        <Modal
+                            className="custom-modal"
+                            title={modalTitle}
+                            visible={modalVisibility}
+                            onCancel={handleCancel}
+                            style={{ borderRadius: 5 }}
+                            bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
+                            width={998}
+                            footer={true}
+                            forceRender={true}
+                        >
+                            { FormContent }
+                        </Modal>
+                    </PathwayStore.Provider>
+                </OfferStore.Provider>
+            </ProviderStore.Provider>
+        </DataFieldStore.Provider>
     );
 }

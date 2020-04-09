@@ -4,7 +4,7 @@ import cuid from 'cuid';
 import * as AwsS3 from '@uppy/aws-s3';
 import * as Uppy from '@uppy/core';
 
-export class UploadService {
+class UploadService {
 
   async upload({
     name,
@@ -15,7 +15,9 @@ export class UploadService {
     binaryFile
   }) {
     const uppy = Uppy();
-    const newFileName = `${name}_${cuid}`
+    const newFileName = `${name}_${cuid()}`;
+
+    console.log(newFileName);
 
     uppy.use(AwsS3, {
       getUploadParameters() {
@@ -58,3 +60,5 @@ export class UploadService {
     }
   }
 }
+
+export default new UploadService();

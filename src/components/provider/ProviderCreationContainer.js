@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import ProviderForm from 'components/provider/ProviderForm';
 import { Table, Button, Form, notification } from 'antd';
 import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
-import useUserStore from 'store/User';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
+import AuthService from 'services/AuthService';
+import UploaderService from 'services/Uploader';
 import { isNil, head } from 'lodash';
 
 configure({
@@ -48,25 +49,14 @@ const pathwayColumns = [
 ];
 
 const ProviderCreationContainer = (({ className, closeModal }, ref) => {
-    const userStore = useUserStore.useContainer();
+    const { id: userId } = AuthService.currentSession;
 
-    const [{ data: getUser }] = useAxios('/users');
-
-    const userStoreEntities = Object.values(userStore.entities);
-
-    let userId = null;
-
-    if (userStoreEntities && userStoreEntities.length) {
-        userId = head(userStoreEntities).id;
-    }
-
-    const [file, setFile] = useState({});
+    const [file, setFile] = useState(null);
     const onChangeUpload = (e) => {
         const { file } = e;
         if (file) {
             setFile(file);
         }
-        console.log(e);
     }
 
     const [ form ] = Form.useForm();
@@ -109,6 +99,24 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
                 }
             });
 
+            if (response.data && file && userId) {
+                const { name, type, originFileObj } = file;
+                const results = await UploaderService.upload({
+                    name,
+                    mime_type: type,
+                    uploaded_by_user_id: userId,
+                    fileable_type: 'provider',
+                    fileable_id: response.data.id,
+                    binaryFile: file,
+                });
+
+                if (results.success) {
+                    notification.success({
+                        description: 'Successfully uploaded image'
+                    })
+                }
+            }
+
             if (response && response.status === 201) {
                 form.resetFields();
                 closeModal();
@@ -133,10 +141,7 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
                 description: 'Successfully created provider'
             })
         }
-        if (getUser) {
-            userStore.addMany(getUser);
-        }
-    }, [postData, response, postError, getUser]);
+    }, [postData, response, postError]);
 
 
     return (

@@ -19,17 +19,8 @@ function ImageUploadAndNameInputs(props) {
     const [ imageUrl, setImageUrl ] = useState(null);
 
     useEffect(() => {
-        if (file) {
-            console.log(file);
-            // getBase64(file.originFileObj, imageUrl => {
-            //     setImageUrl(imageUrl);
-            //     setLoading(false);
-            // });
-        }
-        // if (file && file.status === 'uploading') {
-        //     setLoading(true);
-        // }
-        // if (file && file.status === 'done') {
+        // if (file) {
+        //     console.log(file);
         // }
     }, [file]);
 
