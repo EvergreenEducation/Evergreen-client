@@ -6,7 +6,7 @@ import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
-import { isNil, head } from 'lodash';
+import { isNil } from 'lodash';
 
 configure({
     axios: axiosInstance,
@@ -48,10 +48,10 @@ const pathwayColumns = [
     }
 ];
 
-const ProviderCreationContainer = (({ className, closeModal }, ref) => {
+const ProviderCreationContainer = (({ closeModal }) => {
     const { id: userId } = AuthService.currentSession;
-
     const [file, setFile] = useState(null);
+
     const onChangeUpload = (e) => {
         const { file } = e;
         if (file) {
@@ -112,7 +112,8 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
 
                 if (results.success) {
                     notification.success({
-                        description: 'Successfully uploaded image'
+                        message: 'Success',
+                        description: 'Image is uploaded'
                     })
                 }
             }

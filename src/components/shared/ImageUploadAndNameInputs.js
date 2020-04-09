@@ -1,5 +1,5 @@
-import React, { Component, useState, useEffect } from 'react';
-import { Layout, Row, Col, Input, Form, Upload } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Layout, Row, Col, Input, Form, Upload, message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 import { imported } from 'react-imported-component/macro';
@@ -10,19 +10,27 @@ const Skeleton = imported(() => import('antd/lib/skeleton'));
 function getBase64(image, callback) {
     const reader = new FileReader();
     reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(image);
+    return reader.readAsDataURL(image);
 }
 
 function ImageUploadAndNameInputs(props) {
-    const { children, onChangeUpload, file = {} } = props;
-    const [ loading, setLoading ] = useState(false);
+    const { children, onChangeUpload, file = null } = props;
     const [ imageUrl, setImageUrl ] = useState(null);
-
     useEffect(() => {
-        // if (file) {
-        //     console.log(file);
-        // }
+        if (file) {
+            getBase64(new Blob([file.originFileObj], { type: file.type }), imageUrl => {
+                setImageUrl(imageUrl);
+            });
+        }
     }, [file]);
+
+    function beforeUpload(file) {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+          message.error('You can only upload JPG/PNG file!');
+        }
+        return isJpgOrPng;
+    }
 
     return (
         <Layout className="h-auto mb-6">
@@ -38,6 +46,7 @@ function ImageUploadAndNameInputs(props) {
                             listType="picture-card"
                             showUploadList={false}
                             onChange={onChangeUpload}
+                            beforeUpload={beforeUpload}
                         >
                             {
                                 imageUrl
@@ -47,22 +56,10 @@ function ImageUploadAndNameInputs(props) {
                                     /> 
                                     : (
                                         <div>
-                                        {
-                                            loading
-                                                ? <Skeleton.Avatar
-                                                    active={true}
-                                                    avatar
-                                                    shape="square"
-                                                    style={{
-                                                        width: "15rem",
-                                                        height: "11rem"
-                                                    }}
-                                                />
-                                                : <FontAwesomeIcon
-                                                    className="text-black text-6xl"
-                                                    icon={faCloudUploadAlt}
-                                                />
-                                        }
+                                            <FontAwesomeIcon
+                                                className="text-black text-6xl"
+                                                icon={faCloudUploadAlt}
+                                            />
                                         </div>
                                     )
                             }

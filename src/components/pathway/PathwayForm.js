@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
 import TitleDivider from 'components/TitleDivider';
 import { ImageUploadAndNameInputs } from 'components/shared';
-import { groupBy, property, isNil, includes, snakeCase } from 'lodash';
+import { groupBy, property, isNil, snakeCase } from 'lodash';
 import 'scss/antd-overrides.scss';
 
 const { Option } = Select;

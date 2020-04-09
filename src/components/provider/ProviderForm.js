@@ -7,7 +7,10 @@ import 'scss/antd-overrides.scss';
 const { Option } = Select;
 
 const ProviderForm = (props) => {
-    const { datafields = [], userId = null, onChangeUpload, file = {}} = props;
+    const {
+        datafields = [], userId = null, onChangeUpload,
+        file = {}
+    } = props;
 
     useEffect(() => {}, [props.datafields]);
     
