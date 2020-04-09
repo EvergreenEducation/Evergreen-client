@@ -17,13 +17,12 @@ class UploadService {
     const uppy = Uppy();
     const newFileName = `${name}_${cuid()}`;
 
-    console.log(newFileName);
-
     uppy.use(AwsS3, {
       getUploadParameters() {
-        return axiosInstance.post('/generate_presigned_url', {
+        return axiosInstance.post('/files/generate_presigned_url', {
           name: newFileName
         }).then(({ data }) => {
+          console.log(data);
           return {
             method: 'PUT',
             url: data.url,
