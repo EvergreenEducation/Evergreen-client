@@ -15,14 +15,14 @@ class UploadService {
     binaryFile
   }) {
     const uppy = Uppy();
-    const newFileName = `${name}_${cuid()}`;
+    const newFileName = `${cuid()}_${name}`;
 
     uppy.use(AwsS3, {
       getUploadParameters() {
         return axiosInstance.post('/files/generate_presigned_url', {
           name: newFileName
         }).then(({ data }) => {
-          console.log(data);
+          // console.log(data);
           return {
             method: 'PUT',
             url: data.url,
@@ -41,16 +41,15 @@ class UploadService {
     });
 
     const result = await uppy.upload();
+
     if (result.successful && result.successful.length) {
       const file = await axiosInstance.post('/files', {
-        data: {
-          name: name,
-          location: newFileName,
-          mime_type,
-          fileable_id,
-          fileable_type,
-          uploaded_by_user_id
-        }
+        name: name,
+        location: newFileName,
+        mime_type,
+        fileable_id,
+        fileable_type,
+        uploaded_by_user_id
       })
 
       return { success: true, file };

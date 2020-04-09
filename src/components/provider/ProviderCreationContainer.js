@@ -100,23 +100,14 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
             });
 
             if (response.data && file && userId) {
-                console.log(userId);
                 const { name, type } = file;
-                // const reader = new FileReader();
-                // const blob = new Blob([JSON.stringify(file)], {
-                //     type,
-                // });
-                // reader.onload = function() {
-                //     console.log(reader);
-                // }
-                // reader.readAsBinaryString(blob);
                 const results = await UploaderService.upload({
                     name,
                     mime_type: type,
                     uploaded_by_user_id: userId,
                     fileable_type: 'provider',
                     fileable_id: response.data.id,
-                    binaryFile: file,
+                    binaryFile: file.originFileObj,
                 });
 
                 if (results.success) {
