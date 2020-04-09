@@ -75,7 +75,7 @@ function OffersTable(props) {
 				title="Topics"
 				dataIndex="DataFields"
 				key="DataFields"
-				render={(datafields, record) => ({
+				render={(datafields = [], record) => ({
 					children: (
                         <>
                             {

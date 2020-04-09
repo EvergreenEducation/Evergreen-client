@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -13,6 +13,7 @@ configure({
 })
 
 const PathwayCreationContainer = (({ className, closeModal }) => {
+    const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
     const [ form ] = Form.useForm();
     const pathwayStore = PathwayStore.useContainer();
     const offerStore = OfferStore.useContainer();
@@ -33,6 +34,15 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
     const datafieldStore = DataFieldStore.useContainer();
 
     const submit = async () => {
+        const groups_of_offers = groupsOfOffers.map(({ name, inputName}) => {
+            const value = form.getFieldValue(inputName);
+            return {
+                name,
+                inputName,
+                offers: value,
+            }
+        });
+
         const values = form.getFieldsValue([
             'description', 'learn_and_earn', 'frequency',
             'frequency_unit', 'credit_unit', 'pay_unit',
@@ -54,6 +64,7 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
             const response = await executePost({
                 data: {
                     ...values,
+                    groups_of_offers,
                     start_date: dayjs(start_date).toISOString() || null
                 }
             });
@@ -100,6 +111,8 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
                     <PathwayForm
                         datafields={datafieldStore.entities}
                         offers={Object.values(offerStore.entities)}
+                        groupsOfOffers={groupsOfOffers}
+                        setGroupsOfOffers={setGroupsOfOffers}
                     />
                 </div>
                 <section

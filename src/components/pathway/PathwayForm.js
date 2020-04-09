@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
 import TitleDivider from 'components/TitleDivider';
 import { ImageUploadAndNameInputs } from 'components/shared';
-import { groupBy, property, isNil } from 'lodash';
+import { groupBy, property, isNil, includes, snakeCase } from 'lodash';
 import 'scss/antd-overrides.scss';
 
 const { Option } = Select;
@@ -19,19 +19,35 @@ const preloadOptions = (data = []) => data.map((item, index) => {
 });
 
 const PathwayForm = (props) => {
-    let { datafields = [], offers = [] } = props;
+    let { datafields = [], offers = [], groupsOfOffers = [], setGroupsOfOffers } = props;
     const [ groupNameString, setGroupNameString ] = useState('');
-    const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
+    // const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
     datafields = Object.values(datafields);
 
-    function handleGroupName(e) {
+    const handleGroupName = (e) => {
         return setGroupNameString(e.target.value);
     }
 
-    function addGroupName() {
+    const addGroupName = () => {
+        if (!groupNameString.length) {
+            return;
+        }
+        if (groupsOfOffers.some((group) => {
+            return (group.name === groupNameString) || (group.inputName === snakeCase(groupNameString.toLowerCase()));
+        })) {
+            return;
+        }
+
+        let inputName = groupNameString;
+        inputName = inputName.toLowerCase();
+        inputName = snakeCase(inputName);
+
         const updateGroupsOfOffers = [
             ...groupsOfOffers,
-            { name: groupNameString }
+            {
+                name: groupNameString,
+                inputName,
+            }
         ];
 
         setGroupsOfOffers(updateGroupsOfOffers);
@@ -65,7 +81,7 @@ const PathwayForm = (props) => {
 
     let offerGroups = null;
 
-    offerGroups = groupsOfOffers.map(({ name }, index) => {
+    offerGroups = groupsOfOffers.map(({ name, inputName }, index) => {
         return (
             <section
                 className="w-full"
@@ -84,6 +100,7 @@ const PathwayForm = (props) => {
                 </div>
                 <Form.Item
                     className="w-full"
+                    name={inputName}
                 >
                     <Select
                         className="w-full rounded custom-select-rounded-tr-none"
