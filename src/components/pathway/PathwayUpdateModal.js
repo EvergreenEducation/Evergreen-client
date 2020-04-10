@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Form, Button, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -7,19 +7,33 @@ import PathwayForm from 'components/pathway/PathwayForm';
 import dayjs from 'dayjs';
 import 'scss/antd-overrides.scss';
 import moment from 'moment';
-import { groupBy, isNil } from 'lodash';
+import { groupBy, isNil, orderBy } from 'lodash';
+import AuthService from 'services/AuthService';
+import UploaderService from 'services/Uploader';
+import OfferStore from 'store/Offer';
 
 configure({
   axios: axiosInstance
 });
 
 export default function PathwayUpdateModal(props) {
+    const { id: userId } = AuthService.currentSession;
+    const [file, setFile] = useState(null);
+    const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
     const { pathway, onCancel, visible, pathwayStore } = props;
     const [ form ] = Form.useForm();
     const datafieldStore = DataFieldStore.useContainer();
+    const offerStore = OfferStore.useContainer();
     const [{ data: putData, error: putError, response }, executePut ] = useAxios({
         method: 'PUT'
     }, { manual: true });
+
+    const onChangeUpload = (e) => {
+        const { file } = e;
+        if (file) {
+            setFile(file);
+        }
+    }
 
     const submitUpdate = async () => {
         const values = form.getFieldsValue([
@@ -48,6 +62,25 @@ export default function PathwayUpdateModal(props) {
                     updatedAt: new dayjs().toISOString()
                 }
             });
+
+            if (response.data && file && userId) {
+                const { name, type } = file;
+                const results = await UploaderService.upload({
+                    name,
+                    mime_type: type,
+                    uploaded_by_user_id: userId,
+                    fileable_type: 'pathway',
+                    fileable_id: response.data.id,
+                    binaryFile: file.originFileObj,
+                });
+
+                if (results.success) {
+                    notification.success({
+                        message: 'Success',
+                        description: 'Image is uploaded'
+                    })
+                }
+            }
 
             if (response && response.status === 200) {
                 onCancel();
@@ -109,6 +142,19 @@ export default function PathwayUpdateModal(props) {
         if (response && response.status === 200) {
             pathwayStore.updateOne(putData);
         }
+        if (pathway.Files) {
+            const orderedFiles = orderBy(pathway.Files, ['fileable_type', 'createdAt'], ['desc', 'desc']);
+            for (let i = 0; i < orderedFiles.length; i++) {
+                if (!orderedFiles[i]) {
+                    break;
+                }
+
+                if (orderedFiles[i].fileable_type === 'pathway') {
+                    setFile(orderedFiles[i]);
+                    break;
+                }
+            }
+        }
     }, [putData, pathway, putError, response])
 
     return (
@@ -121,6 +167,9 @@ export default function PathwayUpdateModal(props) {
             bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
             footer={true}
             onCancel={onCancel}
+            afterClose={() => {
+                setFile(null)
+            }}
         >
             <Form form={form}>
                 <div
@@ -129,6 +178,12 @@ export default function PathwayUpdateModal(props) {
                 >
                     <PathwayForm
                         datafields={datafieldStore.entities}
+                        offers={Object.values(offerStore.entities)}
+                        groupsOfOffers={groupsOfOffers}
+                        setGroupsOfOffers={setGroupsOfOffers}
+                        userId={userId}
+                        onChangeUpload={onChangeUpload}
+                        file={file}
                     />
                 </div>
                 <section
