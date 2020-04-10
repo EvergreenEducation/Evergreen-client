@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
-import { groupBy, property, isNil, compact, remove, matchesProperty } from 'lodash';
+import { groupBy, property, isNil, remove } from 'lodash';
 import 'scss/antd-overrides.scss';
 
 const { Option } = Select;
@@ -18,8 +18,19 @@ const preloadOptions = (data = []) => data.map((item, index) => {
 });
 
 const OfferForm = (props) => {
-    let { datafields = [], providers = {}, offers = [], offer = {} } = props;
+    let {
+        datafields = [],
+        providers = {},
+        offers = [],
+        offer = {},
+        onChangeUpload,
+        file,
+        userId = null,
+    } = props;
+
     datafields = Object.values(datafields);
+
+    useEffect(() => {}, [file]);
 
     const providersArr = Object.values(providers);
 
@@ -53,7 +64,12 @@ const OfferForm = (props) => {
 
     return (
         <Layout>
-            <ImageUploadAndNameInputs>
+            <ImageUploadAndNameInputs
+                className="mb-2"
+                userId={userId}
+                onChangeUpload={onChangeUpload}
+                file={file}
+            >
                 <Row gutter={8}>
                     <Col span={15}>
                         <div className="flex flex-row">

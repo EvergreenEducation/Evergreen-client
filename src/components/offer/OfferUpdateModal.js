@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Form, Table, Button, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -7,7 +7,9 @@ import OfferForm from 'components/offer/OfferForm';
 import dayjs from 'dayjs';
 import 'scss/antd-overrides.scss';
 import moment from 'moment';
-import { groupBy, isNil, compact } from 'lodash';
+import AuthService from 'services/AuthService';
+import UploaderService from 'services/Uploader';
+import { compact, orderBy } from 'lodash';
 
 configure({
   axios: axiosInstance
@@ -32,10 +34,19 @@ const pathwayColumns = [
 ];
 
 export default function OfferUpdateModal(props) {
-    const { offer = {}, onCancel, visible, offerStore } = props;
+    const { id: userId } = AuthService.currentSession;
+    const [file, setFile] = useState(null);
+    const { offer, onCancel, visible, offerStore } = props;
     const { RelatedOffers = [], PrerequisiteOffers = [], DataFields = [] } = offer;
 
     const [ form ] = Form.useForm();
+
+    const onChangeUpload = (e) => {
+        const { file } = e;
+        if (file) {
+            setFile(file);
+        }
+    }
     
     const [{ data: putData, error: putError, response }, executePut ] = useAxios({
         method: 'PUT'
@@ -72,6 +83,25 @@ export default function OfferUpdateModal(props) {
                     updatedAt: new dayjs().toISOString()
                 }
             });
+
+            if (response.data && file && userId) {
+                const { name, type } = file;
+                const results = await UploaderService.upload({
+                    name,
+                    mime_type: type,
+                    uploaded_by_user_id: userId,
+                    fileable_type: 'offer',
+                    fileable_id: response.data.id,
+                    binaryFile: file.originFileObj,
+                });
+
+                if (results.success) {
+                    notification.success({
+                        message: 'Success',
+                        description: 'Image is uploaded'
+                    })
+                }
+            }
 
             if (response && response.status === 200) {
                 onCancel();
@@ -127,6 +157,19 @@ export default function OfferUpdateModal(props) {
         if (response && response.status === 200) {
             offerStore.updateOne(putData);
         }
+        if (offer.Files) {
+            const orderedFiles = orderBy(offer.Files, ['fileable_type', 'createdAt'], ['desc', 'desc']);
+            for (let i = 0; i < orderedFiles.length; i++) {
+                if (!orderedFiles[i]) {
+                    break;
+                }
+
+                if (orderedFiles[i].fileable_type === 'offer') {
+                    setFile(orderedFiles[i]);
+                    break;
+                }
+            }
+        }
     }, [putData, offer, putError, response])
 
     return (
@@ -139,6 +182,9 @@ export default function OfferUpdateModal(props) {
             bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
             footer={true}
             onCancel={onCancel}
+            afterClose={() => {
+                setFile(null)
+            }}
         >
             <Form form={form}>
                 <div
@@ -150,6 +196,9 @@ export default function OfferUpdateModal(props) {
                         datafields={datafieldStore.entities}
                         providers={providerStore.entities}
                         offer={offer}
+                        userId={userId}
+                        onChangeUpload={onChangeUpload}
+                        file={file}
                     />
                     <section className="mt-2">
                         <label className="mb-2 block">

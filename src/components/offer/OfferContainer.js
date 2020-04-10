@@ -36,7 +36,7 @@ export default function OfferContainer({ handleTableData }) {
   const [{
     data: offersData,
     error: offerError,
-  }] = useAxios('/offers?scope=with_datafields&scope=with_prerequisite_offers&scope=with_related_offers');
+  }] = useAxios('/offers?scope=with_details');
 
   const openAndPopulateUpdateModal = (offer) => {
     setSelectedOffer(offer);
