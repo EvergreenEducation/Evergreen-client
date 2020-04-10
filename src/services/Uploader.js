@@ -22,7 +22,6 @@ class UploadService {
         return axiosInstance.post('/files/generate_presigned_url', {
           name: newFileName
         }).then(({ data }) => {
-          // console.log(data);
           return {
             method: 'PUT',
             url: data.url,

@@ -2,10 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Layout, Row, Col, Input, Form, Upload, message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
-import { imported } from 'react-imported-component/macro';
 import 'scss/antd-overrides.scss';
-
-const Skeleton = imported(() => import('antd/lib/skeleton'));
 
 function getBase64(image, callback) {
     const reader = new FileReader();
@@ -18,9 +15,15 @@ function ImageUploadAndNameInputs(props) {
     const [ imageUrl, setImageUrl ] = useState(null);
     useEffect(() => {
         if (file) {
+            if (file.file_link) {
+                setImageUrl(file.file_link);
+                return;
+            }
             getBase64(new Blob([file.originFileObj], { type: file.type }), imageUrl => {
                 setImageUrl(imageUrl);
             });
+        } else {
+            setImageUrl(null);
         }
     }, [file]);
 
@@ -36,10 +39,10 @@ function ImageUploadAndNameInputs(props) {
         <Layout className="h-auto mb-6">
             <Row gutter={8}>
                 <Col
-                    span={7}
+                    span={5}
                     className="h-48"
                 >
-                    <Form.Item className="w-full h-full form-item-control-input-h-full-w-full">
+                    <Form.Item className="w-full h-full form-item-control-input-h-full-w-full justify-center flex">
                         <Upload
                             className="custom-ant-upload"
                             name="file"
@@ -66,7 +69,7 @@ function ImageUploadAndNameInputs(props) {
                         </Upload>
                     </Form.Item>
                 </Col>
-                <Col span={17}>
+                <Col span={19}>
                     <Form.Item
                         label="Name"
                         name="name"

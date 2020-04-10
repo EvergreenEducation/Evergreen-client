@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Form, Table, Button, notification } from 'antd';
 import ProviderForm from 'components/provider/ProviderForm';
 import axiosInstance from 'services/AxiosInstance';
-import { isNil, groupBy } from 'lodash';
+import { isNil, groupBy, orderBy } from 'lodash';
 import { configure } from 'axios-hooks';
 import ProviderStore from 'store/Provider';
+import AuthService from 'services/AuthService';
+import UploaderService from 'services/Uploader';
 import 'scss/antd-overrides.scss';
 
 configure({
@@ -48,10 +50,20 @@ const pathwayColumns = [
 ];
 
 export default function ProviderUpdateModal(props) {
+    const { id: userId } = AuthService.currentSession;
     const [ form ] = Form.useForm();
     const formRef = React.createRef();
     const { provider, onCancel, visible, datafields } = props;
     const { Offers = [] } = provider;
+    const providerStore = ProviderStore.useContainer();
+    const [file, setFile] = useState(null);
+
+    const onChangeUpload = (e) => {
+        const { file } = e;
+        if (file) {
+            setFile(file);
+        }
+    }
 
     const groupedDataFields = groupBy(provider.DataFields, 'type') || [];
     let providerType = null;
@@ -71,7 +83,6 @@ export default function ProviderUpdateModal(props) {
         }, []);
     }
 
-    const providerStore = ProviderStore.useContainer();
     
     function populateFields(p, ref) {
         ref.current.setFieldsValue({
@@ -98,7 +109,21 @@ export default function ProviderUpdateModal(props) {
         if (formRef.current) {
             populateFields(provider, formRef);
         }
-    }, [props, form, provider]);
+
+        if (provider.Files) {
+            const orderedFiles = orderBy(provider.Files, ['fileable_type', 'createdAt'], ['desc', 'desc']);
+            for (let i = 0; i < orderedFiles.length; i++) {
+                if (!orderedFiles[i]) {
+                    break;
+                }
+
+                if (orderedFiles[i].fileable_type === 'provider') {
+                    setFile(orderedFiles[i]);
+                    break;
+                }
+            }
+        }
+    }, [props, form, provider, provider.Files]);
 
     const submitUpdate = async () => {
         const values = form.getFieldsValue([
@@ -132,6 +157,26 @@ export default function ProviderUpdateModal(props) {
                 });
 
                 if (response && response.status === 200) {
+                    if (response.data && file && userId) {
+                        const { name, type } = file;
+                        const results = await UploaderService.upload({
+                            name,
+                            mime_type: type,
+                            uploaded_by_user_id: userId,
+                            fileable_type: 'provider',
+                            fileable_id: response.data.id,
+                            binaryFile: file.originFileObj,
+                        });
+        
+                        if (results.success) {
+                            notification.success({
+                                message: 'Success',
+                                description: 'Image is uploaded'
+                            })
+                        }
+                    }
+
+
                     providerStore.updateOne(response.data);
                     onCancel();
                     notification.success({
@@ -155,6 +200,9 @@ export default function ProviderUpdateModal(props) {
             bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
             footer={true}
             onCancel={onCancel}
+            afterClose={() => {
+                setFile(null)
+            }}
         >
             <Form form={form}>
                 <div
@@ -163,6 +211,9 @@ export default function ProviderUpdateModal(props) {
                 >
                     <ProviderForm
                         datafields={datafields}
+                        userId={userId}
+                        onChangeUpload={onChangeUpload}
+                        file={file}
                     />
                     <section className="mt-2">
                         <label className="mb-2 block">

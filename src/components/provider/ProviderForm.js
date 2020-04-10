@@ -9,10 +9,10 @@ const { Option } = Select;
 const ProviderForm = (props) => {
     const {
         datafields = [], userId = null, onChangeUpload,
-        file = {}
+        file
     } = props;
 
-    useEffect(() => {}, [props.datafields]);
+    useEffect(() => {}, [props.datafields, file]);
     
     const groupedDataFields = groupBy(datafields, 'type') || [];
     let { topic = [], provider = [] } = groupedDataFields;
