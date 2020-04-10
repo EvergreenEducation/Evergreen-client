@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -6,18 +6,25 @@ import PathwayForm from 'components/pathway/PathwayForm';
 import DataFieldStore from 'store/DataField';
 import PathwayStore from 'store/Pathway';
 import dayjs from 'dayjs';
+import OfferStore from 'store/Offer';
 
 configure({
     axios: axiosInstance,
 })
 
 const PathwayCreationContainer = (({ className, closeModal }) => {
+    const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
     const [ form ] = Form.useForm();
     const pathwayStore = PathwayStore.useContainer();
+    const offerStore = OfferStore.useContainer();
 
     const [{
         data: getDataFields,
     }] = useAxios('/datafields');
+
+    const [{
+        data: getOffers,
+    }] = useAxios('/offers');
     
     const [{ data: postData, error: postError, response }, executePost ] = useAxios({
         url: '/pathways',
@@ -27,6 +34,15 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
     const datafieldStore = DataFieldStore.useContainer();
 
     const submit = async () => {
+        const groups_of_offers = groupsOfOffers.map(({ name, inputName}) => {
+            const value = form.getFieldValue(inputName);
+            return {
+                name,
+                inputName,
+                offers: value,
+            }
+        });
+
         const values = form.getFieldsValue([
             'description', 'learn_and_earn', 'frequency',
             'frequency_unit', 'credit_unit', 'pay_unit',
@@ -48,6 +64,7 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
             const response = await executePost({
                 data: {
                     ...values,
+                    groups_of_offers,
                     start_date: dayjs(start_date).toISOString() || null
                 }
             });
@@ -78,7 +95,10 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
                 message: response.status,
                 description: 'Successfully created pathway'
             })
-        } 
+        }
+        if (getOffers) {
+            offerStore.addMany(getOffers);
+        }
     }, [getDataFields, response, postError])
 
     return (
@@ -90,6 +110,9 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
                 >
                     <PathwayForm
                         datafields={datafieldStore.entities}
+                        offers={Object.values(offerStore.entities)}
+                        groupsOfOffers={groupsOfOffers}
+                        setGroupsOfOffers={setGroupsOfOffers}
                     />
                 </div>
                 <section

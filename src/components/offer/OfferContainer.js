@@ -36,7 +36,7 @@ export default function OfferContainer({ handleTableData }) {
   const [{
     data: offersData,
     error: offerError,
-  }] = useAxios('/offers?scope=with_datafields');
+  }] = useAxios('/offers?scope=with_details');
 
   const openAndPopulateUpdateModal = (offer) => {
     setSelectedOffer(offer);
@@ -47,6 +47,8 @@ export default function OfferContainer({ handleTableData }) {
     history.push('/error/500');
   }
 
+  const showData = handleTableData(Object.values(entities));
+  
   useEffect(() => {
     if (getProviderData) {
       provider.addMany(getProviderData);
@@ -59,7 +61,6 @@ export default function OfferContainer({ handleTableData }) {
     }
   }, [getProviderData, datafieldsData, offersData]);
 
-  const showData = handleTableData(Object.values(entities));
 
   return (
     <Card className="shadow-md rounded-md">

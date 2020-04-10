@@ -7,9 +7,12 @@ import 'scss/antd-overrides.scss';
 const { Option } = Select;
 
 const ProviderForm = (props) => {
-    const { datafields = [] } = props;
+    const {
+        datafields = [], userId = null, onChangeUpload,
+        file
+    } = props;
 
-    useEffect(() => {}, [props.datafields]);
+    useEffect(() => {}, [props.datafields, file]);
     
     const groupedDataFields = groupBy(datafields, 'type') || [];
     let { topic = [], provider = [] } = groupedDataFields;
@@ -43,7 +46,12 @@ const ProviderForm = (props) => {
 
     return (
         <Layout>
-            <ImageUploadAndNameInputs className="mb-2">
+            <ImageUploadAndNameInputs
+                className="mb-2"
+                userId={userId}
+                onChangeUpload={onChangeUpload}
+                file={file}
+            >
                 <Row gutter={8}>
                     <Col span={18}>
                         <Form.Item

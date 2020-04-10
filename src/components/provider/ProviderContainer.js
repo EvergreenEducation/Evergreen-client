@@ -22,7 +22,7 @@ export default function ProviderContainer({ handleTableData }) {
     data = [],
     loading,
     error: providerError,
-  }] = useAxios('/providers?scope=with_datafields');
+  }] = useAxios('/providers?scope=with_details');
 
   const [{
     data: datafieldsData,

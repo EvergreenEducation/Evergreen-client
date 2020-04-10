@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProviderForm from 'components/provider/ProviderForm';
 import { Table, Button, Form, notification } from 'antd';
 import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
+import AuthService from 'services/AuthService';
+import UploaderService from 'services/Uploader';
 import { isNil } from 'lodash';
 
 configure({
@@ -46,7 +48,17 @@ const pathwayColumns = [
     }
 ];
 
-const ProviderCreationContainer = (({ className, closeModal }, ref) => {
+const ProviderCreationContainer = (({ closeModal }) => {
+    const { id: userId } = AuthService.currentSession;
+    const [file, setFile] = useState(null);
+
+    const onChangeUpload = (e) => {
+        const { file } = e;
+        if (file) {
+            setFile(file);
+        }
+    }
+
     const [ form ] = Form.useForm();
     const store = useProviderDataFieldStore();
     const { datafield: datafieldStore, provider: providerStore } = store;
@@ -71,7 +83,8 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
             "contact",
             "pay",
             "cost",
-            "topics"
+            "topics",
+            "keywords"
         ]);
 
         const { name, location, type, learn_and_earn, is_public } = values;
@@ -85,6 +98,25 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
                     topics: values.topics,
                 }
             });
+
+            if (response.data && file && userId) {
+                const { name, type } = file;
+                const results = await UploaderService.upload({
+                    name,
+                    mime_type: type,
+                    uploaded_by_user_id: userId,
+                    fileable_type: 'provider',
+                    fileable_id: response.data.id,
+                    binaryFile: file.originFileObj,
+                });
+
+                if (results.success) {
+                    notification.success({
+                        message: 'Success',
+                        description: 'Image is uploaded'
+                    })
+                }
+            }
 
             if (response && response.status === 201) {
                 form.resetFields();
@@ -124,7 +156,10 @@ const ProviderCreationContainer = (({ className, closeModal }, ref) => {
                     style={{ maxHeight: "32rem" }}
                 >
                     <ProviderForm
+                        userId={userId}
                         datafields={Object.values(datafieldStore.entities)}
+                        onChangeUpload={onChangeUpload}
+                        file={file}
                     />
                     <section className="mt-2">
                         <label className="mb-2 block">

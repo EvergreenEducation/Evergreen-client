@@ -7,6 +7,7 @@ import PathwaysTable from 'components/pathway/PathwaysTable';
 import { useProviderDataFieldStore } from 'components/provider';
 import PathwayStore from 'store/Pathway';
 import axiosInstance from 'services/AxiosInstance';
+import OfferStore from 'store/Offer';
 
 const PathwayUpdateModal = imported(() => import('components/pathway/PathwayUpdateModal'));
 
@@ -21,6 +22,7 @@ export default function PathwayContainer({ handleTableData }) {
   const store = useProviderDataFieldStore();
   const { datafield, provider } = store;
   const pathwayStore = PathwayStore.useContainer();
+  const offerStore = OfferStore.useContainer();
 
   const [{
     data: getPathways,
@@ -32,8 +34,9 @@ export default function PathwayContainer({ handleTableData }) {
   }] = useAxios('/datafields?type=topic');
 
   const [{
+    data: getOffers,
     error: getOffersError,
-  }] = useAxios('/offers?scope=with_datafields');
+  }] = useAxios('/offers');
 
   const openAndPopulateUpdateModal = (pathway) => {
     setSelectedPathway(pathway);
@@ -46,16 +49,12 @@ export default function PathwayContainer({ handleTableData }) {
 
   useEffect(() => {
     if (getPathways) {
-        pathwayStore.addMany(getPathways);
+      pathwayStore.addMany(getPathways);
     }
-    if (getPathwaysError) {
-        const { status, statusText } = getPathwaysError.request;
-        notification.error({
-            message: status,
-            description: statusText,
-        })
+    if (getOffers) {
+      offerStore.addMany(getOffers);
     }
-  }, [getPathways]);
+  }, [getPathways, getOffers]);
 
   const showData = handleTableData(Object.values(pathwayStore.entities));
 

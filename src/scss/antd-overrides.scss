@@ -11,7 +11,7 @@ $firstBreak: 1060px;
 }
 
 .custom-ant-upload {
-    width: 100%;
+    max-width: 195px;
     height: 100%;
     .ant-upload {
         height: 100%;
@@ -26,6 +26,15 @@ $firstBreak: 1060px;
         border-bottom-left-radius: 0.25rem !important;
         border-top-right-radius: 0 !important;
         border-bottom-right-radius: 0 !important;
+    }
+}
+
+.custom-select-rounded-tr-none {
+    .ant-select-selector {
+        border-top-right-radius: 0 !important;
+        border-top-left-radius: 0.25rem !important;
+        border-bottom-left-radius: 0.25rem !important;
+        border-bottom-right-radius: 0.25rem !important;
     }
 }
 

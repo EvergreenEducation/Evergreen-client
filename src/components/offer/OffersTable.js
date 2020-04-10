@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Table, Button, Tag } from 'antd';
 import dayjs from 'dayjs';
 import 'scss/antd-overrides.scss';
@@ -6,7 +6,9 @@ import 'scss/antd-overrides.scss';
 const { Column } = Table;
 
 function OffersTable(props) {
-    const { data, providers, datafields, handleUpdateModal } = props;
+	const { data, providers, datafields, handleUpdateModal } = props;
+	
+	useEffect(() => {}, [data]);
 
     return (
         <Table
@@ -73,7 +75,7 @@ function OffersTable(props) {
 				title="Topics"
 				dataIndex="DataFields"
 				key="DataFields"
-				render={(datafields, record) => ({
+				render={(datafields = [], record) => ({
 					children: (
                         <>
                             {
@@ -113,19 +115,20 @@ function OffersTable(props) {
 				className="antd-col"
 				title=""
 				key="update"
-				render={(text, record) => ({
-					children: (
-                        <Button
-                            type="link"
-                            onClick={() => handleUpdateModal(record)}
-                        >
-                            Update
-                        </Button>
-                    ),
-					props: {
-						"data-title": "",
-					}
-				})}
+				render={(text, record) => {
+					return {
+						children: (
+							<Button
+								type="link"
+								onClick={() => handleUpdateModal(record)}
+							>
+								Update
+							</Button>
+						),
+						props: {
+							"data-title": "",
+						}
+				}}}
 			/>
         </Table>
     );
