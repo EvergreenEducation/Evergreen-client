@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
 import TitleDivider from 'components/TitleDivider';
 import { ImageUploadAndNameInputs } from 'components/shared';
-import { groupBy, property, isNil, snakeCase } from 'lodash';
+import { groupBy, property, isNil, snakeCase, get } from 'lodash';
 import 'scss/antd-overrides.scss';
 
 const { Option } = Select;
@@ -23,6 +23,7 @@ const PathwayForm = (props) => {
         datafields = [], offers = [],
         groupsOfOffers = [], setGroupsOfOffers,
         userId = null, file, onChangeUpload,
+        pathway,
     } = props;
     const [ groupNameString, setGroupNameString ] = useState('');
     datafields = Object.values(datafields);
@@ -31,7 +32,7 @@ const PathwayForm = (props) => {
         return setGroupNameString(e.target.value);
     }
 
-    useEffect(() => {}, [file]);
+    useEffect(() => {}, [file, pathway]);
 
     const addGroupName = () => {
         if (!groupNameString.length) {

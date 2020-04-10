@@ -89,6 +89,8 @@ const OfferCreationContainer = (({ className, closeModal }) => {
                     binaryFile: file.originFileObj,
                 });
 
+                // Call store.updateOne and put file url inside offer object
+
                 if (results.success) {
                     notification.success({
                         message: 'Success',

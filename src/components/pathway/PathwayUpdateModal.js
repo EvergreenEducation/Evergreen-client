@@ -7,7 +7,7 @@ import PathwayForm from 'components/pathway/PathwayForm';
 import dayjs from 'dayjs';
 import 'scss/antd-overrides.scss';
 import moment from 'moment';
-import { groupBy, isNil, orderBy } from 'lodash';
+import { groupBy, isNil, orderBy, get, snakeCase } from 'lodash';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import OfferStore from 'store/Offer';
@@ -27,6 +27,8 @@ export default function PathwayUpdateModal(props) {
     const [{ data: putData, error: putError, response }, executePut ] = useAxios({
         method: 'PUT'
     }, { manual: true });
+
+    console.log(pathway);
 
     const onChangeUpload = (e) => {
         const { file } = e;
@@ -126,6 +128,41 @@ export default function PathwayUpdateModal(props) {
             keywords: p.keywords,
             type: p.type
         });
+
+        if (p && p.GroupsOfOffers) {
+            const groupedByName = groupBy(p.GroupsOfOffers, (item) => {
+                return get(item, 'OffersPathways.group_name');
+            });
+
+            console.log(groupedByName);
+            const groupNameKeys = Object.keys(groupedByName);
+            console.log(groupNameKeys);
+
+            for (let i = 0; i < groupNameKeys.length; i++) {
+                if (!groupNameKeys[i]) {
+                    break;
+                }
+                const test = groupedByName[groupNameKeys[i]];
+                const values = [];
+                for (let j = 0; j < test.length; j++) {
+                    if (!test[j]) {
+                        break;
+                    }
+                    values.push(test[j].id);
+                }
+                const snakeCased = snakeCase(groupNameKeys[i]);
+                setGroupsOfOffers([
+                    ...groupsOfOffers,
+                    {
+                        name: groupNameKeys[i],
+                        inputName: snakeCased,
+                    }
+                ]);
+                formInstance.setFieldsValue({
+                    [snakeCased]: values
+                })
+            }
+        }
     }
 
     useEffect(() => {
@@ -177,6 +214,7 @@ export default function PathwayUpdateModal(props) {
                     style={{ maxHeight: "32rem" }}
                 >
                     <PathwayForm
+                        pathway={pathway}
                         datafields={datafieldStore.entities}
                         offers={Object.values(offerStore.entities)}
                         groupsOfOffers={groupsOfOffers}
