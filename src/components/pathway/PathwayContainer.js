@@ -27,7 +27,7 @@ export default function PathwayContainer({ handleTableData }) {
   const [{
     data: getPathways,
     error: getPathwaysError,
-  }] = useAxios('/pathways?scope=with_datafields');
+  }] = useAxios('/pathways?scope=with_datafields&scope=with_files');
 
   const [{
     error: getTopicsError,

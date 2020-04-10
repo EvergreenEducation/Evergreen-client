@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
 import TitleDivider from 'components/TitleDivider';
 import { ImageUploadAndNameInputs } from 'components/shared';
@@ -19,14 +19,19 @@ const preloadOptions = (data = []) => data.map((item, index) => {
 });
 
 const PathwayForm = (props) => {
-    let { datafields = [], offers = [], groupsOfOffers = [], setGroupsOfOffers } = props;
+    let {
+        datafields = [], offers = [],
+        groupsOfOffers = [], setGroupsOfOffers,
+        userId = null, file, onChangeUpload,
+    } = props;
     const [ groupNameString, setGroupNameString ] = useState('');
-    // const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
     datafields = Object.values(datafields);
 
     const handleGroupName = (e) => {
         return setGroupNameString(e.target.value);
     }
+
+    useEffect(() => {}, [file]);
 
     const addGroupName = () => {
         if (!groupNameString.length) {
@@ -116,7 +121,12 @@ const PathwayForm = (props) => {
 
     return (
         <Layout>
-            <ImageUploadAndNameInputs>
+            <ImageUploadAndNameInputs
+                className="mb-2"
+                userId={userId}
+                onChangeUpload={onChangeUpload}
+                file={file}
+            >
                 <Form.Item
                     label="Description"
                     name="description"

@@ -7,16 +7,27 @@ import DataFieldStore from 'store/DataField';
 import PathwayStore from 'store/Pathway';
 import dayjs from 'dayjs';
 import OfferStore from 'store/Offer';
+import AuthService from 'services/AuthService';
+import UploaderService from 'services/Uploader';
 
 configure({
     axios: axiosInstance,
 })
 
 const PathwayCreationContainer = (({ className, closeModal }) => {
+    const { id: userId } = AuthService.currentSession;
+    const [file, setFile] = useState(null);
     const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
     const [ form ] = Form.useForm();
     const pathwayStore = PathwayStore.useContainer();
     const offerStore = OfferStore.useContainer();
+
+    const onChangeUpload = (e) => {
+        const { file } = e;
+        if (file) {
+            setFile(file);
+        }
+    }
 
     const [{
         data: getDataFields,
@@ -69,6 +80,25 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
                 }
             });
 
+            if (response.data && file && userId) {
+                const { name, type } = file;
+                const results = await UploaderService.upload({
+                    name,
+                    mime_type: type,
+                    uploaded_by_user_id: userId,
+                    fileable_type: 'pathway',
+                    fileable_id: response.data.id,
+                    binaryFile: file.originFileObj,
+                });
+
+                if (results.success) {
+                    notification.success({
+                        message: 'Success',
+                        description: 'Image is uploaded'
+                    })
+                }
+            }
+
             if (response && response.status === 201) {
                 form.resetFields();
                 closeModal();
@@ -113,6 +143,9 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
                         offers={Object.values(offerStore.entities)}
                         groupsOfOffers={groupsOfOffers}
                         setGroupsOfOffers={setGroupsOfOffers}
+                        userId={userId}
+                        onChangeUpload={onChangeUpload}
+                        file={file}
                     />
                 </div>
                 <section
