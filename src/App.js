@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import {reactLocalStorage} from 'reactjs-localstorage';
+import AuthService from 'services/AuthService';
 import {
   BrowserRouter as Router,
   Route,
@@ -22,7 +24,7 @@ function AuthAction() {
   if (action === 'email_not_verified') {
     return <EmailNotVerifiedScreen />
   } else if (action === 'logout') {
-    window.location.replace(`${process.env.REACT_APP_API_URL}/logout`)
+    return AuthService.logout();
   } else if (action === 'role_selection') {
     return <RoleSelectionScreen />
   }
@@ -32,6 +34,14 @@ function AuthAction() {
 }
 
 class App extends Component {
+  componentWillMount() {
+    const currentSession = reactLocalStorage.getObject('currentSession');
+    if (currentSession) {
+      AuthService.setCurrentSession(currentSession);
+    } else {
+      window.location.replace(`/`)
+    }
+  }
   render() {
     return (
       <Router>
