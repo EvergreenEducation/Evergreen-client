@@ -34,7 +34,6 @@ function Auth() {
       return <Redirect to={{ pathname: '/error/500'}}/>
     }
 
-    AuthService.setAuthenticated();
     AuthService.setCurrentSession({
       ...myProfile
     });

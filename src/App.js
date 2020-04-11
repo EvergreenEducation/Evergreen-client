@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import {reactLocalStorage} from 'reactjs-localstorage';
+import AuthService from 'services/AuthService';
 import {
   BrowserRouter as Router,
   Route,
@@ -11,7 +13,6 @@ import { imported } from 'react-imported-component/macro';
 import { Button } from 'antd';
 import HomePage from 'screens/HomePage';
 import RoleSelectionScreen from 'screens/RoleSelectionScreen';
-import AuthService from 'services/AuthService';
 const AuthScreen = imported(() => import('screens/AuthScreen'));
 const EmailNotVerifiedScreen = imported(() => import('screens/EmailNotVerifiedScreen'));
 const AdminDashboardScreen = imported(() => import('screens/AdminDashboardScreen'));
@@ -33,6 +34,14 @@ function AuthAction() {
 }
 
 class App extends Component {
+  componentWillMount() {
+    const currentSession = reactLocalStorage.getObject('currentSession');
+    if (currentSession) {
+      AuthService.setCurrentSession(currentSession);
+    } else {
+      window.location.replace(`/`)
+    }
+  }
   render() {
     return (
       <Router>
