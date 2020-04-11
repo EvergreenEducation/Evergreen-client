@@ -11,6 +11,7 @@ import { imported } from 'react-imported-component/macro';
 import { Button } from 'antd';
 import HomePage from 'screens/HomePage';
 import RoleSelectionScreen from 'screens/RoleSelectionScreen';
+import AuthService from 'services/AuthService';
 const AuthScreen = imported(() => import('screens/AuthScreen'));
 const EmailNotVerifiedScreen = imported(() => import('screens/EmailNotVerifiedScreen'));
 const AdminDashboardScreen = imported(() => import('screens/AdminDashboardScreen'));
@@ -22,7 +23,7 @@ function AuthAction() {
   if (action === 'email_not_verified') {
     return <EmailNotVerifiedScreen />
   } else if (action === 'logout') {
-    window.location.replace(`${process.env.REACT_APP_API_URL}/logout`)
+    return AuthService.logout();
   } else if (action === 'role_selection') {
     return <RoleSelectionScreen />
   }

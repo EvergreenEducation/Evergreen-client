@@ -12,6 +12,12 @@ class AuthService {
 
     setNotAuthenticated = () => (this.authenticated = true);
     isAuthenticated = () => this.authenticated;
+    logout = () => {
+      this.authenticated = false;
+      this.currentSession = { user_id: null };
+      window.location.replace(`${process.env.REACT_APP_API_URL}/logout`)
+      return null;
+    }
 }
 
 export default new AuthService();
