@@ -1,45 +1,53 @@
 import React from 'react';
-import { Layout, Row, Col, Card, Button } from 'antd';
+import {
+  withRouter,
+  Redirect
+} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChalkboardTeacher, faUserGraduate } from '@fortawesome/free-solid-svg-icons';
-import {
-  Redirect,
-} from 'react-router-dom';
 
 import axiosInstance from 'services/AxiosInstance';
-import useAxios, { configure } from 'axios-hooks'
 import 'scss/screens/user-selection-screen.scss';
 import AuthService from 'services/AuthService';
+
+import { Layout, Row, Col, Card, Button } from 'antd';
 const { Content } = Layout;
 
-configure({
-  axios: axiosInstance
-});
-
-export default function RoleSelectionScreen() {
+function RoleSelectionScreen({ history }) {
   let user_id = AuthService.currentSession.id;
-  const [{ data, error }, updateRole ] = useAxios({
-    url: `/users/${user_id}`,
-    method: 'PUT'
-  }, { manual: true });
+
+  const createUserProfile = async(role) => {
+    try {
+      if (role === 'provider') {
+        const { data } = await axiosInstance.post('/providers', {
+          user_id
+        });
+        const { data: user } = await axiosInstance.put(`/users/${user_id}`, {
+          role, provider_id: data.id 
+        });
+        const { id: provider_id } = data;
+        AuthService.setCurrentSession(user);
+        history.push(`/provider/${provider_id}`);
+      } 
+      else {
+        const { data } = await axiosInstance.post('/students', {
+          user_id
+        });
+        const { data: user } = await axiosInstance.put(`/users/${user_id}`, {
+          role, student_id: data.id
+        });
+        const { id: student_id } = data;
+        AuthService.setCurrentSession(user);
+        history.push(`/student_id/${student_id}`);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   if (!user_id) {
     return <Redirect to={{ pathname: '/error/500'}}/>
   }
-
-  if (error) {
-      return <Redirect to={{ pathname: '/error/500'}}/>
-  }
-
-  if (data) {
-      return <Redirect to={{ pathname: '/admin'}}/>
-  }
-
-  const doRoleUpdate = (role) => {
-    updateRole({ data: {
-      role
-    }})
-  };
 
   return (
       <Layout className="h-full bg-green-500">
@@ -53,7 +61,7 @@ export default function RoleSelectionScreen() {
                           <Button
                               className="h-full"
                               type="link"
-                              onClick={() => doRoleUpdate('student')}
+                              onClick={() => createUserProfile('student')}
                           >
                               <Card
                                   className="w-72 h-88 rounded user-card flex justify-center flex-col border-none"
@@ -81,7 +89,7 @@ export default function RoleSelectionScreen() {
                           <Button
                               className="h-full"
                               type="link"
-                              onClick={() => doRoleUpdate('provider')}
+                              onClick={() => createUserProfile('provider')}
                           >
                               <Card
                                   className="w-72 h-88 rounded user-card flex justify-center flex-col border-none"
@@ -108,3 +116,5 @@ export default function RoleSelectionScreen() {
       </Layout>
   );
 }
+
+export default withRouter(RoleSelectionScreen);
