@@ -150,7 +150,7 @@ export default function AdminDashboardPage(props) {
                         <Layout
                             className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
                         >
-                            <Sidebar pathname={pathname} />
+                            <Sidebar basePath={'/admin'} role={'admin'}/>
                             <Col className="w-full">
                                 <Header className="px-6 bg-white h-12 flex items-center">
                                     <Col span={14}>

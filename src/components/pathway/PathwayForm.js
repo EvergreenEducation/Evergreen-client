@@ -150,7 +150,7 @@ const PathwayForm = (props) => {
                             className="mb-0 inherit"
                         >
                             <DatePicker
-                                className="w-full"
+                                className="w-full custom-datepicker rounded"
                                 placeholder=""
                             />
                         </Form.Item>

@@ -32,7 +32,7 @@ const OfferForm = (props) => {
 
     useEffect(() => {}, [file]);
 
-    const providersArr = Object.values(providers);
+    const providersArr = Object.values(providers).filter(p => !isNil(p.name));
 
     const grouped = groupBy(datafields, property('type'));
     const {
@@ -92,7 +92,7 @@ const OfferForm = (props) => {
                                                     key={index.toString()}
                                                     value={p.id}
                                                 >
-                                                    {p.name}
+                                                    {p.name || null}
                                                 </Option>
                                             );
                                         })
@@ -133,7 +133,7 @@ const OfferForm = (props) => {
                             className="mb-0 inherit"
                         >
                             <DatePicker
-                                className="w-full"
+                                className="w-full custom-datepicker rounded"
                                 format="MM-DD-YYYY" 
                             />
                         </Form.Item>

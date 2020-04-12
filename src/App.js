@@ -6,32 +6,14 @@ import {
   Route,
   Switch,
   Link,
-  useParams,
-  Redirect
 } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import { Button } from 'antd';
 import HomePage from 'screens/HomePage';
-import RoleSelectionScreen from 'screens/RoleSelectionScreen';
 const AuthScreen = imported(() => import('screens/AuthScreen'));
-const EmailNotVerifiedScreen = imported(() => import('screens/EmailNotVerifiedScreen'));
 const AdminDashboardScreen = imported(() => import('screens/AdminDashboardScreen'));
+const ProviderDashboardScreen = imported(() => import('screens/ProviderDashboardScreen'));
 const Result = imported(() => import('antd/lib/result'));
-
-function AuthAction() {
-  const params = useParams();
-  const { action } = params;
-  if (action === 'email_not_verified') {
-    return <EmailNotVerifiedScreen />
-  } else if (action === 'logout') {
-    return AuthService.logout();
-  } else if (action === 'role_selection') {
-    return <RoleSelectionScreen />
-  }
-  else {
-    return <Redirect to={{ pathname: '/'}}/>
-  }
-}
 
 class App extends Component {
   componentWillMount() {
@@ -52,15 +34,9 @@ class App extends Component {
             component={HomePage}
           />
           <Route
-            exact
-            path="/auth"
-            component={AuthScreen}
-          />
-          <Route
-            exact
             path="/auth/:action"
             component={props => {
-              return <AuthAction />;
+              return <AuthScreen />;
             }}
           />
           <Route
@@ -69,7 +45,7 @@ class App extends Component {
           />
           <Route
             path="/provider/:id"
-            children={() => (<div>test</div>)}
+            component={ProviderDashboardScreen}
           />
           <Route
             exact

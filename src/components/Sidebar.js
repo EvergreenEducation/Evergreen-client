@@ -9,66 +9,48 @@ import {
 
 const { Sider } = Layout;
 
-const routesList = [
+const routesList = (role) => {
+  return [
     {
-        path: '/admin/providers',
-        name: ' Providers',
-        icon: faTree,
-        disabled: false
+      path: 'providers',
+      name: 'Providers',
+      icon: faTree,
+      enabled: role === 'admin'
     },
     {
-        path: '/admin/offers',
-        name: ' Offers',
-        icon: faDollarSign,
-        disabled: false
+      path: 'offers',
+      name: 'Offers',
+      icon: faDollarSign,
+      enabled: ['admin', 'provider'].includes(role)
     },
     {
-        path: '/admin/local_offers',
-        name: ' Local Offers',
-        icon: faHandHoldingUsd,
-        disabled: true
+      path: 'pathways',
+      name: 'Pathways',
+      icon: faRoute,
+      enabled: ['admin', 'provider'].includes(role)
     },
     {
-        path: '/admin/pathways',
-        name: ' Pathways',
-        icon: faRoute,
-        disabled: false
+      path: 'settings',
+      name: 'Settings',
+      icon: faCog,
+      enabled: ['admin', 'provider'].includes(role)
     },
     {
-        path: '/admin/settings',
-        name: ' Settings',
-        icon: faCog,
-        disabled: false
-    },
-    {
-        path: '/admin/database',
-        name: ' Database',
-        icon: faDatabase,
-        disabled: true
+      path: 'database',
+      name: 'Database',
+      icon: faDatabase,
+      enabled: false
     }
-];
-
-function onPathSelectKey(pathname, routes) {
-    for (let i = 0; routes.length; i++) {
-        if (!routes[i]) {
-            break;
-        }
-        if (routes[i] && (pathname === routes[i].path)) {
-            return [(i + 1).toString()];
-        }
-    }
-    return ['1'];
+  ]
 }
 
-function Sidebar({ pathname }) {
+function Sidebar({ basePath, role }) {
     const [collapsed, setCollapse] = useState(true);
-
-    const selectedKey = onPathSelectKey(pathname, routesList);
-
     const toggleSider = () => {
         setCollapse(!collapsed);
     }
 
+    let routes = routesList(role).filter(i => i.enabled);
     return (
         <Sider
             className="min-h-full bg-green-500"
@@ -91,23 +73,22 @@ function Sidebar({ pathname }) {
             <Menu
                 className="bg-green-500"
                 theme="dark"
-                defaultSelectedKeys={selectedKey}
+                // defaultSelectedKeys={1}
             >
                 {
-                    routesList.map(({ path, name, icon, disabled }, index) => (
+                    routes.map(({ path, name, icon }, index) => (
                         <Menu.Item
                             className="bg-green-500 text-center text-white bg-green-800-selected"
                             style={{ marginTop: 0, marginBottom: 0 }}
                             key={index.toString()}
-                            disabled={disabled}
                         >
-                            <Link to={path}>
+                            <Link to={`${basePath}/${path}`}>
                                 <FontAwesomeIcon
                                     className="text-white"
                                     icon={icon}
                                 />
                                 {
-                                    collapsed ? null : name
+                                    collapsed ? null : " " + name
                                 }
                             </Link>
                         </Menu.Item> 
