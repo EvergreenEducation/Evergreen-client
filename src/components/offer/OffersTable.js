@@ -48,12 +48,16 @@ function OffersTable(props) {
 				dataIndex="category"
 				key="category"
 				render={
-                    id => {
-                        if (!datafields[id]) {
-                            return null;
-                        }
-                        return datafields[id].name;
-                    }
+					(id) => {
+						let name = null;
+						if (datafields[id]) {
+							name = datafields[id].name;
+						}
+						return {
+							children: name,
+							props: { "data-title": "Category" }
+						}
+					}
                 }
 			/>
             <Column
@@ -62,12 +66,22 @@ function OffersTable(props) {
 				dataIndex="provider_id"
 				key="provider_id"
 				render={
-                    id => {
-                        if (providers[id]) {
-                            return providers[id].name;
-                        }
-                        return null;
-                    }
+                    // id => {
+                    //     if (providers[id]) {
+                    //         return providers[id].name;
+                    //     }
+                    //     return null;
+					// }
+					(id) => {
+						let name = null;
+						if (providers[id]) {
+							name = providers[id].name;
+						}
+						return {
+							children: name,
+							props: { "data-title": "Provider" }
+						}
+					}
                 }
 			/>
             <Column
@@ -91,7 +105,7 @@ function OffersTable(props) {
                                             { datafield.name }
                                         </Tag>
                                     );
-                                }) || null
+                                })
                             }
                         </>
                     ),
@@ -107,7 +121,10 @@ function OffersTable(props) {
 				key="start_date"
 				render={
                     date => {
-                        return dayjs(date).format('MMM DD, YYYY');
+						return {
+							children: dayjs(date).format('MMM DD, YYYY'),
+							props: { "data-title": "Start Date" }
+						}
                     }
                 }
 			/>

@@ -10,6 +10,12 @@ $firstBreak: 1060px;
     }
 }
 
+.custom-datepicker {
+    .ant-picker-suffix {
+        display: flex;
+    }
+}
+
 .custom-ant-upload {
     max-width: 195px;
     height: 100%;
