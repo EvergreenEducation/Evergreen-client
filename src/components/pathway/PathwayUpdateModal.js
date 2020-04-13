@@ -7,7 +7,7 @@ import PathwayForm from 'components/pathway/PathwayForm';
 import dayjs from 'dayjs';
 import 'scss/antd-overrides.scss';
 import moment from 'moment';
-import { groupBy, isNil, orderBy, get, snakeCase } from 'lodash';
+import { groupBy, isNil, orderBy, get, snakeCase, uniqBy } from 'lodash';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import OfferStore from 'store/Offer';
@@ -20,6 +20,7 @@ export default function PathwayUpdateModal(props) {
     const { id: userId } = AuthService.currentSession;
     const [file, setFile] = useState(null);
     const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
+
     const { pathway, onCancel, visible, pathwayStore } = props;
     const [ form ] = Form.useForm();
     const datafieldStore = DataFieldStore.useContainer();
@@ -27,8 +28,6 @@ export default function PathwayUpdateModal(props) {
     const [{ data: putData, error: putError, response }, executePut ] = useAxios({
         method: 'PUT'
     }, { manual: true });
-
-    console.log(pathway);
 
     const onChangeUpload = (e) => {
         const { file } = e;
@@ -38,6 +37,16 @@ export default function PathwayUpdateModal(props) {
     }
 
     const submitUpdate = async () => {
+        const groups_of_offers = groupsOfOffers.map(({ group_name, inputName}) => {
+            const value = form.getFieldValue(inputName);
+            return {
+                group_name,
+                offers: value,
+            }
+        });
+
+        console.log(groups_of_offers);
+
         const values = form.getFieldsValue([
             'description', 'learn_and_earn', 'frequency',
             'frequency_unit', 'credit_unit', 'pay_unit',
@@ -60,6 +69,7 @@ export default function PathwayUpdateModal(props) {
                 url: `/pathways/${pathway.id}`,
                 data: {
                     ...values,
+                    groups_of_offers,
                     start_date: dayjs(start_date).toISOString() || null,
                     updatedAt: new dayjs().toISOString()
                 }
@@ -88,7 +98,7 @@ export default function PathwayUpdateModal(props) {
                 onCancel();
                 notification.success({
                     message: response.status,
-                    description: 'Successfully updated offer'
+                    description: 'Successfully updated pathway'
                 })
             }
         }
@@ -109,59 +119,56 @@ export default function PathwayUpdateModal(props) {
     }
 
     function populateFields(p, formInstance) {
+        const { GroupsOfOffers = [] } = p;
+        console.log(p);
         formInstance.setFieldsValue({
-            name: p.name,
-            description: p.description,
-            learn_and_earn: p.learn_and_earn,
-            frequency: p.frequency,
-            frequency_unit: p.frequency_unit,
-            credit: p.credit,
-            credit_unit: p.credit_unit,
-            pay: p.pay,
-            pay_unit: p.pay_unit,
-            length: p.length,
-            length_unit: p.length_unit,
+            ...p,
             start_date: moment(p.start_date),
             topics: myTopics,
-            outlook: p.outlook,
-            earnings: p.earnings,
-            keywords: p.keywords,
-            type: p.type
         });
 
-        if (p && p.GroupsOfOffers) {
-            const groupedByName = groupBy(p.GroupsOfOffers, (item) => {
-                return get(item, 'OffersPathways.group_name');
-            });
+        // if (p && p.GroupsOfOffers) {
+        //     const groupedByName = groupBy(p.GroupsOfOffers, (item) => {
+        //         return get(item, 'OffersPathways.group_name');
+        //     });
 
-            console.log(groupedByName);
-            const groupNameKeys = Object.keys(groupedByName);
-            console.log(groupNameKeys);
+        //     const groupNameKeys = Object.keys(groupedByName);
 
-            for (let i = 0; i < groupNameKeys.length; i++) {
-                if (!groupNameKeys[i]) {
-                    break;
-                }
-                const test = groupedByName[groupNameKeys[i]];
-                const values = [];
-                for (let j = 0; j < test.length; j++) {
-                    if (!test[j]) {
-                        break;
-                    }
-                    values.push(test[j].id);
-                }
-                const snakeCased = snakeCase(groupNameKeys[i]);
-                setGroupsOfOffers([
-                    ...groupsOfOffers,
-                    {
-                        name: groupNameKeys[i],
-                        inputName: snakeCased,
-                    }
-                ]);
-                formInstance.setFieldsValue({
-                    [snakeCased]: values
-                })
-            }
+        //     for (let i = 0; i < groupNameKeys.length; i++) {
+        //         if (!groupedByName[groupNameKeys[i]]) { break };
+
+        //         const group = groupedByName[groupNameKeys[i]];
+
+        //         const values = [];
+        //         for (let j = 0; j < group.length; j++) {
+        //             if (!group[j]) {
+        //                 break;
+        //             }
+        //             values.push(group[j].id);
+        //         }
+        //         const snakeCased = snakeCase(groupNameKeys[i]);
+        //         setGroupsOfOffers(
+        //             uniqBy([
+        //                 ...p.GroupsOfOffers,
+        //                 {
+        //                     group_name: groupNameKeys[i],
+        //                     inputName: snakeCased,
+        //                 }
+        //             ], (group) => group.inputName)
+        //         );
+        //         formInstance.setFieldsValue({
+        //             [snakeCased]: values
+        //         })
+        //     }
+        // }
+
+        if (GroupsOfOffers.length) {
+            const namedGroups = groupBy(GroupsOfOffers, g => get(g, 'OffersPathways.group_name'));
+            console.log(namedGroups);
+            // const test = Object.values(namedGroups).map((a, b, c, d) => {
+            //     console.log(a, b, c,d );
+            //     return a;
+            // });
         }
     }
 
@@ -173,7 +180,7 @@ export default function PathwayUpdateModal(props) {
                 description: statusText,
             });
         }
-        if (form) {
+        if (form && pathway) {
             populateFields(pathway, form);
         }
         if (response && response.status === 200) {
@@ -198,7 +205,7 @@ export default function PathwayUpdateModal(props) {
         <Modal
             forceRender={true}
             className="custom-modal"
-            title={"Update Offer"}
+            title={"Update Pathway"}
             visible={visible}
             width={998}
             bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}

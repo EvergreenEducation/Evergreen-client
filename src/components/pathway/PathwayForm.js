@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
+import {
+    Layout, Form, Input, Row,
+    Col, Select, Button, DatePicker,
+    Table,
+} from 'antd';
 import TitleDivider from 'components/TitleDivider';
 import { ImageUploadAndNameInputs } from 'components/shared';
 import { groupBy, property, isNil, snakeCase, get } from 'lodash';
 import 'scss/antd-overrides.scss';
 
 const { Option } = Select;
+const { Column } = Table;
 
 const preloadOptions = (data = []) => data.map((item, index) => {
     return (
@@ -32,31 +37,37 @@ const PathwayForm = (props) => {
         return setGroupNameString(e.target.value);
     }
 
-    useEffect(() => {}, [file, pathway]);
+    useEffect(() => {}, [file, pathway, groupsOfOffers]);
+
+    const doesGroupNameExist = (groups) => {
+        groups.some(group => {
+            return (group.name === groupNameString)
+                || (group.inputName === snakeCase(groupNameString.toLowerCase()));
+        });
+    };
 
     const addGroupName = () => {
         if (!groupNameString.length) {
             return;
         }
-        if (groupsOfOffers.some((group) => {
-            return (group.name === groupNameString) || (group.inputName === snakeCase(groupNameString.toLowerCase()));
-        })) {
+
+        if (doesGroupNameExist(groupsOfOffers)) {
             return;
         }
 
-        let inputName = groupNameString;
-        inputName = inputName.toLowerCase();
-        inputName = snakeCase(inputName);
+        const inputName = snakeCase(groupNameString.toLowerCase());
 
-        const updateGroupsOfOffers = [
+        const newGroupsOfOffers = [
             ...groupsOfOffers,
             {
-                name: groupNameString,
+                group_name: groupNameString,
                 inputName,
             }
         ];
 
-        setGroupsOfOffers(updateGroupsOfOffers);
+        console.log(newGroupsOfOffers);
+
+        setGroupsOfOffers(newGroupsOfOffers);
     }
 
     const grouped = groupBy(datafields, property('type'));
@@ -84,41 +95,6 @@ const PathwayForm = (props) => {
     if (!isNil(offers) && offers.length) {
         offerOptions = preloadOptions(offers);
     }
-
-    let offerGroups = null;
-
-    offerGroups = groupsOfOffers.map(({ name, inputName }, index) => {
-        return (
-            <section
-                className="w-full"
-                key={index.toString()}
-            >
-                <div className="w-full flex justify-between">
-                    <label>{name}</label>
-                    <Button
-                        className="rounded-b-none"
-                        type="primary"
-                        size="small"
-                        danger
-                    >
-                        Remove
-                    </Button>
-                </div>
-                <Form.Item
-                    className="w-full"
-                    name={inputName}
-                >
-                    <Select
-                        className="w-full rounded custom-select-rounded-tr-none"
-                        showSearch
-                        mode="multiple"
-                    >
-                        {offerOptions}
-                    </Select>
-                </Form.Item>
-            </section>
-        );
-    });
 
     return (
         <Layout>
@@ -191,15 +167,71 @@ const PathwayForm = (props) => {
             </Row>
             <TitleDivider title={"Pathway Offers Groups"} />
             <Row>
-                {
-                    offerGroups && offerGroups.length
-                        ? offerGroups
-                        : (
-                            <p className="mx-auto p-4 border-2 bg-gray-400 font-bold text-gray-600 border-dashed border-gray-500 w-4/5 text-center mb-6 mt-2 rounded">
-                            There are no offer groups, please add one.
-                            </p>
-                        )
-                }
+                <Table
+                    dataSource={groupsOfOffers}
+                    bordered
+                    className="ant-table-wrapper--responsive w-full"
+                    rowClassName={() => "antd-row"}
+                    rowKey="id"
+                >
+                    <Column
+                        className="antd-col"
+                        title="Offer Group"
+                        dataIndex="group_name"
+                        key="group_name"
+                        render={(text, record) => ({
+                            children: text,
+                            props: {
+                                "data-title": "Offer Group",
+                            }
+                        })}
+                    />
+                    <Column
+                        className="antd-col"
+                        title="Offers"
+                        dataIndex="inputName"
+                        key="inputName"
+                        render={(inputName, record) => {
+                            return {
+                                children: (
+                                    <Form.Item
+                                        className="my-auto"
+                                        name={inputName}
+                                    >
+                                        <Select
+                                            className="w-full rounded custom-select-rounded-tr-none"
+                                            showSearch
+                                            mode="multiple"
+                                        >
+                                            {offerOptions}
+                                        </Select>
+                                    </Form.Item>
+                                ),
+                                props: {
+                                    "data-title": "Offers",
+                                }
+                            }
+                        }}
+                    />
+                    <Column
+                        className="antd-col"
+                        title=""
+                        key=""
+                        render={(text, record) => ({
+                            children: (
+                                <Button
+                                    type="link"
+                                    danger
+                                >
+                                    Remove
+                                </Button>
+                            ),
+                            props: {
+                                "data-title": "",
+                            }
+                        })}
+                    />
+                </Table>
                 <div
                     className="w-full mb-4"
                     style={{

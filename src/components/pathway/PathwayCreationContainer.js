@@ -45,14 +45,15 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
     const datafieldStore = DataFieldStore.useContainer();
 
     const submit = async () => {
-        const groups_of_offers = groupsOfOffers.map(({ name, inputName}) => {
+        const groups_of_offers = groupsOfOffers.map(({ group_name, inputName}) => {
             const value = form.getFieldValue(inputName);
             return {
-                name,
-                inputName,
-                offers: value,
+                group_name,
+                offer_ids: value,
             }
         });
+
+        console.log(groups_of_offers);
 
         const values = form.getFieldsValue([
             'description', 'learn_and_earn', 'frequency',

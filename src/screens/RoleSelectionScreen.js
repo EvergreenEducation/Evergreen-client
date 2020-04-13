@@ -41,7 +41,7 @@ function RoleSelectionScreen({ history }) {
         history.push(`/student_id/${student_id}`);
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
