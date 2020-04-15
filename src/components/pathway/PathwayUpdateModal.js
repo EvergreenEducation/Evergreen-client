@@ -9,7 +9,7 @@ import 'scss/antd-overrides.scss';
 import moment from 'moment';
 import {
     groupBy, isNil, orderBy,
-    snakeCase, map,
+    snakeCase, map, head, reject,
 } from 'lodash';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
@@ -24,11 +24,11 @@ export default function PathwayUpdateModal(props) {
     const [file, setFile] = useState(null);
     const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
 
-    const { pathway, onCancel, visible, pathwayStore } = props;
+    const { pathway, onCancel, visible, pathwayStore, scopedToProvider, providers } = props;
     const [ form ] = Form.useForm();
     const datafieldStore = DataFieldStore.useContainer();
     const offerStore = OfferStore.useContainer();
-    const [{ data: putData, error: putError, response }, executePut ] = useAxios({
+    const [{ data: putData, error: putError }, executePut ] = useAxios({
         method: 'PUT'
     }, { manual: true });
 
@@ -53,7 +53,7 @@ export default function PathwayUpdateModal(props) {
             'frequency_unit', 'credit_unit', 'pay_unit',
             'length', 'length_unit', 'name', 'start_date',
             'topics', 'pay', 'credit', 'outlook', 'earnings',
-            'type', 'keywords'
+            'type', 'keywords', 'provider_id'
         ]);
 
         const {
@@ -209,6 +209,20 @@ export default function PathwayUpdateModal(props) {
         }
     }, [putData, pathway, putError]);
 
+    let providerEntities = providers;
+
+    if (scopedToProvider) {
+        if (providerEntities.length) {
+            providerEntities = reject(providerEntities, p => {
+                return !(p.id === userId);
+            });
+
+            form.setFieldsValue({
+                provider_id: head(providerEntities).id || null,
+            });
+        }
+    }
+
     return (
         <Modal
             forceRender={true}
@@ -238,6 +252,8 @@ export default function PathwayUpdateModal(props) {
                         onChangeUpload={onChangeUpload}
                         file={file}
                         handleGroupRemoval={handleGroupRemoval}
+                        providers={providerEntities}
+                        scopedToProvider={true}
                     />
                 </div>
                 <section

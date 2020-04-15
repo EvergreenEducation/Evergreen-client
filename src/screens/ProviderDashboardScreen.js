@@ -156,7 +156,7 @@ export default function ProviderDashboardScreen(props) {
                                 <Content className="p-6 h-min-full">
                                   <Component.Content 
                                     handleTableData={handleTableDataForSearch}
-                                    scope={"provider"}
+                                    scopedToProvider={true}
                                   /> 
                                 </Content>
                             </Col>
@@ -175,8 +175,9 @@ export default function ProviderDashboardScreen(props) {
                           {
                             modalVisibility && (
                               <Component.Form
-                                provider_id={AuthService.currentSession.Provider.id}
-                                closeModal={handleCancel}
+                                // provider_id={AuthService.currentSession.Provider.id}
+								closeModal={handleCancel}
+								scopedToProvider={true}
                               />
                             )
                           }

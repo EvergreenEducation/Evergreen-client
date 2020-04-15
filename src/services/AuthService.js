@@ -11,7 +11,6 @@ class AuthService {
     setCurrentSession = (currentSession) => { 
       reactLocalStorage.setObject('currentSession', currentSession);
       this.currentSession = currentSession;
-      console.log(this.currentSession);
       this.isAuthenticated = true;
     }
 

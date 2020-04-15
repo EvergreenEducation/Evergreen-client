@@ -8,6 +8,7 @@ import { useProviderDataFieldStore } from 'components/provider';
 import PathwayStore from 'store/Pathway';
 import axiosInstance from 'services/AxiosInstance';
 import OfferStore from 'store/Offer';
+import ProviderStore from 'store/Provider';
 
 const PathwayUpdateModal = imported(() => import('components/pathway/PathwayUpdateModal'));
 
@@ -15,7 +16,7 @@ configure({
   axios: axiosInstance
 })
 
-export default function PathwayContainer({ handleTableData }) {
+export default function PathwayContainer({ handleTableData, scopedToProvider = false }) {
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
   const [ selectedPathway, setSelectedPathway ] = useState({});
@@ -23,6 +24,7 @@ export default function PathwayContainer({ handleTableData }) {
   const { datafield, provider } = store;
   const pathwayStore = PathwayStore.useContainer();
   const offerStore = OfferStore.useContainer();
+  const providerStore = ProviderStore.useContainer();
 
   const [{
     data: getPathways,
@@ -37,6 +39,10 @@ export default function PathwayContainer({ handleTableData }) {
     data: getOffers,
     error: getOffersError,
   }] = useAxios('/offers');
+
+  const [{
+    data: getProviders
+  }] = useAxios('/providers');
 
   const openAndPopulateUpdateModal = (pathway) => {
     setSelectedPathway(pathway);
@@ -54,7 +60,10 @@ export default function PathwayContainer({ handleTableData }) {
     if (getOffers) {
       offerStore.addMany(getOffers);
     }
-  }, [getPathways, getOffers]);
+    if (getProviders) {
+      providerStore.addMany(getProviders);
+    }
+  }, [getPathways, getOffers, getProviders]);
 
   const showData = handleTableData(Object.values(pathwayStore.entities));
 
@@ -72,6 +81,8 @@ export default function PathwayContainer({ handleTableData }) {
         visible={modalVisibility}
         onCancel={() => setModalVisibility(false)}
         pathwayStore={pathwayStore}
+        scopedToProvider={scopedToProvider}
+        providers={Object.values(provider.entities)}
       />
     </Card>
   );

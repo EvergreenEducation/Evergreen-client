@@ -8,6 +8,8 @@ import { useProviderDataFieldStore } from 'components/provider';
 import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
 import AuthService from 'services/AuthService';
+import { filter } from 'lodash';
+import { useImported } from 'react-imported-component/dist/es2015/useImported';
 
 const OfferUpdateModal = imported(() => import('components/offer/OfferUpdateModal'));
 
@@ -15,8 +17,8 @@ configure({
   axios: axiosInstance
 })
 
-export default function OfferContainer({ handleTableData, scope }) {
-  const { id: userId } = AuthService.currentSession;
+export default function OfferContainer({ handleTableData, scopedToProvider }) {
+    const { id: userId } = AuthService.currentSession;
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
   const [ selectedOffer, setSelectedOffer ] = useState({});
@@ -24,13 +26,6 @@ export default function OfferContainer({ handleTableData, scope }) {
   const { datafield, provider } = store;
   const offerStore = OfferStore.useContainer();
   const { entities = [] } = offerStore;
-
-  let id = "";
-
-  if (scope === 'provider') {
-    const { id: userId } = AuthService.currentSession;
-    id = userId;
-  }
 
   const [{
     data: getProviderData = [],
@@ -56,7 +51,13 @@ export default function OfferContainer({ handleTableData, scope }) {
     history.push('/error/500');
   }
 
-  const showData = handleTableData(Object.values(entities));
+  let showData = handleTableData(Object.values(entities));
+
+  if (scopedToProvider) {
+    filter(showData, (o) => {
+      return o.provider_id === useImported;
+    })
+  }
   
   useEffect(() => {
     if (getProviderData) {

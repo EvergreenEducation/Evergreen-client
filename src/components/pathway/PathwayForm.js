@@ -6,7 +6,7 @@ import {
 } from 'antd';
 import TitleDivider from 'components/TitleDivider';
 import { ImageUploadAndNameInputs } from 'components/shared';
-import { groupBy, property, isNil, snakeCase, get } from 'lodash';
+import { groupBy, property, isNil, snakeCase, head } from 'lodash';
 import 'scss/antd-overrides.scss';
 
 const { Option } = Select;
@@ -28,10 +28,13 @@ const PathwayForm = (props) => {
         datafields = [], offers = [],
         groupsOfOffers = [], setGroupsOfOffers,
         userId = null, file, onChangeUpload,
-        pathway, handleGroupRemoval,
+        pathway, handleGroupRemoval, provider,
+        providers, scopedToProvider = false,
     } = props;
     const [ groupNameString, setGroupNameString ] = useState('');
     datafields = Object.values(datafields);
+
+    // console.log(providers);
 
     const handleGroupName = (e) => {
         return setGroupNameString(e.target.value);
@@ -92,6 +95,14 @@ const PathwayForm = (props) => {
 
     if (!isNil(offers) && offers.length) {
         offerOptions = preloadOptions(offers);
+    }
+
+    let providerTypeOptions = null;
+
+    // console.log(providers);
+
+    if (!isNil(providers) && providers.length) {
+        providerTypeOptions = preloadOptions(providers);
     }
 
     const onCancel = e => {};
@@ -475,17 +486,42 @@ const PathwayForm = (props) => {
                     </Form.Item>
                 </Col>
             </Row>
-            <Col span={12}>
-                <Form.Item
-                    label="Outlook"
-                    name="outlook"
-                    labelAlign={"left"}
-                    colon={false}
-                    className="mb-0 inherit"
-                >
-                    <Input className="rounded" />
-                </Form.Item>
-            </Col>
+            <Row gutter={8}>
+                <Col span={12}>
+                    <Form.Item
+                        label="Outlook"
+                        name="outlook"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit"
+                    >
+                        <Input className="rounded" />
+                    </Form.Item>
+                </Col>
+                <Col span={12}>
+                    <Form.Item
+                        label="Provider"
+                        name="provider_id"
+                        labelAlign={"left"}
+                        colon={false}
+                        className="mb-0 inherit flex-col w-full"
+                    >
+                        <Select
+                            className={`custom-select-rounded-l-r-none`}
+                            showSearch
+                            disabled={scopedToProvider}
+                            defaultValue={
+                                scopedToProvider && providers && providers.length
+                                    ? head(providers).id
+                                    : null
+                            }
+                            name="provider_id"
+                        >
+                            {providerTypeOptions}
+                        </Select>
+                    </Form.Item>
+                </Col>
+            </Row>
         </Layout>
     );
 };

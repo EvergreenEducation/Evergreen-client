@@ -53,8 +53,10 @@ export default function ProviderUpdateModal(props) {
     const { id: userId } = AuthService.currentSession;
     const [ form ] = Form.useForm();
     const formRef = React.createRef();
-    const { provider, onCancel, visible, datafields } = props;
-    const { Offers = [] } = provider;
+    const { provider = {}, onCancel, visible, datafields } = props;
+    const { Offers = [], Pathways = [] } = provider;
+    console.log(provider);
+    console.log(Offers);
     const providerStore = ProviderStore.useContainer();
     const [file, setFile] = useState(null);
 
@@ -232,7 +234,7 @@ export default function ProviderUpdateModal(props) {
                         </label>
                         <Table
                             columns={pathwayColumns}
-                            dataSource={[]}
+                            dataSource={Pathways}
                             rowKey="id"
                             pagination={{ pageSize: 5 }}
                         />

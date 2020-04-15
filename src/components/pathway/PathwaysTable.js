@@ -38,6 +38,24 @@ function PathwaysTable(props) {
 					}
 				})}
 			/>
+			<Column
+				className="antd-col"
+				title="Provider"
+				dataIndex="Provider"
+				key="Provider.id"
+				render={(provider, record) => {
+					let children = 'N/A';
+					if (provider) {
+						children = provider.name;
+					}
+					return ({
+						children,
+						props: {
+							"data-title": "Provider",
+						}
+					})
+				}}
+			/>
             <Column
 				className="antd-col"
 				title="Generic Type"
