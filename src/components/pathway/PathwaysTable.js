@@ -5,7 +5,7 @@ import 'scss/antd-overrides.scss';
 const { Column } = Table;
 
 function PathwaysTable(props) {
-    const { data, handleUpdateModal } = props;
+    const { data, handleUpdateModal, offers } = props;
     return (
         <Table
             dataSource={data}
@@ -53,17 +53,29 @@ function PathwaysTable(props) {
             <Column
 				className="antd-col"
 				title="Offer Groups"
-				dataIndex="groups_of_offers"
-				key="groups_of_offers"
-				render={(text, record) => {
-                    let children = "N/A";
-
-                    if (text && text.length) {
-                        children = text;
-                    }
-
+				dataIndex="GroupsOfOffers"
+				key="GroupsOfOffers"
+				render={(groups, record) => {
                     return {
-                        children: children,
+                        children: (
+							<>
+								{
+									groups.map((g, index) => {
+										if (!offers[g.offer_id]) {
+											return null;
+										}
+										return (
+											<Tag
+												color={index % 2 ? "cyan" : "green"}
+												key={index.toString()}
+											>
+												{ offers[g.offer_id].name }
+											</Tag>
+										);
+									}) || "N/A"
+								}
+                        	</>
+						),
                         props: {
                             "data-title": "Offer Groups",
                         }

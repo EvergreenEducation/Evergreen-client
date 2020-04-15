@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { imported } from 'react-imported-component/macro';
 import { useHistory } from 'react-router-dom';
-import { Card, notification } from 'antd';
+import { Card } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import PathwaysTable from 'components/pathway/PathwaysTable';
 import { useProviderDataFieldStore } from 'components/provider';
@@ -65,6 +65,7 @@ export default function PathwayContainer({ handleTableData }) {
         providers={provider.entities}
         data={showData}
         handleUpdateModal={openAndPopulateUpdateModal}
+        offers={offerStore.entities}
       />
       <PathwayUpdateModal
         pathway={selectedPathway}

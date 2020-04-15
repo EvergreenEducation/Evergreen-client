@@ -6,6 +6,7 @@ import PathwayForm from 'components/pathway/PathwayForm';
 import DataFieldStore from 'store/DataField';
 import PathwayStore from 'store/Pathway';
 import dayjs from 'dayjs';
+import { reject } from 'lodash';
 import OfferStore from 'store/Offer';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
@@ -58,7 +59,7 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
             'frequency_unit', 'credit_unit', 'pay_unit',
             'length', 'length_unit', 'name', 'start_date',
             'topics', 'pay', 'credit', 'outlook', 'earnings',
-            'type'
+            'type', 'keywords'
         ]);
 
         const {
@@ -105,6 +106,14 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
         }
     }
 
+    const handleGroupRemoval = async (pathway, record) => {
+        const groups = reject(groupsOfOffers, g => {
+            return g.group_name === record.group_name;
+        });
+
+        setGroupsOfOffers(groups);
+    }
+
     useEffect(() => {
         if (getDataFields) {
             datafieldStore.addMany(getDataFields);
@@ -145,6 +154,7 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
                         userId={userId}
                         onChangeUpload={onChangeUpload}
                         file={file}
+                        handleGroupRemoval={handleGroupRemoval}
                     />
                 </div>
                 <section

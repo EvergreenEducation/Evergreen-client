@@ -76,6 +76,10 @@ export default function PathwayUpdateModal(props) {
                 }
             });
 
+            if (response && response.data) {
+                pathwayStore.updateOne(response.data);
+            }
+
             if (response.data && file && userId) {
                 const { name, type } = file;
                 const results = await UploaderService.upload({
@@ -120,6 +124,7 @@ export default function PathwayUpdateModal(props) {
     }
 
     function populateFields(p, formInstance) {
+        setGroupsOfOffers([]);
         const { GroupsOfOffers = [] } = p;
         formInstance.setFieldsValue({
             ...p,
@@ -151,9 +156,31 @@ export default function PathwayUpdateModal(props) {
                     values,
                 };
             });
-
             setGroupsOfOffers(newGroupsOfOffers);
         }
+    }
+
+    const handleGroupRemoval = async (pathway, record) => {
+        const groups_of_offers = groupsOfOffers.map(({ group_name, inputName}) => {
+            const value = form.getFieldValue(inputName);
+            return {
+                group_name,
+                offer_ids: value,
+            }
+        });
+
+        for (let i = 0; i < groups_of_offers.length; i++) {
+            if (groups_of_offers[i].group_name === record.group_name) {
+                groups_of_offers[i].offer_ids = []
+            }
+        }
+
+        const response = await axiosInstance.put(`/pathways/${pathway.id}`, {
+            groups_of_offers,
+            updatedAt: new dayjs().toISOString()
+        });
+
+        pathwayStore.updateOne(response.data);
     }
 
     useEffect(() => {
@@ -164,11 +191,8 @@ export default function PathwayUpdateModal(props) {
                 description: statusText,
             });
         }
-        if (form && pathway) {
+        if (pathway) {
             populateFields(pathway, form);
-        }
-        if (response && response.status === 200) {
-            pathwayStore.updateOne(putData);
         }
         if (pathway.Files) {
             const orderedFiles = orderBy(pathway.Files, ['fileable_type', 'createdAt'], ['desc', 'desc']);
@@ -183,7 +207,7 @@ export default function PathwayUpdateModal(props) {
                 }
             }
         }
-    }, [putData, pathway, putError, response])
+    }, [putData, pathway, putError]);
 
     return (
         <Modal
@@ -213,6 +237,7 @@ export default function PathwayUpdateModal(props) {
                         userId={userId}
                         onChangeUpload={onChangeUpload}
                         file={file}
+                        handleGroupRemoval={handleGroupRemoval}
                     />
                 </div>
                 <section

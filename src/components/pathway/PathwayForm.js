@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     Layout, Form, Input, Row,
     Col, Select, Button, DatePicker,
-    Table,
+    Table, Popconfirm
 } from 'antd';
 import TitleDivider from 'components/TitleDivider';
 import { ImageUploadAndNameInputs } from 'components/shared';
@@ -28,7 +28,7 @@ const PathwayForm = (props) => {
         datafields = [], offers = [],
         groupsOfOffers = [], setGroupsOfOffers,
         userId = null, file, onChangeUpload,
-        pathway,
+        pathway, handleGroupRemoval,
     } = props;
     const [ groupNameString, setGroupNameString ] = useState('');
     datafields = Object.values(datafields);
@@ -94,6 +94,8 @@ const PathwayForm = (props) => {
         offerOptions = preloadOptions(offers);
     }
 
+    const onCancel = e => {};
+
     return (
         <Layout>
             <ImageUploadAndNameInputs
@@ -148,6 +150,7 @@ const PathwayForm = (props) => {
                 <Col span={8}>
                     <Input
                         className="w-full rounded-l rounded-r-none"
+                        style={{ padding: "0.28rem" }}
                         placeholder="Group Name"
                         name="add-group"
                         onChange={handleGroupName}
@@ -214,15 +217,26 @@ const PathwayForm = (props) => {
                     <Column
                         className="antd-col"
                         title=""
-                        key=""
+                        key="index"
                         render={(text, record) => ({
                             children: (
-                                <Button
-                                    type="link"
-                                    danger
+                                <Popconfirm
+                                    className="text-red-500 cursor-pointer"
+                                    title="Are you sure you want to delete this group?"
+                                    onConfirm={() => handleGroupRemoval(pathway, record)}
+                                    onCancel={onCancel}
+                                    okText="Yes"
+                                    cancelText="No"
                                 >
                                     Remove
-                                </Button>
+                                </Popconfirm>
+                                // <Button
+                                //     type="link"
+                                //     danger
+                                //     onClick={() => handleGroupRemoval(pathway, record)}
+                                // >
+                                //     Remove
+                                // </Button>
                             ),
                             props: {
                                 "data-title": "",
