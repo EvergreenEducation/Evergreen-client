@@ -7,7 +7,10 @@ import PathwayForm from 'components/pathway/PathwayForm';
 import dayjs from 'dayjs';
 import 'scss/antd-overrides.scss';
 import moment from 'moment';
-import { groupBy, isNil, orderBy, get, snakeCase, uniqBy } from 'lodash';
+import {
+    groupBy, isNil, orderBy,
+    snakeCase, map,
+} from 'lodash';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import OfferStore from 'store/Offer';
@@ -41,11 +44,9 @@ export default function PathwayUpdateModal(props) {
             const value = form.getFieldValue(inputName);
             return {
                 group_name,
-                offers: value,
+                offer_ids: value,
             }
         });
-
-        console.log(groups_of_offers);
 
         const values = form.getFieldsValue([
             'description', 'learn_and_earn', 'frequency',
@@ -120,55 +121,38 @@ export default function PathwayUpdateModal(props) {
 
     function populateFields(p, formInstance) {
         const { GroupsOfOffers = [] } = p;
-        console.log(p);
         formInstance.setFieldsValue({
             ...p,
             start_date: moment(p.start_date),
             topics: myTopics,
         });
 
-        // if (p && p.GroupsOfOffers) {
-        //     const groupedByName = groupBy(p.GroupsOfOffers, (item) => {
-        //         return get(item, 'OffersPathways.group_name');
-        //     });
-
-        //     const groupNameKeys = Object.keys(groupedByName);
-
-        //     for (let i = 0; i < groupNameKeys.length; i++) {
-        //         if (!groupedByName[groupNameKeys[i]]) { break };
-
-        //         const group = groupedByName[groupNameKeys[i]];
-
-        //         const values = [];
-        //         for (let j = 0; j < group.length; j++) {
-        //             if (!group[j]) {
-        //                 break;
-        //             }
-        //             values.push(group[j].id);
-        //         }
-        //         const snakeCased = snakeCase(groupNameKeys[i]);
-        //         setGroupsOfOffers(
-        //             uniqBy([
-        //                 ...p.GroupsOfOffers,
-        //                 {
-        //                     group_name: groupNameKeys[i],
-        //                     inputName: snakeCased,
-        //                 }
-        //             ], (group) => group.inputName)
-        //         );
-        //         formInstance.setFieldsValue({
-        //             [snakeCased]: values
-        //         })
-        //     }
-        // }
-
         if (GroupsOfOffers.length) {
-            const namedGroups = groupBy(GroupsOfOffers, g => get(g, 'OffersPathways.group_name'));
-            console.log(namedGroups);
-            // const test = Object.values(namedGroups).map((a, b, c, d) => {
-            //     console.log(a, b, c,d );
-            //     return a;
-            // });
+            const groupedByName = groupBy(GroupsOfOffers, 'group_name');
+
+            const newGroupsOfOffers = map(groupedByName, (group, key) => {
+                const values = [];
+                const snakeCased = snakeCase(key);
+                for (let i = 0; i < group.length; i++) {
+                    if (!group[i]) {
+                        break;
+                    }
+
+                    values.push(group[i].offer_id);
+                }
+
+                formInstance.setFieldsValue({
+                    [snakeCased]: values
+                })
+
+                return {
+                    group_name: key,
+                    inputName: snakeCased,
+                    values,
+                };
+            });
+
+            setGroupsOfOffers(newGroupsOfOffers);
         }
     }
 

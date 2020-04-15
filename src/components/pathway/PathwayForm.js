@@ -65,8 +65,6 @@ const PathwayForm = (props) => {
             }
         ];
 
-        console.log(newGroupsOfOffers);
-
         setGroupsOfOffers(newGroupsOfOffers);
     }
 
@@ -270,7 +268,7 @@ const PathwayForm = (props) => {
                         className="mb-0 inherit"
                         rules={[{ required: true, message: "Please select an option" }]}
                     >
-                        <Select>
+                        <Select className="rounded custom-select">
                             <Option value="learn">Learn</Option>
                             <Option value="earn">Earn</Option>
                             <Option value="both">Learn and Earn</Option>
@@ -297,7 +295,7 @@ const PathwayForm = (props) => {
                         colon={false}
                         className="mb-0 inherit"
                     >
-                        <Input className="rouned" />
+                        <Input className="rounded" />
                     </Form.Item>
                 </Col>
             </Row>

@@ -53,8 +53,6 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
             }
         });
 
-        console.log(groups_of_offers);
-
         const values = form.getFieldsValue([
             'description', 'learn_and_earn', 'frequency',
             'frequency_unit', 'credit_unit', 'pay_unit',
