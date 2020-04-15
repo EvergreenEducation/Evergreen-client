@@ -80,6 +80,7 @@ const ProviderForm = (props) => {
                             <Select
                                 name="type"
                                 className="rounded custom-select"
+                                notFoundContent="No options available. Please create a provider type in settings."
                             >
                                 {providerTypeOptions}
                             </Select>

@@ -7,6 +7,7 @@ import OffersTable from 'components/offer/OffersTable';
 import { useProviderDataFieldStore } from 'components/provider';
 import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
+import AuthService from 'services/AuthService';
 
 const OfferUpdateModal = imported(() => import('components/offer/OfferUpdateModal'));
 
@@ -14,7 +15,8 @@ configure({
   axios: axiosInstance
 })
 
-export default function OfferContainer({ handleTableData }) {
+export default function OfferContainer({ handleTableData, scope }) {
+  const { id: userId } = AuthService.currentSession;
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
   const [ selectedOffer, setSelectedOffer ] = useState({});
@@ -22,6 +24,13 @@ export default function OfferContainer({ handleTableData }) {
   const { datafield, provider } = store;
   const offerStore = OfferStore.useContainer();
   const { entities = [] } = offerStore;
+
+  let id = "";
+
+  if (scope === 'provider') {
+    const { id: userId } = AuthService.currentSession;
+    id = userId;
+  }
 
   const [{
     data: getProviderData = [],
@@ -36,7 +45,7 @@ export default function OfferContainer({ handleTableData }) {
   const [{
     data: offersData,
     error: offerError,
-  }] = useAxios('/offers?scope=with_details');
+  }] = useAxios(`/offers?scope=with_details`);
 
   const openAndPopulateUpdateModal = (offer) => {
     setSelectedOffer(offer);

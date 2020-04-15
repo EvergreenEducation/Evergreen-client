@@ -21,7 +21,7 @@ function useQuery() {
 }
 
 function UserAuth({ user_id }) {
-  const [{ data:myProfile, loading, error } ] = useAxios(`/users/${user_id}`);
+  const [{ data: myProfile, loading, error } ] = useAxios(`/users/${user_id}`);
 
   if (loading) {
     return (

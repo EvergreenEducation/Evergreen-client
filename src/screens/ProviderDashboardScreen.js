@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import AuthService from 'services/AuthService';
 import { Link } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import { Layout, Button, Col, Skeleton, Tooltip, Modal } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+import { faSignOutAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons'
 import Sidebar from 'components/Sidebar';
 import { SearchModalHeader } from 'components/shared';
 
@@ -14,6 +14,9 @@ import OfferStore from 'store/Offer';
 import PathwayStore from 'store/Pathway';
 import 'scss/antd-overrides.scss';
 import matchSorter from 'match-sorter';
+import { isNil } from 'lodash';
+
+import ProviderUpdateContainer from 'components/provider/ProviderUpdateContainer';
 
 const TopicContainer = imported(() => import('components/topic/TopicContainer'));
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
@@ -59,14 +62,27 @@ const RouteConfig = {
         <TopicContainer />
       </>
     }
-  }
+  },
 }
 
 export default function ProviderDashboardScreen(props) {
     const { url: basePath } = props.match;
     const { pathname } = props.history.location;
     const [ modalVisibility, setModalVisibility ] = useState(false);
-    const [ searchString, setSearchString ] = useState('');
+	const [ searchString, setSearchString ] = useState('');
+	const [ providerModalVisibility, setProviderModalVisibility ] = useState(false);
+
+	const myProviderInfo = AuthService.currentSession.Provider;
+
+	useEffect(() => {
+		if (myProviderInfo && isNil(myProviderInfo.name)) {
+			const modalDelay = setTimeout(() => {
+				setProviderModalVisibility(true);
+			}, 150);
+
+			return () => clearTimeout(modalDelay);
+		}
+	}, [myProviderInfo]);
 
     const openModal = () => {
         setModalVisibility(true);
@@ -90,7 +106,7 @@ export default function ProviderDashboardScreen(props) {
     if (!RouteConfig[route]) {
       route = 'offers'; //default route
     }
-    const Component = RouteConfig[route];
+	const Component = RouteConfig[route];
 
     return (
         <DataFieldStore.Provider>
@@ -112,21 +128,35 @@ export default function ProviderDashboardScreen(props) {
                                       />
                                     </Col>
                                     <Col span={10} className="flex justify-end">
-                                        <Button type="link">
-                                        <Tooltip title="Sign out">
-                                            <Link to="/auth/logout">
-                                                <FontAwesomeIcon
-                                                    className="text-black"
-                                                    icon={faSignOutAlt}
-                                                />
-                                            </Link>
+										<Tooltip title="Update my information">
+											<Button
+												className="rounded mr-3"
+												type="primary"
+												onClick={() => setProviderModalVisibility(true)}
+											>
+												<FontAwesomeIcon
+													className="text-white relative"
+													style={{ left: 2 }}
+													icon={faUserEdit}
+												/>
+											</Button>
                                         </Tooltip>
+                                        <Button type="link">
+                                          <Tooltip title="Sign out">
+                                              <Link to="/auth/logout">
+                                                  <FontAwesomeIcon
+                                                      className="text-black"
+                                                      icon={faSignOutAlt}
+                                                  />
+                                              </Link>
+                                          </Tooltip>
                                         </Button>
                                     </Col>
                                 </Header>
                                 <Content className="p-6 h-min-full">
                                   <Component.Content 
                                     handleTableData={handleTableDataForSearch}
+                                    scope={"provider"}
                                   /> 
                                 </Content>
                             </Col>
@@ -151,6 +181,11 @@ export default function ProviderDashboardScreen(props) {
                             )
                           }
                         </Modal>
+						<ProviderUpdateContainer
+							provider={myProviderInfo}
+							visible={providerModalVisibility}
+							onCancel={() => setProviderModalVisibility(false)}
+						/>
                     </PathwayStore.Provider>
                 </OfferStore.Provider>
             </ProviderStore.Provider>
