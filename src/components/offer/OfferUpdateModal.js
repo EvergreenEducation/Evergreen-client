@@ -115,7 +115,7 @@ export default function OfferUpdateModal(props) {
 
     function populateFields(o, formInstance) {
         formInstance.setFieldsValue({
-            category: +o.category,
+            category: Number(o.category),
             description: o.description,
             learn_and_earn: o.learn_and_earn,
             part_of_day: o.part_of_day,

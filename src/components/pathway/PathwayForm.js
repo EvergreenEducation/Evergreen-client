@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
+import {
+    Layout, Form, Input, Row,
+    Col, Select, Button, DatePicker,
+    Table, Popconfirm
+} from 'antd';
 import TitleDivider from 'components/TitleDivider';
 import { ImageUploadAndNameInputs } from 'components/shared';
-import { groupBy, property, isNil, snakeCase } from 'lodash';
+import { groupBy, property, isNil, snakeCase, get } from 'lodash';
 import 'scss/antd-overrides.scss';
 
 const { Option } = Select;
+const { Column } = Table;
 
 const preloadOptions = (data = []) => data.map((item, index) => {
     return (
@@ -23,6 +28,7 @@ const PathwayForm = (props) => {
         datafields = [], offers = [],
         groupsOfOffers = [], setGroupsOfOffers,
         userId = null, file, onChangeUpload,
+        pathway, handleGroupRemoval,
     } = props;
     const [ groupNameString, setGroupNameString ] = useState('');
     datafields = Object.values(datafields);
@@ -31,31 +37,35 @@ const PathwayForm = (props) => {
         return setGroupNameString(e.target.value);
     }
 
-    useEffect(() => {}, [file]);
+    useEffect(() => {}, [file, pathway, groupsOfOffers]);
+
+    const doesGroupNameExist = (groups) => {
+        groups.some(group => {
+            return (group.name === groupNameString)
+                || (group.inputName === snakeCase(groupNameString.toLowerCase()));
+        });
+    };
 
     const addGroupName = () => {
         if (!groupNameString.length) {
             return;
         }
-        if (groupsOfOffers.some((group) => {
-            return (group.name === groupNameString) || (group.inputName === snakeCase(groupNameString.toLowerCase()));
-        })) {
+
+        if (doesGroupNameExist(groupsOfOffers)) {
             return;
         }
 
-        let inputName = groupNameString;
-        inputName = inputName.toLowerCase();
-        inputName = snakeCase(inputName);
+        const inputName = snakeCase(groupNameString.toLowerCase());
 
-        const updateGroupsOfOffers = [
+        const newGroupsOfOffers = [
             ...groupsOfOffers,
             {
-                name: groupNameString,
+                group_name: groupNameString,
                 inputName,
             }
         ];
 
-        setGroupsOfOffers(updateGroupsOfOffers);
+        setGroupsOfOffers(newGroupsOfOffers);
     }
 
     const grouped = groupBy(datafields, property('type'));
@@ -84,40 +94,7 @@ const PathwayForm = (props) => {
         offerOptions = preloadOptions(offers);
     }
 
-    let offerGroups = null;
-
-    offerGroups = groupsOfOffers.map(({ name, inputName }, index) => {
-        return (
-            <section
-                className="w-full"
-                key={index.toString()}
-            >
-                <div className="w-full flex justify-between">
-                    <label>{name}</label>
-                    <Button
-                        className="rounded-b-none"
-                        type="primary"
-                        size="small"
-                        danger
-                    >
-                        Remove
-                    </Button>
-                </div>
-                <Form.Item
-                    className="w-full"
-                    name={inputName}
-                >
-                    <Select
-                        className="w-full rounded custom-select-rounded-tr-none"
-                        showSearch
-                        mode="multiple"
-                    >
-                        {offerOptions}
-                    </Select>
-                </Form.Item>
-            </section>
-        );
-    });
+    const onCancel = e => {};
 
     return (
         <Layout>
@@ -173,6 +150,7 @@ const PathwayForm = (props) => {
                 <Col span={8}>
                     <Input
                         className="w-full rounded-l rounded-r-none"
+                        style={{ padding: "0.28rem" }}
                         placeholder="Group Name"
                         name="add-group"
                         onChange={handleGroupName}
@@ -190,15 +168,82 @@ const PathwayForm = (props) => {
             </Row>
             <TitleDivider title={"Pathway Offers Groups"} />
             <Row>
-                {
-                    offerGroups && offerGroups.length
-                        ? offerGroups
-                        : (
-                            <p className="mx-auto p-4 border-2 bg-gray-400 font-bold text-gray-600 border-dashed border-gray-500 w-4/5 text-center mb-6 mt-2 rounded">
-                            There are no offer groups, please add one.
-                            </p>
-                        )
-                }
+                <Table
+                    dataSource={groupsOfOffers}
+                    bordered
+                    className="ant-table-wrapper--responsive w-full"
+                    rowClassName={() => "antd-row"}
+                    rowKey="id"
+                >
+                    <Column
+                        className="antd-col"
+                        title="Offer Group"
+                        dataIndex="group_name"
+                        key="group_name"
+                        render={(text, record) => ({
+                            children: text,
+                            props: {
+                                "data-title": "Offer Group",
+                            }
+                        })}
+                    />
+                    <Column
+                        className="antd-col"
+                        title="Offers"
+                        dataIndex="inputName"
+                        key="inputName"
+                        render={(inputName, record) => {
+                            return {
+                                children: (
+                                    <Form.Item
+                                        className="my-auto"
+                                        name={inputName}
+                                    >
+                                        <Select
+                                            className="w-full rounded custom-select-rounded-tr-none"
+                                            showSearch
+                                            mode="multiple"
+                                        >
+                                            {offerOptions}
+                                        </Select>
+                                    </Form.Item>
+                                ),
+                                props: {
+                                    "data-title": "Offers",
+                                }
+                            }
+                        }}
+                    />
+                    <Column
+                        className="antd-col"
+                        title=""
+                        key="index"
+                        render={(text, record) => ({
+                            children: (
+                                <Popconfirm
+                                    className="text-red-500 cursor-pointer"
+                                    title="Are you sure you want to delete this group?"
+                                    onConfirm={() => handleGroupRemoval(pathway, record)}
+                                    onCancel={onCancel}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    Remove
+                                </Popconfirm>
+                                // <Button
+                                //     type="link"
+                                //     danger
+                                //     onClick={() => handleGroupRemoval(pathway, record)}
+                                // >
+                                //     Remove
+                                // </Button>
+                            ),
+                            props: {
+                                "data-title": "",
+                            }
+                        })}
+                    />
+                </Table>
                 <div
                     className="w-full mb-4"
                     style={{
@@ -237,7 +282,7 @@ const PathwayForm = (props) => {
                         className="mb-0 inherit"
                         rules={[{ required: true, message: "Please select an option" }]}
                     >
-                        <Select>
+                        <Select className="rounded custom-select">
                             <Option value="learn">Learn</Option>
                             <Option value="earn">Earn</Option>
                             <Option value="both">Learn and Earn</Option>
@@ -264,7 +309,7 @@ const PathwayForm = (props) => {
                         colon={false}
                         className="mb-0 inherit"
                     >
-                        <Input className="rouned" />
+                        <Input className="rounded" />
                     </Form.Item>
                 </Col>
             </Row>

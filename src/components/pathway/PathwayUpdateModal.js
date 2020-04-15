@@ -7,7 +7,10 @@ import PathwayForm from 'components/pathway/PathwayForm';
 import dayjs from 'dayjs';
 import 'scss/antd-overrides.scss';
 import moment from 'moment';
-import { groupBy, isNil, orderBy } from 'lodash';
+import {
+    groupBy, isNil, orderBy,
+    snakeCase, map,
+} from 'lodash';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import OfferStore from 'store/Offer';
@@ -20,6 +23,7 @@ export default function PathwayUpdateModal(props) {
     const { id: userId } = AuthService.currentSession;
     const [file, setFile] = useState(null);
     const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
+
     const { pathway, onCancel, visible, pathwayStore } = props;
     const [ form ] = Form.useForm();
     const datafieldStore = DataFieldStore.useContainer();
@@ -36,6 +40,14 @@ export default function PathwayUpdateModal(props) {
     }
 
     const submitUpdate = async () => {
+        const groups_of_offers = groupsOfOffers.map(({ group_name, inputName}) => {
+            const value = form.getFieldValue(inputName);
+            return {
+                group_name,
+                offer_ids: value,
+            }
+        });
+
         const values = form.getFieldsValue([
             'description', 'learn_and_earn', 'frequency',
             'frequency_unit', 'credit_unit', 'pay_unit',
@@ -58,10 +70,15 @@ export default function PathwayUpdateModal(props) {
                 url: `/pathways/${pathway.id}`,
                 data: {
                     ...values,
+                    groups_of_offers,
                     start_date: dayjs(start_date).toISOString() || null,
                     updatedAt: new dayjs().toISOString()
                 }
             });
+
+            if (response && response.data) {
+                pathwayStore.updateOne(response.data);
+            }
 
             if (response.data && file && userId) {
                 const { name, type } = file;
@@ -86,7 +103,7 @@ export default function PathwayUpdateModal(props) {
                 onCancel();
                 notification.success({
                     message: response.status,
-                    description: 'Successfully updated offer'
+                    description: 'Successfully updated pathway'
                 })
             }
         }
@@ -107,25 +124,63 @@ export default function PathwayUpdateModal(props) {
     }
 
     function populateFields(p, formInstance) {
+        setGroupsOfOffers([]);
+        const { GroupsOfOffers = [] } = p;
         formInstance.setFieldsValue({
-            name: p.name,
-            description: p.description,
-            learn_and_earn: p.learn_and_earn,
-            frequency: p.frequency,
-            frequency_unit: p.frequency_unit,
-            credit: p.credit,
-            credit_unit: p.credit_unit,
-            pay: p.pay,
-            pay_unit: p.pay_unit,
-            length: p.length,
-            length_unit: p.length_unit,
+            ...p,
             start_date: moment(p.start_date),
             topics: myTopics,
-            outlook: p.outlook,
-            earnings: p.earnings,
-            keywords: p.keywords,
-            type: p.type
         });
+
+        if (GroupsOfOffers.length) {
+            const groupedByName = groupBy(GroupsOfOffers, 'group_name');
+
+            const newGroupsOfOffers = map(groupedByName, (group, key) => {
+                const values = [];
+                const snakeCased = snakeCase(key);
+                for (let i = 0; i < group.length; i++) {
+                    if (!group[i]) {
+                        break;
+                    }
+
+                    values.push(group[i].offer_id);
+                }
+
+                formInstance.setFieldsValue({
+                    [snakeCased]: values
+                })
+
+                return {
+                    group_name: key,
+                    inputName: snakeCased,
+                    values,
+                };
+            });
+            setGroupsOfOffers(newGroupsOfOffers);
+        }
+    }
+
+    const handleGroupRemoval = async (pathway, record) => {
+        const groups_of_offers = groupsOfOffers.map(({ group_name, inputName}) => {
+            const value = form.getFieldValue(inputName);
+            return {
+                group_name,
+                offer_ids: value,
+            }
+        });
+
+        for (let i = 0; i < groups_of_offers.length; i++) {
+            if (groups_of_offers[i].group_name === record.group_name) {
+                groups_of_offers[i].offer_ids = []
+            }
+        }
+
+        const response = await axiosInstance.put(`/pathways/${pathway.id}`, {
+            groups_of_offers,
+            updatedAt: new dayjs().toISOString()
+        });
+
+        pathwayStore.updateOne(response.data);
     }
 
     useEffect(() => {
@@ -136,11 +191,8 @@ export default function PathwayUpdateModal(props) {
                 description: statusText,
             });
         }
-        if (form) {
+        if (pathway) {
             populateFields(pathway, form);
-        }
-        if (response && response.status === 200) {
-            pathwayStore.updateOne(putData);
         }
         if (pathway.Files) {
             const orderedFiles = orderBy(pathway.Files, ['fileable_type', 'createdAt'], ['desc', 'desc']);
@@ -155,13 +207,13 @@ export default function PathwayUpdateModal(props) {
                 }
             }
         }
-    }, [putData, pathway, putError, response])
+    }, [putData, pathway, putError]);
 
     return (
         <Modal
             forceRender={true}
             className="custom-modal"
-            title={"Update Offer"}
+            title={"Update Pathway"}
             visible={visible}
             width={998}
             bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
@@ -177,6 +229,7 @@ export default function PathwayUpdateModal(props) {
                     style={{ maxHeight: "32rem" }}
                 >
                     <PathwayForm
+                        pathway={pathway}
                         datafields={datafieldStore.entities}
                         offers={Object.values(offerStore.entities)}
                         groupsOfOffers={groupsOfOffers}
@@ -184,6 +237,7 @@ export default function PathwayUpdateModal(props) {
                         userId={userId}
                         onChangeUpload={onChangeUpload}
                         file={file}
+                        handleGroupRemoval={handleGroupRemoval}
                     />
                 </div>
                 <section

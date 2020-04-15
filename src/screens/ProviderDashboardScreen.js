@@ -142,10 +142,14 @@ export default function ProviderDashboardScreen(props) {
                           footer={true}
                           forceRender={true}
                         >
-                            <Component.Form
-                              provider_id={AuthService.currentSession.Provider.id}
-                              closeModal={handleCancel}
-                            />
+                          {
+                            modalVisibility && (
+                              <Component.Form
+                                provider_id={AuthService.currentSession.Provider.id}
+                                closeModal={handleCancel}
+                              />
+                            )
+                          }
                         </Modal>
                     </PathwayStore.Provider>
                 </OfferStore.Provider>
