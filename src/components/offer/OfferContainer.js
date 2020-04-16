@@ -9,7 +9,6 @@ import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
 import AuthService from 'services/AuthService';
 import { filter } from 'lodash';
-import { useImported } from 'react-imported-component/dist/es2015/useImported';
 
 const OfferUpdateModal = imported(() => import('components/offer/OfferUpdateModal'));
 
@@ -54,8 +53,8 @@ export default function OfferContainer({ handleTableData, scopedToProvider }) {
   let showData = handleTableData(Object.values(entities));
 
   if (scopedToProvider) {
-    filter(showData, (o) => {
-      return o.provider_id === useImported;
+    showData = filter(showData, (o) => {
+      return o.provider_id === userId;
     })
   }
   

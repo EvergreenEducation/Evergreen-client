@@ -26,7 +26,7 @@ function UserAuth({ user_id }) {
   if (loading) {
     return (
       <div className="w-full h-full flex justify-center items-center">
-      <Spin size="large" />
+        <Spin size="large" />
       </div>
     );
   } 

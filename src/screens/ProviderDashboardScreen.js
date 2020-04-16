@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import AuthService from 'services/AuthService';
 import { Link } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
@@ -72,10 +72,11 @@ export default function ProviderDashboardScreen(props) {
 	const [ searchString, setSearchString ] = useState('');
 	const [ providerModalVisibility, setProviderModalVisibility ] = useState(false);
 
-	const myProviderInfo = AuthService.currentSession.Provider;
+  const myProviderInfo = AuthService.currentSession.Provider;
 
 	useEffect(() => {
 		if (myProviderInfo && isNil(myProviderInfo.name)) {
+
 			const modalDelay = setTimeout(() => {
 				setProviderModalVisibility(true);
 			}, 150);
@@ -128,29 +129,29 @@ export default function ProviderDashboardScreen(props) {
                                       />
                                     </Col>
                                     <Col span={10} className="flex justify-end">
-										<Tooltip title="Update my information">
-											<Button
-												className="rounded mr-3"
-												type="primary"
-												onClick={() => setProviderModalVisibility(true)}
-											>
-												<FontAwesomeIcon
-													className="text-white relative"
-													style={{ left: 2 }}
-													icon={faUserEdit}
-												/>
-											</Button>
-                                        </Tooltip>
-                                        <Button type="link">
-                                          <Tooltip title="Sign out">
-                                              <Link to="/auth/logout">
-                                                  <FontAwesomeIcon
-                                                      className="text-black"
-                                                      icon={faSignOutAlt}
-                                                  />
-                                              </Link>
-                                          </Tooltip>
+                                      <Tooltip title="Update my information">
+                                        <Button
+                                          className="rounded mr-3"
+                                          type="primary"
+                                          onClick={() => setProviderModalVisibility(true)}
+                                        >
+                                          <FontAwesomeIcon
+                                            className="text-white relative"
+                                            style={{ left: 2 }}
+                                            icon={faUserEdit}
+                                          />
                                         </Button>
+                                      </Tooltip>
+                                      <Button type="link">
+                                        <Tooltip title="Sign out">
+                                            <Link to="/auth/logout">
+                                                <FontAwesomeIcon
+                                                    className="text-black"
+                                                    icon={faSignOutAlt}
+                                                />
+                                            </Link>
+                                        </Tooltip>
+                                      </Button>
                                     </Col>
                                 </Header>
                                 <Content className="p-6 h-min-full">
@@ -175,18 +176,17 @@ export default function ProviderDashboardScreen(props) {
                           {
                             modalVisibility && (
                               <Component.Form
-                                // provider_id={AuthService.currentSession.Provider.id}
-								closeModal={handleCancel}
-								scopedToProvider={true}
+                                closeModal={handleCancel}
+                                scopedToProvider={true}
                               />
                             )
                           }
                         </Modal>
-						<ProviderUpdateContainer
-							provider={myProviderInfo}
-							visible={providerModalVisibility}
-							onCancel={() => setProviderModalVisibility(false)}
-						/>
+                        <ProviderUpdateContainer
+                          provider={myProviderInfo}
+                          visible={providerModalVisibility}
+                          onCancel={() => setProviderModalVisibility(false)}
+                        />
                     </PathwayStore.Provider>
                 </OfferStore.Provider>
             </ProviderStore.Provider>

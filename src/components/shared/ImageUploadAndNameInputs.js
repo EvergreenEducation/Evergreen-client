@@ -39,7 +39,9 @@ function ImageUploadAndNameInputs(props) {
         <Layout className="h-auto mb-6">
             <Row gutter={8}>
                 <Col
-                    span={5}
+                    xs={24}
+                    sm={24}
+                    md={5}
                     className="h-48"
                 >
                     <Form.Item className="w-full h-full form-item-control-input-h-full-w-full justify-center flex">
@@ -76,7 +78,7 @@ function ImageUploadAndNameInputs(props) {
                         style={{ display: "inherit" }}
                         labelAlign={"left"}
                         colon={false}
-                        className="mb-0"
+                        className="mb-0 w-full"
                         rules={[{ required: true, message: "Please enter a provider name" }]}
                     >
                         <Input className="rounded" name="name" />

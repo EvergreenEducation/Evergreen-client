@@ -5,39 +5,26 @@ import axiosInstance from 'services/AxiosInstance';
 import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
 import OfferForm from 'components/offer/OfferForm';
 import dayjs from 'dayjs';
-import 'scss/antd-overrides.scss';
 import moment from 'moment';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import { compact, orderBy } from 'lodash';
+import 'scss/antd-overrides.scss';
 
 configure({
   axios: axiosInstance
 });
 
-const pathwayColumns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Pathways Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Pathways Description',
-        dataIndex: 'description',
-        key: 'description',
-    }
-];
+const { Column } = Table;
 
 export default function OfferUpdateModal(props) {
     const { id: userId } = AuthService.currentSession;
     const [file, setFile] = useState(null);
     const { offer, onCancel, visible, offerStore } = props;
-    const { RelatedOffers = [], PrerequisiteOffers = [], DataFields = [] } = offer;
+    const {
+        RelatedOffers = [], PrerequisiteOffers = [],
+        DataFields = [], GroupsOfOffers: Pathways = [],
+    } = offer;
 
     const [ form ] = Form.useForm();
 
@@ -205,10 +192,54 @@ export default function OfferUpdateModal(props) {
                             Pathways - Table
                         </label>
                         <Table
+                            dataSource={Pathways}
+                            className="ant-table-wrapper--responsive"
+                            rowClassName={() => "antd-row"}
                             rowKey="id"
-                            columns={pathwayColumns}
-                            dataSource={[]}
-                        />
+                        >
+                            <Column
+                                className="antd-col"
+                                title="ID"
+                                dataIndex="id"
+                                key="id"
+                                render={(text, record) => ({
+                                    children: text,
+                                    props: {
+                                        "data-title": "ID",
+                                    }
+                                })}
+                            />
+                            <Column
+                                className="antd-col"
+                                title="Pathway Name"
+                                dataIndex="name"
+                                key="name"
+                                render={(text, record) => ({
+                                    children: text,
+                                    props: {
+                                        "data-title": "Pathway Name",
+                                    }
+                                })}
+                            />
+                            <Column
+                                className="antd-col"
+                                title="Pathway Description"
+                                dataIndex="description"
+                                key="index"
+                                render={(text, record) => {
+                                    let children = 'N/A';
+                                    if (text.length) {
+                                        children = text;
+                                    }
+                                    return {
+                                        children: children,
+                                        props: {
+                                            "data-title": "Pathway Description",
+                                        }
+                                    }
+                                }}
+                            />
+                        </Table>
                     </section>
                 </div>
                 <section

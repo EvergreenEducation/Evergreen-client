@@ -53,7 +53,11 @@ const ProviderForm = (props) => {
                 file={file}
             >
                 <Row gutter={8}>
-                    <Col span={18}>
+                    <Col
+                        xs={24}
+                        sm={24}
+                        md={18}
+                    >
                         <Form.Item
                             label="Location"
                             name="location"
@@ -68,7 +72,11 @@ const ProviderForm = (props) => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
+                    <Col
+                        xs={24}
+                        sm={24}
+                        md={6}
+                    >
                         <Form.Item
                             label="Type"
                             name="type"
@@ -88,7 +96,11 @@ const ProviderForm = (props) => {
                     </Col>
                 </Row>
                 <Row gutter={8}>
-                    <Col span={8}>
+                    <Col
+                        xs={24}
+                        sm={24}
+                        md={8}
+                    >
                         <Form.Item
                             label="Learn/Earn"
                             name="learn_and_earn"
@@ -107,7 +119,11 @@ const ProviderForm = (props) => {
                             </Select>
                         </Form.Item>
                     </Col>
-                    <Col span={8}>
+                    <Col
+                        xs={24}
+                        sm={24}
+                        md={8}
+                    >
                         <Form.Item
                             label="Public/Private"
                             name="is_public"
@@ -125,7 +141,11 @@ const ProviderForm = (props) => {
                             </Select>
                         </Form.Item>
                     </Col>
-                    <Col span={8}>
+                    <Col
+                        xs={24}
+                        sm={24}
+                        md={8}
+                    >
                         <Form.Item
                             label="Industry"
                             name="industry"
@@ -198,7 +218,11 @@ const ProviderForm = (props) => {
                 </Form.Item>
             </Row>
             <Row gutter={8}>
-                <Col span={12}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={12}
+                >
                     <Form.Item
                         label="Financial Aid"
                         name="financial_aid"
@@ -209,7 +233,11 @@ const ProviderForm = (props) => {
                         <Input className="rounded" />
                     </Form.Item>
                 </Col>
-                <Col span={4}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={4}
+                >
                     <Form.Item
                         label="Cost"
                         name="cost"
@@ -224,7 +252,11 @@ const ProviderForm = (props) => {
                         />
                     </Form.Item>
                 </Col>
-                <Col span={4}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={4}
+                >
                     <Form.Item
                         label="Pay"
                         name="pay"
@@ -239,7 +271,11 @@ const ProviderForm = (props) => {
                         />
                     </Form.Item>
                 </Col>
-                <Col span={4}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={4}
+                >
                     <Form.Item
                         label="Credit"
                         name="credit"

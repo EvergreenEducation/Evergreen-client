@@ -13,23 +13,20 @@ configure({
 export default function ProviderUpdateContainer({ provider = {}, visible, onCancel }) {
     const datafieldStore = DataFieldStore.useContainer();
     const providerStore = ProviderStore.useContainer();
-    const { id: userId } = AuthService.currentSession;
+    const { Provider } = AuthService.currentSession;
 
-    const [{ data }] = useAxios(`/providers${'/' + userId}?scope=with_details`);
-
+    const [{ data }] = useAxios(`/providers${'/' + Provider.id}?scope=with_details`);
+    
     useEffect(() => {
         if (data) {
-            providerStore.addOne(data);
-            console.log(providerStore.entities);
+            providerStore.updateOne(data);
         }
-    }, [data, provider]);
-
-    console.log(providerStore.entities[userId]);
+    }, [data, provider, providerStore.entities[Provider.id]]);
 
     return (
         <ProviderUpdateModal
             datafields={Object.values(datafieldStore.entities)}
-            provider={providerStore.entities[userId]}
+            provider={providerStore.entities[Provider.id]}
             visible={visible}
             onCancel={onCancel}
         />
