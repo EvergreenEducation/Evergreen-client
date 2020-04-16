@@ -16,7 +16,7 @@ function ProvidersTable({ data = [], loading, handleUpdateModal }) {
 			rowClassName={() => "antd-row"}
 			rowKey="id"
         >
-             <Column
+            <Column
 				className="antd-col"
 				title="ID"
 				dataIndex="id"
@@ -33,24 +33,36 @@ function ProvidersTable({ data = [], loading, handleUpdateModal }) {
 				title="Name"
 				dataIndex="name"
 				key="name"
-				render={(text, record) => ({
-					children: text,
-					props: {
-						"data-title": "Name",
+				render={(text, record) => {
+					let children = 'N/A';
+					if (text && text.length) {
+						children = text;
 					}
-				})}
+					return {
+						children,
+						props: {
+							"data-title": "Name",
+						}
+					}
+				}}
 			/>
             <Column
 				className="antd-col"
 				title="Location"
 				dataIndex="location"
 				key="location"
-				render={(text, record) => ({
-					children: text,
-					props: {
-						"data-title": "Location",
+				render={(text, record) => {
+					let children = "N/A";
+					if (text && text.length) {
+						children = text;
 					}
-				})}
+					return {
+						children,
+						props: {
+							"data-title": "Location",
+						}
+					}
+				}}
 			/>
             <Column
 				className="antd-col"
@@ -75,30 +87,39 @@ function ProvidersTable({ data = [], loading, handleUpdateModal }) {
 				title="Topics"
 				dataIndex="DataFields"
 				key="DataFields"
-				render={(datafields, record) => ({
-					children: (
-                        <>
-                            {
-                                datafields.map((datafield, index) => {
-                                    if (datafield.type !== 'topic') {
-                                        return null;
-                                    }
-                                    return (
-                                        <Tag
-                                            color={index % 2 ? "blue" : "orange"}
-                                            key={index.toString()}
-                                        >
-                                            { datafield.name }
-                                        </Tag>
-                                    );
-                                }) || null
-                            }
-                        </>
-                    ),
-					props: {
-						"data-title": "Topics",
+				render={(datafields, record) => {
+					datafields = datafields.filter(d => d.type === 'topic');
+					let children = 'N/A';
+
+					if (datafields.length) {
+						children = (
+							<>
+								{
+									datafields.map((datafield, index) => {
+										if (datafield.type !== 'topic') {
+											return null;
+										}
+										return (
+											<Tag
+												color={index % 2 ? "blue" : "orange"}
+												key={index.toString()}
+											>
+												{ datafield.name }
+											</Tag>
+										);
+									}) || null
+								}
+							</>
+						);
 					}
-				})}
+
+					return {
+						children,
+						props: {
+							"data-title": "Topics",
+						}
+					}
+				}}
 			/>
             <Column
 				className="antd-col"

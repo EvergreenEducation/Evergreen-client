@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Form, notification } from 'antd';
+import { Button, Form, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
@@ -8,30 +8,13 @@ import OfferStore from 'store/Offer';
 import dayjs from 'dayjs';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
+import { head, reject } from 'lodash';
 
 configure({
     axios: axiosInstance,
 })
 
-const pathwayColumns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Pathways Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Pathways Description',
-        dataIndex: 'description',
-        key: 'description',
-    }
-];
-
-const OfferCreationContainer = (({ className, closeModal }) => {
+const OfferCreationContainer = (({ scopedToProvider = false, closeModal }) => {
     const { id: userId } = AuthService.currentSession;
     const [file, setFile] = useState(null);
     const [ form ] = Form.useForm();
@@ -50,6 +33,20 @@ const OfferCreationContainer = (({ className, closeModal }) => {
     const offerStore = OfferStore.useContainer();
     const store = useProviderDataFieldStore();
     const { datafield: datafieldStore, provider: providerStore } = store;
+
+    let providerEntities = Object.values(providerStore.entities);
+
+    if (scopedToProvider) {
+        if (providerEntities.length) {
+            providerEntities = reject(providerEntities, p => {
+                return !(p.id === userId);
+            });
+
+            form.setFieldsValue({
+                provider_id: head(providerEntities).id,
+            });
+        }
+    }
 
     const submit = async () => {
         const values = form.getFieldsValue([
@@ -140,16 +137,6 @@ const OfferCreationContainer = (({ className, closeModal }) => {
                         file={file}
                         onChangeUpload={onChangeUpload}
                     />
-                    <section className="mt-2">
-                        <label className="mb-2 block">
-                            Pathways - Table
-                        </label>
-                        <Table
-                            columns={pathwayColumns}
-                            dataSource={[]}
-                            rowKey="id"
-                        />
-                    </section>
                 </div>
                 <section
                     className="bg-white px-6 pt-5 pb-1 flex justify-center"

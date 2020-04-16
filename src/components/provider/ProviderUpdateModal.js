@@ -13,48 +13,64 @@ configure({
   axios: axiosInstance
 });
 
-const offerColumns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Offer Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Offer Description',
-        dataIndex: 'description',
-        key: 'description',
-    }
-];
+const { Column } = Table;
 
-const pathwayColumns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Pathways Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Pathways Description',
-        dataIndex: 'description',
-        key: 'description',
-    }
-];
+const renderColumns = (nameTitle, descriptionTitle) => {
+    return (
+        <>
+            <Column
+                className="antd-col"
+                title="ID"
+                dataIndex="id"
+                key="id"
+                render={(text, record) => ({
+                    children: text,
+                    props: {
+                        "data-title": "ID",
+                    }
+                })}
+            />
+            <Column
+                className="antd-col"
+                title={nameTitle}
+                dataIndex="name"
+                key="name"
+                render={(text, record) => ({
+                    children: text,
+                    props: {
+                        "data-title": nameTitle,
+                    }
+                })}
+            />
+            <Column
+                className="antd-col"
+                title={descriptionTitle}
+                dataIndex="description"
+                key="index"
+                render={(text, record) => {
+                    let children = 'N/A';
+                    if (text.length) {
+                        children = text;
+                    }
+                    return {
+                        children: children,
+                        props: {
+                            "data-title": descriptionTitle,
+                        }
+                    }
+                }}
+            />
+        </>
+    );
+}
 
 export default function ProviderUpdateModal(props) {
     const { id: userId } = AuthService.currentSession;
     const [ form ] = Form.useForm();
     const formRef = React.createRef();
-    const { provider, onCancel, visible, datafields } = props;
-    const { Offers = [] } = provider;
+    const { provider = {}, onCancel, visible, datafields } = props;
+    const { Offers = [], Pathways = [] } = provider;
+
     const providerStore = ProviderStore.useContainer();
     const [file, setFile] = useState(null);
 
@@ -220,22 +236,28 @@ export default function ProviderUpdateModal(props) {
                             Offers - Table
                         </label>
                         <Table
-                            columns={offerColumns}
                             dataSource={Offers}
+                            rowClassName={() => "antd-row"}
+                            className="ant-table-wrapper--responsive"
                             rowKey="id"
                             pagination={{ pageSize: 5 }}
-                        />
+                        >
+                            {renderColumns("Offer Name", "Offer Description")}
+                        </Table>
                     </section>
                     <section className="mt-2">
                         <label className="mb-2 block">
                             Pathways - Table
                         </label>
                         <Table
-                            columns={pathwayColumns}
-                            dataSource={[]}
+                            dataSource={Pathways}
                             rowKey="id"
                             pagination={{ pageSize: 5 }}
-                        />
+                            className="ant-table-wrapper--responsive w-full"
+                            rowClassName={() => "antd-row"}
+                        >
+                            {renderColumns("Name", "Description")}
+                        </Table>
                     </section>
                 </div>
                 <section

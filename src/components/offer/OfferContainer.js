@@ -7,6 +7,8 @@ import OffersTable from 'components/offer/OffersTable';
 import { useProviderDataFieldStore } from 'components/provider';
 import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
+import AuthService from 'services/AuthService';
+import { filter } from 'lodash';
 
 const OfferUpdateModal = imported(() => import('components/offer/OfferUpdateModal'));
 
@@ -14,7 +16,8 @@ configure({
   axios: axiosInstance
 })
 
-export default function OfferContainer({ handleTableData }) {
+export default function OfferContainer({ handleTableData, scopedToProvider }) {
+    const { id: userId } = AuthService.currentSession;
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
   const [ selectedOffer, setSelectedOffer ] = useState({});
@@ -36,7 +39,7 @@ export default function OfferContainer({ handleTableData }) {
   const [{
     data: offersData,
     error: offerError,
-  }] = useAxios('/offers?scope=with_details');
+  }] = useAxios(`/offers?scope=with_details`);
 
   const openAndPopulateUpdateModal = (offer) => {
     setSelectedOffer(offer);
@@ -47,7 +50,13 @@ export default function OfferContainer({ handleTableData }) {
     history.push('/error/500');
   }
 
-  const showData = handleTableData(Object.values(entities));
+  let showData = handleTableData(Object.values(entities));
+
+  if (scopedToProvider) {
+    showData = filter(showData, (o) => {
+      return o.provider_id === userId;
+    })
+  }
   
   useEffect(() => {
     if (getProviderData) {

@@ -3,19 +3,19 @@ import { Button, Form, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import PathwayForm from 'components/pathway/PathwayForm';
-import DataFieldStore from 'store/DataField';
 import PathwayStore from 'store/Pathway';
 import dayjs from 'dayjs';
-import { reject } from 'lodash';
+import { reject, head } from 'lodash';
 import OfferStore from 'store/Offer';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
+import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
 
 configure({
     axios: axiosInstance,
 })
 
-const PathwayCreationContainer = (({ className, closeModal }) => {
+const PathwayCreationContainer = (({ scopedToProvider = false, closeModal }) => {
     const { id: userId } = AuthService.currentSession;
     const [file, setFile] = useState(null);
     const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
@@ -37,13 +37,18 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
     const [{
         data: getOffers,
     }] = useAxios('/offers');
+
+    const [{
+        data: getProviders,
+    }] = useAxios('/providers');
     
     const [{ data: postData, error: postError, response }, executePost ] = useAxios({
         url: '/pathways',
         method: 'POST'
     }, { manual: true });
 
-    const datafieldStore = DataFieldStore.useContainer();
+    const store = useProviderDataFieldStore();
+    const { datafield: datafieldStore, provider: providerStore } = store;
 
     const submit = async () => {
         const groups_of_offers = groupsOfOffers.map(({ group_name, inputName}) => {
@@ -59,7 +64,7 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
             'frequency_unit', 'credit_unit', 'pay_unit',
             'length', 'length_unit', 'name', 'start_date',
             'topics', 'pay', 'credit', 'outlook', 'earnings',
-            'type', 'keywords'
+            'type', 'keywords', 'provider_id'
         ]);
 
         const {
@@ -114,6 +119,20 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
         setGroupsOfOffers(groups);
     }
 
+    let providerEntities = Object.values(providerStore.entities);
+
+    if (scopedToProvider) {
+        if (providerEntities.length) {
+            providerEntities = reject(providerEntities, p => {
+                return !(p.id === userId);
+            });
+
+            form.setFieldsValue({
+                provider_id: head(providerEntities).id,
+            });
+        }
+    }
+
     useEffect(() => {
         if (getDataFields) {
             datafieldStore.addMany(getDataFields);
@@ -137,7 +156,10 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
         if (getOffers) {
             offerStore.addMany(getOffers);
         }
-    }, [getDataFields, response, postError])
+        if (getProviders) {
+            providerStore.addMany(getProviders);
+        }
+    }, [getDataFields, response, postError, getProviders, scopedToProvider])
 
     return (
         <div>
@@ -155,6 +177,8 @@ const PathwayCreationContainer = (({ className, closeModal }) => {
                         onChangeUpload={onChangeUpload}
                         file={file}
                         handleGroupRemoval={handleGroupRemoval}
+                        providers={providerEntities}
+                        scopedToProvider={true}
                     />
                 </div>
                 <section

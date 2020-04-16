@@ -146,3 +146,10 @@ $firstBreak: 1060px;
         }
     }
 }
+
+.ant-input-group-add-on-border-none-p-0 {
+    .ant-input-group-addon {        
+        padding: 0;
+        border: none;
+    }
+}

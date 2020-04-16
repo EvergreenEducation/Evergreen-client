@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ProviderForm from 'components/provider/ProviderForm';
-import { Table, Button, Form, notification } from 'antd';
+import { Button, Form, notification } from 'antd';
 import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -11,42 +11,6 @@ import { isNil } from 'lodash';
 configure({
     axios: axiosInstance,
 })
-
-const offerColumns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Offer Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Offer Description',
-        dataIndex: 'description',
-        key: 'description',
-    }
-];
-
-const pathwayColumns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Pathways Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Pathways Description',
-        dataIndex: 'description',
-        key: 'description',
-    }
-];
 
 const ProviderCreationContainer = (({ closeModal }) => {
     const { id: userId } = AuthService.currentSession;
@@ -161,26 +125,6 @@ const ProviderCreationContainer = (({ closeModal }) => {
                         onChangeUpload={onChangeUpload}
                         file={file}
                     />
-                    <section className="mt-2">
-                        <label className="mb-2 block">
-                            Offers - Table
-                        </label>
-                        <Table
-                            columns={offerColumns}
-                            dataSource={[]}
-                            rowKey="id"
-                        />
-                    </section>
-                    <section className="mt-2">
-                        <label className="mb-2 block">
-                            Pathways - Table
-                        </label>
-                        <Table
-                            columns={pathwayColumns}
-                            dataSource={[]}
-                            rowKey="id"
-                        />
-                    </section>
                 </div>
                 <section
                     className="bg-white px-6 pt-5 pb-1 flex justify-center"

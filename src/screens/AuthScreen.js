@@ -21,12 +21,12 @@ function useQuery() {
 }
 
 function UserAuth({ user_id }) {
-  const [{ data:myProfile, loading, error } ] = useAxios(`/users/${user_id}`);
+  const [{ data: myProfile, loading, error } ] = useAxios(`/users/${user_id}`);
 
   if (loading) {
     return (
       <div className="w-full h-full flex justify-center items-center">
-      <Spin size="large" />
+        <Spin size="large" />
       </div>
     );
   } 

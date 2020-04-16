@@ -71,7 +71,11 @@ const OfferForm = (props) => {
                 file={file}
             >
                 <Row gutter={8}>
-                    <Col span={15}>
+                    <Col
+                        xs={24}
+                        sm={24}
+                        md={15}
+                    >
                         <div className="flex flex-row">
                             <Form.Item
                                 label="Provider"
@@ -108,7 +112,12 @@ const OfferForm = (props) => {
                             </Button>
                         </div>
                     </Col>
-                    <Col span={9}>
+                    <Col
+                        span={9}
+                        xs={24}
+                        sm={24}
+                        md={9}
+                    >
                         <Form.Item
                             label="Generic Offer"
                             name="category"
@@ -232,7 +241,11 @@ const OfferForm = (props) => {
                 </Form.Item>
             </Row>
             <Row gutter={8}>
-                <Col span={6}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={6}
+                >
                     <Form.Item
                         label="Learn/Earn"
                         name="learn_and_earn"
@@ -248,7 +261,11 @@ const OfferForm = (props) => {
                         </Select>
                     </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={6}
+                >
                     <Form.Item
                         label="Day &#38; Time"
                         name="part_of_day"
@@ -273,7 +290,11 @@ const OfferForm = (props) => {
                         </Select>
                     </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={6}
+                >
                     <Form.Item
                         label="Frequency"
                         name="frequency"
@@ -288,7 +309,11 @@ const OfferForm = (props) => {
                         />
                     </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={6}
+                >
                     <Form.Item
                         label="Frequency Unit"
                         name="frequency_unit"
@@ -315,7 +340,11 @@ const OfferForm = (props) => {
                 </Col>
             </Row>
             <Row gutter={8}>
-                <Col span={6}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={6}
+                >
                     <Form.Item
                         label="Cost"
                         name="cost"
@@ -330,7 +359,11 @@ const OfferForm = (props) => {
                         />
                     </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={6}
+                >
                     <Form.Item
                         label="Cost Unit"
                         name="cost_unit"
@@ -354,7 +387,11 @@ const OfferForm = (props) => {
                         </Select>
                     </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={6}
+                >
                     <Form.Item
                         label="Credit"
                         name="credit"
@@ -369,7 +406,11 @@ const OfferForm = (props) => {
                         />
                     </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={6}
+                >
                     <Form.Item
                         label="Credit Unit"
                         name="credit_unit"
@@ -396,7 +437,11 @@ const OfferForm = (props) => {
                 </Col>
             </Row>
             <Row gutter={8}>
-                <Col span={6}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={6}
+                >
                     <Form.Item
                         label="Pay"
                         name="pay"
@@ -411,7 +456,11 @@ const OfferForm = (props) => {
                         />
                     </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={6}
+                >
                     <Form.Item
                         label="Pay Unit"
                         name="pay_unit"
@@ -436,7 +485,11 @@ const OfferForm = (props) => {
                         </Select>
                     </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={6}
+                >
                     <Form.Item
                         label="Length"
                         name="length"
@@ -451,7 +504,11 @@ const OfferForm = (props) => {
                         />
                     </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col
+                    xs={24}
+                    sm={24}
+                    md={6}
+                >
                     <Form.Item
                         label="Length Unit"
                         name="length_unit"

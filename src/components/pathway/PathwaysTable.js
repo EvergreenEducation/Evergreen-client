@@ -38,6 +38,24 @@ function PathwaysTable(props) {
 					}
 				})}
 			/>
+			<Column
+				className="antd-col"
+				title="Provider"
+				dataIndex="Provider"
+				key="Provider.id"
+				render={(provider, record) => {
+					let children = 'N/A';
+					if (provider) {
+						children = provider.name;
+					}
+					return ({
+						children,
+						props: {
+							"data-title": "Provider",
+						}
+					})
+				}}
+			/>
             <Column
 				className="antd-col"
 				title="Generic Type"
@@ -56,8 +74,10 @@ function PathwaysTable(props) {
 				dataIndex="GroupsOfOffers"
 				key="GroupsOfOffers"
 				render={(groups, record) => {
-                    return {
-                        children: (
+					let children = 'N/A';
+
+					if (groups.length) {
+						children = (
 							<>
 								{
 									groups.map((g, index) => {
@@ -74,8 +94,12 @@ function PathwaysTable(props) {
 										);
 									}) || "N/A"
 								}
-                        	</>
-						),
+							</>
+						);
+					}
+
+                    return {
+                        children,
                         props: {
                             "data-title": "Offer Groups",
                         }
@@ -87,30 +111,38 @@ function PathwaysTable(props) {
 				title="Topics"
 				dataIndex="DataFields"
 				key="DataFields"
-				render={(datafields = [], record) => ({
-					children: (
-                        <>
-                            {
-                                datafields.map((datafield, index) => {
-                                    if (datafield.type !== 'topic') {
-                                        return null;
-                                    }
-                                    return (
-                                        <Tag
-                                            color={index % 2 ? "blue" : "orange"}
-                                            key={index.toString()}
-                                        >
-                                            { datafield.name }
-                                        </Tag>
-                                    );
-                                }) || "N/A"
-                            }
-                        </>
-                    ),
-					props: {
-						"data-title": "Topics",
+				render={(datafields = [], record) => {
+					let children = 'N/A';
+
+					if (datafields.length) {
+						children = (
+							<>
+								{
+									datafields.map((datafield, index) => {
+										if (datafield.type !== 'topic') {
+											return null;
+										}
+										return (
+											<Tag
+												color={index % 2 ? "blue" : "orange"}
+												key={index.toString()}
+											>
+												{ datafield.name }
+											</Tag>
+										);
+									}) || "N/A"
+								}
+							</>
+						);
 					}
-				})}
+
+					return {
+						children,
+						props: {
+							"data-title": "Topics",
+						}
+					}
+				}}
 			/>
             <Column
 				className="antd-col"

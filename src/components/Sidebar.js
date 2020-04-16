@@ -81,6 +81,7 @@ function Sidebar({ basePath, role }) {
                             className="bg-green-500 text-center text-white bg-green-800-selected"
                             style={{ marginTop: 0, marginBottom: 0 }}
                             key={index.toString()}
+                            title={name}
                         >
                             <Link to={`${basePath}/${path}`}>
                                 <FontAwesomeIcon
