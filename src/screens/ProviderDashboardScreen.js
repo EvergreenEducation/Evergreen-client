@@ -18,6 +18,7 @@ import matchSorter from 'match-sorter';
 
 import ProviderUpdateContainer from 'components/provider/ProviderUpdateContainer';
 import ProviderSimpleUpdateContainer from 'components/provider/ProviderSimpleUpdateContainer';
+import EnrolledOfferContainer from 'components/enrollment/EnrolledOfferContainer';
 
 const TopicContainer = imported(() => import('components/topic/TopicContainer'));
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
@@ -42,6 +43,7 @@ const RouteConfig = {
     Form: OfferCreationContainer,
     Content: OfferContainer,
     title: 'New Offer / Opportunity',
+    modalTitle: 'New Offer / Opportunity',
     button_title: 'OFFER'
   },
   'pathways': {
@@ -49,12 +51,14 @@ const RouteConfig = {
     Form: PathwayCreationContainer,
     Content: PathwayContainer,
     title: 'New Pathway',
+    modalTitle: 'New Pathway',
     button_title: 'PATHWAY'
   },
   'settings': {
     Header: () => null,
     Form: () => null,
     title: 'Setting',
+    modalTitle: 'Setting',
     Content: () => {
       return <>
         <ProviderTypeContainer />
@@ -63,6 +67,14 @@ const RouteConfig = {
         <TopicContainer />
       </>
     }
+  },
+  'enrolled_offers': {
+    Header: SearchModalHeader,
+    Form: OfferCreationContainer,
+    Content: EnrolledOfferContainer,
+    title: 'Enrolled Offers',
+    modalTitle: 'New Offer / Opportunity',
+    button_title: 'OFFER'
   },
 }
 
@@ -89,28 +101,30 @@ export default function ProviderDashboardScreen(props) {
     getProviderInfo();
 	}, [myProviderId]);
 
-    const openModal = () => {
-        setModalVisibility(true);
-    }
-    
-    const handleCancel = e => {
-        setModalVisibility(false);
-    };
+  const openModal = () => {
+      setModalVisibility(true);
+  }
+  
+  const handleCancel = e => {
+      setModalVisibility(false);
+  };
 
-    const search = (value) => {
-        setSearchString(value);
-    }
+  const search = (value) => {
+      setSearchString(value);
+  }
 
-    const handleTableDataForSearch = (data, keys = ['name']) => {
-        const results = matchSorter(data, searchString, { keys });
-        return results;
-    }
+  const handleTableDataForSearch = (data, keys = ['name']) => {
+      const results = matchSorter(data, searchString, { keys });
+      return results;
+  }
 
-    // this return the last resourcePath
-    let route = pathname.split("/").pop();
-    if (!RouteConfig[route]) {
-      route = 'offers'; //default route
-    }
+  // this return the last resourcePath
+  let route = pathname.split("/").pop();
+
+  if (!RouteConfig[route]) {
+    route = 'offers'; //default route
+  }
+
 	const Component = RouteConfig[route];
 
     return (
@@ -168,7 +182,7 @@ export default function ProviderDashboardScreen(props) {
                         </Layout>
                         <Modal
                           className="custom-modal"
-                          title={Component.title}
+                          title={Component.modalTitle}
                           visible={modalVisibility}
                           onCancel={handleCancel}
                           style={{ borderRadius: 5 }}

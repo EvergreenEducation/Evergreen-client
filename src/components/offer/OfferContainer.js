@@ -16,7 +16,7 @@ configure({
   axios: axiosInstance
 })
 
-export default function OfferContainer({ handleTableData, scopedToProvider }) {
+export default function OfferContainer({ handleTableData, scopedToProvider = false }) {
   const { Provider } = AuthService.currentSession;
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
@@ -69,7 +69,6 @@ export default function OfferContainer({ handleTableData, scopedToProvider }) {
       offerStore.addMany(offersData);
     }
   }, [getProviderData, datafieldsData, offersData]);
-
 
   return (
     <Card className="shadow-md rounded-md">
