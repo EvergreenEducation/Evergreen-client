@@ -16,7 +16,7 @@ const ProviderDashboardScreen = imported(() => import('screens/ProviderDashboard
 const Result = imported(() => import('antd/lib/result'));
 
 class App extends Component {
-  componentWillMount() {
+  componentDidMount() {
     const currentSession = reactLocalStorage.getObject('currentSession');
     if (currentSession) {
       AuthService.setCurrentSession(currentSession);

@@ -68,7 +68,7 @@ function PathwaysTable(props) {
 					}
 				})}
 			/>
-            <Column
+      <Column
 				className="antd-col"
 				title="Offer Groups"
 				dataIndex="GroupsOfOffers"

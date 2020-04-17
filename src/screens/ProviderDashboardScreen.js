@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOutAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons'
 import Sidebar from 'components/Sidebar';
 import { SearchModalHeader } from 'components/shared';
+import axiosInstance from 'services/AxiosInstance';
 
 import ProviderStore from 'store/Provider';
 import DataFieldStore from 'store/DataField';
@@ -14,9 +15,9 @@ import OfferStore from 'store/Offer';
 import PathwayStore from 'store/Pathway';
 import 'scss/antd-overrides.scss';
 import matchSorter from 'match-sorter';
-import { isNil } from 'lodash';
 
 import ProviderUpdateContainer from 'components/provider/ProviderUpdateContainer';
+import ProviderSimpleUpdateContainer from 'components/provider/ProviderSimpleUpdateContainer';
 
 const TopicContainer = imported(() => import('components/topic/TopicContainer'));
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
@@ -66,24 +67,27 @@ const RouteConfig = {
 }
 
 export default function ProviderDashboardScreen(props) {
-    const { url: basePath } = props.match;
-    const { pathname } = props.history.location;
-    const [ modalVisibility, setModalVisibility ] = useState(false);
+  const { url: basePath } = props.match;
+  const { pathname } = props.history.location;
+  const [ modalVisibility, setModalVisibility ] = useState(false);
 	const [ searchString, setSearchString ] = useState('');
 	const [ providerModalVisibility, setProviderModalVisibility ] = useState(false);
+	const [ providerSimpleModalVisibility, setProviderSimpleModalVisibility ] = useState(false);
 
-  const myProviderInfo = AuthService.currentSession.Provider;
+  const myProviderId = AuthService.currentSession.provider_id;
 
 	useEffect(() => {
-		if (myProviderInfo && isNil(myProviderInfo.name)) {
-
-			const modalDelay = setTimeout(() => {
-				setProviderModalVisibility(true);
-			}, 150);
-
-			return () => clearTimeout(modalDelay);
-		}
-	}, [myProviderInfo]);
+    async function getProviderInfo() {
+      const { data } = await axiosInstance(`/providers/${myProviderId}`);
+      if (data && !data.name) {
+        const modalDelay = setTimeout(() => {
+          setProviderSimpleModalVisibility(true);
+        }, 150);
+        return () => clearTimeout(modalDelay);
+      }
+    }
+    getProviderInfo();
+	}, [myProviderId]);
 
     const openModal = () => {
         setModalVisibility(true);
@@ -183,9 +187,14 @@ export default function ProviderDashboardScreen(props) {
                           }
                         </Modal>
                         <ProviderUpdateContainer
-                          provider={myProviderInfo}
+                          provider_id={myProviderId}
                           visible={providerModalVisibility}
                           onCancel={() => setProviderModalVisibility(false)}
+                        />
+                        <ProviderSimpleUpdateContainer
+                          provider_id={myProviderId}
+                          visible={providerSimpleModalVisibility}
+                          onCancel={() => setProviderSimpleModalVisibility(false)}
                         />
                     </PathwayStore.Provider>
                 </OfferStore.Provider>

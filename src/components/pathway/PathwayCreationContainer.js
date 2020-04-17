@@ -5,7 +5,7 @@ import axiosInstance from 'services/AxiosInstance';
 import PathwayForm from 'components/pathway/PathwayForm';
 import PathwayStore from 'store/Pathway';
 import dayjs from 'dayjs';
-import { reject, head } from 'lodash';
+import { reject, head, map } from 'lodash';
 import OfferStore from 'store/Offer';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
@@ -51,14 +51,6 @@ const PathwayCreationContainer = (({ scopedToProvider = false, closeModal }) => 
     const { datafield: datafieldStore, provider: providerStore } = store;
 
     const submit = async () => {
-        const groups_of_offers = groupsOfOffers.map(({ group_name, inputName}) => {
-            const value = form.getFieldValue(inputName);
-            return {
-                group_name,
-                offer_ids: value,
-            }
-        });
-
         const values = form.getFieldsValue([
             'description', 'learn_and_earn', 'frequency',
             'frequency_unit', 'credit_unit', 'pay_unit',
@@ -77,6 +69,12 @@ const PathwayCreationContainer = (({ scopedToProvider = false, closeModal }) => 
             credit_unit && pay && pay_unit && length && length_unit && name
             && type
         ) {
+            let groups_of_offers = map(groupsOfOffers, g => {
+              return {
+                group_name: g.group_name,
+                offer_ids: g.removed ? [] : map(g.offers, 'offer_id')
+              }
+            });
             const response = await executePost({
                 data: {
                     ...values,
@@ -110,15 +108,6 @@ const PathwayCreationContainer = (({ scopedToProvider = false, closeModal }) => 
             }
         }
     }
-
-    const handleGroupRemoval = async (pathway, record) => {
-        const groups = reject(groupsOfOffers, g => {
-            return g.group_name === record.group_name;
-        });
-
-        setGroupsOfOffers(groups);
-    }
-
     let providerEntities = Object.values(providerStore.entities);
 
     if (scopedToProvider) {
@@ -176,7 +165,6 @@ const PathwayCreationContainer = (({ scopedToProvider = false, closeModal }) => 
                         userId={userId}
                         onChangeUpload={onChangeUpload}
                         file={file}
-                        handleGroupRemoval={handleGroupRemoval}
                         providers={providerEntities}
                         scopedToProvider={true}
                     />

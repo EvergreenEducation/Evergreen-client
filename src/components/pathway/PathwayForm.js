@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
     Layout, Form, Input, Row,
-    Col, Select, Button, DatePicker,
-    Table, Popconfirm
+    Col, Select, DatePicker,
 } from 'antd';
 import TitleDivider from 'components/TitleDivider';
 import { ImageUploadAndNameInputs } from 'components/shared';
-import { groupBy, property, isNil, snakeCase, head } from 'lodash';
+import { groupBy, property, isNil, head } from 'lodash';
 import 'scss/antd-overrides.scss';
+import OfferGroupTable from './OfferGroupTable';
 
 const { Option } = Select;
-const { Column } = Table;
 
 const preloadOptions = (data = []) => data.map((item, index) => {
     return (
@@ -28,49 +27,12 @@ const PathwayForm = (props) => {
         datafields = [], offers = [],
         groupsOfOffers = [], setGroupsOfOffers,
         userId = null, file, onChangeUpload,
-        pathway, handleGroupRemoval,
+        pathway,
         providers, scopedToProvider = false,
     } = props;
-    const [ groupNameString, setGroupNameString ] = useState('');
     datafields = Object.values(datafields);
 
-    const handleGroupName = (e) => {
-        return setGroupNameString(e.target.value);
-    }
-
-    useEffect(() => {}, [file, pathway, groupsOfOffers]);
-
-    const doesGroupNameExist = (groups) => {
-        groups.some(group => {
-            return (group.name === groupNameString)
-                || (group.inputName === snakeCase(groupNameString.toLowerCase()));
-        });
-    };
-
-    const addGroupName = () => {
-        if (!groupNameString.length) {
-            return;
-        }
-
-        if (doesGroupNameExist(groupsOfOffers)) {
-            return;
-        }
-
-        const inputName = snakeCase(groupNameString.toLowerCase());
-
-        const newGroupsOfOffers = [
-            ...groupsOfOffers,
-            {
-                group_name: groupNameString,
-                inputName,
-            }
-        ];
-
-        setGroupsOfOffers(newGroupsOfOffers);
-    }
-
     const grouped = groupBy(datafields, property('type'));
-
     const {
         payment_unit = [], length_unit = [], credit_unit = [],
         topic = [], frequency_unit = [],
@@ -89,19 +51,11 @@ const PathwayForm = (props) => {
         ));
     }
 
-    let offerOptions = null;
-
-    if (!isNil(offers) && offers.length) {
-        offerOptions = preloadOptions(offers);
-    }
-
     let providerOptions = null;
 
     if (!isNil(providers) && providers.length) {
         providerOptions = preloadOptions(providers);
     }
-
-    const onCancel = e => {};
 
     return (
         <Layout>
@@ -154,100 +108,11 @@ const PathwayForm = (props) => {
             </ImageUploadAndNameInputs>
             <TitleDivider title={"Add Offers Group"} />
             <Row>
-                <Col
-                    xs={24}
-                    sm={24}
-                    md={10}
-                >
-                    <Input
-                        className="w-full rounded-l rounded-r-none ant-input-group-add-on-border-none-p-0"
-                        style={{ padding: "0.28rem" }}
-                        placeholder="Group Name"
-                        name="add-group"
-                        onChange={handleGroupName}
-                        addonAfter={
-                            <Button
-                                className="rounded-l-none"
-                                type="primary"
-                                onClick={() => addGroupName()}
-                            >
-                                Add Group
-                            </Button>
-                        }
-                    />
-                </Col>
-            </Row>
-            <TitleDivider title={"Pathway Offers Groups"} />
-            <Row>
-                <Table
-                    dataSource={groupsOfOffers}
-                    bordered
-                    className="ant-table-wrapper--responsive w-full"
-                    rowClassName={() => "antd-row"}
-                    rowKey="id"
-                >
-                    <Column
-                        className="antd-col"
-                        title="Offer Group"
-                        dataIndex="group_name"
-                        key="group_name"
-                        render={(text, record) => ({
-                            children: text,
-                            props: {
-                                "data-title": "Offer Group",
-                            }
-                        })}
-                    />
-                    <Column
-                        className="antd-col"
-                        title="Offers"
-                        dataIndex="inputName"
-                        key="inputName"
-                        render={(inputName, record) => {
-                            return {
-                                children: (
-                                    <Form.Item
-                                        className="my-auto"
-                                        name={inputName}
-                                    >
-                                        <Select
-                                            className="w-full rounded custom-select-rounded-tr-none"
-                                            showSearch
-                                            mode="multiple"
-                                        >
-                                            {offerOptions}
-                                        </Select>
-                                    </Form.Item>
-                                ),
-                                props: {
-                                    "data-title": "Offers",
-                                }
-                            }
-                        }}
-                    />
-                    <Column
-                        className="antd-col"
-                        title=""
-                        key="index"
-                        render={(text, record) => ({
-                            children: (
-                                <Popconfirm
-                                    className="text-red-500 cursor-pointer"
-                                    title="Are you sure you want to delete this group?"
-                                    onConfirm={() => handleGroupRemoval(pathway, record)}
-                                    onCancel={onCancel}
-                                    okText="Yes"
-                                    cancelText="No"
-                                >
-                                    Remove
-                                </Popconfirm>
-                            ),
-                            props: {
-                                "data-title": "",
-                            }
-                        })}
-                    />
-                </Table>
+                <OfferGroupTable 
+                  pathway={pathway}
+                  groupsOfOffers={groupsOfOffers}
+                  setGroupsOfOffers={setGroupsOfOffers}
+                />
                 <div
                     className="w-full mb-4"
                     style={{
