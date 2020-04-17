@@ -145,6 +145,7 @@ export default function PathwayUpdateModal(props) {
 
                     values.push(group[i].offer_id);
                 }
+                console.log(snakeCased);
 
                 formInstance.setFieldsValue({
                     [snakeCased]: values
