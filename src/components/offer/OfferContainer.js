@@ -17,7 +17,7 @@ configure({
 })
 
 export default function OfferContainer({ handleTableData, scopedToProvider }) {
-    const { id: userId } = AuthService.currentSession;
+  const { Provider } = AuthService.currentSession;
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
   const [ selectedOffer, setSelectedOffer ] = useState({});
@@ -54,7 +54,7 @@ export default function OfferContainer({ handleTableData, scopedToProvider }) {
 
   if (scopedToProvider) {
     showData = filter(showData, (o) => {
-      return o.provider_id === userId;
+      return o.provider_id === Provider.id;
     })
   }
   
