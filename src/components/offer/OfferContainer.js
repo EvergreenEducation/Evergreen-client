@@ -16,8 +16,7 @@ configure({
   axios: axiosInstance
 })
 
-export default function OfferContainer({ handleTableData, scopedToProvider = false }) {
-  const { Provider } = AuthService.currentSession;
+export default function OfferContainer({ handleTableData, scopedToProvider = false, provider_id }) {
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
   const [ selectedOffer, setSelectedOffer ] = useState({});
@@ -36,10 +35,12 @@ export default function OfferContainer({ handleTableData, scopedToProvider = fal
     error: datafieldError,
   }] = useAxios('/datafields');
 
+  let getOffersUrl = provider_id ? `/offers?scope=with_details&provider_id=${provider_id}`: '/offers?scope=with_details';
+
   const [{
     data: offersData,
     error: offerError,
-  }] = useAxios(`/offers?scope=with_details`);
+  }] = useAxios(getOffersUrl);
 
   const openAndPopulateUpdateModal = (offer) => {
     setSelectedOffer(offer);
@@ -51,12 +52,6 @@ export default function OfferContainer({ handleTableData, scopedToProvider = fal
   }
 
   let showData = handleTableData(Object.values(entities));
-
-  if (scopedToProvider) {
-    showData = filter(showData, (o) => {
-      return o.provider_id === Provider.id;
-    })
-  }
   
   useEffect(() => {
     if (getProviderData) {

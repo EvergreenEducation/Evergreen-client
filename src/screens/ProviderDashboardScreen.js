@@ -176,6 +176,7 @@ export default function ProviderDashboardScreen(props) {
                                   <Component.Content 
                                     handleTableData={handleTableDataForSearch}
                                     scopedToProvider={true}
+                                    provider_id={myProviderId}
                                   /> 
                                 </Content>
                             </Col>
