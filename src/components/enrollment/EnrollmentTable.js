@@ -23,6 +23,28 @@ export default function EnrollmentTable({
       `/enrollments?offer_id=${selectedOffer.id}`
     );
 
+    const [{ data: putResponseBody, error: putError }, executePut ] = useAxios({
+        method: 'PUT'
+    }, { manual: true });
+
+    const setStatusToApprove = async (enrollmentId) => {
+        try {
+            const response = await executePut({
+                url: `/enrollments/${enrollmentId}`,
+                data: {
+                    status: 'Approved',
+                }
+            });
+
+            if (response.status === 200) {
+                enrollmentStore.updateOne(response.data);
+            }
+
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
     useEffect(() => {
         if (enrollmentBody) {
             enrollmentStore.addMany(enrollmentBody);
@@ -95,23 +117,35 @@ export default function EnrollmentTable({
                 className="antd-col"
                 title="Action"
                 key="index"
-                render={(text, record) => ({
-                    children: (
-                        <Popconfirm
-                            className="cursor-pointer"
-                            title="Do you want to give this student their credit?"
-                            onConfirm={() => {}}
-                            onCancel={onCancel}
-                            okText="Yes"
-                            cancelText="No"
-                        >
-                            Approve
-                        </Popconfirm>
-                    ),
-                    props: {
-                        "data-title": "Action",
+                render={enrollment => {
+                    return {
+                        children: (
+                            <Popconfirm
+                                className="cursor-pointer"
+                                title="Do you want to give this student their credit?"
+                                onConfirm={() => setStatusToApprove(enrollment.id)}
+                                onCancel={onCancel}
+                                okText="Yes"
+                                cancelText="No"
+                                disabled={
+                                    enrollment.status === "Approved" ? true : false
+                                }
+                            >
+                                <span
+                                    style={{
+                                        color: enrollment.status === "Approved" ? "#cbd5e0" : "#1890ff",
+                                        cursor: enrollment.status === "Approved" ? "not-allowed" : "pointer" 
+                                    }}
+                                >
+                                    Approve
+                                </span>
+                            </Popconfirm>
+                        ),
+                        props: {
+                            "data-title": "Action",
+                        }
                     }
-                })}
+                }}
             />
         </Table>
     );

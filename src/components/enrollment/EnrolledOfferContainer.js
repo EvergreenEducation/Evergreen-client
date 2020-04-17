@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button } from 'antd';
+import { Card, Button, Row } from 'antd';
 
 import { useHistory } from 'react-router-dom';
 import useAxios, { configure } from 'axios-hooks';
@@ -98,12 +98,23 @@ export default function EnrolledOfferContainer({
               : (
                 <div>
                   <header>
-                    <Button
-                      type="primary"
-                      onClick={() => setViewEnrollments(false)}
-                    >
-                      Back
-                    </Button>
+                    <Row>
+                      <Button
+                        className="rounded"
+                        type="primary"
+                        onClick={() => setViewEnrollments(false)}
+                      >
+                        Back
+                      </Button>
+                    </Row>
+                    <div className="mt-2">
+                      <Row>
+                        Offer name: {selectedOffer.name}
+                      </Row>
+                      <Row>
+                        Provider: {provider.entities[selectedOffer.ProviderId].name}
+                      </Row>
+                    </div>
                   </header>
                   <EnrollmentTable
                     selectedOffer={selectedOffer}
