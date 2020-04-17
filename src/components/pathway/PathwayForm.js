@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
     Layout, Form, Input, Row,
-    Col, Select, Button, DatePicker,
-    Table, Popconfirm
+    Col, Select, DatePicker,
 } from 'antd';
 import TitleDivider from 'components/TitleDivider';
 import { ImageUploadAndNameInputs } from 'components/shared';
-import { groupBy, property, isNil, snakeCase, head } from 'lodash';
+import { groupBy, property, isNil, head } from 'lodash';
 import 'scss/antd-overrides.scss';
 import OfferGroupTable from './OfferGroupTable';
 
 const { Option } = Select;
-const { Column } = Table;
 
 const preloadOptions = (data = []) => data.map((item, index) => {
     return (
@@ -29,49 +27,12 @@ const PathwayForm = (props) => {
         datafields = [], offers = [],
         groupsOfOffers = [], setGroupsOfOffers,
         userId = null, file, onChangeUpload,
-        pathway, handleGroupRemoval,
+        pathway,
         providers, scopedToProvider = false,
     } = props;
-    const [ groupNameString, setGroupNameString ] = useState('');
     datafields = Object.values(datafields);
 
-    const handleGroupName = (e) => {
-        return setGroupNameString(e.target.value);
-    }
-
-    useEffect(() => {}, [file, pathway, groupsOfOffers]);
-
-    const doesGroupNameExist = (groups) => {
-        groups.some(group => {
-            return (group.name === groupNameString)
-                || (group.inputName === snakeCase(groupNameString.toLowerCase()));
-        });
-    };
-
-    const addGroupName = () => {
-        if (!groupNameString.length) {
-            return;
-        }
-
-        if (doesGroupNameExist(groupsOfOffers)) {
-            return;
-        }
-
-        const inputName = snakeCase(groupNameString.toLowerCase());
-
-        const newGroupsOfOffers = [
-            ...groupsOfOffers,
-            {
-                group_name: groupNameString,
-                inputName,
-            }
-        ];
-
-        setGroupsOfOffers(newGroupsOfOffers);
-    }
-
     const grouped = groupBy(datafields, property('type'));
-
     const {
         payment_unit = [], length_unit = [], credit_unit = [],
         topic = [], frequency_unit = [],
@@ -90,19 +51,11 @@ const PathwayForm = (props) => {
         ));
     }
 
-    let offerOptions = null;
-
-    if (!isNil(offers) && offers.length) {
-        offerOptions = preloadOptions(offers);
-    }
-
     let providerOptions = null;
 
     if (!isNil(providers) && providers.length) {
         providerOptions = preloadOptions(providers);
     }
-
-    const onCancel = e => {};
 
     return (
         <Layout>
@@ -155,7 +108,11 @@ const PathwayForm = (props) => {
             </ImageUploadAndNameInputs>
             <TitleDivider title={"Add Offers Group"} />
             <Row>
-                <OfferGroupTable pathway={pathway}/>
+                <OfferGroupTable 
+                  pathway={pathway}
+                  groupsOfOffers={groupsOfOffers}
+                  setGroupsOfOffers={setGroupsOfOffers}
+                />
                 <div
                     className="w-full mb-4"
                     style={{

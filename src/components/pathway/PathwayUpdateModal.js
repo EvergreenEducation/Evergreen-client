@@ -9,7 +9,7 @@ import 'scss/antd-overrides.scss';
 import moment from 'moment';
 import {
     groupBy, isNil, orderBy,
-    snakeCase, map, head, reject,
+    map, head, reject,
 } from 'lodash';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
@@ -40,12 +40,11 @@ export default function PathwayUpdateModal(props) {
     }
 
     const submitUpdate = async () => {
-        const groups_of_offers = groupsOfOffers.map(({ group_name, inputName}) => {
-            const value = form.getFieldValue(inputName);
-            return {
-                group_name,
-                offer_ids: value,
-            }
+        let groups_of_offers = map(groupsOfOffers, g => {
+          return {
+            group_name: g.group_name,
+            offer_ids: g.removed ? [] : map(g.offers, 'offer_id')
+          }
         });
 
         const values = form.getFieldsValue([
@@ -124,64 +123,11 @@ export default function PathwayUpdateModal(props) {
     }
 
     function populateFields(p, formInstance) {
-        setGroupsOfOffers([]);
-        const { GroupsOfOffers = [] } = p;
         formInstance.setFieldsValue({
             ...p,
             start_date: moment(p.start_date),
             topics: myTopics,
         });
-
-        if (GroupsOfOffers.length) {
-            const groupedByName = groupBy(GroupsOfOffers, 'group_name');
-
-            const newGroupsOfOffers = map(groupedByName, (group, key) => {
-                const values = [];
-                const snakeCased = snakeCase(key);
-                for (let i = 0; i < group.length; i++) {
-                    if (!group[i]) {
-                        break;
-                    }
-
-                    values.push(group[i].offer_id);
-                }
-                console.log(snakeCased);
-
-                formInstance.setFieldsValue({
-                    [snakeCased]: values
-                })
-
-                return {
-                    group_name: key,
-                    inputName: snakeCased,
-                    values,
-                };
-            });
-            setGroupsOfOffers(newGroupsOfOffers);
-        }
-    }
-
-    const handleGroupRemoval = async (pathway, record) => {
-        const groups_of_offers = groupsOfOffers.map(({ group_name, inputName}) => {
-            const value = form.getFieldValue(inputName);
-            return {
-                group_name,
-                offer_ids: value,
-            }
-        });
-
-        for (let i = 0; i < groups_of_offers.length; i++) {
-            if (groups_of_offers[i].group_name === record.group_name) {
-                groups_of_offers[i].offer_ids = []
-            }
-        }
-
-        const response = await axiosInstance.put(`/pathways/${pathway.id}`, {
-            groups_of_offers,
-            updatedAt: new dayjs().toISOString()
-        });
-
-        pathwayStore.updateOne(response.data);
     }
 
     useEffect(() => {
@@ -252,7 +198,6 @@ export default function PathwayUpdateModal(props) {
                         userId={userId}
                         onChangeUpload={onChangeUpload}
                         file={file}
-                        handleGroupRemoval={handleGroupRemoval}
                         providers={providerEntities}
                         scopedToProvider={true}
                     />
