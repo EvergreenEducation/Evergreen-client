@@ -1,16 +1,12 @@
 import React from 'react';
-import {Modal, Form, Button, notification, Col, Input, Select} from 'antd';
+import {Modal, Form, Button, notification, Col, InputNumber} from 'antd';
 import axiosInstance from 'services/AxiosInstance';
-import EnrollmentStore from 'store/Enrollment';
 import 'scss/antd-overrides.scss';
 
 export default function EnrollModal({offer, onCancel, visible}) {
-  const enrollmentStore = EnrollmentStore.useContainer();
   const [form] = Form.useForm();
 
   const submitEnrollment = async () => {
-    alert('! not implement yet');
-    return;
     try {
       if (!offer || !offer.id) {
         notification.warning({
@@ -19,17 +15,18 @@ export default function EnrollModal({offer, onCancel, visible}) {
         });
         return;
       }
-      const values = await form.validateFields(['credit', 'activation_code']);
-      const randomInteger = Math.floor(Math.random() * Math.floor(25));
-      const createEnrollment = await axiosInstance.post('/enrollments', {
-        ...values,
-        offer_id: offer.id,
-        student_id: randomInteger,
-        status: 'Incomplete',
-      });
+
+      const values = await form.validateFields('');
+
+      const createEnrollment = await axiosInstance.post(
+        '/enrollments/batch_create',
+        {
+          ...values,
+          offer_id: offer.id,
+        }
+      );
 
       if (createEnrollment.status === 201) {
-        enrollmentStore.addOne(createEnrollment.data);
         notification.success({
           message: 'Success',
           description: 'Student has been enrolled.',
@@ -50,7 +47,7 @@ export default function EnrollModal({offer, onCancel, visible}) {
     <Modal
       forceRender={true}
       className="custom-modal"
-      title={'Enroll Student'}
+      title={'Create Batch Enrollments'}
       visible={visible}
       width={520}
       bodyStyle={{backgroundColor: '#f0f2f5', padding: 0}}
@@ -61,18 +58,14 @@ export default function EnrollModal({offer, onCancel, visible}) {
         <div className="p-6 overflow-y-auto" style={{maxHeight: '32rem'}}>
           <Col span={24} className="mb-5">
             <Form.Item
-              label="Student"
-              name="student_id"
+              label="Number of enrollments"
               labelAlign={'left'}
+              name="batch"
               colon={false}
               className="mb-0 inherit flex-col w-full"
+              rules={[{required: true, message: 'This field is required'}]}
             >
-              <Select
-                className="custom-select-rounded"
-                showSearch
-                name="student_id"
-                disabled
-              />
+              <InputNumber className="rounded" />
             </Form.Item>
           </Col>
         </div>
@@ -89,13 +82,13 @@ export default function EnrollModal({offer, onCancel, visible}) {
             htmlType="submit"
             onClick={submitEnrollment}
           >
-            Enroll
+            Create
           </Button>
           <Button
             className="px-10 rounded"
             size="small"
             type="dashed"
-            onClick={() => onCancel()}
+            onClick={onCancel}
           >
             Cancel
           </Button>
@@ -104,4 +97,3 @@ export default function EnrollModal({offer, onCancel, visible}) {
     </Modal>
   );
 }
-

@@ -17,6 +17,7 @@ configure({
 })
 
 export default function OfferContainer({ handleTableData, scopedToProvider = false, provider_id }) {
+
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
   const [ selectedOffer, setSelectedOffer ] = useState({});
