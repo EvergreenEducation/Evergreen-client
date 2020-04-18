@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table, Tag, Button } from 'antd';
+import { groupBy } from 'lodash';
 import 'scss/antd-overrides.scss';
 
 const { Column } = Table;
@@ -68,28 +69,31 @@ function PathwaysTable(props) {
 					}
 				})}
 			/>
-      <Column
+      		<Column
 				className="antd-col"
 				title="Offer Groups"
 				dataIndex="GroupsOfOffers"
-				key="GroupsOfOffers"
+				key="index"
 				render={(groups, record) => {
 					let children = 'N/A';
 
-					if (groups.length) {
+					const grouped = groupBy(groups, 'group_name');
+					const groupNames = Object.keys(grouped);
+
+					if (groupNames.length) {
 						children = (
 							<>
 								{
-									groups.map((g, index) => {
-										if (!offers[g.offer_id]) {
-											return null;
-										}
+									groupNames.map((group_name, index) => {
+										const count = grouped[group_name].length;
 										return (
 											<Tag
 												color={index % 2 ? "cyan" : "green"}
 												key={index.toString()}
 											>
-												{ offers[g.offer_id].name }
+												{
+													`${group_name} ( ${count} )`
+												}
 											</Tag>
 										);
 									}) || "N/A"
