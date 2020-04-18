@@ -28,12 +28,16 @@ export default function PathwayContainer({ handleTableData, scopedToProvider = f
   const offerStore = OfferStore.useContainer();
   const providerStore = ProviderStore.useContainer();
 
+  let getPathwaysUrl = (
+    provider_id
+      ? '/pathways?scope=with_details'
+      : `/pathways?scope=with_details&provider_id=${provider_id}`
+  )
+
   const [{
     data: getPathways,
     error: getPathwaysError,
-  }] = useAxios(
-    '/pathways?scope=with_details' + (scopedToProvider ? `&provider_id=${provider_id}` : '')
-  );
+  }] = useAxios(getPathwaysUrl);
 
   const [{
     error: getTopicsError,
