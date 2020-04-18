@@ -30,8 +30,8 @@ export default function PathwayContainer({ handleTableData, scopedToProvider = f
 
   let getPathwaysUrl = (
     provider_id
-      ? '/pathways?scope=with_details'
-      : `/pathways?scope=with_details&provider_id=${provider_id}`
+      ? `/pathways?scope=with_details&provider_id=${provider_id}`
+      : '/pathways?scope=with_details'
   )
 
   const [{
