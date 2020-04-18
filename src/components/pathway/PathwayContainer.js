@@ -48,9 +48,15 @@ export default function PathwayContainer({ handleTableData, scopedToProvider = f
     error: getOffersError,
   }] = useAxios('/offers');
 
+  let getProviderUrl = (
+    scopedToProvider 
+      ? `/providers/${provider_id}`
+      : '/providers'
+  )
+
   const [{
     data: getProviders
-  }] = useAxios('/providers');
+  }] = useAxios(getProviderUrl);
 
   const openAndPopulateUpdateModal = (pathway) => {
     setSelectedPathway(pathway);
@@ -69,7 +75,11 @@ export default function PathwayContainer({ handleTableData, scopedToProvider = f
       offerStore.addMany(getOffers);
     }
     if (getProviders) {
-      providerStore.addMany(getProviders);
+      if (scopedToProvider) {
+        providerStore.addOne(getProviders);
+      } else {
+        providerStore.addMany(getProviders);
+      }
     }
   }, [getPathways, getOffers, getProviders]);
 
