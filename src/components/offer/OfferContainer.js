@@ -52,6 +52,12 @@ export default function OfferContainer({ handleTableData, scopedToProvider = fal
 
   let showData = handleTableData(Object.values(entities));
   
+  if (scopedToProvider) {
+    showData = showData.filter(p => {
+      return p.provider_id === provider_id;
+    });
+  }
+  
   useEffect(() => {
     if (getProviderData) {
       provider.addMany(getProviderData);
