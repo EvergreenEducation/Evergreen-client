@@ -58,6 +58,12 @@ export default function EnrolledOfferContainer({
   }
 
   let showData = handleTableData(Object.values(entities));
+  
+  if (scopedToProvider) {
+    showData = showData.filter(p => {
+      return p.provider_id === provider_id;
+    });
+  }
 
   const openEnrollments = offer => {
     setSelectedOffer(offer);
