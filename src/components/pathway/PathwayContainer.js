@@ -18,7 +18,7 @@ configure({
 })
 
 export default function PathwayContainer({ handleTableData, scopedToProvider = false }) {
-  const { Provider } = AuthService.currentSession;
+  const { provider_id } = AuthService.currentSession;
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
   const [ selectedPathway, setSelectedPathway ] = useState({});
@@ -32,7 +32,7 @@ export default function PathwayContainer({ handleTableData, scopedToProvider = f
     data: getPathways,
     error: getPathwaysError,
   }] = useAxios(
-    '/pathways?scope=with_details' + (scopedToProvider ? `&provider_id=${Provider.id}` : '')
+    '/pathways?scope=with_details' + (scopedToProvider ? `&provider_id=${provider_id}` : '')
   );
 
   const [{
@@ -73,7 +73,7 @@ export default function PathwayContainer({ handleTableData, scopedToProvider = f
   
   if (scopedToProvider) {
     showData = showData.filter(p => {
-      return p.provider_id === Provider.id;
+      return p.provider_id === provider_id;
     });
   }
 

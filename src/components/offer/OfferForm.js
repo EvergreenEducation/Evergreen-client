@@ -17,22 +17,28 @@ const preloadOptions = (data = []) => data.map((item, index) => {
     );
 });
 
-const OfferForm = (props) => {
-    let {
-        datafields = [],
-        providers = {},
-        offers = [],
-        offer = {},
-        onChangeUpload,
-        file,
-        userId = null,
-    } = props;
+export default function OfferForm({
+    datafields = [],
+    providers = {},
+    offers = [],
+    offer = {},
+    onChangeUpload,
+    file,
+    userId = null,
+    providerId = null,
+    scopedToProvider = false,
+}) {
 
     datafields = Object.values(datafields);
 
     useEffect(() => {}, [file]);
 
-    const providersArr = Object.values(providers).filter(p => !isNil(p.name));
+    const providersArr = Object.values(providers).filter(p => {
+        if (scopedToProvider) {
+            return (p.id === providerId) && !isNil(p.name);
+        }
+        return !isNil(p.name);
+    });
 
     const grouped = groupBy(datafields, property('type'));
     const {
@@ -62,6 +68,12 @@ const OfferForm = (props) => {
         offerOptions = preloadOptions(updatedOffers);
     }
 
+    let costUnitOptions = null;
+
+    if (!isNil(cost_unit) && cost_unit.length) {
+        costUnitOptions = preloadOptions(cost_unit);
+    }
+
     return (
         <Layout>
             <ImageUploadAndNameInputs
@@ -72,6 +84,7 @@ const OfferForm = (props) => {
             >
                 <Row gutter={8}>
                     <Col
+                        className={scopedToProvider ? "hidden" : ""}
                         xs={24}
                         sm={24}
                         md={15}
@@ -116,7 +129,7 @@ const OfferForm = (props) => {
                         span={9}
                         xs={24}
                         sm={24}
-                        md={9}
+                        md={scopedToProvider ? 10 : 9}
                     >
                         <Form.Item
                             label="Generic Offer"
@@ -372,7 +385,7 @@ const OfferForm = (props) => {
                         className="mb-0 inherit"
                     >
                         <Select className="rounded custom-select">
-                            {
+                            {/* {
                                 cost_unit.map((unit, index) => {
                                     return (
                                         <Option
@@ -383,7 +396,8 @@ const OfferForm = (props) => {
                                         </Option>
                                     );
                                 })
-                            }
+                            } */}
+                            {costUnitOptions}
                         </Select>
                     </Form.Item>
                 </Col>
@@ -537,5 +551,3 @@ const OfferForm = (props) => {
         </Layout>
     );
 }
-
-export default OfferForm;

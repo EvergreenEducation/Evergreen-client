@@ -15,7 +15,7 @@ configure({
 })
 
 const OfferCreationContainer = (({ scopedToProvider = false, closeModal }) => {
-    const { id: userId } = AuthService.currentSession;
+    const { id: userId, provider_id } = AuthService.currentSession;
     const [file, setFile] = useState(null);
     const [ form ] = Form.useForm();
     const [{ data: postData, error: postError, response }, executePost ] = useAxios({
@@ -51,7 +51,7 @@ const OfferCreationContainer = (({ scopedToProvider = false, closeModal }) => {
     const submit = async () => {
         const values = form.getFieldsValue([
             'category', 'description', 'learn_and_earn',
-            'part_of_day', 'frequency', 'frequency_unit', 'cost', 'credit_unit',
+            'part_of_day', 'frequency', 'frequency_unit', 'cost', 'cost_unit', 'credit_unit',
             'pay_unit', 'length', 'length_unit', 'name', 'start_date', 'provider_id',
             'topics', 'pay', 'credit', 'related_offers', 'prerequisites', 'keywords'
         ]);
@@ -134,8 +134,10 @@ const OfferCreationContainer = (({ scopedToProvider = false, closeModal }) => {
                         datafields={datafieldStore.entities}
                         providers={providerStore.entities}
                         userId={userId}
+                        providerId={provider_id}
                         file={file}
                         onChangeUpload={onChangeUpload}
+                        scopedToProvider={scopedToProvider}
                     />
                 </div>
                 <section

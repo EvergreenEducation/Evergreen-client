@@ -7,8 +7,6 @@ import OffersTable from 'components/offer/OffersTable';
 import { useProviderDataFieldStore } from 'components/provider';
 import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
-import AuthService from 'services/AuthService';
-import { filter } from 'lodash';
 
 const OfferUpdateModal = imported(() => import('components/offer/OfferUpdateModal'));
 
@@ -79,6 +77,7 @@ export default function OfferContainer({ handleTableData, scopedToProvider = fal
         visible={modalVisibility}
         onCancel={() => setModalVisibility(false)}
         offerStore={offerStore}
+        scopedToProvider={scopedToProvider}
       />
     </Card>
   );

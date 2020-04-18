@@ -1,49 +1,53 @@
 import React from 'react';
-import {Modal, Form, Button, notification, Col, Input, Select} from 'antd';
-import axiosInstance from 'services/AxiosInstance';
-import EnrollmentStore from 'store/Enrollment';
+import {
+  Modal, Form, Button,
+  // notification, Input,
+  Select, Col,
+} from 'antd';
+// import axiosInstance from 'services/AxiosInstance';
+// import EnrollmentStore from 'store/Enrollment';
 import 'scss/antd-overrides.scss';
 
 export default function EnrollModal({offer, onCancel, visible}) {
-  const enrollmentStore = EnrollmentStore.useContainer();
+  // const enrollmentStore = EnrollmentStore.useContainer();
   const [form] = Form.useForm();
 
   const submitEnrollment = async () => {
     alert('! not implement yet');
     return;
-    try {
-      if (!offer || !offer.id) {
-        notification.warning({
-          message: 'Error',
-          description: "Could not fetch the offer's information.",
-        });
-        return;
-      }
-      const values = await form.validateFields(['credit', 'activation_code']);
-      const randomInteger = Math.floor(Math.random() * Math.floor(25));
-      const createEnrollment = await axiosInstance.post('/enrollments', {
-        ...values,
-        offer_id: offer.id,
-        student_id: randomInteger,
-        status: 'Incomplete',
-      });
+    // try {
+    //   if (!offer || !offer.id) {
+    //     notification.warning({
+    //       message: 'Error',
+    //       description: "Could not fetch the offer's information.",
+    //     });
+    //     return;
+    //   }
+    //   const values = await form.validateFields(['credit', 'activation_code']);
+    //   const randomInteger = Math.floor(Math.random() * Math.floor(25));
+    //   const createEnrollment = await axiosInstance.post('/enrollments', {
+    //     ...values,
+    //     offer_id: offer.id,
+    //     student_id: randomInteger,
+    //     status: 'Incomplete',
+    //   });
 
-      if (createEnrollment.status === 201) {
-        enrollmentStore.addOne(createEnrollment.data);
-        notification.success({
-          message: 'Success',
-          description: 'Student has been enrolled.',
-        });
-        onCancel();
-      } else {
-        notification.warning({
-          message: createEnrollment.status,
-          description: createEnrollment.statusText,
-        });
-      }
-    } catch (err) {
-      console.error(err);
-    }
+    //   if (createEnrollment.status === 201) {
+    //     enrollmentStore.addOne(createEnrollment.data);
+    //     notification.success({
+    //       message: 'Success',
+    //       description: 'Student has been enrolled.',
+    //     });
+    //     onCancel();
+    //   } else {
+    //     notification.warning({
+    //       message: createEnrollment.status,
+    //       description: createEnrollment.statusText,
+    //     });
+    //   }
+    // } catch (err) {
+    //   console.error(err);
+    // }
   };
 
   return (

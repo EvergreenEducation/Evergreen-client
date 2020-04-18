@@ -20,7 +20,7 @@ export default function EnrollmentTable({
   const [selectedEnrollment, setSelectedEnrollment] = useState(null);
   const enrollmentStore = EnrollmentStore.useContainer();
 
-  const [{data: enrollmentBody, error: enrollmentError}] = useAxios(
+  const [{data: enrollmentBody }] = useAxios(
     `/enrollments?offer_id=${selectedOffer.id}`
   );
 

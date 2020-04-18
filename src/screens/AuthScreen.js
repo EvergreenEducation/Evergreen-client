@@ -44,7 +44,7 @@ function UserAuth({ user_id }) {
 
     switch (myProfile.role) {
       case 'provider':
-        return <Redirect to={{ pathname: `/provider/${myProfile.Provider.id}`}}/>
+        return <Redirect to={{ pathname: `/provider/${myProfile.provider_id}`}}/>
       case 'admin':
         return <Redirect to={{ pathname: '/admin'}}/>
       case 'student':
