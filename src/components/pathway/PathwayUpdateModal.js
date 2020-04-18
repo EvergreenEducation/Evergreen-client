@@ -19,12 +19,14 @@ configure({
   axios: axiosInstance
 });
 
-export default function PathwayUpdateModal(props) {
-    const { id: userId } = AuthService.currentSession;
+export default function PathwayUpdateModal({
+    pathway, onCancel, visible,
+    pathwayStore, scopedToProvider, providers
+}) {
+    const { id: userId, provider_id } = AuthService.currentSession;
     const [file, setFile] = useState(null);
     const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
 
-    const { pathway, onCancel, visible, pathwayStore, scopedToProvider, providers } = props;
     const [ form ] = Form.useForm();
     const datafieldStore = DataFieldStore.useContainer();
     const offerStore = OfferStore.useContainer();
@@ -161,7 +163,7 @@ export default function PathwayUpdateModal(props) {
     if (scopedToProvider) {
         if (providerEntities.length) {
             providerEntities = reject(providerEntities, p => {
-                return !(p.id === userId);
+                return !(p.id === provider_id);
             });
 
             form.setFieldsValue({

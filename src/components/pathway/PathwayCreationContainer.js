@@ -16,7 +16,7 @@ configure({
 })
 
 const PathwayCreationContainer = (({ scopedToProvider = false, closeModal }) => {
-    const { id: userId } = AuthService.currentSession;
+    const { id: userId, provider_id } = AuthService.currentSession;
     const [file, setFile] = useState(null);
     const [ groupsOfOffers, setGroupsOfOffers ] = useState([]);
     const [ form ] = Form.useForm();
@@ -113,7 +113,7 @@ const PathwayCreationContainer = (({ scopedToProvider = false, closeModal }) => 
     if (scopedToProvider) {
         if (providerEntities.length) {
             providerEntities = reject(providerEntities, p => {
-                return !(p.id === userId);
+                return !(p.id === provider_id);
             });
 
             form.setFieldsValue({

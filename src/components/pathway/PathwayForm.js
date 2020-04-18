@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
     Layout, Form, Input, Row,
     Col, Select, DatePicker,
@@ -22,14 +22,14 @@ const preloadOptions = (data = []) => data.map((item, index) => {
     );
 });
 
-const PathwayForm = (props) => {
-    let {
-        datafields = [], offers = [],
-        groupsOfOffers = [], setGroupsOfOffers,
-        userId = null, file, onChangeUpload,
-        pathway,
-        providers, scopedToProvider = false,
-    } = props;
+export default function PathwayForm({
+    datafields = [],
+    groupsOfOffers = [], setGroupsOfOffers,
+    userId = null, file, onChangeUpload,
+    pathway,
+    providers, scopedToProvider = false,
+}) {
+
     datafields = Object.values(datafields);
 
     const grouped = groupBy(datafields, property('type'));
@@ -400,7 +400,10 @@ const PathwayForm = (props) => {
                         <Input className="rounded" />
                     </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col
+                    span={12}
+                    className={scopedToProvider ? "hidden" : ""}
+                >
                     <Form.Item
                         label="Provider"
                         name="provider_id"
@@ -426,5 +429,3 @@ const PathwayForm = (props) => {
         </Layout>
     );
 };
-
-export default PathwayForm;

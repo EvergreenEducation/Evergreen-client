@@ -17,10 +17,13 @@ configure({
 
 const { Column } = Table;
 
-export default function OfferUpdateModal(props) {
-    const { id: userId } = AuthService.currentSession;
+export default function OfferUpdateModal({
+    offer, onCancel, visible,
+    offerStore, scopedToProvider = false,
+}) {
+    const { id: userId, provider_id } = AuthService.currentSession;
     const [file, setFile] = useState(null);
-    const { offer, onCancel, visible, offerStore } = props;
+
     const {
         RelatedOffers = [], PrerequisiteOffers = [],
         DataFields = [], GroupsOfOffers: Pathways = [],
@@ -45,7 +48,8 @@ export default function OfferUpdateModal(props) {
     const submitUpdate = async () => {
         const values = form.getFieldsValue([
             'category', 'description', 'learn_and_earn',
-            'part_of_day', 'frequency', 'frequency_unit', 'cost', 'credit_unit',
+            'part_of_day', 'frequency', 'frequency_unit', 'cost',
+            'cost_unit', 'credit_unit',
             'pay_unit', 'length', 'length_unit', 'name', 'start_date', 'provider_id',
             'topics', 'pay', 'credit', 'keywords', 'related_offers', 'prerequisites'
         ]);
@@ -102,22 +106,10 @@ export default function OfferUpdateModal(props) {
 
     function populateFields(o, formInstance) {
         formInstance.setFieldsValue({
+            ...o,
             category: Number(o.category),
-            description: o.description,
-            learn_and_earn: o.learn_and_earn,
-            part_of_day: o.part_of_day,
-            frequency: o.frequency,
-            frequency_unit: o.frequency_unit,
-            cost: o.cost,
-            credit: o.credit,
-            credit_unit: o.credit_unit,
-            pay: o.pay,
-            pay_unit: o.pay_unit,
-            length: o.length,
-            length_unit: o.length_unit,
-            name: o.name,
+            cost_unit: Number(o.cost_unit),
             start_date: moment(o.start_date),
-            provider_id: o.provider_id,
             topics: compact(DataFields.map(({ type, id }) => {
                 if (type === 'topic') {
                     return id;
@@ -126,7 +118,6 @@ export default function OfferUpdateModal(props) {
             })),
             related_offers: RelatedOffers.map(({ id }) => id),
             prerequisites: PrerequisiteOffers.map(({ id }) => id),
-            keywords: o.keywords
         });
     }
 
@@ -184,8 +175,10 @@ export default function OfferUpdateModal(props) {
                         providers={providerStore.entities}
                         offer={offer}
                         userId={userId}
+                        providerId={provider_id}
                         onChangeUpload={onChangeUpload}
                         file={file}
+                        scopedToProvider={scopedToProvider}
                     />
                     <section className="mt-2">
                         <label className="mb-2 block">

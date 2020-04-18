@@ -8,6 +8,7 @@ import { useProviderDataFieldStore } from 'components/provider';
 import PathwayStore from 'store/Pathway';
 import axiosInstance from 'services/AxiosInstance';
 import OfferStore from 'store/Offer';
+import AuthService from 'services/AuthService';
 import ProviderStore from 'store/Provider';
 
 const PathwayUpdateModal = imported(() => import('components/pathway/PathwayUpdateModal'));
@@ -17,6 +18,7 @@ configure({
 })
 
 export default function PathwayContainer({ handleTableData, scopedToProvider = false }) {
+  const { provider_id } = AuthService.currentSession;
   const history = useHistory();
   const [ modalVisibility, setModalVisibility ] = useState(false);
   const [ selectedPathway, setSelectedPathway ] = useState({});
@@ -29,7 +31,9 @@ export default function PathwayContainer({ handleTableData, scopedToProvider = f
   const [{
     data: getPathways,
     error: getPathwaysError,
-  }] = useAxios('/pathways?scope=with_details');
+  }] = useAxios(
+    '/pathways?scope=with_details' + (scopedToProvider ? `&provider_id=${provider_id}` : '')
+  );
 
   const [{
     error: getTopicsError,
@@ -65,7 +69,13 @@ export default function PathwayContainer({ handleTableData, scopedToProvider = f
     }
   }, [getPathways, getOffers, getProviders]);
 
-  const showData = handleTableData(Object.values(pathwayStore.entities));
+  let showData = handleTableData(Object.values(pathwayStore.entities));
+  
+  if (scopedToProvider) {
+    showData = showData.filter(p => {
+      return p.provider_id === provider_id;
+    });
+  }
 
   return (
     <Card className="shadow-md rounded-md">
@@ -75,6 +85,7 @@ export default function PathwayContainer({ handleTableData, scopedToProvider = f
         data={showData}
         handleUpdateModal={openAndPopulateUpdateModal}
         offers={offerStore.entities}
+        scopedToProvider={scopedToProvider}
       />
       <PathwayUpdateModal
         pathway={selectedPathway}

@@ -13,6 +13,7 @@ import OfferStore from 'store/Offer';
 import PathwayStore from 'store/Pathway';
 import 'scss/antd-overrides.scss';
 import matchSorter from 'match-sorter';
+import EnrolledOfferContainer from 'components/enrollment/EnrolledOfferContainer';
 
 const TopicContainer = imported(() => import('components/topic/TopicContainer'));
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
@@ -139,6 +140,24 @@ export default function AdminDashboardPage(props) {
                 <SelectOptionsContainer />
                 <TopicContainer />
             </>
+        );
+    }
+
+    if (pathname === '/admin/enrolled_offers') {
+        modalTitle = 'New Offer / Opportunity';
+        HeaderContent = () => (
+            <SearchModalHeader
+                createHandler={openModal}
+                title="Enrolled Offers"
+                buttonTitle="OFFER"
+                handleSearch={search}
+            />
+        );
+        FormContent = (<OfferCreationContainer closeModal={handleCancel} />);
+        MainContent = () => (
+            <EnrolledOfferContainer
+                handleTableData={handleTableDataForSearch}
+            />
         );
     }
 

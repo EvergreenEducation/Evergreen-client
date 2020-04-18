@@ -1,12 +1,8 @@
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const AntdDayjsWebpackPlugin = require('antd-dayjs-webpack-plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-const webpack = require('webpack');
 
 const logConfig = config => {
-    // if (config.mode === 'development') {
-    //     console.log(config);
-    // }
     return config;
 }
 

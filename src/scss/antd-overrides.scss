@@ -26,6 +26,12 @@ $firstBreak: 1060px;
     }
 }
 
+.custom-select-rounded {
+    .ant-select-selector {
+        border-radius: 0.25rem !important;
+    }
+}
+
 .custom-select-rounded-l-r-none {
     .ant-select-selector {
         border-top-left-radius: 0.25rem !important;

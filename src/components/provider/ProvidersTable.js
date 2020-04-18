@@ -87,7 +87,7 @@ function ProvidersTable({ data = [], loading, handleUpdateModal }) {
 				title="Topics"
 				dataIndex="DataFields"
 				key="DataFields"
-				render={(datafields, record) => {
+				render={(datafields = [], record) => {
 					datafields = datafields.filter(d => d.type === 'topic');
 					let children = 'N/A';
 
