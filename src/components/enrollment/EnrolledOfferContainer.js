@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Card, Button, Row} from 'antd';
-
+import { useLocation } from 'react-router-dom';
 import {useHistory} from 'react-router-dom';
 import useAxios, {configure} from 'axios-hooks';
 import {useProviderDataFieldStore} from 'components/provider';
@@ -8,11 +8,7 @@ import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
 
 import EnrollmentStore from 'store/Enrollment';
-import {
-  BatchEnrollmentModal,
-  EnrollmentTable,
-  EnrolledOfferTable,
-} from 'components/enrollment';
+import { EnrollmentTable } from 'components/enrollment';
 
 configure({
   axios: axiosInstance,
@@ -24,16 +20,20 @@ export default function EnrolledOfferContainer({
   provider_id,
 }) {
   const history = useHistory();
-  const [modalVisibility, setModalVisibility] = useState(false);
+  const location = useLocation();
   const [selectedOffer, setSelectedOffer] = useState({});
-  const [viewEnrollments, setViewEnrollments] = useState(false);
-  const [activateCreditAssignment, setActivateCreditAssignment] = useState(
-    false
-  );
+  const [
+    activateCreditAssignment,
+    setActivateCreditAssignment,
+  ] = useState(false);
   const store = useProviderDataFieldStore();
   const {datafield, provider} = store;
   const offerStore = OfferStore.useContainer();
   const {entities = []} = offerStore;
+
+  const query = new URLSearchParams(location.search);
+
+  console.log(query.get('selectedOffer'));
 
   const [{data: getProviderData = [], error: providerError}] = useAxios(
     '/providers?scope=with_datafields'
@@ -48,11 +48,6 @@ export default function EnrolledOfferContainer({
     : '/offers?scope=with_details';
   const [{data: offersData, error: offerError}] = useAxios(getOffersUrl);
 
-  const openEnrollModal = offer => {
-    setSelectedOffer(offer);
-    setModalVisibility(true);
-  };
-
   if (providerError || datafieldError || offerError) {
     history.push('/error/500');
   }
@@ -64,11 +59,6 @@ export default function EnrolledOfferContainer({
       return p.provider_id === provider_id;
     });
   }
-
-  const openEnrollments = offer => {
-    setSelectedOffer(offer);
-    setViewEnrollments(true);
-  };
 
   useEffect(() => {
     if (getProviderData) {
@@ -85,52 +75,20 @@ export default function EnrolledOfferContainer({
   return (
     <EnrollmentStore.Provider>
       <Card className="shadow-md rounded-md">
-        {!viewEnrollments ? (
-          <EnrolledOfferTable
-            datafields={datafield.entities}
-            providers={provider.entities}
-            data={showData}
-            openEnrollModal={openEnrollModal}
-            openEnrollments={openEnrollments}
-          />
-        ) : (
-          <div>
-            <header>
-              <Row>
-                <Button
-                  className="rounded"
-                  type="primary"
-                  onClick={() => setViewEnrollments(false)}
-                >
-                  Back
-                </Button>
-                <Button
-                  className="rounded ml-3"
-                  type="default"
-                  onClick={() =>
-                    setActivateCreditAssignment(!activateCreditAssignment)
-                  }
-                >
-                  {activateCreditAssignment ? 'Lock Credit' : 'Assign Credit'}
-                </Button>
-              </Row>
-              <div className="mt-2">
-                <Row>Offer name: {selectedOffer.name}</Row>
-                <Row>
-                  Provider: {provider.entities[selectedOffer.ProviderId].name}
-                </Row>
-              </div>
-            </header>
-            <EnrollmentTable
-              selectedOffer={selectedOffer}
-              activateCreditAssignment={activateCreditAssignment}
-            />
-          </div>
-        )}
-        <BatchEnrollmentModal
-          offer={selectedOffer}
-          visible={modalVisibility}
-          onCancel={() => setModalVisibility(false)}
+        <Row className="mb-2">
+          <Button
+            className="rounded"
+            type="default"
+            onClick={() =>
+              setActivateCreditAssignment(!activateCreditAssignment)
+            }
+          >
+            {activateCreditAssignment ? 'Lock Credit' : 'Assign Credit'}
+          </Button>
+        </Row>
+        <EnrollmentTable
+          selectedOffer={selectedOffer}
+          activateCreditAssignment={activateCreditAssignment}
         />
       </Card>
     </EnrollmentStore.Provider>

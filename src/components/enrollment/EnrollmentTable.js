@@ -69,6 +69,18 @@ export default function EnrollmentTable({
         rowClassName={() => 'antd-row'}
         rowKey="id"
       >
+      <Column
+          className="antd-col"
+          title="Offer"
+          dataIndex=""
+          key="index"
+          render={(text, record) => ({
+            children: text,
+            props: {
+              'data-title': 'Offer',
+            },
+          })}
+        />
         <Column
           className="antd-col"
           title="Student ID"

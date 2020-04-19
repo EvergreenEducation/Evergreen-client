@@ -134,6 +134,9 @@ $firstBreak: 1060px;
             }
         }
     }
+    .ant-table-row:hover {
+        cursor: pointer;
+    }
     .antd-row .antd-col {
         @media only screen and (max-width: $firstBreak) {
             border-bottom: 1px solid rgb(222, 222, 222);

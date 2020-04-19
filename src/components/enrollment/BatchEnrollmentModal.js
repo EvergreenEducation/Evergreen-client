@@ -23,13 +23,14 @@ export default function EnrollModal({offer, onCancel, visible}) {
         {
           ...values,
           offer_id: offer.id,
+          provider_id: offer.provider_id,
         }
       );
 
       if (createEnrollment.status === 201) {
         notification.success({
           message: 'Success',
-          description: 'Student has been enrolled.',
+          description: 'Batch enrollments have been created.',
         });
         onCancel();
       } else {
@@ -65,7 +66,10 @@ export default function EnrollModal({offer, onCancel, visible}) {
               className="mb-0 inherit flex-col w-full"
               rules={[{required: true, message: 'This field is required'}]}
             >
-              <InputNumber className="rounded" />
+              <InputNumber
+                className="rounded"
+                min={0}
+              />
             </Form.Item>
           </Col>
         </div>

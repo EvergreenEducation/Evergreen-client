@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import {} from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import { useHistory } from 'react-router-dom';
-import { Card } from 'antd';
+import { Card, Drawer, Button, message } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import OffersTable from 'components/offer/OffersTable';
 import { useProviderDataFieldStore } from 'components/provider';
@@ -9,15 +10,24 @@ import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
 
 const OfferUpdateModal = imported(() => import('components/offer/OfferUpdateModal'));
+const BatchEnrollmentModal = imported(() => import('components/enrollment/BatchEnrollmentModal'));
 
 configure({
   axios: axiosInstance
 })
 
-export default function OfferContainer({ handleTableData, scopedToProvider = false, provider_id }) {
-
+export default function OfferContainer({
+  handleTableData,
+  scopedToProvider = false,
+  provider_id,
+  basePath
+}) {
   const history = useHistory();
-  const [ modalVisibility, setModalVisibility ] = useState(false);
+  const [ openable, setOpenable ] = useState({
+    drawer: false,
+    updateModal: false,
+    batchEnrollModal: false,
+  });
   const [ selectedOffer, setSelectedOffer ] = useState({});
   const store = useProviderDataFieldStore();
   const { datafield, provider } = store;
@@ -43,7 +53,38 @@ export default function OfferContainer({ handleTableData, scopedToProvider = fal
 
   const openAndPopulateUpdateModal = (offer) => {
     setSelectedOffer(offer);
-    setModalVisibility(true);
+    setOpenable({
+      ...openable,
+      updateModal: true,
+    });
+  }
+
+  const handleRowSelection = (record, rowIndex) => {
+    if (record) {
+      setSelectedOffer(record);
+      setOpenable({
+        ...openable,
+        drawer: true,
+      });
+      return;
+    }
+    message.error('Could not receive offer\'s information.');
+  }
+
+  const openBatchEnrollmentModal = () => {
+    setOpenable({
+      ...openable,
+      batchEnrollModal: true,
+      drawer: true,
+    });
+  }
+
+  const viewEnrollments = (offer) => {
+    if (offer) {
+      history.push(`${basePath}/enrolled_offers?selectedOffer=${offer.id}`);
+      return;
+    }
+    message.error('Could not receive offer\'s information.');
   }
 
   if (providerError || datafieldError || offerError) {
@@ -77,14 +118,38 @@ export default function OfferContainer({ handleTableData, scopedToProvider = fal
         providers={provider.entities}
         data={showData}
         handleUpdateModal={openAndPopulateUpdateModal}
+        handleRowSelection={handleRowSelection}
+        viewEnrollments={viewEnrollments}
       />
       <OfferUpdateModal
         offer={selectedOffer}
-        visible={modalVisibility}
-        onCancel={() => setModalVisibility(false)}
+        visible={openable.updateModal}
+        onCancel={() => setOpenable({ ...openable, updateModal: false })}
         offerStore={offerStore}
         scopedToProvider={scopedToProvider}
       />
+      <Drawer
+        placement="bottom"
+        visible={openable.drawer}
+        onClose={() => setOpenable({ ...openable, drawer: false })}
+        height="bottom"
+      >
+        <Button
+          className="rounded"
+          type="primary"
+          onClick={() => openBatchEnrollmentModal()}
+        >
+          Batch Enroll
+        </Button>
+        <BatchEnrollmentModal
+          offer={selectedOffer}
+          visible={openable.batchEnrollModal}
+          onCancel={() => setOpenable({
+            ...openable,
+            batchEnrollModal: false,
+          })}
+        />
+      </Drawer>
     </Card>
   );
 }
