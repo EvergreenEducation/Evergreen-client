@@ -52,9 +52,6 @@ export default function EnrollmentTable({
       console.error(err);
     }
   };
-
-  
-  const onCancel = e => {};
   
   const handleSearch = e => {
     setSearch({
@@ -131,7 +128,7 @@ export default function EnrollmentTable({
                         icon={faSearch}
                       />
                     }
-                    onClick={() => handleData()}
+                    onClick={handleData}
                   >
                     Search
                   </Button>
@@ -268,7 +265,6 @@ export default function EnrollmentTable({
                   className="cursor-pointer"
                   title="Do you want to give this student their credit?"
                   onConfirm={() => setStatusToApprove(enrollment.id)}
-                  onCancel={onCancel}
                   okText="Yes"
                   cancelText="No"
                   disabled={enrollment.status === 'Approved' ? true : false}

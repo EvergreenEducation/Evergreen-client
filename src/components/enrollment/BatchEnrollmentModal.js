@@ -1,9 +1,11 @@
 import React from 'react';
 import {Modal, Form, Button, notification, Col, InputNumber} from 'antd';
 import axiosInstance from 'services/AxiosInstance';
+import EnrollmentStore from 'store/Enrollment';
 import 'scss/antd-overrides.scss';
 
 export default function EnrollModal({offer, onCancel, visible}) {
+  const enrollmentStore = EnrollmentStore.useContainer();
   const [form] = Form.useForm();
 
   const submitEnrollment = async () => {
@@ -28,6 +30,12 @@ export default function EnrollModal({offer, onCancel, visible}) {
       );
 
       if (createEnrollment.status === 201) {
+        const enrollmentResponse = await axiosInstance.get(
+          `/enrollments?offer_id=${offer.id}&provider_id=${offer.provider_id}&scope=with_offers`
+        );
+
+        enrollmentStore.addMany(enrollmentResponse.data);
+
         notification.success({
           message: 'Success',
           description: 'Batch enrollments have been created.',
