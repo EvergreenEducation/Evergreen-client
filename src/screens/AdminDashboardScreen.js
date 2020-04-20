@@ -151,22 +151,16 @@ export default function AdminDashboardPage(props) {
         );
     }
 
-    if (pathname === '/admin/enrolled_offers') {
-        modalTitle = 'New Offer / Opportunity';
+    if (pathname === '/admin/enrollments') {
+        modalTitle = '';
         HeaderContent = () => (
-            // <SearchModalHeader
-            //     createHandler={openModal}
-            //     title="Enrolled Offers"
-            //     buttonTitle="OFFER"
-            //     handleSearch={search}
-            // />
             <EnrollmentTopbar
                 title="Enrollment"
                 setActivateCreditAssignment={setActivateCreditAssignment}
                 activateCreditAssignment={activateCreditAssignment}
             />
         );
-        FormContent = (<OfferCreationContainer closeModal={handleCancel} />);
+        FormContent = () => <div />
         MainContent = () => (
             <EnrolledOfferContainer
                 activateCreditAssignment={activateCreditAssignment}

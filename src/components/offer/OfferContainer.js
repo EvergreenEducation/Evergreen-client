@@ -4,7 +4,7 @@ import { imported } from 'react-imported-component/macro';
 import { useHistory } from 'react-router-dom';
 import { Card, Drawer, Button, message } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
-import OffersTable from 'components/offer/OffersTable';
+import OfferTable from 'components/offer/OfferTable';
 import { useProviderDataFieldStore } from 'components/provider';
 import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
@@ -81,7 +81,7 @@ export default function OfferContainer({
 
   const viewEnrollments = (offer) => {
     if (offer) {
-      history.push(`${basePath}/enrolled_offers?selectedOffer=${offer.id}`);
+      history.push(`${basePath}/enrollments?offer=${offer.id}`);
       return;
     }
     message.error('Could not receive offer\'s information.');
@@ -113,7 +113,7 @@ export default function OfferContainer({
 
   return (
     <Card className="shadow-md rounded-md">
-      <OffersTable
+      <OfferTable
         datafields={datafield.entities}
         providers={provider.entities}
         data={showData}

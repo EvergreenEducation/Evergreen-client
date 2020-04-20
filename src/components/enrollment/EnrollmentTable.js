@@ -16,7 +16,6 @@ configure({
 const {Column} = Table;
 
 export default function EnrollmentTable({
-  selectedOffer,
   activateCreditAssignment,
   dataSource = [],
 }) {
@@ -77,7 +76,7 @@ export default function EnrollmentTable({
     if (dataSource) {
       setEnrollments(dataSource);
     }
-  }, [selectedOffer, dataSource]);
+  }, [dataSource]);
 
   return (
     <>

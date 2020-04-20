@@ -5,7 +5,7 @@ import 'scss/antd-overrides.scss';
 
 const { Column } = Table;
 
-export default function OffersTable({
+export default function OfferTable({
 	data,
 	providers,
 	datafields,

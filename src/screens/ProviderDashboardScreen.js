@@ -70,7 +70,7 @@ const RouteConfig = {
       </>
     }
   },
-  'enrolled_offers': {
+  'enrollments': {
     Header: EnrollmentTopbar,
     Form: () => <div />,
     Content: EnrolledOfferContainer,

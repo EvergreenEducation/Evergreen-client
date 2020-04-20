@@ -24,8 +24,8 @@ const routesList = (role) => {
       enabled: ['admin', 'provider'].includes(role)
     },
     {
-        path: 'enrolled_offers',
-        name: 'Enrolled Offers',
+        path: 'enrollments',
+        name: 'Enrollments',
         icon: faHandHoldingUsd,
         enabled: ['admin', 'provider'].includes(role)
     },

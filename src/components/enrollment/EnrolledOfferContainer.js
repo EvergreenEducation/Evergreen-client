@@ -22,12 +22,12 @@ export default function EnrolledOfferContainer({
   const enrollmentStore = EnrollmentStore.useContainer();
   
   const query = new URLSearchParams(location.search);
-  const selectedOffer = Number(query.get('selectedOffer'));
+  const offer = Number(query.get('offer'));
 
   const getEnrollmentsUrl = () => {
     const url = '/enrollments?scope=with_offers';
-    if (scopedToProvider && selectedOffer) {
-      return `${url}&offer_id=${selectedOffer}&provider_id=${provider_id}`;
+    if (scopedToProvider && offer) {
+      return `${url}&offer_id=${offer}&provider_id=${provider_id}`;
     }
 
     if (scopedToProvider) {
@@ -58,9 +58,9 @@ export default function EnrolledOfferContainer({
     dataSource = dataSource.filter(enrollment => enrollment.provider_id === provider_id);
   }
 
-  if (selectedOffer) {
+  if (offer) {
     dataSource = dataSource.filter(enrollment => {
-      return enrollment.offer_id === selectedOffer;
+      return enrollment.offer_id === offer;
     });
   }
 
@@ -68,7 +68,6 @@ export default function EnrolledOfferContainer({
     <Card className="shadow-md rounded-md">
       <EnrollmentTable
         dataSource={dataSource}
-        selectedOffer={selectedOffer}
         activateCreditAssignment={activateCreditAssignment}
       />
     </Card>
