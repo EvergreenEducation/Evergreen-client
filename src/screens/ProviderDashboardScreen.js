@@ -13,6 +13,7 @@ import ProviderStore from 'store/Provider';
 import DataFieldStore from 'store/DataField';
 import OfferStore from 'store/Offer';
 import PathwayStore from 'store/Pathway';
+import EnrollmentStore from 'store/Enrollment';
 import 'scss/antd-overrides.scss';
 import matchSorter from 'match-sorter';
 
@@ -132,6 +133,7 @@ export default function ProviderDashboardScreen(props) {
             <ProviderStore.Provider>
                 <OfferStore.Provider>
                     <PathwayStore.Provider>
+                      <EnrollmentStore.Provider>
                         <Layout
                             className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
                         >
@@ -212,6 +214,7 @@ export default function ProviderDashboardScreen(props) {
                           visible={providerSimpleModalVisibility}
                           onCancel={() => setProviderSimpleModalVisibility(false)}
                         />
+                      </EnrollmentStore.Provider>
                     </PathwayStore.Provider>
                 </OfferStore.Provider>
             </ProviderStore.Provider>

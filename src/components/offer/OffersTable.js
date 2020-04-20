@@ -19,7 +19,7 @@ export default function OffersTable({
         <Table
             dataSource={data}
             bordered
-            className="ant-table-wrapper--responsive"
+            className="ant-table-wrapper--responsive ant-table-row-selectable"
 			rowClassName={() => "antd-row"}
 			rowKey="id"
 			onRow={(record, rowIndex) => {

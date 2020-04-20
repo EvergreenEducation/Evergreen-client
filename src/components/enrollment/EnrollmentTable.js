@@ -1,10 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Popconfirm, Button, Input} from 'antd';
+import {Table, Popconfirm, Button, Input, Col} from 'antd';
 import useAxios, {configure} from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import EnrollmentStore from 'store/Enrollment';
 import 'scss/antd-overrides.scss';
 import {EnrollModal} from 'components/enrollment';
+import matchSorter from 'match-sorter';
 
 configure({
   axios: axiosInstance,
@@ -15,21 +18,24 @@ const {Column} = Table;
 export default function EnrollmentTable({
   selectedOffer,
   activateCreditAssignment,
+  dataSource = [],
 }) {
   const [modalVisibility, setModalVisibility] = useState(false);
   const [selectedEnrollment, setSelectedEnrollment] = useState(null);
+  const [ search, setSearch ] = useState({
+    searchString: '',
+    searchedColumn: '',
+  });
+  const [enrollments, setEnrollments] = useState([]);
+
   const enrollmentStore = EnrollmentStore.useContainer();
 
-  const [{data: enrollmentBody }] = useAxios(
-    `/enrollments?offer_id=${selectedOffer.id}`
-  );
-
-  const [{data: putResponseBody, error: putError}, executePut] = useAxios(
-    {
-      method: 'PUT',
-    },
-    {manual: true}
-  );
+  const [{
+    data,
+    error
+  },
+    executePut
+  ] = useAxios({ method: 'PUT' }, {manual: true});
 
   const setStatusToApprove = async enrollmentId => {
     try {
@@ -48,38 +54,100 @@ export default function EnrollmentTable({
     }
   };
 
-  useEffect(() => {
-    if (enrollmentBody) {
-      enrollmentStore.addMany(enrollmentBody);
-    }
-  }, [selectedOffer, enrollmentBody]);
-
+  
   const onCancel = e => {};
-
-  const tableData = Object.values(enrollmentStore.entities).filter(e => {
-    return e.offer_id === selectedOffer.id;
-  });
+  
+  const handleSearch = e => {
+    setSearch({
+      ...search,
+      searchString: e.target.value
+    });
+  };
+  
+  const handleData = () => {
+    const results = matchSorter(dataSource, search.searchString, { keys: ['Offer.name'] });
+    setEnrollments(results);
+  }
+  
+  const reset = () => {
+    setEnrollments(dataSource);
+  }
+  
+  useEffect(() => {
+    if (dataSource) {
+      setEnrollments(dataSource);
+    }
+  }, [selectedOffer, dataSource]);
 
   return (
     <>
       <Table
-        dataSource={tableData}
+        dataSource={enrollments}
         bordered
         className="ant-table-wrapper--responsive"
         rowClassName={() => 'antd-row'}
         rowKey="id"
       >
-      <Column
+        <Column
           className="antd-col"
-          title="Offer"
-          dataIndex=""
+          title="Offer Name"
+          dataIndex="Offer"
           key="index"
-          render={(text, record) => ({
-            children: text,
-            props: {
-              'data-title': 'Offer',
-            },
-          })}
+          render={offer => {
+            let children = 'N/A';
+            if (offer && offer.name) {
+              children = offer.name;
+            }
+            return {
+              children,
+              props: {
+                'data-title': 'Offer Name',
+              },
+            };
+          }}
+          filterIcon={filtered => (
+            <FontAwesomeIcon
+              style={{
+                color: filtered ? '#1890ff' : undefined,
+              }}
+              icon={faSearch}
+            />
+          )}
+          filterDropdown={(params) => {
+            return (
+              <Col className="p-2 rounded">
+                <Input
+                  className="mb-2 w-48 rounded"
+                  placeholder="Search offer name"
+                  onChange={handleSearch}
+                />
+                <div>
+                  <Button
+                    className="mr-2 rounded"
+                    type="primary"
+                    size="small"
+                    icon={
+                      <FontAwesomeIcon
+                        className="mr-1"
+                        icon={faSearch}
+                      />
+                    }
+                    onClick={() => handleData()}
+                  >
+                    Search
+                  </Button>
+                  <Button
+                    className="rounded"
+                    type="default"
+                    size="small"
+                    onClick={() => reset()}
+                  >
+                    Reset
+                  </Button>
+                </div>
+              </Col>
+            );
+          }}
         />
         <Column
           className="antd-col"
@@ -134,6 +202,49 @@ export default function EnrollmentTable({
               'data-title': 'Credit',
             },
           })}
+          filterIcon={filtered => (
+            <FontAwesomeIcon
+              style={{
+                color: filtered ? '#1890ff' : undefined,
+              }}
+              icon={faSearch}
+            />
+          )}
+          filterDropdown={(params) => {
+            return (
+              <Col className="p-2 rounded">
+                <Input
+                  className="mb-2 w-48 rounded"
+                  placeholder="Search credit"
+                  disabled
+                />
+                <div>
+                  <Button
+                    disabled
+                    className="mr-2 rounded"
+                    type="primary"
+                    size="small"
+                    icon={
+                      <FontAwesomeIcon
+                        className="mr-1"
+                        icon={faSearch}
+                      />
+                    }
+                  >
+                    Search
+                  </Button>
+                  <Button
+                    disabled
+                    className="rounded"
+                    type="default"
+                    size="small"
+                  >
+                    Reset
+                  </Button>
+                </div>
+              </Col>
+            );
+          }}
         />
         <Column
           className="antd-col"
