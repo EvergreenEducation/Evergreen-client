@@ -14,6 +14,8 @@ import PathwayStore from 'store/Pathway';
 import 'scss/antd-overrides.scss';
 import matchSorter from 'match-sorter';
 import EnrolledOfferContainer from 'components/enrollment/EnrolledOfferContainer';
+import EnrollmentTopbar from 'components/enrollment/EnrollmentTopbar';
+import EnrollmentStore from 'store/Enrollment';
 
 const TopicContainer = imported(() => import('components/topic/TopicContainer'));
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
@@ -39,10 +41,15 @@ const PathwayCreationContainer = imported(() => import('components/pathway/Pathw
 const { Content, Header } = Layout;
 
 export default function AdminDashboardPage(props) {
+    const { url: basePath } = props.match;
     const history = useHistory();
     const { pathname } = props.location;
     const [ modalVisibility, setModalVisibility ] = useState(false);
     const [ searchString, setSearchString ] = useState('');
+    const [
+        activateCreditAssignment,
+        setActivateCreditAssignment,
+    ] = useState(false);
     
     let HeaderContent = () => null;
     let FormContent = () => null;
@@ -106,6 +113,7 @@ export default function AdminDashboardPage(props) {
         MainContent = () => (
             <OfferContainer
                 handleTableData={handleTableDataForSearch}
+                basePath={basePath}
             />
         );
     }
@@ -143,20 +151,19 @@ export default function AdminDashboardPage(props) {
         );
     }
 
-    if (pathname === '/admin/enrolled_offers') {
-        modalTitle = 'New Offer / Opportunity';
+    if (pathname === '/admin/enrollments') {
+        modalTitle = '';
         HeaderContent = () => (
-            <SearchModalHeader
-                createHandler={openModal}
-                title="Enrolled Offers"
-                buttonTitle="OFFER"
-                handleSearch={search}
+            <EnrollmentTopbar
+                title="Enrollment"
+                setActivateCreditAssignment={setActivateCreditAssignment}
+                activateCreditAssignment={activateCreditAssignment}
             />
         );
-        FormContent = (<OfferCreationContainer closeModal={handleCancel} />);
+        FormContent = () => <div />
         MainContent = () => (
             <EnrolledOfferContainer
-                handleTableData={handleTableDataForSearch}
+                activateCreditAssignment={activateCreditAssignment}
             />
         );
     }
@@ -166,46 +173,49 @@ export default function AdminDashboardPage(props) {
             <ProviderStore.Provider>
                 <OfferStore.Provider>
                     <PathwayStore.Provider>
-                        <Layout
-                            className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
-                        >
-                            <Sidebar basePath={'/admin'} role={'admin'}/>
-                            <Col className="w-full">
-                                <Header className="px-6 bg-white h-12 flex items-center">
-                                    <Col span={14}>
-                                        <HeaderContent />
-                                    </Col>
-                                    <Col span={10} className="flex justify-end">
-                                        <Button type="link">
-                                        <Tooltip title="Sign out">
-                                            <Link to="/auth/logout">
-                                                <FontAwesomeIcon
-                                                    className="text-black"
-                                                    icon={faSignOutAlt}
-                                                />
-                                            </Link>
-                                        </Tooltip>
-                                        </Button>
-                                    </Col>
-                                </Header>
-                                <Content className="p-6 h-min-full">
-                                    <MainContent />
-                                </Content>
-                            </Col>
-                        </Layout>
-                        <Modal
-                            className="custom-modal"
-                            title={modalTitle}
-                            visible={modalVisibility}
-                            onCancel={handleCancel}
-                            style={{ borderRadius: 5 }}
-                            bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
-                            width={998}
-                            footer={true}
-                            forceRender={true}
-                        >
-                            { FormContent }
-                        </Modal>
+                        <EnrollmentStore.Provider>
+
+                            <Layout
+                                className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
+                            >
+                                <Sidebar basePath={'/admin'} role={'admin'}/>
+                                <Col className="w-full">
+                                    <Header className="px-6 bg-white h-12 flex items-center">
+                                        <Col span={14}>
+                                            <HeaderContent />
+                                        </Col>
+                                        <Col span={10} className="flex justify-end">
+                                            <Button type="link">
+                                            <Tooltip title="Sign out">
+                                                <Link to="/auth/logout">
+                                                    <FontAwesomeIcon
+                                                        className="text-black"
+                                                        icon={faSignOutAlt}
+                                                    />
+                                                </Link>
+                                            </Tooltip>
+                                            </Button>
+                                        </Col>
+                                    </Header>
+                                    <Content className="p-6 h-min-full">
+                                        <MainContent />
+                                    </Content>
+                                </Col>
+                            </Layout>
+                            <Modal
+                                className="custom-modal"
+                                title={modalTitle}
+                                visible={modalVisibility}
+                                onCancel={handleCancel}
+                                style={{ borderRadius: 5 }}
+                                bodyStyle={{ backgroundColor: "#f0f2f5", padding: 0 }}
+                                width={998}
+                                footer={true}
+                                forceRender={true}
+                            >
+                                { FormContent }
+                            </Modal>
+                        </EnrollmentStore.Provider>
                     </PathwayStore.Provider>
                 </OfferStore.Provider>
             </ProviderStore.Provider>

@@ -5,18 +5,33 @@ import 'scss/antd-overrides.scss';
 
 const { Column } = Table;
 
-function OffersTable(props) {
-	const { data, providers, datafields, handleUpdateModal } = props;
-	
+export default function OfferTable({
+	data,
+	providers,
+	datafields,
+	handleUpdateModal,
+	handleRowSelection,
+	viewEnrollments
+}) {
 	useEffect(() => {}, [data]);
 
     return (
         <Table
             dataSource={data}
             bordered
-            className="ant-table-wrapper--responsive"
+            className="ant-table-wrapper--responsive ant-table-row-selectable"
 			rowClassName={() => "antd-row"}
 			rowKey="id"
+			onRow={(record, rowIndex) => {
+				return {
+					onClick: event => {
+						if (event.target.type === "button") {
+							return;
+						}
+						handleRowSelection(record, rowIndex);
+					}
+				}
+			}}
         >
             <Column
 				className="antd-col"
@@ -133,25 +148,33 @@ function OffersTable(props) {
 			/>
             <Column
 				className="antd-col"
-				title=""
-				key="update"
+				title="Actions"
+				key="index"
 				render={(text, record) => {
 					return {
 						children: (
-							<Button
-								type="link"
-								onClick={() => handleUpdateModal(record)}
-							>
-								Update
-							</Button>
+							<>
+								<Button
+									type="default"
+									className="mr-2 rounded"
+									onClick={() => handleUpdateModal(record)}
+								>
+									Update
+								</Button>
+								<Button
+									className="rounded"
+									type="default"
+									onClick={() => viewEnrollments(record)}
+								>
+									View enrollments
+								</Button>
+							</>
 						),
 						props: {
-							"data-title": "",
+							"data-title": "Actions",
 						}
 				}}}
 			/>
         </Table>
     );
 }
-
-export default OffersTable;

@@ -13,12 +13,14 @@ import ProviderStore from 'store/Provider';
 import DataFieldStore from 'store/DataField';
 import OfferStore from 'store/Offer';
 import PathwayStore from 'store/Pathway';
+import EnrollmentStore from 'store/Enrollment';
 import 'scss/antd-overrides.scss';
 import matchSorter from 'match-sorter';
 
 import ProviderUpdateContainer from 'components/provider/ProviderUpdateContainer';
 import ProviderSimpleUpdateContainer from 'components/provider/ProviderSimpleUpdateContainer';
 import EnrolledOfferContainer from 'components/enrollment/EnrolledOfferContainer';
+import EnrollmentTopbar from 'components/enrollment/EnrollmentTopbar';
 
 const TopicContainer = imported(() => import('components/topic/TopicContainer'));
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
@@ -68,13 +70,13 @@ const RouteConfig = {
       </>
     }
   },
-  'enrolled_offers': {
-    Header: SearchModalHeader,
-    Form: OfferCreationContainer,
+  'enrollments': {
+    Header: EnrollmentTopbar,
+    Form: () => <div />,
     Content: EnrolledOfferContainer,
-    title: 'Enrolled Offers',
-    modalTitle: 'New Offer / Opportunity',
-    button_title: 'OFFER'
+    title: 'Enrollment',
+    modalTitle: null,
+    button_title: null
   },
 }
 
@@ -85,6 +87,11 @@ export default function ProviderDashboardScreen(props) {
 	const [ searchString, setSearchString ] = useState('');
 	const [ providerModalVisibility, setProviderModalVisibility ] = useState(false);
 	const [ providerSimpleModalVisibility, setProviderSimpleModalVisibility ] = useState(false);
+
+  const [
+    activateCreditAssignment,
+    setActivateCreditAssignment,
+  ] = useState(false);
 
   const myProviderId = AuthService.currentSession.provider_id;
 
@@ -132,6 +139,7 @@ export default function ProviderDashboardScreen(props) {
             <ProviderStore.Provider>
                 <OfferStore.Provider>
                     <PathwayStore.Provider>
+                      <EnrollmentStore.Provider>
                         <Layout
                             className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto"
                         >
@@ -144,6 +152,8 @@ export default function ProviderDashboardScreen(props) {
                                         title={Component.title.toUpperCase()}
                                         buttonTitle={Component.button_title}
                                         handleSearch={search}
+                                        setActivateCreditAssignment={setActivateCreditAssignment}
+                                        activateCreditAssignment={activateCreditAssignment}
                                       />
                                     </Col>
                                     <Col span={10} className="flex justify-end">
@@ -177,6 +187,8 @@ export default function ProviderDashboardScreen(props) {
                                     handleTableData={handleTableDataForSearch}
                                     scopedToProvider={true}
                                     provider_id={myProviderId}
+                                    basePath={basePath}
+                                    activateCreditAssignment={activateCreditAssignment}
                                   /> 
                                 </Content>
                             </Col>
@@ -211,6 +223,7 @@ export default function ProviderDashboardScreen(props) {
                           visible={providerSimpleModalVisibility}
                           onCancel={() => setProviderSimpleModalVisibility(false)}
                         />
+                      </EnrollmentStore.Provider>
                     </PathwayStore.Provider>
                 </OfferStore.Provider>
             </ProviderStore.Provider>
