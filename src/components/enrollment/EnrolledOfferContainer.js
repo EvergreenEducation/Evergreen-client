@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import {Card, Button, Row} from 'antd';
+import React, { useEffect } from 'react';
+import { Card } from 'antd';
 import { useLocation } from 'react-router-dom';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import useAxios, {configure} from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 
@@ -15,13 +15,10 @@ configure({
 export default function EnrolledOfferContainer({
   scopedToProvider = false,
   provider_id,
+  activateCreditAssignment
 }) {
   const history = useHistory();
   const location = useLocation();
-  const [
-    activateCreditAssignment,
-    setActivateCreditAssignment,
-  ] = useState(false);
   const enrollmentStore = EnrollmentStore.useContainer();
   
   const query = new URLSearchParams(location.search);
@@ -61,7 +58,7 @@ export default function EnrolledOfferContainer({
     dataSource = dataSource.filter(enrollment => enrollment.provider_id === provider_id);
   }
 
-  if (scopedToProvider && selectedOffer) {
+  if (selectedOffer) {
     dataSource = dataSource.filter(enrollment => {
       return enrollment.offer_id === selectedOffer;
     });
@@ -69,17 +66,6 @@ export default function EnrolledOfferContainer({
 
   return (
     <Card className="shadow-md rounded-md">
-      <Row className="mb-2">
-        <Button
-          className="rounded"
-          type="default"
-          onClick={() =>
-            setActivateCreditAssignment(!activateCreditAssignment)
-          }
-        >
-          {activateCreditAssignment ? 'Lock Credit' : 'Assign Credit'}
-        </Button>
-      </Row>
       <EnrollmentTable
         dataSource={dataSource}
         selectedOffer={selectedOffer}

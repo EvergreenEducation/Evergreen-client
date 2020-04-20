@@ -20,6 +20,7 @@ import matchSorter from 'match-sorter';
 import ProviderUpdateContainer from 'components/provider/ProviderUpdateContainer';
 import ProviderSimpleUpdateContainer from 'components/provider/ProviderSimpleUpdateContainer';
 import EnrolledOfferContainer from 'components/enrollment/EnrolledOfferContainer';
+import EnrollmentTopbar from 'components/enrollment/EnrollmentTopbar';
 
 const TopicContainer = imported(() => import('components/topic/TopicContainer'));
 const ProviderTypeContainer = imported(() => import('components/provider/ProviderTypeContainer'));
@@ -70,12 +71,12 @@ const RouteConfig = {
     }
   },
   'enrolled_offers': {
-    Header: SearchModalHeader,
-    Form: OfferCreationContainer,
+    Header: EnrollmentTopbar,
+    Form: () => <div />,
     Content: EnrolledOfferContainer,
-    title: 'Enrolled Offers',
-    modalTitle: 'New Offer / Opportunity',
-    button_title: 'OFFER'
+    title: 'Enrollment',
+    modalTitle: null,
+    button_title: null
   },
 }
 
@@ -86,6 +87,11 @@ export default function ProviderDashboardScreen(props) {
 	const [ searchString, setSearchString ] = useState('');
 	const [ providerModalVisibility, setProviderModalVisibility ] = useState(false);
 	const [ providerSimpleModalVisibility, setProviderSimpleModalVisibility ] = useState(false);
+
+  const [
+    activateCreditAssignment,
+    setActivateCreditAssignment,
+  ] = useState(false);
 
   const myProviderId = AuthService.currentSession.provider_id;
 
@@ -146,6 +152,8 @@ export default function ProviderDashboardScreen(props) {
                                         title={Component.title.toUpperCase()}
                                         buttonTitle={Component.button_title}
                                         handleSearch={search}
+                                        setActivateCreditAssignment={setActivateCreditAssignment}
+                                        activateCreditAssignment={activateCreditAssignment}
                                       />
                                     </Col>
                                     <Col span={10} className="flex justify-end">
@@ -180,6 +188,7 @@ export default function ProviderDashboardScreen(props) {
                                     scopedToProvider={true}
                                     provider_id={myProviderId}
                                     basePath={basePath}
+                                    activateCreditAssignment={activateCreditAssignment}
                                   /> 
                                 </Content>
                             </Col>

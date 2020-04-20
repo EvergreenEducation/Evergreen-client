@@ -129,6 +129,13 @@ $firstBreak: 1060px;
         text-align: center;
         align-items: center;
     }
+    .ant-table-filter-trigger.ant-dropdown-trigger {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+    }
     .ant-table-thead {
         .antd-col {
             @media only screen and (max-width: $firstBreak) {
