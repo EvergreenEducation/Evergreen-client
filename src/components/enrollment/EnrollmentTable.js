@@ -1,5 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Popconfirm, Button, Input, Col} from 'antd';
+import {
+  Table, Popconfirm, Button,
+  Input, Col, Select, Form
+} from 'antd';
 import useAxios, {configure} from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -8,24 +11,24 @@ import EnrollmentStore from 'store/Enrollment';
 import 'scss/antd-overrides.scss';
 import {EnrollModal} from 'components/enrollment';
 import matchSorter from 'match-sorter';
+import { useForm } from 'antd/lib/form/util';
+import 'scss/antd-overrides.scss';
 
 configure({
   axios: axiosInstance,
 });
 
-const {Column} = Table;
+const { Column } = Table;
+const { Option } = Select;
 
 export default function EnrollmentTable({
   activateCreditAssignment,
   dataSource = [],
 }) {
-  const [modalVisibility, setModalVisibility] = useState(false);
+  const [enrollModalOpen, setEnrollModalOpen] = useState(false);
   const [selectedEnrollment, setSelectedEnrollment] = useState(null);
-  const [ search, setSearch ] = useState({
-    searchString: '',
-    searchedColumn: '',
-  });
   const [enrollments, setEnrollments] = useState([]);
+  const [ form ] = useForm();
 
   const enrollmentStore = EnrollmentStore.useContainer();
 
@@ -33,12 +36,12 @@ export default function EnrollmentTable({
     data,
     error
   },
-    executePut
+    updateEnrollment
   ] = useAxios({ method: 'PUT' }, {manual: true});
 
   const setStatusToApprove = async enrollmentId => {
     try {
-      const response = await executePut({
+      const response = await updateEnrollment({
         url: `/enrollments/${enrollmentId}`,
         data: {
           status: 'Approved',
@@ -53,20 +56,32 @@ export default function EnrollmentTable({
     }
   };
   
-  const handleSearch = e => {
-    setSearch({
-      ...search,
-      searchString: e.target.value
-    });
-  };
-  
-  const handleData = () => {
-    const results = matchSorter(dataSource, search.searchString, { keys: ['Offer.name'] });
+  const handleData = async () => {
+    const value = await form.validateFields(['offer_name']);
+    let offerName = '';
+    if (value) {
+      offerName = value.offer_name;
+    }
+    const results = matchSorter(dataSource, offerName, { keys: ['Offer.name'] });
     setEnrollments(results);
   }
   
   const reset = () => {
+    form.resetFields(['offer_name']);
     setEnrollments(dataSource);
+  }
+
+  const offerNames = [];
+
+  let name = null;
+  for (let i = 0; i < dataSource.length; i++) {
+    if (!dataSource[i]) {
+      break;
+    }
+    name = dataSource[i].Offer.name;
+    if (!offerNames.includes(name)) {
+      offerNames.push(name);
+    }
   }
   
   useEffect(() => {
@@ -111,37 +126,61 @@ export default function EnrollmentTable({
           )}
           filterDropdown={(params) => {
             return (
-              <Col className="p-2 rounded">
-                <Input
-                  className="mb-2 w-48 rounded"
-                  placeholder="Search offer name"
-                  onChange={handleSearch}
-                />
-                <div>
-                  <Button
-                    className="mr-2 rounded"
-                    type="primary"
-                    size="small"
-                    icon={
-                      <FontAwesomeIcon
-                        className="mr-1"
-                        icon={faSearch}
-                      />
-                    }
-                    onClick={handleData}
+              <Form
+                form={form}
+                initialValues={{
+                  offer_name: offerNames[0] || null
+                }}
+              >
+                <Col className="p-2 rounded">
+                  <Form.Item
+                    className="mb-2"
+                    name="offer_name"
                   >
-                    Search
-                  </Button>
-                  <Button
-                    className="rounded"
-                    type="default"
-                    size="small"
-                    onClick={() => reset()}
-                  >
-                    Reset
-                  </Button>
-                </div>
-              </Col>
+                    <Select
+                      className="custom-select w-full"
+                      showSearch
+                    >
+                      {
+                        offerNames.map((name, index) => {
+                          return (
+                            <Option
+                              key={index.toString()}
+                              value={name}
+                            >
+                              {name}
+                            </Option>
+                          );
+                        })
+                      }
+                    </Select>
+                  </Form.Item>
+                  <div>
+                    <Button
+                      className="mr-2 rounded"
+                      type="primary"
+                      size="small"
+                      icon={
+                        <FontAwesomeIcon
+                          className="mr-1"
+                          icon={faSearch}
+                        />
+                      }
+                      onClick={handleData}
+                    >
+                      Search
+                    </Button>
+                    <Button
+                      className="rounded"
+                      type="default"
+                      size="small"
+                      onClick={() => reset()}
+                    >
+                      Reset
+                    </Button>
+                  </div>
+                </Col>
+              </Form>
             );
           }}
         />
@@ -159,7 +198,7 @@ export default function EnrollmentTable({
                 type="primary"
                 onClick={() => {
                   setSelectedEnrollment(record);
-                  setModalVisibility(true);
+                  setEnrollModalOpen(true);
                 }}
               >
                 Enroll Student
@@ -294,8 +333,8 @@ export default function EnrollmentTable({
       </Table>
       <EnrollModal
         enrollment={selectedEnrollment}
-        visible={modalVisibility}
-        onCancel={() => setModalVisibility(false)}
+        visible={enrollModalOpen}
+        onCancel={() => setEnrollModalOpen(false)}
       />
     </>
   );

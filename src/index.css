@@ -76,3 +76,7 @@ code {
 .rounded-xl {
   border-radius: 0.75rem;
 }
+
+.ant-table-filter-dropdown {
+  border-radius: 0.25rem;
+}
