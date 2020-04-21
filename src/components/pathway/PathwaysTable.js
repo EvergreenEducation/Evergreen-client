@@ -6,7 +6,7 @@ import 'scss/antd-overrides.scss';
 const { Column } = Table;
 
 function PathwaysTable(props) {
-    const { data, handleUpdateModal, offers } = props;
+    const { data, handleUpdateModal } = props;
     return (
         <Table
             dataSource={data}

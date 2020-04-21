@@ -3,7 +3,6 @@ import {
   Table, Popconfirm, Button,
   Input, Col, Select, Form
 } from 'antd';
-import useAxios, {configure} from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -13,18 +12,27 @@ import {EnrollModal} from 'components/enrollment';
 import matchSorter from 'match-sorter';
 import { useForm } from 'antd/lib/form/util';
 import 'scss/antd-overrides.scss';
-
-configure({
-  axios: axiosInstance,
-});
-
 const { Column } = Table;
 const { Option } = Select;
 
 export default function EnrollmentTable({
   activateCreditAssignment,
   dataSource = [],
+  offer,
 }) {
+
+  let filteredDataSource = dataSource;
+  let presetOfferName = null;
+
+  if (offer) {
+    filteredDataSource = dataSource.filter(enrollment => {
+      if (enrollment.offer_id === offer && presetOfferName !== enrollment.Offer.name) {
+        presetOfferName = enrollment.Offer.name;
+      }
+      return enrollment.offer_id === offer;
+    });
+  }
+
   const [enrollModalOpen, setEnrollModalOpen] = useState(false);
   const [selectedEnrollment, setSelectedEnrollment] = useState(null);
   const [enrollments, setEnrollments] = useState([]);
@@ -32,21 +40,15 @@ export default function EnrollmentTable({
 
   const enrollmentStore = EnrollmentStore.useContainer();
 
-  const [{
-    data,
-    error
-  },
-    updateEnrollment
-  ] = useAxios({ method: 'PUT' }, {manual: true});
+  const updateEnrollment = async (enrollment) => {
+    return axiosInstance.put(`/enrollments/${enrollment.id}?scope=with_offers`, {
+      status: 'Approved',
+    });
+  }
 
-  const setStatusToApprove = async enrollmentId => {
+  const setStatusToApprove = async enrollment => {
     try {
-      const response = await updateEnrollment({
-        url: `/enrollments/${enrollmentId}`,
-        data: {
-          status: 'Approved',
-        },
-      });
+      const response = await updateEnrollment(enrollment);
 
       if (response.status === 200) {
         enrollmentStore.updateOne(response.data);
@@ -67,7 +69,9 @@ export default function EnrollmentTable({
   }
   
   const reset = () => {
-    form.resetFields(['offer_name']);
+    form.setFieldsValue({
+      offer_name: null,
+    });
     setEnrollments(dataSource);
   }
 
@@ -75,7 +79,7 @@ export default function EnrollmentTable({
 
   let name = null;
   for (let i = 0; i < dataSource.length; i++) {
-    if (!dataSource[i]) {
+    if (!dataSource[i] || !dataSource[i].Offer) {
       break;
     }
     name = dataSource[i].Offer.name;
@@ -86,7 +90,7 @@ export default function EnrollmentTable({
   
   useEffect(() => {
     if (dataSource) {
-      setEnrollments(dataSource);
+      setEnrollments(filteredDataSource);
     }
   }, [dataSource]);
 
@@ -129,7 +133,7 @@ export default function EnrollmentTable({
               <Form
                 form={form}
                 initialValues={{
-                  offer_name: offerNames[0] || null
+                  offer_name: presetOfferName
                 }}
               >
                 <Col className="p-2 rounded">
@@ -138,7 +142,8 @@ export default function EnrollmentTable({
                     name="offer_name"
                   >
                     <Select
-                      className="custom-select w-full"
+                      className="custom-select"
+                      style={{ minWidth: "12rem" }}
                       showSearch
                     >
                       {
@@ -160,12 +165,6 @@ export default function EnrollmentTable({
                       className="mr-2 rounded"
                       type="primary"
                       size="small"
-                      icon={
-                        <FontAwesomeIcon
-                          className="mr-1"
-                          icon={faSearch}
-                        />
-                      }
                       onClick={handleData}
                     >
                       Search
@@ -174,7 +173,7 @@ export default function EnrollmentTable({
                       className="rounded"
                       type="default"
                       size="small"
-                      onClick={() => reset()}
+                      onClick={reset}
                     >
                       Reset
                     </Button>
@@ -303,7 +302,7 @@ export default function EnrollmentTable({
                 <Popconfirm
                   className="cursor-pointer"
                   title="Do you want to give this student their credit?"
-                  onConfirm={() => setStatusToApprove(enrollment.id)}
+                  onConfirm={() => setStatusToApprove(enrollment)}
                   okText="Yes"
                   cancelText="No"
                   disabled={enrollment.status === 'Approved' ? true : false}

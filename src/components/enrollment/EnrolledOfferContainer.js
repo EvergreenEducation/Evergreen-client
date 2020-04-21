@@ -26,9 +26,6 @@ export default function EnrolledOfferContainer({
 
   const getEnrollmentsUrl = () => {
     const url = '/enrollments?scope=with_offers';
-    if (scopedToProvider && offer) {
-      return `${url}&offer_id=${offer}&provider_id=${provider_id}`;
-    }
 
     if (scopedToProvider) {
       return `${url}&provider_id=${provider_id}`;
@@ -58,17 +55,12 @@ export default function EnrolledOfferContainer({
     dataSource = dataSource.filter(enrollment => enrollment.provider_id === provider_id);
   }
 
-  if (offer) {
-    dataSource = dataSource.filter(enrollment => {
-      return enrollment.offer_id === offer;
-    });
-  }
-
   return (
     <Card className="shadow-md rounded-md">
       <EnrollmentTable
         dataSource={dataSource}
         activateCreditAssignment={activateCreditAssignment}
+        offer={offer}
       />
     </Card>
   );
