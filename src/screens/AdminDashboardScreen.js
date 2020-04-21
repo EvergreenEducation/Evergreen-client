@@ -160,7 +160,7 @@ export default function AdminDashboardPage(props) {
                 activateCreditAssignment={activateCreditAssignment}
             />
         );
-        FormContent = () => <div />
+        FormContent = null;
         MainContent = () => (
             <EnrolledOfferContainer
                 activateCreditAssignment={activateCreditAssignment}

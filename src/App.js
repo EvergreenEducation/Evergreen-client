@@ -56,15 +56,27 @@ class App extends Component {
                 title="500"
                 subTitle={"Either our server's asleep or something went wrong with it. Check back again later."}
                 extra={
-                  <Button
-                    className="rounded"
-                    size="small"
-                    type="primary"
-                  >
-                    <Link to="/auth">
-                      Return to login
-                    </Link>
-                  </Button>
+                  <>
+                    <Button
+                      className="rounded"
+                      size="small"
+                      type="primary"
+                    >
+                      <Link to="/">
+                        Return to the homepage
+                      </Link>
+                    </Button>
+                    <Button
+                      className="rounded mr-2"
+                      size="small"
+                      type="primary"
+                      onClick={() => {
+                        window.location.replace(`${process.env.REACT_APP_API_URL}/login`)
+                      }}
+                    >
+                        Return to login
+                    </Button>
+                  </>
                 }
               />
             )}

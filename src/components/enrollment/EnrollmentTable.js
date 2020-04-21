@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Popconfirm, Button, Input, Col} from 'antd';
-import useAxios, {configure} from 'axios-hooks';
+import {
+  Table, Popconfirm, Button,
+  Input, Col, Select, Form
+} from 'antd';
 import axiosInstance from 'services/AxiosInstance';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -8,42 +10,45 @@ import EnrollmentStore from 'store/Enrollment';
 import 'scss/antd-overrides.scss';
 import {EnrollModal} from 'components/enrollment';
 import matchSorter from 'match-sorter';
-
-configure({
-  axios: axiosInstance,
-});
-
-const {Column} = Table;
+import { useForm } from 'antd/lib/form/util';
+import 'scss/antd-overrides.scss';
+const { Column } = Table;
+const { Option } = Select;
 
 export default function EnrollmentTable({
   activateCreditAssignment,
   dataSource = [],
+  offer,
 }) {
-  const [modalVisibility, setModalVisibility] = useState(false);
+
+  let filteredDataSource = dataSource;
+  let presetOfferName = null;
+
+  if (offer) {
+    filteredDataSource = dataSource.filter(enrollment => {
+      if (enrollment.offer_id === offer && presetOfferName !== enrollment.Offer.name) {
+        presetOfferName = enrollment.Offer.name;
+      }
+      return enrollment.offer_id === offer;
+    });
+  }
+
+  const [enrollModalOpen, setEnrollModalOpen] = useState(false);
   const [selectedEnrollment, setSelectedEnrollment] = useState(null);
-  const [ search, setSearch ] = useState({
-    searchString: '',
-    searchedColumn: '',
-  });
   const [enrollments, setEnrollments] = useState([]);
+  const [ form ] = useForm();
 
   const enrollmentStore = EnrollmentStore.useContainer();
 
-  const [{
-    data,
-    error
-  },
-    executePut
-  ] = useAxios({ method: 'PUT' }, {manual: true});
+  const updateEnrollment = async (enrollment) => {
+    return axiosInstance.put(`/enrollments/${enrollment.id}?scope=with_offers`, {
+      status: 'Approved',
+    });
+  }
 
-  const setStatusToApprove = async enrollmentId => {
+  const setStatusToApprove = async enrollment => {
     try {
-      const response = await executePut({
-        url: `/enrollments/${enrollmentId}`,
-        data: {
-          status: 'Approved',
-        },
-      });
+      const response = await updateEnrollment(enrollment);
 
       if (response.status === 200) {
         enrollmentStore.updateOne(response.data);
@@ -53,25 +58,39 @@ export default function EnrollmentTable({
     }
   };
   
-  const handleSearch = e => {
-    setSearch({
-      ...search,
-      searchString: e.target.value
-    });
-  };
-  
-  const handleData = () => {
-    const results = matchSorter(dataSource, search.searchString, { keys: ['Offer.name'] });
+  const handleData = async () => {
+    const value = await form.validateFields(['offer_name']);
+    let offerName = '';
+    if (value) {
+      offerName = value.offer_name;
+    }
+    const results = matchSorter(dataSource, offerName, { keys: ['Offer.name'] });
     setEnrollments(results);
   }
   
   const reset = () => {
+    form.setFieldsValue({
+      offer_name: null,
+    });
     setEnrollments(dataSource);
+  }
+
+  const offerNames = [];
+
+  let name = null;
+  for (let i = 0; i < dataSource.length; i++) {
+    if (!dataSource[i] || !dataSource[i].Offer) {
+      break;
+    }
+    name = dataSource[i].Offer.name;
+    if (!offerNames.includes(name)) {
+      offerNames.push(name);
+    }
   }
   
   useEffect(() => {
     if (dataSource) {
-      setEnrollments(dataSource);
+      setEnrollments(filteredDataSource);
     }
   }, [dataSource]);
 
@@ -111,37 +130,56 @@ export default function EnrollmentTable({
           )}
           filterDropdown={(params) => {
             return (
-              <Col className="p-2 rounded">
-                <Input
-                  className="mb-2 w-48 rounded"
-                  placeholder="Search offer name"
-                  onChange={handleSearch}
-                />
-                <div>
-                  <Button
-                    className="mr-2 rounded"
-                    type="primary"
-                    size="small"
-                    icon={
-                      <FontAwesomeIcon
-                        className="mr-1"
-                        icon={faSearch}
-                      />
-                    }
-                    onClick={handleData}
+              <Form
+                form={form}
+                initialValues={{
+                  offer_name: presetOfferName
+                }}
+              >
+                <Col className="p-2 rounded">
+                  <Form.Item
+                    className="mb-2"
+                    name="offer_name"
                   >
-                    Search
-                  </Button>
-                  <Button
-                    className="rounded"
-                    type="default"
-                    size="small"
-                    onClick={() => reset()}
-                  >
-                    Reset
-                  </Button>
-                </div>
-              </Col>
+                    <Select
+                      className="custom-select"
+                      style={{ minWidth: "12rem" }}
+                      showSearch
+                    >
+                      {
+                        offerNames.map((name, index) => {
+                          return (
+                            <Option
+                              key={index.toString()}
+                              value={name}
+                            >
+                              {name}
+                            </Option>
+                          );
+                        })
+                      }
+                    </Select>
+                  </Form.Item>
+                  <div>
+                    <Button
+                      className="mr-2 rounded"
+                      type="primary"
+                      size="small"
+                      onClick={handleData}
+                    >
+                      Search
+                    </Button>
+                    <Button
+                      className="rounded"
+                      type="default"
+                      size="small"
+                      onClick={reset}
+                    >
+                      Reset
+                    </Button>
+                  </div>
+                </Col>
+              </Form>
             );
           }}
         />
@@ -159,7 +197,7 @@ export default function EnrollmentTable({
                 type="primary"
                 onClick={() => {
                   setSelectedEnrollment(record);
-                  setModalVisibility(true);
+                  setEnrollModalOpen(true);
                 }}
               >
                 Enroll Student
@@ -264,7 +302,7 @@ export default function EnrollmentTable({
                 <Popconfirm
                   className="cursor-pointer"
                   title="Do you want to give this student their credit?"
-                  onConfirm={() => setStatusToApprove(enrollment.id)}
+                  onConfirm={() => setStatusToApprove(enrollment)}
                   okText="Yes"
                   cancelText="No"
                   disabled={enrollment.status === 'Approved' ? true : false}
@@ -294,8 +332,8 @@ export default function EnrollmentTable({
       </Table>
       <EnrollModal
         enrollment={selectedEnrollment}
-        visible={modalVisibility}
-        onCancel={() => setModalVisibility(false)}
+        visible={enrollModalOpen}
+        onCancel={() => setEnrollModalOpen(false)}
       />
     </>
   );
