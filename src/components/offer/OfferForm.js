@@ -1,5 +1,9 @@
-import React, { useEffect } from 'react';
-import { Layout, Form, Input, Row, Col, Select, Button, DatePicker } from 'antd';
+import React from 'react';
+import {
+    Layout, Form, Input,
+    Row, Col, Select, Button,
+    DatePicker, InputNumber
+} from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
 import { groupBy, property, isNil, remove } from 'lodash';
 import 'scss/antd-overrides.scss';
@@ -31,8 +35,6 @@ export default function OfferForm({
 
     datafields = Object.values(datafields);
 
-    useEffect(() => {}, [file]);
-
     const providersArr = Object.values(providers).filter(p => {
         if (scopedToProvider) {
             return (p.id === providerId) && !isNil(p.name);
@@ -47,18 +49,6 @@ export default function OfferForm({
         cost_unit = [],
     } = grouped;
 
-    let offerCategoryOptions = null;
-
-    if (!isNil(offer_category) && offer_category.length) {
-        offerCategoryOptions = preloadOptions(offer_category);
-    }
-
-    let topicOptions = null;
-
-    if (!isNil(topic) && topic.length) {
-        topicOptions = preloadOptions(topic);
-    }
-
     let offerOptions = null;
 
     if (!isNil(offers) && offers.length) {
@@ -66,12 +56,6 @@ export default function OfferForm({
             return !(o.id === offer.id)
         });
         offerOptions = preloadOptions(updatedOffers);
-    }
-
-    let costUnitOptions = null;
-
-    if (!isNil(cost_unit) && cost_unit.length) {
-        costUnitOptions = preloadOptions(cost_unit);
     }
 
     return (
@@ -140,7 +124,11 @@ export default function OfferForm({
                             rules={[{ required: true, message: "Please select a generic offer" }]}
                         >
                             <Select className="rounded custom-select" name="category">
-                                {offerCategoryOptions}
+                                {
+                                    !isNil(offer_category) && offer_category.length
+                                        ? preloadOptions(offer_category)
+                                        : null
+                                }
                             </Select>
                         </Form.Item>
                     </Col>
@@ -249,7 +237,11 @@ export default function OfferForm({
                         className="w-full custom-select"
                         mode="multiple"
                     >
-                        {topicOptions}
+                        {
+                            !isNil(topic) && topic.length
+                                ? preloadOptions(topic)
+                                : null
+                        }
                     </Select>
                 </Form.Item>
             </Row>
@@ -289,16 +281,9 @@ export default function OfferForm({
                     >
                         <Select className="rounded custom-select">
                             {
-                                part_of_day_unit.map((part_of_day, index) => {
-                                    return (
-                                        <Option
-                                            key={index.toString()}
-                                            value={part_of_day.id}
-                                        >
-                                            {part_of_day.name}
-                                        </Option>
-                                    );
-                                })
+                                !isNil(part_of_day_unit) && part_of_day_unit.length
+                                    ? preloadOptions(part_of_day_unit)
+                                    : null
                             }
                         </Select>
                     </Form.Item>
@@ -316,10 +301,7 @@ export default function OfferForm({
                         className="mb-0 inherit"
                         rules={[{ required: true, message: "Please fill in this field" }]}
                     >
-                        <Input
-                            className="rounded"
-                            type="number"
-                        />
+                        <InputNumber className="rounded w-full" />
                     </Form.Item>
                 </Col>
                 <Col
@@ -337,16 +319,9 @@ export default function OfferForm({
                     >
                         <Select className="rounded custom-select">
                             {
-                                frequency_unit.map((f, index) => {
-                                    return (
-                                        <Option
-                                            key={index.toString()}
-                                            value={f.id}
-                                        >
-                                            {f.name}
-                                        </Option>
-                                    );
-                                })
+                                !isNil(frequency_unit) && frequency_unit.length
+                                    ? preloadOptions(frequency_unit)
+                                    : null
                             }
                         </Select>
                     </Form.Item>
@@ -366,10 +341,7 @@ export default function OfferForm({
                         className="mb-0 inherit"
                         rules={[{ required: true, message: "Please fill in this field" }]}
                     >
-                        <Input
-                            className="rounded"
-                            type="number"
-                        />
+                        <InputNumber className="rounded w-full" />
                     </Form.Item>
                 </Col>
                 <Col
@@ -385,19 +357,11 @@ export default function OfferForm({
                         className="mb-0 inherit"
                     >
                         <Select className="rounded custom-select">
-                            {/* {
-                                cost_unit.map((unit, index) => {
-                                    return (
-                                        <Option
-                                            key={index.toString()}
-                                            value={unit.id}
-                                        >
-                                            {unit.name}
-                                        </Option>
-                                    );
-                                })
-                            } */}
-                            {costUnitOptions}
+                            {
+                                !isNil(cost_unit) && cost_unit.length
+                                    ? preloadOptions(cost_unit)
+                                    : null
+                            }
                         </Select>
                     </Form.Item>
                 </Col>
@@ -414,10 +378,7 @@ export default function OfferForm({
                         className="mb-0 inherit"
                         rules={[{ required: true, message: "Please fill in this field" }]}
                     >
-                        <Input
-                            className="rounded"
-                            type="number"
-                        />
+                        <InputNumber className="rounded w-full" />
                     </Form.Item>
                 </Col>
                 <Col
@@ -435,16 +396,9 @@ export default function OfferForm({
                     >
                         <Select className="rounded custom-select">
                             {
-                                credit_unit.map((credit, index) => {
-                                    return (
-                                        <Option
-                                            key={index.toString()}
-                                            value={credit.id}
-                                        >
-                                            {credit.name}
-                                        </Option>
-                                    );
-                                })
+                                !isNil(credit_unit) && credit_unit.length
+                                    ? preloadOptions(credit_unit)
+                                    : null
                             }
                         </Select>
                     </Form.Item>
@@ -464,10 +418,7 @@ export default function OfferForm({
                         className="mb-0 inherit"
                         rules={[{ required: true, message: "Please fill in this field" }]}
                     >
-                        <Input
-                            className="rounded"
-                            type="number"
-                        />
+                        <InputNumber className="rounded w-full" />
                     </Form.Item>
                 </Col>
                 <Col
@@ -485,16 +436,9 @@ export default function OfferForm({
                     >
                         <Select className="rounded custom-select">
                             {
-                                payment_unit.map((unit, index) => {
-                                    return (
-                                        <Option
-                                            key={index.toString()}
-                                            value={unit.id}
-                                        >
-                                            {unit.name}
-                                        </Option>
-                                    );
-                                })
+                                !isNil(payment_unit) && payment_unit.length
+                                    ? preloadOptions(payment_unit)
+                                    : null
                             }
                         </Select>
                     </Form.Item>
@@ -512,10 +456,7 @@ export default function OfferForm({
                         className="mb-0 inherit"
                         rules={[{ required: true, message: "Please fill in this field" }]}
                     >
-                        <Input
-                            className="rounded"
-                            type="number"
-                        />
+                        <InputNumber className="rounded w-full" />
                     </Form.Item>
                 </Col>
                 <Col
@@ -533,16 +474,9 @@ export default function OfferForm({
                     >
                         <Select className="rounded custom-select">
                             {
-                                length_unit.map((l, index) => {
-                                    return (
-                                        <Option
-                                            key={index.toString()}
-                                            value={l.id}
-                                        >
-                                            {l.name}
-                                        </Option>
-                                    );
-                                })
+                                !isNil(length_unit) && length_unit.length
+                                    ? preloadOptions(length_unit)
+                                    : null
                             }
                         </Select>
                     </Form.Item>

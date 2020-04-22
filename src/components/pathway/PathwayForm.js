@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     Layout, Form, Input, Row,
-    Col, Select, DatePicker,
+    Col, Select, DatePicker, InputNumber
 } from 'antd';
 import TitleDivider from 'components/TitleDivider';
 import { ImageUploadAndNameInputs } from 'components/shared';
@@ -37,25 +37,6 @@ export default function PathwayForm({
         payment_unit = [], length_unit = [], credit_unit = [],
         topic = [], frequency_unit = [],
     } = grouped;
-
-    let topicOptions = null;
-
-    if (!isNil(topic) && topic.length) {
-        topicOptions = topic.map(({ name, id }, index) => (
-            <Option
-                value={id}
-                key={index.toString()}
-            >
-                {name}
-            </Option>
-        ));
-    }
-
-    let providerOptions = null;
-
-    if (!isNil(providers) && providers.length) {
-        providerOptions = preloadOptions(providers);
-    }
 
     return (
         <Layout>
@@ -137,7 +118,11 @@ export default function PathwayForm({
                         className="w-full custom-select"
                         mode="multiple"
                     >
-                        {topicOptions}
+                        {
+                            !isNil(topic) && topic.length
+                                ? preloadOptions(topic)
+                                : null
+                        }
                     </Select>
                 </Form.Item>
             </Row>
@@ -208,10 +193,7 @@ export default function PathwayForm({
                         className="mb-0 inherit"
                         rules={[{ required: true, message: "Please fill in this field" }]}
                     >
-                        <Input
-                            type="number"
-                            className="rounded"
-                        />
+                        <InputNumber className="rounded w-full" />
                     </Form.Item>
                 </Col>
                 <Col
@@ -229,16 +211,9 @@ export default function PathwayForm({
                     >
                         <Select className="rounded custom-select">
                             {
-                                length_unit.map((l, index) => {
-                                    return (
-                                        <Option
-                                            key={index.toString()}
-                                            value={l.name}
-                                        >
-                                            {l.name}
-                                        </Option>
-                                    );
-                                })
+                                !isNil(length_unit) && length_unit.length
+                                    ? preloadOptions(length_unit)
+                                    : null
                             }
                         </Select>
                     </Form.Item>
@@ -255,10 +230,7 @@ export default function PathwayForm({
                         colon={false}
                         className="mb-0 inherit"
                     >
-                        <Input
-                            type="number"
-                            className="rounded"
-                        />
+                        <InputNumber className="rounded w-full" />
                     </Form.Item>
                 </Col>
                 <Col
@@ -275,16 +247,9 @@ export default function PathwayForm({
                     >
                         <Select className="rounded custom-select">
                             {
-                                frequency_unit.map((f, index) => {
-                                    return (
-                                        <Option
-                                            key={index.toString()}
-                                            value={f.name}
-                                        >
-                                            {f.name}
-                                        </Option>
-                                    );
-                                })
+                                !isNil(frequency_unit) && frequency_unit.length
+                                    ? preloadOptions(frequency_unit)
+                                    : null
                             }
                         </Select>
                     </Form.Item>
@@ -304,10 +269,7 @@ export default function PathwayForm({
                         className="mb-0 inherit"
                         rules={[{ required: true, message: "Please fill in this field" }]}
                     >
-                        <Input
-                            type="number"
-                            className="rounded"
-                        />
+                        <InputNumber className="rounded w-full" />
                     </Form.Item>
                 </Col>
                 <Col
@@ -325,16 +287,9 @@ export default function PathwayForm({
                     >
                         <Select className="rounded custom-select">
                             {
-                                credit_unit.map((credit, index) => {
-                                    return (
-                                        <Option
-                                            key={index.toString()}
-                                            value={credit.name}
-                                        >
-                                            {credit.name}
-                                        </Option>
-                                    );
-                                })
+                                !isNil(credit_unit) && credit_unit.length
+                                    ? preloadOptions(credit_unit)
+                                    : null
                             }
                         </Select>
                     </Form.Item>
@@ -352,10 +307,7 @@ export default function PathwayForm({
                         className="mb-0 inherit"
                         rules={[{ required: true, message: "Please fill in this field" }]}
                     >
-                        <Input
-                            type="number"
-                            className="rounded"
-                        />
+                        <InputNumber className="rounded w-full" />
                     </Form.Item>
                 </Col>
                 <Col
@@ -373,16 +325,9 @@ export default function PathwayForm({
                     >
                         <Select className="rounded custom-select">
                             {
-                                payment_unit.map((unit, index) => {
-                                    return (
-                                        <Option
-                                            key={index.toString()}
-                                            value={unit.name}
-                                        >
-                                            {unit.name}
-                                        </Option>
-                                    );
-                                })
+                                !isNil(payment_unit) && payment_unit.length
+                                    ? preloadOptions(payment_unit)
+                                    : null
                             }
                         </Select>
                     </Form.Item>
@@ -421,7 +366,11 @@ export default function PathwayForm({
                             }
                             name="provider_id"
                         >
-                            {providerOptions}
+                            {
+                                !isNil(providers) && providers.length
+                                    ? preloadOptions(providers)
+                                    : null
+                            }
                         </Select>
                     </Form.Item>
                 </Col>

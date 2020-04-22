@@ -19,7 +19,7 @@ const OfferCreationContainer = ({scopedToProvider = false, closeModal}) => {
 
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
-  const [{data: postData, error: postError, response}, executePost] = useAxios(
+  const [{data: offerPayload, error: offerError}, createOffer] = useAxios(
     {
       url: '/offers',
       method: 'POST',
@@ -53,65 +53,34 @@ const OfferCreationContainer = ({scopedToProvider = false, closeModal}) => {
   }
 
   const submit = async () => {
-    const values = form.getFieldsValue([
-      'category',
-      'description',
-      'learn_and_earn',
-      'part_of_day',
-      'frequency',
-      'frequency_unit',
-      'cost',
-      'cost_unit',
-      'credit_unit',
-      'pay_unit',
-      'length',
-      'length_unit',
-      'name',
-      'start_date',
-      'provider_id',
-      'topics',
-      'pay',
-      'credit',
-      'related_offers',
-      'prerequisites',
-      'keywords',
-    ]);
+    try {
+      const values = await form.validateFields([
+        'category',
+        'description',
+        'learn_and_earn',
+        'part_of_day',
+        'frequency',
+        'frequency_unit',
+        'cost',
+        'cost_unit',
+        'credit_unit',
+        'pay_unit',
+        'length',
+        'length_unit',
+        'name',
+        'start_date',
+        'provider_id',
+        'topics',
+        'pay',
+        'credit',
+        'related_offers',
+        'prerequisites',
+        'keywords',
+      ]);
 
-    const {
-      category,
-      description,
-      learn_and_earn,
-      part_of_day,
-      frequency_unit,
-      cost,
-      credit,
-      credit_unit,
-      pay,
-      pay_unit,
-      length,
-      length_unit,
-      name,
-      start_date,
-      frequency,
-    } = values;
+      const { start_date } = values;
 
-    if (
-      category &&
-      description &&
-      learn_and_earn &&
-      part_of_day &&
-      frequency_unit &&
-      cost &&
-      credit &&
-      credit_unit &&
-      pay &&
-      pay_unit &&
-      length &&
-      length_unit &&
-      name &&
-      frequency
-    ) {
-      const response = await executePost({
+      const offerResponse = await createOffer({
         data: {
           ...values,
           start_date: dayjs(start_date).toISOString() || null,
@@ -119,14 +88,14 @@ const OfferCreationContainer = ({scopedToProvider = false, closeModal}) => {
         },
       });
 
-      if (response.data && file && userId) {
+      if (offerResponse.data && file && userId) {
         const {name, type} = file;
         const results = await UploaderService.upload({
           name,
           mime_type: type,
           uploaded_by_user_id: userId,
           fileable_type: 'offer',
-          fileable_id: response.data.id,
+          fileable_id: offerResponse.data.id,
           binaryFile: file.originFileObj,
         });
 
@@ -140,31 +109,31 @@ const OfferCreationContainer = ({scopedToProvider = false, closeModal}) => {
         }
       }
 
-      if (response && response.status === 201) {
+      if (offerResponse && offerResponse.status === 201) {
+        notification.success({
+          message: offerResponse.status,
+          description: 'Successfully created offer',
+        });
         form.resetFields();
         closeModal();
       }
+    } catch (error) {
+      console.error(error);
     }
   };
 
   useEffect(() => {
-    if (postData) {
-      offerStore.addOne(postData);
+    if (offerPayload) {
+      offerStore.addOne(offerPayload);
     }
-    if (postError) {
-      const {status, statusText} = postError.request;
+    if (offerError) {
+      const {status, statusText} = offerError.request;
       notification.error({
         message: status,
         description: statusText,
       });
     }
-    if (response && response.status === 201) {
-      notification.success({
-        message: response.status,
-        description: 'Successfully created offer',
-      });
-    }
-  }, [postData, response, postError]);
+  }, [offerPayload, offerError]);
 
   return (
     <div>

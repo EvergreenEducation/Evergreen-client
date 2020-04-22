@@ -38,7 +38,10 @@ export default function OfferUpdateModal({
         }
     }
     
-    const [{ data: putData, error: putError, response }, executePut ] = useAxios({
+    const [{
+        data: updateOfferPayload,
+        error: updateOfferError,
+    }, updateOffer ] = useAxios({
         method: 'PUT'
     }, { manual: true });
 
@@ -46,27 +49,18 @@ export default function OfferUpdateModal({
     const { datafield: datafieldStore, provider: providerStore } = store;
 
     const submitUpdate = async () => {
-        const values = form.getFieldsValue([
-            'category', 'description', 'learn_and_earn',
-            'part_of_day', 'frequency', 'frequency_unit', 'cost',
-            'cost_unit', 'credit_unit',
-            'pay_unit', 'length', 'length_unit', 'name', 'start_date', 'provider_id',
-            'topics', 'pay', 'credit', 'keywords', 'related_offers', 'prerequisites'
-        ]);
+        try {
+            const values = await form.validateFields([
+                'category', 'description', 'learn_and_earn',
+                'part_of_day', 'frequency', 'frequency_unit', 'cost',
+                'cost_unit', 'credit_unit', 'pay_unit', 'length', 'length_unit',
+                'name', 'start_date', 'provider_id', 'topics', 'pay', 'credit',
+                'keywords', 'related_offers', 'prerequisites'
+            ]);
 
-        const {
-            category, description, learn_and_earn,
-            part_of_day, frequency_unit, cost, credit, credit_unit,
-            pay, pay_unit, length, length_unit, name, start_date, frequency
-        } = values;
+            const { start_date } = values;
 
-        if (
-            category && description && learn_and_earn &&
-            part_of_day && frequency_unit && cost && credit && 
-            credit_unit && pay && pay_unit && length && length_unit && name
-            && frequency
-        ) {
-            const response = await executePut({
+            const response = await updateOffer({
                 url: `/offers/${offer.id}`,
                 data: {
                     ...values,
@@ -95,18 +89,26 @@ export default function OfferUpdateModal({
             }
 
             if (response && response.status === 200) {
+                offerStore.updateOne(updateOfferPayload);
                 onCancel();
                 notification.success({
                     message: response.status,
                     description: 'Successfully updated offer'
                 })
             }
+        } catch (error) {
+            console.error(error);
         }
     }
 
     function populateFields(o, formInstance) {
         formInstance.setFieldsValue({
             ...o,
+            part_of_day: Number(o.part_of_day),
+            pay_unit: Number(o.pay_unit),
+            length_unit: Number(o.length_unit),
+            credit_unit: Number(o.credit_unit),
+            frequency_unit: Number(o.frequency_unit),
             category: Number(o.category),
             cost_unit: Number(o.cost_unit),
             start_date: moment(o.start_date),
@@ -122,8 +124,8 @@ export default function OfferUpdateModal({
     }
 
     useEffect(() => {
-        if (putError) {
-            const { status, statusText } = putError.request;
+        if (updateOfferError) {
+            const { status, statusText } = updateOfferError.request;
             notification.error({
                 message: status,
                 description: statusText,
@@ -131,9 +133,6 @@ export default function OfferUpdateModal({
         }
         if (form) {
             populateFields(offer, form);
-        }
-        if (response && response.status === 200) {
-            offerStore.updateOne(putData);
         }
         if (offer.Files) {
             const orderedFiles = orderBy(offer.Files, ['fileable_type', 'createdAt'], ['desc', 'desc']);
@@ -148,7 +147,7 @@ export default function OfferUpdateModal({
                 }
             }
         }
-    }, [putData, offer, putError, response])
+    }, [updateOfferPayload, offer, updateOfferError])
 
     return (
         <Modal

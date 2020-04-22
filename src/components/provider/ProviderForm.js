@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Layout, Form, Input, Row, Col, Select } from 'antd';
+import { Layout, Form, Input, InputNumber, Row, Col, Select } from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
 import { groupBy, isNil } from 'lodash';
 import 'scss/antd-overrides.scss';
@@ -245,11 +245,7 @@ const ProviderForm = (props) => {
                         colon={false}
                         className="mb-0 inherit"
                     >
-                        <Input
-                            type="number"
-                            addonBefore="$"
-                            className="custom-ant-input-wrapper"
-                        />
+                        <InputNumber className="rounded w-full" />
                     </Form.Item>
                 </Col>
                 <Col
@@ -264,11 +260,7 @@ const ProviderForm = (props) => {
                         colon={false}
                         className="mb-0 inherit"
                     >
-                        <Input
-                            type="number"
-                            addonBefore="$"
-                            className="custom-ant-input-wrapper"
-                        />
+                        <InputNumber className="rounded w-full" />
                     </Form.Item>
                 </Col>
                 <Col
@@ -283,11 +275,7 @@ const ProviderForm = (props) => {
                         colon={false}
                         className="mb-0 inherit"
                     >
-                        <Input
-                            type="number"
-                            addonBefore="$"
-                            className="custom-ant-input-wrapper"
-                        />
+                        <InputNumber className="rounded w-full" />
                     </Form.Item>
                 </Col>
             </Row>

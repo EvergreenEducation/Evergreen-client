@@ -94,8 +94,8 @@ export default function OfferContainer({
   let showData = handleTableData(Object.values(entities));
   
   if (scopedToProvider) {
-    showData = showData.filter(p => {
-      return p.provider_id === provider_id;
+    showData = showData.filter(offer => {
+      return offer.provider_id === provider_id;
     });
   }
   

@@ -15,7 +15,8 @@ configure({
 export default function EnrolledOfferContainer({
   scopedToProvider = false,
   provider_id,
-  activateCreditAssignment
+  activateCreditAssignment,
+  handleTableData,
 }) {
   const history = useHistory();
   const location = useLocation();
@@ -49,7 +50,10 @@ export default function EnrolledOfferContainer({
     }
   }, [enrollmentBody]);
 
-  let dataSource = Object.values(enrollmentStore.entities);
+  let dataSource = handleTableData(
+    Object.values(enrollmentStore.entities),
+    ['Offer.name'],
+  );
 
   if (scopedToProvider) {
     dataSource = dataSource.filter(enrollment => enrollment.provider_id === provider_id);

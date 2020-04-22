@@ -174,12 +174,14 @@ export default function AdminDashboardPage(props) {
         title="Enrollment"
         setActivateCreditAssignment={setActivateCreditAssignment}
         activateCreditAssignment={activateCreditAssignment}
+        handleSearch={search}
       />
     );
     FormContent = null;
     MainContent = () => (
       <EnrolledOfferContainer
         activateCreditAssignment={activateCreditAssignment}
+        handleTableData={handleTableDataForSearch}
       />
     );
   }

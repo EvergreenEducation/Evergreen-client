@@ -6,6 +6,7 @@ export default function EnrollmentTopbar({
   title,
   activateCreditAssignment,
   setActivateCreditAssignment,
+  // handleTableData={handleTableDataForSearch}
   handleSearch,
 }) {
   return (
