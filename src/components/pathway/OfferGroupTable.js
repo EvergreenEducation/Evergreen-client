@@ -102,7 +102,7 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
       <Table
           dataSource={renderData}
           bordered
-          className="ant-table-wrapper--responsive w-full"
+          className="ant-table-wrapper--responsive w-full mt-1"
           rowClassName={() => "antd-row"}
           rowKey="id"
       >

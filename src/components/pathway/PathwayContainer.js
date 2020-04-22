@@ -40,8 +40,9 @@ export default function PathwayContainer({ handleTableData, scopedToProvider = f
   }] = useAxios(getPathwaysUrl);
 
   const [{
-    error: getTopicsError,
-  }] = useAxios('/datafields?type=topic');
+    data: getDataFields,
+    error: getDataFieldsError,
+  }] = useAxios('/datafields');
 
   const [{
     data: getOffers,
@@ -63,7 +64,7 @@ export default function PathwayContainer({ handleTableData, scopedToProvider = f
     setModalVisibility(true);
   }
 
-  if (getPathwaysError || getOffersError || getTopicsError) {
+  if (getPathwaysError || getOffersError || getDataFieldsError) {
     history.push('/error/500');
   }
 
@@ -81,7 +82,10 @@ export default function PathwayContainer({ handleTableData, scopedToProvider = f
         providerStore.addMany(getProviders);
       }
     }
-  }, [getPathways, getOffers, getProviders]);
+    if (getDataFields) {
+      datafield.addMany(getDataFields);
+    }
+  }, [getPathways, getOffers, getProviders, getDataFields]);
 
   let showData = handleTableData(Object.values(pathwayStore.entities));
   

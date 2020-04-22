@@ -26,37 +26,33 @@ const ProviderCreationContainer = (({ closeModal }) => {
     const [ form ] = Form.useForm();
     const store = useProviderDataFieldStore();
     const { datafield: datafieldStore, provider: providerStore } = store;
-    const [{ data: postData, error: postError, response }, executePost ] = useAxios({
+    const [{ data: providerPayload, error: providerCreateError }, createProvider ] = useAxios({
         url: '/providers',
         method: 'POST'
     }, { manual: true });
     
-    const submit = async () => {
-        const values = form.getFieldsValue([
-            "name",
-            "location",
-            "type",
-            "learn_and_earn",
-            "is_public",
-            "industry",
-            "description",
-            "industry",
-            "financial_aid",
-            "credit",
-            "news",
-            "contact",
-            "pay",
-            "cost",
-            "topics",
-            "keywords"
-        ]);
+    const submit = async () => {        
+        try {
+            const values = await form.validateFields([
+                "name",
+                "location",
+                "type",
+                "learn_and_earn",
+                "is_public",
+                "industry",
+                "description",
+                "industry",
+                "financial_aid",
+                "credit",
+                "news",
+                "contact",
+                "pay",
+                "cost",
+                "topics",
+                "keywords"
+            ]);
 
-        const { name, location, type, learn_and_earn, is_public } = values;
-
-        if (
-            name && location && type && learn_and_earn && !isNil(is_public)
-        ) {
-            const response = await executePost({
+            const response = await createProvider({
                 data: {
                     ...values,
                     topics: values.topics,
@@ -85,28 +81,28 @@ const ProviderCreationContainer = (({ closeModal }) => {
             if (response && response.status === 201) {
                 form.resetFields();
                 closeModal();
+                notification.success({
+                    message: response.status,
+                    description: 'Successfully created provider'
+                })
             }
+        } catch (error) {
+            console.error(error);
         }
     }
 
     useEffect(() => {
-        if (postData) {
-            providerStore.addOne(postData);
+        if (providerPayload) {
+            providerStore.addOne(providerPayload);
         }
-        if (postError) {
-            const { status, statusText } = postError.request;
+        if (providerCreateError) {
+            const { status, statusText } = providerCreateError.request;
             notification.error({
                 message: status,
                 description: statusText,
             })
         }
-        if (response && response.status === 201) {
-            notification.success({
-                message: response.status,
-                description: 'Successfully created provider'
-            })
-        }
-    }, [postData, response, postError]);
+    }, [providerPayload, providerCreateError]);
 
 
     return (

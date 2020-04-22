@@ -127,6 +127,10 @@ export default function PathwayUpdateModal({
     function populateFields(p, formInstance) {
         formInstance.setFieldsValue({
             ...p,
+            length_unit: Number(p.length_unit),
+            credit_unit: Number(p.credit_unit),
+            frequency_unit: Number(p.frequency_unit),
+            pay_unit: Number(p.pay_unit),
             start_date: moment(p.start_date),
             topics: myTopics,
         });
