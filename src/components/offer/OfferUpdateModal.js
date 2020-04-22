@@ -29,8 +29,6 @@ export default function OfferUpdateModal({
         DataFields = [], GroupsOfOffers: Pathways = [],
     } = offer;
 
-    console.log(offer);
-
     const [ form ] = Form.useForm();
 
     const onChangeUpload = (e) => {
