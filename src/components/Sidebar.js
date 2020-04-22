@@ -1,109 +1,110 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Layout, Menu, Button } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, {useState} from 'react';
+import {Link} from 'react-router-dom';
+import {Layout, Menu, Button} from 'antd';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
-    faBars, faDollarSign, faHandHoldingUsd,
-    faTree, faRoute, faCog, faDatabase,
+  faBars,
+  faDollarSign,
+  faHandHoldingUsd,
+  faTree,
+  faRoute,
+  faCog,
+  faDatabase,
 } from '@fortawesome/free-solid-svg-icons';
+import {findIndex} from 'lodash';
 
-const { Sider } = Layout;
+const {Sider} = Layout;
 
-const routesList = (role) => {
+const routesList = role => {
   return [
     {
       path: 'providers',
       name: 'Providers',
       icon: faTree,
-      enabled: role === 'admin'
+      enabled: role === 'admin',
     },
     {
       path: 'offers',
       name: 'Offers',
       icon: faDollarSign,
-      enabled: ['admin', 'provider'].includes(role)
+      enabled: ['admin', 'provider'].includes(role),
     },
     {
-        path: 'enrollments',
-        name: 'Enrollments',
-        icon: faHandHoldingUsd,
-        enabled: ['admin', 'provider'].includes(role)
+      path: 'enrollments',
+      name: 'Enrollments',
+      icon: faHandHoldingUsd,
+      enabled: ['admin', 'provider'].includes(role),
     },
     {
       path: 'pathways',
       name: 'Pathways',
       icon: faRoute,
-      enabled: ['admin', 'provider'].includes(role)
+      enabled: ['admin', 'provider'].includes(role),
     },
     {
       path: 'settings',
       name: 'Settings',
       icon: faCog,
-      enabled: ['admin', 'provider'].includes(role)
+      enabled: ['admin', 'provider'].includes(role),
     },
     {
       path: 'database',
       name: 'Database',
       icon: faDatabase,
-      enabled: false
-    }
-  ]
-}
+      enabled: false,
+    },
+  ];
+};
 
-function Sidebar({ basePath, role }) {
-    const [collapsed, setCollapse] = useState(true);
-    const toggleSider = () => {
-        setCollapse(!collapsed);
-    }
+function Sidebar({basePath, role, currentRoute}) {
+  const [collapsed, setCollapse] = useState(true);
+  const toggleSider = () => {
+    setCollapse(!collapsed);
+  };
 
-    let routes = routesList(role).filter(i => i.enabled);
-    return (
-        <Sider
-            className="min-h-full bg-green-500"
-            trigger={null}
-            collapsible
-            collapsed={collapsed}
-            >
-            <div className="flex justify-center bg-green-600">
-                <Button
-                    className="mx-auto h-12 w-full"
-                    type="link"
-                    onClick={() => toggleSider()}
-                >   
-                    <FontAwesomeIcon
-                        className="text-white"
-                        icon={faBars}
-                    />
-                </Button>
-            </div>
-            <Menu
-                className="bg-green-500"
-                theme="dark"
-                // defaultSelectedKeys={1}
-            >
-                {
-                    routes.map(({ path, name, icon }, index) => (
-                        <Menu.Item
-                            className="bg-green-500 text-center text-white bg-green-800-selected"
-                            style={{ marginTop: 0, marginBottom: 0 }}
-                            key={index.toString()}
-                            title={name}
-                        >
-                            <Link to={`${basePath}/${path}`}>
-                                <FontAwesomeIcon
-                                    className="text-white"
-                                    icon={icon}
-                                />
-                                {
-                                    collapsed ? null : " " + name
-                                }
-                            </Link>
-                        </Menu.Item> 
-                    ))
-                }
-            </Menu>
-        </Sider>
-    );
+  let routes = routesList(role).filter(i => i.enabled);
+  let selectedKeys = currentRoute
+    ? findIndex(routes, r => r.path === currentRoute)
+    : 1;
+
+  return (
+    <Sider
+      className="min-h-full bg-green-500"
+      trigger={null}
+      collapsible
+      collapsed={collapsed}
+    >
+      <div className="flex justify-center bg-green-600">
+        <Button
+          className="mx-auto h-12 w-full"
+          type="link"
+          onClick={() => toggleSider()}
+        >
+          <FontAwesomeIcon className="text-white" icon={faBars} />
+        </Button>
+      </div>
+      <Menu
+        className="bg-green-500"
+        theme="dark"
+        selectedKeys={[selectedKeys.toString()]}
+        // defaultSelectedKeys={defaultSelectedKeys}
+      >
+        {routes.map(({path, name, icon}, index) => (
+          <Menu.Item
+            className="bg-green-500 text-center text-white bg-green-800-selected"
+            style={{marginTop: 0, marginBottom: 0}}
+            key={index.toString()}
+            title={name}
+          >
+            <Link to={`${basePath}/${path}`}>
+              <FontAwesomeIcon className="text-white" icon={icon} />
+              {collapsed ? null : ' ' + name}
+            </Link>
+          </Menu.Item>
+        ))}
+      </Menu>
+    </Sider>
+  );
 }
 
 export default Sidebar;
