@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import AuthService from 'services/AuthService';
-import {Link} from 'react-router-dom';
-import {imported} from 'react-imported-component/macro';
-import {Layout, Button, Col, Skeleton, Tooltip, Modal} from 'antd';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faSignOutAlt, faUserEdit} from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
+import { imported } from 'react-imported-component/macro';
+import { Layout, Button, Col, Skeleton, Tooltip, Modal } from 'antd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt, faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import Sidebar from 'components/Sidebar';
-import {SearchModalHeader} from 'components/shared';
+import { SearchModalHeader } from 'components/shared';
 import axiosInstance from 'services/AxiosInstance';
 
 import ProviderStore from 'store/Provider';
@@ -35,13 +35,8 @@ const SelectOptionsContainer = imported(() =>
 const OfferContainer = imported(() =>
   import('components/offer/OfferContainer')
 );
-const OfferCreationContainer = imported(
-  () => import('components/offer/OfferCreationContainer'),
-  {
-    LoadingComponent: () => (
-      <Skeleton className="p-6" paragraph={{rows: 15}} active />
-    ),
-  }
+const OfferCreationContainer = imported(() =>
+  import('components/offer/OfferCreationContainer')
 );
 const OfferCategoryContainer = imported(() =>
   import('components/offer/OfferCategoryContainer')
@@ -54,12 +49,12 @@ const PathwayCreationContainer = imported(
   () => import('components/pathway/PathwayCreationContainer'),
   {
     LoadingComponent: () => (
-      <Skeleton className="p-6" paragraph={{rows: 15}} active />
+      <Skeleton className="p-6" paragraph={{ rows: 15 }} active />
     ),
   }
 );
 
-const {Content, Header} = Layout;
+const { Content, Header } = Layout;
 
 const RouteConfig = {
   offers: {
@@ -105,8 +100,8 @@ const RouteConfig = {
 };
 
 export default function ProviderDashboardScreen(props) {
-  const {url: basePath} = props.match;
-  const {pathname} = props.history.location;
+  const { url: basePath } = props.match;
+  const { pathname } = props.history.location;
   const [modalVisibility, setModalVisibility] = useState(false);
   const [searchString, setSearchString] = useState('');
   const [providerModalVisibility, setProviderModalVisibility] = useState(false);
@@ -123,7 +118,7 @@ export default function ProviderDashboardScreen(props) {
 
   useEffect(() => {
     async function getProviderInfo() {
-      const {data} = await axiosInstance(`/providers/${myProviderId}`);
+      const { data } = await axiosInstance(`/providers/${myProviderId}`);
       if (data && !data.name) {
         const modalDelay = setTimeout(() => {
           setProviderSimpleModalVisibility(true);
@@ -138,16 +133,16 @@ export default function ProviderDashboardScreen(props) {
     setModalVisibility(true);
   };
 
-  const handleCancel = e => {
+  const handleCancel = (e) => {
     setModalVisibility(false);
   };
 
-  const search = value => {
+  const search = (value) => {
     setSearchString(value);
   };
 
   const handleTableDataForSearch = (data, keys = ['name']) => {
-    const results = matchSorter(data, searchString, {keys});
+    const results = matchSorter(data, searchString, { keys });
     return results;
   };
 
@@ -195,7 +190,7 @@ export default function ProviderDashboardScreen(props) {
                         >
                           <FontAwesomeIcon
                             className="text-white relative"
-                            style={{left: 2}}
+                            style={{ left: 2 }}
                             icon={faUserEdit}
                           />
                         </Button>
@@ -228,8 +223,8 @@ export default function ProviderDashboardScreen(props) {
                 title={Component.modalTitle}
                 visible={modalVisibility}
                 onCancel={handleCancel}
-                style={{borderRadius: 5}}
-                bodyStyle={{backgroundColor: '#f0f2f5', padding: 0}}
+                style={{ borderRadius: 5 }}
+                bodyStyle={{ backgroundColor: '#f0f2f5', padding: 0 }}
                 width={998}
                 footer={true}
                 forceRender={true}
