@@ -11,17 +11,21 @@ class AuthService {
   setCurrentSession = (currentSession) => {
     reactLocalStorage.setObject('currentSession', currentSession);
     this.currentSession = currentSession;
-
-    this.isAuthenticated = true;
+    if (currentSession.id) {
+      this.setAuthenticated();
+    }
   };
 
-  setAuthenticated = () => (this.authenticated = true);
-  setNotAuthenticated = () => (this.authenticated = true);
-  isAuthenticated = () => this.authenticated;
+  setAuthenticated = () => {
+    this.authenticated = true;
+  };
+  setNotAuthenticated = () => {
+    this.authenticated = false;
+  };
 
   logout = () => {
     reactLocalStorage.remove('currentSession');
-    this.authenticated = false;
+    this.setNotAuthenticated();
     this.currentSession = { user_id: null };
     window.location.replace(`${process.env.REACT_APP_API_URL}/logout`);
     return null;

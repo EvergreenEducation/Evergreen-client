@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { reactLocalStorage } from 'reactjs-localstorage';
 import AuthService from 'services/AuthService';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { imported } from 'react-imported-component/macro';
 import { Button } from 'antd';
 import HomePage from 'screens/HomePage';
 import DashboardScreen from 'screens/DashboardScreen';
+import PrivateRoute from 'services/PrivateRoute';
 const AuthScreen = imported(() => import('screens/AuthScreen'));
 // const AdminDashboardScreen = imported(() =>
 //   import('screens/AdminDashboardScreen')
@@ -33,11 +34,11 @@ function App() {
         <Route path="/auth/:action" component={AuthScreen} />
         {/* <Route path="/admin" component={AdminDashboardScreen} />
         <Route path="/provider/:id" component={ProviderDashboardScreen} /> */}
-        <Route
+        <PrivateRoute
           path="/dashboard"
           component={() => <DashboardScreen role={role} />}
         />
-        <Route
+        <PrivateRoute
           path="/dashboard/:id"
           component={() => <DashboardScreen role={role} />}
         />
@@ -50,6 +51,38 @@ function App() {
               title="500"
               subTitle={
                 "Either our server's asleep or something went wrong with it. Check back again later."
+              }
+              extra={
+                <>
+                  <Button className="rounded" size="small" type="primary">
+                    <Link to="/">Return to the homepage</Link>
+                  </Button>
+                  <Button
+                    className="rounded mr-2"
+                    size="small"
+                    type="primary"
+                    onClick={() => {
+                      window.location.replace(
+                        `${process.env.REACT_APP_API_URL}/login`
+                      );
+                    }}
+                  >
+                    Return to login
+                  </Button>
+                </>
+              }
+            />
+          )}
+        />
+        <Route
+          exact
+          path="/error/401"
+          component={() => (
+            <Result
+              status="403"
+              title="401"
+              subTitle={
+                'Sorry, you currently do not have authorization to access this page.'
               }
               extra={
                 <>

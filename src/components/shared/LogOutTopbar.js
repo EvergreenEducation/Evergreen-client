@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { Button, Layout, Tooltip, Col } from 'antd';
+import AuthService from 'services/AuthService';
 
 const { Header } = Layout;
 
@@ -12,11 +12,9 @@ export default function LogOutTopbar({ children, renderNextToLogOut }) {
       <Col span={17}>{children}</Col>
       <Col span={7} className="flex justify-end items-center">
         {renderNextToLogOut}
-        <Button type="link">
+        <Button type="link" onClick={() => AuthService.logout()}>
           <Tooltip title="Sign out">
-            <Link to="/auth/logout">
-              <FontAwesomeIcon className="text-black" icon={faSignOutAlt} />
-            </Link>
+            <FontAwesomeIcon className="text-black" icon={faSignOutAlt} />
           </Tooltip>
         </Button>
       </Col>
