@@ -87,21 +87,23 @@ export default function EnrolledOfferContainer({
     <Layout className="bg-transparent">
       <LogOutTopbar
         renderNextToLogOut={
-          <Tooltip title="Update my information">
-            <Button
-              className="rounded mr-2 px-4"
-              type="primary"
-              size="small"
-              onClick={() => openProviderUpdateModal()}
-              onMouseEnter={() => ProviderUpdateContainer.preload()}
-            >
-              <FontAwesomeIcon
-                className="text-white relative"
-                style={{ left: 2 }}
-                icon={faUserEdit}
-              />
-            </Button>
-          </Tooltip>
+          role === 'provider' && (
+            <Tooltip title="Update my information">
+              <Button
+                className="rounded mr-2 px-4"
+                type="primary"
+                size="small"
+                onClick={() => openProviderUpdateModal()}
+                onMouseEnter={() => ProviderUpdateContainer.preload()}
+              >
+                <FontAwesomeIcon
+                  className="text-white relative"
+                  style={{ left: 2 }}
+                  icon={faUserEdit}
+                />
+              </Button>
+            </Tooltip>
+          )
         }
       >
         <Col span={14}>
