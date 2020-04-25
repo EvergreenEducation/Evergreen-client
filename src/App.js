@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { reactLocalStorage } from 'reactjs-localstorage';
 import AuthService from 'services/AuthService';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
@@ -33,6 +33,10 @@ function App() {
         <Route path="/auth/:action" component={AuthScreen} />
         {/* <Route path="/admin" component={AdminDashboardScreen} />
         <Route path="/provider/:id" component={ProviderDashboardScreen} /> */}
+        <Route
+          path="/dashboard"
+          component={() => <DashboardScreen role={role} />}
+        />
         <Route
           path="/dashboard/:id"
           component={() => <DashboardScreen role={role} />}

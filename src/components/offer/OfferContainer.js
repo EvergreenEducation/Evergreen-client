@@ -60,9 +60,10 @@ export default function OfferContainer(props) {
     '/datafields'
   );
 
-  let getOffersUrl = providerId
-    ? `/offers?scope=with_details&provider_id=${providerId}`
-    : '/offers?scope=with_details';
+  let getOffersUrl =
+    role === 'provider'
+      ? `/offers?scope=with_details&provider_id=${providerId}`
+      : '/offers?scope=with_details';
 
   const [{ data: offersData, error: offerError }] = useAxios(getOffersUrl);
 

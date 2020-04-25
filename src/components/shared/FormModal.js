@@ -7,7 +7,7 @@ export default function FormModal({
   onCancel,
   FormComponent,
   role,
-  providerId,
+  providerId = null,
 }) {
   return (
     <Modal

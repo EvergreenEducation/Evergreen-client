@@ -13,6 +13,10 @@ import EnrollmentStore from 'store/Enrollment';
 import Sidebar from 'components/Sidebar';
 import 'scss/antd-overrides.scss';
 
+const ProviderContainer = imported(() =>
+  import('components/provider/ProviderContainer')
+);
+
 const ProviderSimpleUpdateContainer = imported(() =>
   import('components/provider/ProviderSimpleUpdateContainer')
 );
@@ -82,6 +86,12 @@ function DashboardScreen(props) {
       <Layout className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto">
         <Sidebar {...props} />
         <div className="h-min-full w-full">
+          <Route
+            path={`${basePath}/providers`}
+            component={() => (
+              <ProviderContainer role={role} basePath={basePath} />
+            )}
+          />
           <Route
             path={`${basePath}/offers`}
             component={() => (

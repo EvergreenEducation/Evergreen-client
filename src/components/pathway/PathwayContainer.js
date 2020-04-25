@@ -52,9 +52,10 @@ export default function PathwayContainer({
   const offerStore = OfferStore.useContainer();
   const providerStore = ProviderStore.useContainer();
 
-  let getPathwaysUrl = providerId
-    ? `/pathways?scope=with_details&provider_id=${providerId}`
-    : '/pathways?scope=with_details';
+  let getPathwaysUrl =
+    role === 'provider'
+      ? `/pathways?scope=with_details&provider_id=${providerId}`
+      : '/pathways?scope=with_details';
 
   const [{ data: getPathways, error: getPathwaysError }] = useAxios(
     getPathwaysUrl
