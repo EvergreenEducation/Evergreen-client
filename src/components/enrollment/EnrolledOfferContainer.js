@@ -10,7 +10,7 @@ import EnrollmentStore from 'store/Enrollment';
 import { EnrollmentTable } from 'components/enrollment';
 import { LogOutTopbar, SearchHeader } from 'components/shared';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import matchSorter from 'match-sorter';
 
 const ProviderUpdateContainer = imported(() =>

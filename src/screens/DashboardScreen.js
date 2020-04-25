@@ -33,6 +33,10 @@ const PathwayContainer = imported(() =>
   import('components/pathway/PathwayContainer')
 );
 
+const DataFieldContainer = imported(() =>
+  import('components/datafield/DataFieldContainer')
+);
+
 function DashboardScreen(props) {
   const { role, match, location, history } = props;
   const { url: basePath } = match;
@@ -106,6 +110,15 @@ function DashboardScreen(props) {
                 openProviderUpdateModal={openProviderUpdateModal}
                 role={role}
                 providerId={myProviderId}
+              />
+            )}
+          />
+          <Route
+            path={`${basePath}/settings`}
+            component={() => (
+              <DataFieldContainer
+                role={role}
+                openProviderUpdateModal={openProviderUpdateModal}
               />
             )}
           />
