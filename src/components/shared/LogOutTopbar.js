@@ -9,8 +9,8 @@ const { Header } = Layout;
 export default function LogOutTopbar({ children, renderNextToLogOut }) {
   return (
     <Header className="px-6 bg-white h-12 flex items-center">
-      <Col span={15}>{children}</Col>
-      <Col span={9} className="flex justify-end">
+      <Col span={17}>{children}</Col>
+      <Col span={7} className="flex justify-end items-center">
         {renderNextToLogOut}
         <Button type="link">
           <Tooltip title="Sign out">

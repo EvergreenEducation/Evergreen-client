@@ -136,13 +136,14 @@ export default function OfferContainer(props) {
   }, [getProviderData, datafieldsData, offersData]);
 
   return (
-    <Layout style={{ backgroundColor: 'transparent' }}>
+    <Layout className="bg-transparent">
       <LogOutTopbar
         renderNextToLogOut={
           <Tooltip title="Update my information">
             <Button
-              className="rounded mr-3"
+              className="rounded mr-2 px-4"
               type="primary"
+              size="small"
               onClick={() => openProviderUpdateModal()}
               onMouseEnter={() => ProviderUpdateContainer.preload()}
             >
@@ -157,14 +158,17 @@ export default function OfferContainer(props) {
       >
         <Col span={14}>
           <SearchHeader
-            title="New Offer / Opportunity"
+            title="NEW OFFERS / OPPORTUNITIES"
             onSearch={handleDataSearch}
           >
             <Button
               className="rounded text-xs flex items-center ml-2"
               type="primary"
               size="small"
-              onMouseEnter={FormModal.preload()}
+              onMouseEnter={() => {
+                FormModal.preload();
+                OfferCreationContainer.preload();
+              }}
               onClick={() => setOpenable({ ...openable, formModal: true })}
             >
               <FontAwesomeIcon

@@ -1,14 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {
-  Table, Popconfirm, Button,
-  Input, Col, Select, Form
-} from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Table, Popconfirm, Button, Input, Col, Select, Form } from 'antd';
 import axiosInstance from 'services/AxiosInstance';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import EnrollmentStore from 'store/Enrollment';
 import 'scss/antd-overrides.scss';
-import {EnrollModal} from 'components/enrollment';
+import { EnrollModal } from 'components/enrollment';
 import matchSorter from 'match-sorter';
 import { useForm } from 'antd/lib/form/util';
 import 'scss/antd-overrides.scss';
@@ -20,13 +17,15 @@ export default function EnrollmentTable({
   dataSource = [],
   offer,
 }) {
-
   let filteredDataSource = dataSource;
   let presetOfferName = null;
 
   if (offer) {
-    filteredDataSource = dataSource.filter(enrollment => {
-      if (enrollment.offer_id === offer && presetOfferName !== enrollment.Offer.name) {
+    filteredDataSource = dataSource.filter((enrollment) => {
+      if (
+        enrollment.offer_id === offer &&
+        presetOfferName !== enrollment.Offer.name
+      ) {
         presetOfferName = enrollment.Offer.name;
       }
       return enrollment.offer_id === offer;
@@ -36,17 +35,20 @@ export default function EnrollmentTable({
   const [enrollModalOpen, setEnrollModalOpen] = useState(false);
   const [selectedEnrollment, setSelectedEnrollment] = useState(null);
   const [enrollments, setEnrollments] = useState([]);
-  const [ form ] = useForm();
+  const [form] = useForm();
 
   const enrollmentStore = EnrollmentStore.useContainer();
 
   const updateEnrollment = async (enrollment) => {
-    return axiosInstance.put(`/enrollments/${enrollment.id}?scope=with_offers`, {
-      status: 'Approved',
-    });
-  }
+    return axiosInstance.put(
+      `/enrollments/${enrollment.id}?scope=with_offers`,
+      {
+        status: 'Approved',
+      }
+    );
+  };
 
-  const setStatusToApprove = async enrollment => {
+  const setStatusToApprove = async (enrollment) => {
     try {
       const response = await updateEnrollment(enrollment);
 
@@ -57,23 +59,25 @@ export default function EnrollmentTable({
       console.error(err);
     }
   };
-  
+
   const handleData = async () => {
     const value = await form.validateFields(['offer_name']);
     let offerName = '';
     if (value) {
       offerName = value.offer_name;
     }
-    const results = matchSorter(dataSource, offerName, { keys: ['Offer.name'] });
+    const results = matchSorter(dataSource, offerName, {
+      keys: ['Offer.name'],
+    });
     setEnrollments(results);
-  }
-  
+  };
+
   const reset = () => {
     form.setFieldsValue({
       offer_name: null,
     });
     setEnrollments(dataSource);
-  }
+  };
 
   const offerNames = [];
 
@@ -87,7 +91,7 @@ export default function EnrollmentTable({
       offerNames.push(name);
     }
   }
-  
+
   useEffect(() => {
     if (dataSource) {
       setEnrollments(filteredDataSource);
@@ -103,7 +107,7 @@ export default function EnrollmentTable({
         rowClassName={() => 'antd-row'}
         rowKey="id"
         pagination={{
-          pageSize: 10
+          pageSize: 10,
         }}
       >
         <Column
@@ -111,7 +115,7 @@ export default function EnrollmentTable({
           title="Offer Name"
           dataIndex="Offer"
           key="index"
-          render={offer => {
+          render={(offer) => {
             let children = 'N/A';
             if (offer && offer.name) {
               children = offer.name;
@@ -123,7 +127,7 @@ export default function EnrollmentTable({
               },
             };
           }}
-          filterIcon={filtered => (
+          filterIcon={(filtered) => (
             <FontAwesomeIcon
               style={{
                 color: filtered ? '#1890ff' : undefined,
@@ -136,31 +140,23 @@ export default function EnrollmentTable({
               <Form
                 form={form}
                 initialValues={{
-                  offer_name: presetOfferName
+                  offer_name: presetOfferName,
                 }}
               >
                 <Col className="p-2 rounded">
-                  <Form.Item
-                    className="mb-2"
-                    name="offer_name"
-                  >
+                  <Form.Item className="mb-2" name="offer_name">
                     <Select
                       className="custom-select"
-                      style={{ minWidth: "12rem" }}
+                      style={{ minWidth: '12rem' }}
                       showSearch
                     >
-                      {
-                        offerNames.map((name, index) => {
-                          return (
-                            <Option
-                              key={index.toString()}
-                              value={name}
-                            >
-                              {name}
-                            </Option>
-                          );
-                        })
-                      }
+                      {offerNames.map((name, index) => {
+                        return (
+                          <Option key={index.toString()} value={name}>
+                            {name}
+                          </Option>
+                        );
+                      })}
                     </Select>
                   </Form.Item>
                   <div>
@@ -239,7 +235,7 @@ export default function EnrollmentTable({
               'data-title': 'Credit',
             },
           })}
-          filterIcon={filtered => (
+          filterIcon={(filtered) => (
             <FontAwesomeIcon
               style={{
                 color: filtered ? '#1890ff' : undefined,
@@ -261,12 +257,7 @@ export default function EnrollmentTable({
                     className="mr-2 rounded"
                     type="primary"
                     size="small"
-                    icon={
-                      <FontAwesomeIcon
-                        className="mr-1"
-                        icon={faSearch}
-                      />
-                    }
+                    icon={<FontAwesomeIcon className="mr-1" icon={faSearch} />}
                   >
                     Search
                   </Button>
@@ -299,7 +290,7 @@ export default function EnrollmentTable({
           className="antd-col"
           title="Action"
           key="index"
-          render={enrollment => {
+          render={(enrollment) => {
             return {
               children: (
                 <Popconfirm

@@ -177,3 +177,11 @@ $firstBreak: 1060px;
     border: none;
   }
 }
+
+.custom-vertical-ant-select-selector {
+  .ant-select-selector {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

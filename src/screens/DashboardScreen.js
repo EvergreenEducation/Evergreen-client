@@ -25,9 +25,17 @@ const OfferContainer = imported(() =>
   import('components/offer/OfferContainer')
 );
 
+const EnrolledOfferContainer = imported(() =>
+  import('components/enrollment/EnrolledOfferContainer')
+);
+
+const PathwayContainer = imported(() =>
+  import('components/pathway/PathwayContainer')
+);
+
 function DashboardScreen(props) {
-  const { role } = props;
-  const { url: basePath } = props.match;
+  const { role, match, location, history } = props;
+  const { url: basePath } = match;
 
   const [modalStates, setModalStates] = useState({
     providerUpdateModal: false,
@@ -55,7 +63,15 @@ function DashboardScreen(props) {
 
   useEffect(() => {
     getProviderInfo(myProviderId);
-  }, [myProviderId, props.role]);
+  }, [myProviderId, role]);
+
+  if (location.pathname === basePath) {
+    if (role === 'provider') {
+      history.push(`${basePath}/offers`);
+      return;
+    }
+    history.push(`${basePath}/providers`);
+  }
 
   return (
     <>
@@ -69,6 +85,26 @@ function DashboardScreen(props) {
                 openProviderUpdateModal={openProviderUpdateModal}
                 role={role}
                 basePath={basePath}
+                providerId={myProviderId}
+              />
+            )}
+          />
+          <Route
+            path={`${basePath}/enrollments`}
+            component={() => (
+              <EnrolledOfferContainer
+                openProviderUpdateModal={openProviderUpdateModal}
+                role={role}
+                providerId={myProviderId}
+              />
+            )}
+          />
+          <Route
+            path={`${basePath}/pathways`}
+            component={() => (
+              <PathwayContainer
+                openProviderUpdateModal={openProviderUpdateModal}
+                role={role}
                 providerId={myProviderId}
               />
             )}
