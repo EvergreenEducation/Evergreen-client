@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
-import {Layout, Menu, Button} from 'antd';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Layout, Menu, Button } from 'antd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars,
   faDollarSign,
@@ -9,13 +9,12 @@ import {
   faTree,
   faRoute,
   faCog,
-  faDatabase,
 } from '@fortawesome/free-solid-svg-icons';
-import {findIndex} from 'lodash';
+import { findIndex } from 'lodash';
 
-const {Sider} = Layout;
+const { Sider } = Layout;
 
-const routesList = role => {
+const routesList = (role) => {
   return [
     {
       path: 'providers',
@@ -47,24 +46,23 @@ const routesList = role => {
       icon: faCog,
       enabled: ['admin', 'provider'].includes(role),
     },
-    {
-      path: 'database',
-      name: 'Database',
-      icon: faDatabase,
-      enabled: false,
-    },
   ];
 };
 
-function Sidebar({basePath, role, currentRoute}) {
+function Sidebar(props) {
+  const { role, history, match } = props;
+  const { url: basePath } = match;
+  const route = history.location.pathname;
+  const currentRoute = route.split('/').pop();
   const [collapsed, setCollapse] = useState(true);
   const toggleSider = () => {
     setCollapse(!collapsed);
   };
 
-  let routes = routesList(role).filter(i => i.enabled);
+  let routes = routesList(role).filter((i) => i.enabled);
+
   let selectedKeys = currentRoute
-    ? findIndex(routes, r => r.path === currentRoute)
+    ? findIndex(routes, (r) => r.path === currentRoute)
     : 1;
 
   return (
@@ -87,12 +85,11 @@ function Sidebar({basePath, role, currentRoute}) {
         className="bg-green-500"
         theme="dark"
         selectedKeys={[selectedKeys.toString()]}
-        // defaultSelectedKeys={defaultSelectedKeys}
       >
-        {routes.map(({path, name, icon}, index) => (
+        {routes.map(({ path, name, icon }, index) => (
           <Menu.Item
             className="bg-green-500 text-center text-white bg-green-800-selected"
-            style={{marginTop: 0, marginBottom: 0}}
+            style={{ marginTop: 0, marginBottom: 0 }}
             key={index.toString()}
             title={name}
           >

@@ -1,48 +1,54 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Form, notification} from 'antd';
-import useAxios, {configure} from 'axios-hooks';
+import React, { useEffect, useState } from 'react';
+import { Button, Form, notification } from 'antd';
+import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
-import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
 import OfferForm from 'components/offer/OfferForm';
-import OfferStore from 'store/Offer';
+import useGlobalStore from 'store/GlobalStore';
 import dayjs from 'dayjs';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
-import {head, reject} from 'lodash';
+import { head, reject } from 'lodash';
 
 configure({
   axios: axiosInstance,
 });
 
-const OfferCreationContainer = ({scopedToProvider = false, closeModal}) => {
-  const {id: userId, provider_id} = AuthService.currentSession;
+const OfferCreationContainer = ({
+  scopedToProvider = false,
+  closeModal,
+  role,
+  providerId,
+}) => {
+  const { id: userId, provider_id } = AuthService.currentSession;
 
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
-  const [{data: offerPayload, error: offerError}, createOffer] = useAxios(
+  const [{ data: offerPayload, error: offerError }, createOffer] = useAxios(
     {
       url: '/offers',
       method: 'POST',
     },
-    {manual: true}
+    { manual: true }
   );
 
-  const onChangeUpload = e => {
-    const {file} = e;
+  const onChangeUpload = (e) => {
+    const { file } = e;
     if (file) {
       setFile(file);
     }
   };
 
-  const offerStore = OfferStore.useContainer();
-  const store = useProviderDataFieldStore();
-  const {datafield: datafieldStore, provider: providerStore} = store;
+  const {
+    datafield: datafieldStore,
+    provider: providerStore,
+    offer: offerStore,
+  } = useGlobalStore();
 
   let providerEntities = Object.values(providerStore.entities);
 
   if (scopedToProvider) {
     if (providerEntities.length) {
-      providerEntities = reject(providerEntities, p => {
+      providerEntities = reject(providerEntities, (p) => {
         return !(p.id === userId);
       });
 
@@ -89,7 +95,7 @@ const OfferCreationContainer = ({scopedToProvider = false, closeModal}) => {
       });
 
       if (offerResponse.data && file && userId) {
-        const {name, type} = file;
+        const { name, type } = file;
         const results = await UploaderService.upload({
           name,
           mime_type: type,
@@ -127,7 +133,7 @@ const OfferCreationContainer = ({scopedToProvider = false, closeModal}) => {
       offerStore.addOne(offerPayload);
     }
     if (offerError) {
-      const {status, statusText} = offerError.request;
+      const { status, statusText } = offerError.request;
       notification.error({
         message: status,
         description: statusText,
@@ -138,7 +144,7 @@ const OfferCreationContainer = ({scopedToProvider = false, closeModal}) => {
   return (
     <div>
       <Form form={form} name="offerForm">
-        <div className="p-6 overflow-y-auto" style={{maxHeight: '32rem'}}>
+        <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <OfferForm
             offers={Object.values(offerStore.entities)}
             datafields={datafieldStore.entities}
