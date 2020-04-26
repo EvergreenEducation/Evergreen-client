@@ -3,7 +3,8 @@ import axiosInstance from 'services/AxiosInstance';
 import useAxios, { configure } from 'axios-hooks';
 import { Card, Layout, Col } from 'antd';
 import { imported } from 'react-imported-component/macro';
-import { ProvidersTable, useProviderDataFieldStore } from 'components/provider';
+import { ProvidersTable } from 'components/provider';
+import useGlobalStore from 'store/GlobalStore';
 import {
   SearchHeader,
   LogOutTopbar,
@@ -34,8 +35,7 @@ export default function ProviderContainer(props) {
     providerUpdate: false,
   });
   const [selectedProvider, setSelectedProvider] = useState({});
-  const store = useProviderDataFieldStore();
-  const { datafield, provider } = store;
+  const { datafield, provider } = useGlobalStore();
 
   const [{ data = [], loading, error: providerError }] = useAxios(
     '/providers?scope=with_details'
@@ -98,7 +98,6 @@ export default function ProviderContainer(props) {
         <Card className="shadow-md rounded-md">
           <ProvidersTable
             data={providerError ? [] : showData}
-            store={store}
             loading={loading && loadingDataFields}
             datafields={datafieldError ? [] : dataFieldEntities}
             handleUpdateModal={openAndPopulateUpdateModal}
@@ -110,7 +109,6 @@ export default function ProviderContainer(props) {
             onCancel={() =>
               setModalStates({ ...modalStates, providerUpdate: false })
             }
-            store={store}
           />
           <FormModal
             title="New Provider"

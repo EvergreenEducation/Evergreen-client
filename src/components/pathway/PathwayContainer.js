@@ -4,11 +4,8 @@ import { useHistory } from 'react-router-dom';
 import { Card, Layout, Col } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import PathwaysTable from 'components/pathway/PathwaysTable';
-import { useProviderDataFieldStore } from 'components/provider';
-import PathwayStore from 'store/Pathway';
+import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
-import OfferStore from 'store/Offer';
-import ProviderStore from 'store/Provider';
 import matchSorter from 'match-sorter';
 import {
   SearchHeader,
@@ -44,11 +41,12 @@ export default function PathwayContainer({
     pathwayUpdate: false,
   });
   const [selectedPathway, setSelectedPathway] = useState({});
-  const store = useProviderDataFieldStore();
-  const { datafield, provider } = store;
-  const pathwayStore = PathwayStore.useContainer();
-  const offerStore = OfferStore.useContainer();
-  const providerStore = ProviderStore.useContainer();
+  const {
+    datafield,
+    provider: providerStore,
+    pathway: pathwayStore,
+    offer: offerStore,
+  } = useGlobalStore();
 
   let getPathwaysUrl =
     role === 'provider'
@@ -136,7 +134,7 @@ export default function PathwayContainer({
         <Card className="shadow-md rounded-md">
           <PathwaysTable
             datafields={datafield.entities}
-            providers={provider.entities}
+            providers={providerStore.entities}
             data={showData}
             handleUpdateModal={openAndPopulateUpdateModal}
             offers={offerStore.entities}
@@ -161,7 +159,7 @@ export default function PathwayContainer({
             pathwayStore={pathwayStore}
             scopedToProvider={role === 'provider'}
             role={role}
-            providers={Object.values(provider.entities)}
+            providers={Object.values(providerStore.entities)}
           />
         </Card>
       </Content>

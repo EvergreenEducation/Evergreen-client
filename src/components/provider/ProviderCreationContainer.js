@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ProviderForm from 'components/provider/ProviderForm';
 import { Button, Form, notification } from 'antd';
-import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
+import useGlobalStore from 'store/GlobalStore';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import AuthService from 'services/AuthService';
@@ -23,8 +23,10 @@ const ProviderCreationContainer = ({ closeModal }) => {
   };
 
   const [form] = Form.useForm();
-  const store = useProviderDataFieldStore();
-  const { datafield: datafieldStore, provider: providerStore } = store;
+  const {
+    datafield: datafieldStore,
+    provider: providerStore,
+  } = useGlobalStore();
   const [
     { data: providerPayload, error: providerCreateError },
     createProvider,

@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
-import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
 import OfferForm from 'components/offer/OfferForm';
-import OfferStore from 'store/Offer';
+import useGlobalStore from 'store/GlobalStore';
 import dayjs from 'dayjs';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
@@ -39,9 +38,11 @@ const OfferCreationContainer = ({
     }
   };
 
-  const offerStore = OfferStore.useContainer();
-  const store = useProviderDataFieldStore();
-  const { datafield: datafieldStore, provider: providerStore } = store;
+  const {
+    datafield: datafieldStore,
+    provider: providerStore,
+    offer: offerStore,
+  } = useGlobalStore();
 
   let providerEntities = Object.values(providerStore.entities);
 

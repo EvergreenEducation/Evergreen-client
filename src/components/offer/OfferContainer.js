@@ -4,8 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Card, Drawer, Button, message, Layout, Col } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import OfferTable from 'components/offer/OfferTable';
-import { useProviderDataFieldStore } from 'components/provider';
-import OfferStore from 'store/Offer';
+import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import {
   SearchHeader,
@@ -45,9 +44,7 @@ export default function OfferContainer(props) {
     formModal: false,
   });
   const [selectedOffer, setSelectedOffer] = useState({});
-  const store = useProviderDataFieldStore();
-  const { datafield, provider } = store;
-  const offerStore = OfferStore.useContainer();
+  const { datafield, provider, offer: offerStore } = useGlobalStore();
   const { entities = [] } = offerStore;
 
   const [{ data: getProviderData = [], error: providerError }] = useAxios(

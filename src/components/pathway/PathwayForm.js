@@ -11,7 +11,7 @@ import {
 } from 'antd';
 import TitleDivider from 'components/TitleDivider';
 import { ImageUploadAndNameInputs } from 'components/shared';
-import { groupBy, property, isNil, head } from 'lodash';
+import { groupBy, property, isNil } from 'lodash';
 import 'scss/antd-overrides.scss';
 import OfferGroupTable from './OfferGroupTable';
 
@@ -297,11 +297,6 @@ export default function PathwayForm({
             <Select
               className={`custom-select-rounded-l-r-none`}
               showSearch
-              defaultValue={
-                role === 'provider' && providers && providers.length
-                  ? head(providers).id
-                  : null
-              }
               name="provider_id"
             >
               {!isNil(providers) && providers.length

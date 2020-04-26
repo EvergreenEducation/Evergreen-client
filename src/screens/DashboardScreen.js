@@ -4,12 +4,7 @@ import { withRouter, Redirect } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import { Layout } from 'antd';
 import axiosInstance from 'services/AxiosInstance';
-
-import ProviderStore from 'store/Provider';
-import DataFieldStore from 'store/DataField';
-import OfferStore from 'store/Offer';
-import PathwayStore from 'store/Pathway';
-import EnrollmentStore from 'store/Enrollment';
+import { GlobalProvider } from 'store/GlobalStore';
 import Sidebar from 'components/Sidebar';
 import PrivateRoute from 'services/PrivateRoute';
 import 'scss/antd-overrides.scss';
@@ -84,100 +79,95 @@ function DashboardScreen(props) {
   }, [myProviderId]);
 
   return (
-    <DataFieldStore.Provider>
-      <ProviderStore.Provider>
-        <OfferStore.Provider>
-          <PathwayStore.Provider>
-            <EnrollmentStore.Provider>
-              <Layout className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto">
-                <Sidebar {...props} role={role} />
-                <div className="h-min-full w-full">
-                  <PrivateRoute>
-                    {role === 'admin' ? (
-                      <Redirect to={`${basePath}/providers`} />
-                    ) : (
-                      <Redirect to={`${basePath}/offers`} />
-                    )}
-                  </PrivateRoute>
-                  <PrivateRoute
-                    path={`${basePath}/providers`}
-                    restrictToRole="admin"
-                    role={role}
-                    component={() => (
-                      <ProviderContainer role={role} basePath={basePath} />
-                    )}
-                  />
-                  <PrivateRoute
-                    path={`${basePath}/offers`}
-                    component={() => (
-                      <OfferContainer
-                        openProviderUpdateModal={openProviderUpdateModal}
-                        role={role}
-                        basePath={basePath}
-                        providerId={myProviderId}
-                      />
-                    )}
-                  />
-                  <PrivateRoute
-                    path={`${basePath}/enrollments`}
-                    component={() => (
-                      <EnrollmentContainer
-                        openProviderUpdateModal={openProviderUpdateModal}
-                        role={role}
-                        providerId={myProviderId}
-                      />
-                    )}
-                  />
-                  <PrivateRoute
-                    path={`${basePath}/pathways`}
-                    component={() => (
-                      <PathwayContainer
-                        openProviderUpdateModal={openProviderUpdateModal}
-                        role={role}
-                        providerId={myProviderId}
-                      />
-                    )}
-                  />
-                  <PrivateRoute
-                    path={`${basePath}/settings`}
-                    component={() => (
-                      <DataFieldContainer
-                        role={role}
-                        openProviderUpdateModal={openProviderUpdateModal}
-                      />
-                    )}
-                  />
-                </div>
-              </Layout>
-              {role === 'provider' && (
-                <>
-                  <ProviderUpdateContainer
-                    provider_id={myProviderId}
-                    visible={modalStates.providerUpdateModal}
-                    onCancel={() =>
-                      setModalStates({
-                        providerUpdateModal: false,
-                        providerSimpleUpdateModal: false,
-                      })
-                    }
-                  />
-                  <ProviderSimpleUpdateContainer
-                    provider_id={myProviderId}
-                    visible={modalStates.providerSimpleUpdateModal}
-                    onCancel={() =>
-                      setModalStates({
-                        ...modalStates,
-                        providerSimpleUpdateModal: false,
-                      })
-                    }
-                  />
-                </>
-              )}
-            </EnrollmentStore.Provider>
-          </PathwayStore.Provider>
-        </OfferStore.Provider>
-      </ProviderStore.Provider>
-    </DataFieldStore.Provider>
+    <GlobalProvider>
+      <Layout className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto">
+        <Sidebar {...props} role={role} />
+        <div className="h-min-full w-full">
+          <PrivateRoute
+            exact
+            path={role === 'admin' ? basePath : `${basePath}/:id`}
+          >
+            {role === 'admin' ? (
+              <Redirect to={`${basePath}/providers`} />
+            ) : (
+              <Redirect to={`${basePath}/offers`} />
+            )}
+          </PrivateRoute>
+          <PrivateRoute
+            path={`${basePath}/providers`}
+            restrictToRole="admin"
+            role={role}
+            component={() => (
+              <ProviderContainer role={role} basePath={basePath} />
+            )}
+          />
+          <PrivateRoute
+            path={`${basePath}/offers`}
+            component={() => (
+              <OfferContainer
+                openProviderUpdateModal={openProviderUpdateModal}
+                role={role}
+                basePath={basePath}
+                providerId={myProviderId}
+              />
+            )}
+          />
+          <PrivateRoute
+            path={`${basePath}/enrollments`}
+            component={() => (
+              <EnrollmentContainer
+                openProviderUpdateModal={openProviderUpdateModal}
+                role={role}
+                providerId={myProviderId}
+              />
+            )}
+          />
+          <PrivateRoute
+            path={`${basePath}/pathways`}
+            component={() => (
+              <PathwayContainer
+                openProviderUpdateModal={openProviderUpdateModal}
+                role={role}
+                providerId={myProviderId}
+              />
+            )}
+          />
+          <PrivateRoute
+            path={`${basePath}/settings`}
+            component={() => (
+              <DataFieldContainer
+                role={role}
+                openProviderUpdateModal={openProviderUpdateModal}
+              />
+            )}
+          />
+        </div>
+      </Layout>
+      {role === 'provider' && (
+        <>
+          <ProviderUpdateContainer
+            provider_id={myProviderId}
+            visible={modalStates.providerUpdateModal}
+            onCancel={() =>
+              setModalStates({
+                providerUpdateModal: false,
+                providerSimpleUpdateModal: false,
+              })
+            }
+          />
+          <ProviderSimpleUpdateContainer
+            provider_id={myProviderId}
+            visible={modalStates.providerSimpleUpdateModal}
+            onCancel={() =>
+              setModalStates({
+                ...modalStates,
+                providerSimpleUpdateModal: false,
+              })
+            }
+          />
+        </>
+      )}
+    </GlobalProvider>
   );
 }
 

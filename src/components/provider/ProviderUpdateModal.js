@@ -4,7 +4,7 @@ import ProviderForm from 'components/provider/ProviderForm';
 import axiosInstance from 'services/AxiosInstance';
 import { isNil, groupBy, orderBy } from 'lodash';
 import { configure } from 'axios-hooks';
-import ProviderStore from 'store/Provider';
+import useGlobalStore from 'store/GlobalStore';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import 'scss/antd-overrides.scss';
@@ -71,7 +71,7 @@ export default function ProviderUpdateModal(props) {
   const { provider = {}, onCancel, visible, datafields } = props;
   const { Offers = [], Pathways = [] } = provider;
 
-  const providerStore = ProviderStore.useContainer();
+  const { provider: providerStore } = useGlobalStore();
   const [file, setFile] = useState(null);
 
   const onChangeUpload = (e) => {
@@ -142,7 +142,7 @@ export default function ProviderUpdateModal(props) {
         }
       }
     }
-  }, [props, form, provider, provider.Files]);
+  }, [form, provider, provider.Files]);
 
   const submitUpdate = async () => {
     try {
@@ -190,12 +190,14 @@ export default function ProviderUpdateModal(props) {
           }
         }
 
-        providerStore.updateOne(response.data);
-        onCancel();
-        notification.success({
-          message: response.status,
-          description: 'Successfully updated provider',
-        });
+        if (response.data) {
+          providerStore.updateOne(response.data);
+          notification.success({
+            message: response.status,
+            description: 'Successfully updated provider',
+          });
+          onCancel();
+        }
       }
     } catch (err) {
       console.error(err);

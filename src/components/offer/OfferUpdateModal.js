@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Form, Table, Button, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
-import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
+import useGlobalStore from 'store/GlobalStore';
 import OfferForm from 'components/offer/OfferForm';
 import dayjs from 'dayjs';
 import moment from 'moment';
@@ -54,8 +54,10 @@ export default function OfferUpdateModal({
     { manual: true }
   );
 
-  const store = useProviderDataFieldStore();
-  const { datafield: datafieldStore, provider: providerStore } = store;
+  const {
+    datafield: datafieldStore,
+    provider: providerStore,
+  } = useGlobalStore();
 
   const submitUpdate = async () => {
     try {
@@ -114,12 +116,12 @@ export default function OfferUpdateModal({
       }
 
       if (response && response.status === 200) {
-        offerStore.updateOne(updateOfferPayload);
-        onCancel();
+        offerStore.updateOne(response.data);
         notification.success({
           message: response.status,
           description: 'Successfully updated offer',
         });
+        onCancel();
       }
     } catch (error) {
       console.error(error);

@@ -110,11 +110,11 @@ export default function PathwayUpdateModal({
       }
 
       if (response && response.status === 200) {
-        onCancel();
         notification.success({
           message: response.status,
           description: 'Successfully updated pathway',
         });
+        onCancel();
       }
     } catch (err) {
       console.error(err);
@@ -205,7 +205,15 @@ export default function PathwayUpdateModal({
         setFile(null);
       }}
     >
-      <Form form={form}>
+      <Form
+        form={form}
+        initialValues={{
+          provider_id:
+            role === 'provider' && providers && providers.length
+              ? head(providers).id
+              : null,
+        }}
+      >
         <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <PathwayForm
             pathway={pathway}

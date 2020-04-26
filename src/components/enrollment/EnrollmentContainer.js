@@ -5,8 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
-
-import EnrollmentStore from 'store/Enrollment';
+import useGlobalStore from 'store/GlobalStore';
 import { EnrollmentTable } from 'components/enrollment';
 import { LogOutTopbar, SearchHeader } from 'components/shared';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -34,7 +33,7 @@ export default function EnrollmentContainer({
   );
   const history = useHistory();
   const location = useLocation();
-  const enrollmentStore = EnrollmentStore.useContainer();
+  const { enrollment: enrollmentStore } = useGlobalStore();
 
   const query = new URLSearchParams(location.search);
   const offer = Number(query.get('offer'));
