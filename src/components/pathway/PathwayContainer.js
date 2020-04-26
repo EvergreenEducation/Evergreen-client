@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { imported } from 'react-imported-component/macro';
 import { useHistory } from 'react-router-dom';
-import { Card, Layout, Tooltip, Button, Col } from 'antd';
+import { Card, Layout, Col } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import PathwaysTable from 'components/pathway/PathwaysTable';
 import { useProviderDataFieldStore } from 'components/provider';
@@ -10,13 +10,11 @@ import axiosInstance from 'services/AxiosInstance';
 import OfferStore from 'store/Offer';
 import ProviderStore from 'store/Provider';
 import matchSorter from 'match-sorter';
-import { LogOutTopbar, SearchHeader } from 'components/shared';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
-
-const ProviderUpdateContainer = imported(() =>
-  import('components/provider/ProviderUpdateContainer')
-);
+import {
+  SearchHeader,
+  ProviderLogOutTopbar,
+  FaPlusCircleButton,
+} from 'components/shared';
 
 const FormModal = imported(() => import('components/shared/FormModal'));
 
@@ -101,8 +99,7 @@ export default function PathwayContainer({
   }, [getPathways, getOffers, getProviders, getDataFields]);
 
   const handleDataAfterSearch = (data, keys = ['name']) => {
-    const results = matchSorter(data, searchString, { keys });
-    return results;
+    return matchSorter(data, searchString, { keys });
   };
 
   const handleDataSearch = (searchVal) => {
@@ -119,33 +116,10 @@ export default function PathwayContainer({
 
   return (
     <Layout className="bg-transparent">
-      <LogOutTopbar
-        renderNextToLogOut={
-          role === 'provider' && (
-            <Tooltip title="Update my information">
-              <Button
-                className="rounded mr-2 px-4"
-                type="primary"
-                size="small"
-                onClick={() => openProviderUpdateModal()}
-                onMouseEnter={() => ProviderUpdateContainer.preload()}
-              >
-                <FontAwesomeIcon
-                  className="text-white relative"
-                  style={{ left: 2 }}
-                  icon={faUserEdit}
-                />
-              </Button>
-            </Tooltip>
-          )
-        }
-      >
+      <ProviderLogOutTopbar role={role} onClick={openProviderUpdateModal}>
         <Col span={14}>
           <SearchHeader title="PATHWAYS" onSearch={handleDataSearch}>
-            <Button
-              className="rounded text-xs flex items-center ml-2"
-              type="primary"
-              size="small"
+            <FaPlusCircleButton
               onMouseEnter={() => {
                 FormModal.preload();
                 PathwayCreationContainer.preload();
@@ -153,16 +127,11 @@ export default function PathwayContainer({
               onClick={() =>
                 setModalStates({ ...modalStates, pathwayCreation: true })
               }
-            >
-              <FontAwesomeIcon
-                className="text-white mr-1 text-xs"
-                icon={faPlusCircle}
-              />
-              PATHWAY
-            </Button>
+              text="PATHWAY"
+            />
           </SearchHeader>
         </Col>
-      </LogOutTopbar>
+      </ProviderLogOutTopbar>
       <Content className="p-6">
         <Card className="shadow-md rounded-md">
           <PathwaysTable

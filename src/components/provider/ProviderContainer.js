@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from 'services/AxiosInstance';
 import useAxios, { configure } from 'axios-hooks';
-import { Card, Layout, Col, Button } from 'antd';
+import { Card, Layout, Col } from 'antd';
 import { imported } from 'react-imported-component/macro';
 import { ProvidersTable, useProviderDataFieldStore } from 'components/provider';
-import { SearchHeader, LogOutTopbar } from 'components/shared';
+import {
+  SearchHeader,
+  LogOutTopbar,
+  FaPlusCircleButton,
+} from 'components/shared';
 import matchSorter from 'match-sorter';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
 const ProviderUpdateModal = imported(() =>
   import('components/provider/ProviderUpdateModal')
@@ -65,8 +67,7 @@ export default function ProviderContainer(props) {
   const dataFieldEntities = Object.values(datafield.entities);
 
   const handleDataAfterSearch = (data, keys = ['name']) => {
-    const results = matchSorter(data, searchString, { keys });
-    return results;
+    return matchSorter(data, searchString, { keys });
   };
 
   const handleDataSearch = (searchVal) => {
@@ -80,10 +81,7 @@ export default function ProviderContainer(props) {
       <LogOutTopbar>
         <Col span={14}>
           <SearchHeader title="PROVIDERS" onSearch={handleDataSearch}>
-            <Button
-              className="rounded text-xs flex items-center ml-2"
-              type="primary"
-              size="small"
+            <FaPlusCircleButton
               onMouseEnter={() => {
                 FormModal.preload();
                 ProviderCreationContainer.preload();
@@ -91,13 +89,8 @@ export default function ProviderContainer(props) {
               onClick={() =>
                 setModalStates({ ...modalStates, providerCreation: true })
               }
-            >
-              <FontAwesomeIcon
-                className="text-white mr-1 text-xs"
-                icon={faPlusCircle}
-              />
-              PROVIDER
-            </Button>
+              text="PROVIDER"
+            />
           </SearchHeader>
         </Col>
       </LogOutTopbar>

@@ -3,6 +3,8 @@ import SearchModalHeader from './SearchModalHeader';
 import SearchHeader from './SearchHeader';
 import LogOutTopbar from './LogOutTopbar';
 import FormModal from './FormModal';
+import ProviderLogOutTopbar from './ProviderLogOutTopbar';
+import FaPlusCircleButton from './FaPlusCircleButton';
 
 export {
   ImageUploadAndNameInputs,
@@ -10,4 +12,6 @@ export {
   SearchHeader,
   LogOutTopbar,
   FormModal,
+  ProviderLogOutTopbar,
+  FaPlusCircleButton,
 };

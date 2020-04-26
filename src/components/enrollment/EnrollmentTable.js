@@ -106,9 +106,7 @@ export default function EnrollmentTable({
         className="ant-table-wrapper--responsive"
         rowClassName={() => 'antd-row'}
         rowKey="id"
-        pagination={{
-          pageSize: 10,
-        }}
+        pagination={{ pageSize: 8 }}
       >
         <Column
           className="antd-col"

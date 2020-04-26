@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { imported } from 'react-imported-component/macro';
 import { useHistory } from 'react-router-dom';
-import { Card, Drawer, Button, message, Layout, Tooltip, Col } from 'antd';
+import { Card, Drawer, Button, message, Layout, Col } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import OfferTable from 'components/offer/OfferTable';
 import { useProviderDataFieldStore } from 'components/provider';
 import OfferStore from 'store/Offer';
 import axiosInstance from 'services/AxiosInstance';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
-import { LogOutTopbar, SearchHeader } from 'components/shared';
+import {
+  SearchHeader,
+  ProviderLogOutTopbar,
+  FaPlusCircleButton,
+} from 'components/shared';
 import matchSorter from 'match-sorter';
 
 const { Content } = Layout;
@@ -26,10 +28,6 @@ const OfferUpdateModal = imported(() =>
 
 const BatchEnrollmentModal = imported(() =>
   import('components/enrollment/BatchEnrollmentModal')
-);
-
-const ProviderUpdateContainer = imported(() =>
-  import('components/provider/ProviderUpdateContainer')
 );
 
 configure({
@@ -108,8 +106,7 @@ export default function OfferContainer(props) {
   }
 
   const handleDataAfterSearch = (data, keys = ['name']) => {
-    const results = matchSorter(data, searchString, { keys });
-    return results;
+    return matchSorter(data, searchString, { keys });
   };
 
   const handleDataSearch = (searchVal) => {
@@ -138,51 +135,23 @@ export default function OfferContainer(props) {
 
   return (
     <Layout className="bg-transparent">
-      <LogOutTopbar
-        renderNextToLogOut={
-          role === 'provider' && (
-            <Tooltip title="Update my information">
-              <Button
-                className="rounded mr-2 px-4"
-                type="primary"
-                size="small"
-                onClick={() => openProviderUpdateModal()}
-                onMouseEnter={() => ProviderUpdateContainer.preload()}
-              >
-                <FontAwesomeIcon
-                  className="text-white relative"
-                  style={{ left: 2 }}
-                  icon={faUserEdit}
-                />
-              </Button>
-            </Tooltip>
-          )
-        }
-      >
+      <ProviderLogOutTopbar role={role} onClick={openProviderUpdateModal}>
         <Col span={14}>
           <SearchHeader
             title="NEW OFFERS / OPPORTUNITIES"
             onSearch={handleDataSearch}
           >
-            <Button
-              className="rounded text-xs flex items-center ml-2"
-              type="primary"
-              size="small"
+            <FaPlusCircleButton
               onMouseEnter={() => {
                 FormModal.preload();
                 OfferCreationContainer.preload();
               }}
               onClick={() => setOpenable({ ...openable, formModal: true })}
-            >
-              <FontAwesomeIcon
-                className="text-white mr-1 text-xs"
-                icon={faPlusCircle}
-              />
-              OFFER
-            </Button>
+              text="OFFER"
+            />
           </SearchHeader>
         </Col>
-      </LogOutTopbar>
+      </ProviderLogOutTopbar>
       <Content className="p-6">
         <Card className="shadow-md rounded-md">
           <OfferTable
