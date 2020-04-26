@@ -3,10 +3,12 @@ import { imported } from 'react-imported-component/macro';
 import { Layout, Tooltip, Button } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
-import ProviderTypeContainer from 'components/provider/ProviderTypeContainer';
-import TopicContainer from 'components/topic/TopicContainer';
-import OfferCategoryContainer from 'components/offer/OfferCategoryContainer';
-import SelectOptionsContainer from 'components/SelectOptionsContainer';
+import {
+  SelectOptionsContainer,
+  OfferCategoryContainer,
+  TopicContainer,
+  ProviderTypeContainer,
+} from 'components/datafield';
 import { LogOutTopbar } from 'components/shared';
 
 const { Content } = Layout;

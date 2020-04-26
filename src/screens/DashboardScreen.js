@@ -30,8 +30,8 @@ const OfferContainer = imported(() =>
   import('components/offer/OfferContainer')
 );
 
-const EnrolledOfferContainer = imported(() =>
-  import('components/enrollment/EnrolledOfferContainer')
+const EnrollmentContainer = imported(() =>
+  import('components/enrollment/EnrollmentContainer')
 );
 
 const PathwayContainer = imported(() =>
@@ -43,13 +43,13 @@ const DataFieldContainer = imported(() =>
 );
 
 function DashboardScreen(props) {
-  let { role, match } = props;
+  let { match } = props;
   const { url: basePath } = match;
 
-  let updatedRole = null;
+  let role = null;
 
   if (AuthService.currentSession && AuthService.currentSession.role) {
-    updatedRole = AuthService.currentSession.role;
+    role = AuthService.currentSession.role;
   }
 
   const [modalStates, setModalStates] = useState({
@@ -90,10 +90,10 @@ function DashboardScreen(props) {
           <PathwayStore.Provider>
             <EnrollmentStore.Provider>
               <Layout className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto">
-                <Sidebar {...props} role={updatedRole || role} />
+                <Sidebar {...props} role={role} />
                 <div className="h-min-full w-full">
                   <PrivateRoute>
-                    {role === 'admin' || updatedRole === 'admin' ? (
+                    {role === 'admin' ? (
                       <Redirect to={`${basePath}/providers`} />
                     ) : (
                       <Redirect to={`${basePath}/offers`} />
@@ -102,12 +102,9 @@ function DashboardScreen(props) {
                   <PrivateRoute
                     path={`${basePath}/providers`}
                     restrictToRole="admin"
-                    role={updatedRole || role}
+                    role={role}
                     component={() => (
-                      <ProviderContainer
-                        role={updatedRole || role}
-                        basePath={basePath}
-                      />
+                      <ProviderContainer role={role} basePath={basePath} />
                     )}
                   />
                   <PrivateRoute
@@ -115,7 +112,7 @@ function DashboardScreen(props) {
                     component={() => (
                       <OfferContainer
                         openProviderUpdateModal={openProviderUpdateModal}
-                        role={updatedRole || role}
+                        role={role}
                         basePath={basePath}
                         providerId={myProviderId}
                       />
@@ -124,9 +121,9 @@ function DashboardScreen(props) {
                   <PrivateRoute
                     path={`${basePath}/enrollments`}
                     component={() => (
-                      <EnrolledOfferContainer
+                      <EnrollmentContainer
                         openProviderUpdateModal={openProviderUpdateModal}
-                        role={updatedRole || role}
+                        role={role}
                         providerId={myProviderId}
                       />
                     )}
@@ -136,7 +133,7 @@ function DashboardScreen(props) {
                     component={() => (
                       <PathwayContainer
                         openProviderUpdateModal={openProviderUpdateModal}
-                        role={updatedRole || role}
+                        role={role}
                         providerId={myProviderId}
                       />
                     )}
@@ -145,14 +142,14 @@ function DashboardScreen(props) {
                     path={`${basePath}/settings`}
                     component={() => (
                       <DataFieldContainer
-                        role={updatedRole || role}
+                        role={role}
                         openProviderUpdateModal={openProviderUpdateModal}
                       />
                     )}
                   />
                 </div>
               </Layout>
-              {(role === 'provider' || updatedRole === 'provider') && (
+              {role === 'provider' && (
                 <>
                   <ProviderUpdateContainer
                     provider_id={myProviderId}

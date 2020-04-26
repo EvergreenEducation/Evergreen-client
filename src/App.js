@@ -5,16 +5,10 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import { Button } from 'antd';
 import HomePage from 'screens/HomePage';
-import DashboardScreen from 'screens/DashboardScreen';
 import PrivateRoute from 'services/PrivateRoute';
 const AuthScreen = imported(() => import('screens/AuthScreen'));
-// const AdminDashboardScreen = imported(() =>
-//   import('screens/AdminDashboardScreen')
-// );
-// const ProviderDashboardScreen = imported(() =>
-//   import('screens/ProviderDashboardScreen')
-// );
 const Result = imported(() => import('antd/lib/result'));
+const DashboardScreen = imported(() => import('screens/DashboardScreen'));
 
 function App() {
   const currentSession = reactLocalStorage.getObject('currentSession');
@@ -25,23 +19,12 @@ function App() {
     window.location.replace(`/`);
   }
 
-  const { role } = AuthService.currentSession;
-
   return (
     <Router>
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route path="/auth/:action" component={AuthScreen} />
-        {/* <Route path="/admin" component={AdminDashboardScreen} />
-        <Route path="/provider/:id" component={ProviderDashboardScreen} /> */}
-        <PrivateRoute
-          path="/dashboard"
-          component={() => <DashboardScreen role={role} />}
-        />
-        <PrivateRoute
-          path="/dashboard/:id"
-          component={() => <DashboardScreen role={role} />}
-        />
+        <PrivateRoute path="/dashboard" component={() => <DashboardScreen />} />
         <Route
           exact
           path="/error/500"

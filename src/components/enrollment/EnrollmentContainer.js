@@ -23,7 +23,7 @@ configure({
 
 const { Content } = Layout;
 
-export default function EnrolledOfferContainer({
+export default function EnrollmentContainer({
   role,
   openProviderUpdateModal,
   providerId,
