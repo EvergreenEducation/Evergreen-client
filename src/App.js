@@ -6,6 +6,13 @@ import { imported } from 'react-imported-component/macro';
 import { Button } from 'antd';
 import HomePage from 'screens/HomePage';
 import PrivateRoute from 'services/PrivateRoute';
+
+import useAxios, { configure } from 'axios-hooks';
+import axiosInstance from 'services/AxiosInstance';
+configure({
+  axios: axiosInstance,
+});
+
 const AuthScreen = imported(() => import('screens/AuthScreen'));
 const Result = imported(() => import('antd/lib/result'));
 const DashboardScreen = imported(() => import('screens/DashboardScreen'));
@@ -13,10 +20,21 @@ const DashboardScreen = imported(() => import('screens/DashboardScreen'));
 function App() {
   const currentSession = reactLocalStorage.getObject('currentSession');
 
-  if (currentSession) {
-    AuthService.setCurrentSession(currentSession);
-  } else {
-    window.location.replace(`/`);
+  const [{ data: myProfile, loading, error }] = useAxios(
+    `/users/${currentSession.id}`
+  );
+
+  if (loading) {
+    // we should show some loading screen maybe
+    return <div />;
+  }
+
+  if (error) {
+    return window.location.replace(`/`);
+  }
+
+  if (myProfile) {
+    AuthService.setCurrentSession(myProfile);
   }
 
   return (
