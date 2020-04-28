@@ -76,6 +76,7 @@ export default function OfferForm({
       >
         <Row gutter={8}>
           <Col
+            //! Role seems to appear undefined for provider users.
             className={role === 'provider' ? 'hidden' : ''}
             xs={24}
             sm={24}

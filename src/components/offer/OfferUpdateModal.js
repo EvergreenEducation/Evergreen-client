@@ -27,6 +27,9 @@ export default function OfferUpdateModal({
 }) {
   const { id: userId, provider_id } = AuthService.currentSession;
   const [file, setFile] = useState(null);
+  const [onFileChange, setOnFileChange] = useState(false);
+
+  // if onFileChange is true, call Uppy service
 
   const {
     RelatedOffers = [],
@@ -41,6 +44,7 @@ export default function OfferUpdateModal({
     const { file } = e;
     if (file) {
       setFile(file);
+      setOnFileChange(true);
     }
   };
 
@@ -175,6 +179,7 @@ export default function OfferUpdateModal({
         }
 
         if (orderedFiles[i].fileable_type === 'offer') {
+          console.log(orderedFiles[i]);
           setFile(orderedFiles[i]);
           break;
         }

@@ -192,10 +192,10 @@ export default function ProviderUpdateModal(props) {
 
         if (response.data) {
           providerStore.updateOne(response.data);
-          notification.success({
-            message: response.status,
-            description: 'Successfully updated provider',
-          });
+          // notification.success({
+          //   message: response.status,
+          //   description: 'Successfully updated provider',
+          // });
           onCancel();
         }
       }

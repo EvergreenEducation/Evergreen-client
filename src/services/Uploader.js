@@ -5,38 +5,39 @@ import * as AwsS3 from '@uppy/aws-s3';
 import * as Uppy from '@uppy/core';
 
 class UploadService {
-
   async upload({
     name,
     mime_type,
     uploaded_by_user_id,
     fileable_type,
     fileable_id,
-    binaryFile
+    binaryFile,
   }) {
     const uppy = Uppy();
     const newFileName = `${cuid()}_${name}`;
 
     uppy.use(AwsS3, {
       getUploadParameters() {
-        return axiosInstance.post('/files/generate_presigned_url', {
-          name: newFileName
-        }).then(({ data }) => {
-          return {
-            method: 'PUT',
-            url: data.url,
-            fields: [],
-            headers: []
-          };
-        })
-      }
+        return axiosInstance
+          .post('/files/generate_presigned_url', {
+            name: newFileName,
+          })
+          .then(({ data }) => {
+            return {
+              method: 'PUT',
+              url: data.url,
+              fields: [],
+              headers: [],
+            };
+          });
+      },
     });
 
     uppy.addFile({
       name: newFileName,
       type: mime_type,
       data: binaryFile,
-      source: 'Local'
+      source: 'Local',
     });
 
     const result = await uppy.upload();
@@ -48,8 +49,8 @@ class UploadService {
         mime_type,
         fileable_id,
         fileable_type,
-        uploaded_by_user_id
-      })
+        uploaded_by_user_id,
+      });
 
       return { success: true, file };
     } else {

@@ -39,7 +39,7 @@ function RoleSelectionScreen({ history }) {
         });
         const { id: student_id } = data;
         AuthService.setCurrentSession(user);
-        history.push(`/${student_id}`);
+        history.push(`/dashboard/${student_id}`); // redirect here Kev
       }
     } catch (e) {
       console.error(e);

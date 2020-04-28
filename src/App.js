@@ -4,7 +4,7 @@ import AuthService from 'services/AuthService';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import { Button } from 'antd';
-import HomePage from 'screens/HomePage';
+import HomeScreen from 'screens/HomeScreen';
 import PrivateRoute from 'services/PrivateRoute';
 
 import useAxios, { configure } from 'axios-hooks';
@@ -40,7 +40,7 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        <Route exact path="/" component={HomeScreen} />
         <Route path="/auth/:action" component={AuthScreen} />
         <PrivateRoute path="/dashboard" component={() => <DashboardScreen />} />
         <Route
