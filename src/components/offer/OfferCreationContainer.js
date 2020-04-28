@@ -31,7 +31,7 @@ const OfferCreationContainer = ({
     { manual: true }
   );
 
-  const onChangeUpload = (e) => {
+  const onChangeUpload = e => {
     const { file } = e;
     if (file) {
       setFile(file);
@@ -48,7 +48,7 @@ const OfferCreationContainer = ({
 
   if (scopedToProvider) {
     if (providerEntities.length) {
-      providerEntities = reject(providerEntities, (p) => {
+      providerEntities = reject(providerEntities, p => {
         return !(p.id === userId);
       });
 
