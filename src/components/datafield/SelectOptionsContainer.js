@@ -4,7 +4,7 @@ import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
-import TitleDivider from 'components/TitleDivider';
+import { TitleDivider } from 'components/shared';
 
 import useAxios, { configure } from 'axios-hooks';
 import { Card, Input, Button, Row, Col, Form } from 'antd';

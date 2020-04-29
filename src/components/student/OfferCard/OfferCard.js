@@ -3,7 +3,6 @@ import { Card, Col, Row } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMapMarkerAlt,
-  faCalendar,
   faCalendarAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { find } from 'lodash';

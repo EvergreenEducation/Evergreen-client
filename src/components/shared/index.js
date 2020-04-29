@@ -5,6 +5,7 @@ import LogOutTopbar from './LogOutTopbar';
 import FormModal from './FormModal';
 import ProviderLogOutTopbar from './ProviderLogOutTopbar';
 import FaPlusCircleButton from './FaPlusCircleButton';
+import TitleDivider from './TitleDivider/TitleDivider';
 
 export {
   ImageUploadAndNameInputs,
@@ -14,4 +15,5 @@ export {
   FormModal,
   ProviderLogOutTopbar,
   FaPlusCircleButton,
+  TitleDivider,
 };

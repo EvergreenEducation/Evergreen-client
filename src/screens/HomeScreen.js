@@ -3,8 +3,10 @@ import { Layout, Row, Col, Button } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { GlobalProvider } from 'store/GlobalStore';
-import { TopicCarouselContainer } from 'components/home';
+import { TopicCarouselContainer } from 'components/student';
 import 'scss/screens/home-screen.scss';
+import { Route } from 'react-router-dom';
+// import { imported } from 'react-imported-component/macro';
 
 const { Header, Content } = Layout;
 
@@ -14,7 +16,9 @@ export default function HomeScreen() {
       <Layout className="h-full bg-gray-100">
         <div className="w-full bg-gray-100" style={{ paddingBottom: 48 }}>
           <Content className="mx-auto max-w-4xl h-auto bg-gray-100">
-            <TopicCarouselContainer />
+            <Route exact path="/">
+              <TopicCarouselContainer />
+            </Route>
           </Content>
         </div>
         <Header className="h-12 w-full bg-green-500 fixed bottom-0">

@@ -1,3 +1,4 @@
 import OfferCard from './OfferCard/OfferCard';
+import TopicCarouselContainer from './TopicCarouselContainer';
 
-export { OfferCard };
+export { TopicCarouselContainer, OfferCard };

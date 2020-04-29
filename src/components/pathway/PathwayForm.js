@@ -9,7 +9,7 @@ import {
   DatePicker,
   InputNumber,
 } from 'antd';
-import TitleDivider from 'components/TitleDivider';
+import { TitleDivider } from 'components/shared';
 import { ImageUploadAndNameInputs } from 'components/shared';
 import { groupBy, property, isNil } from 'lodash';
 import 'scss/antd-overrides.scss';

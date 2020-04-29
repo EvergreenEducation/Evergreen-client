@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import useAxios, { configure } from 'axios-hooks';
 import { Card, Button } from 'antd';
 import { groupBy, property } from 'lodash';
@@ -8,7 +9,7 @@ import { Carousel } from 'react-responsive-carousel';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { OfferCard } from 'components/student';
-import TitleDivider from 'components/TitleDivider';
+import { TitleDivider } from 'components/shared';
 import 'scss/responsive-carousel-override.scss';
 
 configure({
@@ -30,13 +31,19 @@ export default function () {
   const [{ data: providerPayload }] = useAxios('/providers');
 
   const [currentTopic, setCurrentTopic] = useState(null);
+  const [onCurrentChange, setOnCurrentChange] = useState(null);
 
   const handleChange = (e) => {};
 
   const handleCurrentItem = (current, total) => {
     const index = current - 1;
     setTimeout(() => {
-      setCurrentTopic(topics[index]);
+      if (onCurrentChange !== current) {
+        setOnCurrentChange(current);
+      }
+      if (onCurrentChange !== current) {
+        setCurrentTopic(topics[index]);
+      }
     }, 50);
     return null;
   };
@@ -67,8 +74,12 @@ export default function () {
 
   const renderOffers = () => {
     const currentOffers = [];
+    let offerId = null;
     for (let i = 0; i < currentTopic.Offers.length; i++) {
-      const offerId = currentTopic.Offers[i].id;
+      offerId = currentTopic.Offers[i].id;
+      if (!offerId) {
+        break;
+      }
       currentOffers.push(offerStore.entities[offerId]);
     }
 
@@ -76,13 +87,22 @@ export default function () {
       const p = provider.entities[offer.provider_id];
 
       return (
-        <OfferCard
-          className="mx-auto my-2"
-          offer={offer}
-          provider={p}
-          groupedDataFields={groupedDataFields}
-          key={index}
-        />
+        <Link
+          to={`?offer=${offer.id}`}
+          className="block relative mx-auto my-4 rounded"
+          style={{
+            width: 425,
+            height: 185,
+            borderRadius: '1rem',
+          }}
+        >
+          <OfferCard
+            offer={offer}
+            provider={p}
+            groupedDataFields={groupedDataFields}
+            key={index}
+          />
+        </Link>
       );
     });
   };
@@ -101,7 +121,11 @@ export default function () {
 
   return (
     <div className="h-auto">
-      <TitleDivider title={'OFFERS BY TOPICS'} />
+      <TitleDivider
+        title={'OFFERS BY TOPICS'}
+        align="center"
+        classNames={{ middleSpan: 'text-base' }}
+      />
       <Carousel
         className="custom-carousel mb-2"
         showArrows={true}
@@ -127,8 +151,12 @@ export default function () {
           }
           return (
             <Card
-              className="mx-auto text-white text-lg w-auto"
-              style={{ width: 375, backgroundColor: 'rgb(7, 25, 80)' }}
+              className="mx-auto text-white text-lg w-auto flex justify-center items-center"
+              style={{
+                width: 375,
+                backgroundColor: 'rgb(7, 25, 80)',
+                height: 50,
+              }}
               key={index}
             >
               {topic.name}
