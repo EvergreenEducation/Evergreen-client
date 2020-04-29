@@ -3,15 +3,19 @@ import { reactLocalStorage } from 'reactjs-localstorage';
 import AuthService from 'services/AuthService';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
-import { Button } from 'antd';
+import {
+  Button,
+  // Spin
+} from 'antd';
 import HomeScreen from 'screens/HomeScreen';
 import PrivateRoute from 'services/PrivateRoute';
 
-import useAxios, { configure } from 'axios-hooks';
-import axiosInstance from 'services/AxiosInstance';
-configure({
-  axios: axiosInstance,
-});
+// import useAxios, { configure } from 'axios-hooks';
+// import axiosInstance from 'services/AxiosInstance';
+
+// configure({
+//   axios: axiosInstance,
+// });
 
 const AuthScreen = imported(() => import('screens/AuthScreen'));
 const Result = imported(() => import('antd/lib/result'));
@@ -20,22 +24,31 @@ const DashboardScreen = imported(() => import('screens/DashboardScreen'));
 function App() {
   const currentSession = reactLocalStorage.getObject('currentSession');
 
-  const [{ data: myProfile, loading, error }] = useAxios(
-    `/users/${currentSession.id}`
-  );
-
-  if (loading) {
-    // we should show some loading screen maybe
-    return <div />;
-  }
-
-  if (error) {
+  if (currentSession) {
+    AuthService.setCurrentSession(currentSession);
+  } else {
     return window.location.replace(`/`);
   }
 
-  if (myProfile) {
-    AuthService.setCurrentSession(myProfile);
-  }
+  // const [{ data: myProfile, loading, error }] = useAxios(
+  //   `/users/${currentSession.id}`
+  // );
+
+  // if (loading) {
+  //   return (
+  //     <div className="w-full h-full flex justify-center items-center">
+  //       <Spin size="large" />
+  //     </div>
+  //   );
+  // }
+
+  // if (error) {
+  //   return window.location.replace(`/`);
+  // }
+
+  // if (myProfile) {
+  //   AuthService.setCurrentSession(myProfile);
+  // }
 
   return (
     <Router>

@@ -1,5 +1,5 @@
 @import '~antd/dist/antd.min.css';
-/* @import 'react-responsive-carousel/lib/styles/carousel.min.css'; */
+@import '~react-responsive-carousel/lib/styles/carousel.min.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
