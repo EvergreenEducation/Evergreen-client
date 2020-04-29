@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import useAxios, { configure } from 'axios-hooks';
 import { Card, Button } from 'antd';
-import { groupBy, property, find } from 'lodash';
+import { groupBy, property } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { Carousel } from 'react-responsive-carousel';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { OfferCard } from 'components/student';
+import TitleDivider from 'components/TitleDivider';
 import 'scss/responsive-carousel-override.scss';
 
 configure({
@@ -71,31 +73,16 @@ export default function () {
     }
 
     return currentOffers.map((offer, index) => {
-      console.log(offer);
-      console.log(index);
-      const lengthUnit = find(groupedDataFields.length_unit, (item) => {
-        return item.id === Number(offer.length_unit);
-      });
-      const frequencyUnit = find(groupedDataFields.frequency_unit, (item) => {
-        return item.id === Number(offer.frequency_unit);
-      });
       const p = provider.entities[offer.provider_id];
+
       return (
-        <Card title={offer.name} key={index}>
-          Provider: {p.name}
-          <ol>
-            <li>Learn and earn: {offer.learn_and_earn}</li>
-            <li>Cost: {`$${Number(offer.cost) || 'N/A'}`}</li>
-            <li>Pay: {`$${Number(offer.pay) || 'N/A'}`}</li>
-            <li>Credit: {`$${Number(offer.credit) || 'N/A'}`}</li>
-            <li>
-              Length: {Number(offer.length)} {lengthUnit.name}
-            </li>
-            <li>
-              Frequency: {Number(offer.frequency)} {frequencyUnit.name}
-            </li>
-          </ol>
-        </Card>
+        <OfferCard
+          className="mx-auto my-2"
+          offer={offer}
+          provider={p}
+          groupedDataFields={groupedDataFields}
+          key={index}
+        />
       );
     });
   };
@@ -113,10 +100,10 @@ export default function () {
   }, [dataFieldPayload, offerPayload, providerPayload]);
 
   return (
-    <div>
-      <h1 className="text-center">Offers by Topics</h1>
+    <div className="h-auto">
+      <TitleDivider title={'OFFERS BY TOPICS'} />
       <Carousel
-        className="custom-carousel"
+        className="custom-carousel mb-2"
         showArrows={true}
         showIndicators={false}
         swipeable={true}
@@ -132,6 +119,7 @@ export default function () {
         renderArrowPrev={(...rest) => {
           return renderArrowBtns(...rest, faArrowLeft, { left: 15 });
         }}
+        swipeScrollTolerance={1}
       >
         {topics.map((topic, index) => {
           if (!topic) {
@@ -140,7 +128,7 @@ export default function () {
           return (
             <Card
               className="mx-auto text-white text-lg w-auto"
-              style={{ width: 375, backgroundColor: '#0e75d4' }}
+              style={{ width: 375, backgroundColor: 'rgb(7, 25, 80)' }}
               key={index}
             >
               {topic.name}
@@ -148,7 +136,7 @@ export default function () {
           );
         })}
       </Carousel>
-      <main>{currentTopic && renderOffers()}</main>
+      <main className="p-2">{currentTopic && renderOffers()}</main>
     </div>
   );
 }

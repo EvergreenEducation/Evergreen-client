@@ -179,7 +179,7 @@ export default function OfferUpdateModal({
         }
 
         if (orderedFiles[i].fileable_type === 'offer') {
-          console.log(orderedFiles[i]);
+          // console.log(orderedFiles[i]);
           setFile(orderedFiles[i]);
           break;
         }

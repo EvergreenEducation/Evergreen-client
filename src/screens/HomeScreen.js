@@ -11,9 +11,9 @@ const { Header, Content } = Layout;
 export default function HomeScreen() {
   return (
     <GlobalProvider>
-      <Layout className="h-full white">
-        <div className="w-full bg-white">
-          <Content className="mx-auto max-w-4xl h-screen bg-gray-100">
+      <Layout className="h-full bg-gray-100">
+        <div className="w-full bg-gray-100" style={{ paddingBottom: 48 }}>
+          <Content className="mx-auto max-w-4xl h-auto bg-gray-100">
             <TopicCarouselContainer />
           </Content>
         </div>
