@@ -72,9 +72,10 @@ export default function ProviderSimpleUpdateModal(props) {
       );
 
       if (response && response.status === 200) {
+        providerStore.updateOne(response.data);
         if (response.data && file && userId) {
           const { name, type } = file;
-          await UploaderService.upload({
+          const results = await UploaderService.upload({
             name,
             mime_type: type,
             uploaded_by_user_id: userId,
@@ -82,9 +83,15 @@ export default function ProviderSimpleUpdateModal(props) {
             fileable_id: response.data.id,
             binaryFile: file.originFileObj,
           });
+
+          const providerEntity = providerStore.entities[response.data.id];
+          providerEntity.Files.push({
+            ...results.file.data,
+          });
+
+          providerStore.updateOne(providerEntity);
         }
 
-        providerStore.updateOne(response.data);
         notification.success({
           message: response.status,
           description: 'Successfully updated provider',

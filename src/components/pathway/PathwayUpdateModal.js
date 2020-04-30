@@ -103,6 +103,13 @@ export default function PathwayUpdateModal({
           binaryFile: file.originFileObj,
         });
 
+        const pathwayEntity = pathwayStore.entities[response.data.id];
+        pathwayEntity.Files.push({
+          ...results.file.data,
+        });
+
+        pathwayStore.updateOne(pathwayEntity);
+
         if (results.success) {
           notification.success({
             message: 'Success',
@@ -161,21 +168,14 @@ export default function PathwayUpdateModal({
       populateFields(pathway, form);
     }
     if (pathway.Files) {
-      const orderedFiles = orderBy(
+      let orderedFiles = orderBy(
         pathway.Files,
-        ['fileable_type', 'createdAt'],
-        ['desc', 'desc']
+        ['fileable_type', 'createdAt', 'id'],
+        ['desc', 'desc', 'asc']
       );
-      for (let i = 0; i < orderedFiles.length; i++) {
-        if (!orderedFiles[i]) {
-          break;
-        }
 
-        if (orderedFiles[i].fileable_type === 'pathway') {
-          setFile(orderedFiles[i]);
-          break;
-        }
-      }
+      orderedFiles = orderedFiles.filter((f) => f.fileable_type === 'pathway');
+      setFile(head(orderedFiles));
     }
   }, [putData, pathway, putError]);
 

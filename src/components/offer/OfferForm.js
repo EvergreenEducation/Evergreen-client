@@ -32,17 +32,9 @@ export default function OfferForm({
   onChangeUpload,
   file,
   userId = null,
-  providerId = null,
   role,
 }) {
   datafields = Object.values(datafields);
-
-  const providersArr = Object.values(providers).filter((p) => {
-    if (role === 'provider') {
-      return p.id === providerId && !isNil(p.name);
-    }
-    return !isNil(p.name);
-  });
 
   const grouped = groupBy(datafields, property('type'));
   const {
@@ -93,13 +85,9 @@ export default function OfferForm({
                   showSearch
                   name="provider_id"
                 >
-                  {providersArr.map((p, index) => {
-                    return (
-                      <Option key={index.toString()} value={p.id}>
-                        {p.name || null}
-                      </Option>
-                    );
-                  })}
+                  {!isNil(providers) && providers.length
+                    ? preloadOptions(providers)
+                    : null}
                 </Select>
               </Form.Item>
             </div>

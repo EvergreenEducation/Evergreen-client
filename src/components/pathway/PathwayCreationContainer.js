@@ -100,6 +100,10 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
           binaryFile: file.originFileObj,
         });
 
+        response.data.Files = [{ ...results.file.data }];
+
+        pathwayStore.updateOne(response.data);
+
         if (results.success) {
           notification.success({
             message: 'Success',

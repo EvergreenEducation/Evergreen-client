@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Form, Table, Button, notification } from 'antd';
 import ProviderForm from 'components/provider/ProviderForm';
 import axiosInstance from 'services/AxiosInstance';
-import { isNil, groupBy, orderBy } from 'lodash';
+import { isNil, groupBy, orderBy, head } from 'lodash';
 import { configure } from 'axios-hooks';
 import useGlobalStore from 'store/GlobalStore';
 import AuthService from 'services/AuthService';
@@ -128,21 +128,14 @@ export default function ProviderUpdateModal(props) {
     }
 
     if (provider.Files) {
-      const orderedFiles = orderBy(
+      let orderedFiles = orderBy(
         provider.Files,
-        ['fileable_type', 'createdAt'],
-        ['desc', 'desc']
+        ['fileable_type', 'createdAt', 'id'],
+        ['desc', 'desc', 'id']
       );
-      for (let i = 0; i < orderedFiles.length; i++) {
-        if (!orderedFiles[i]) {
-          break;
-        }
 
-        if (orderedFiles[i].fileable_type === 'provider') {
-          setFile(orderedFiles[i]);
-          break;
-        }
-      }
+      orderedFiles = orderedFiles.filter((f) => f.fileable_type === 'provider');
+      setFile(head(orderedFiles));
     }
   }, [form, provider, provider.Files]);
 
@@ -173,6 +166,9 @@ export default function ProviderUpdateModal(props) {
       });
 
       if (response && response.status === 200) {
+        if (response.data) {
+          providerStore.updateOne(response.data);
+        }
         if (onFileChange && response.data && file && userId) {
           const { name, type } = file;
           const results = await UploaderService.upload({
@@ -184,6 +180,13 @@ export default function ProviderUpdateModal(props) {
             binaryFile: file.originFileObj,
           });
 
+          const providerEntity = providerStore.entities[response.data.id];
+          providerEntity.Files.push({
+            ...results.file.data,
+          });
+
+          providerStore.updateOne(providerEntity);
+
           if (results.success) {
             notification.success({
               message: 'Success',
@@ -192,14 +195,11 @@ export default function ProviderUpdateModal(props) {
           }
         }
 
-        if (response.data) {
-          providerStore.updateOne(response.data);
-          notification.success({
-            message: response.status,
-            description: 'Successfully updated provider',
-          });
-          onCancel();
-        }
+        notification.success({
+          message: response.status,
+          description: 'Successfully updated provider',
+        });
+        onCancel();
       }
     } catch (err) {
       console.error(err);

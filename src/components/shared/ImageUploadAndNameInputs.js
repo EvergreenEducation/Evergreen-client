@@ -21,7 +21,7 @@ function ImageUploadAndNameInputs(props) {
       }
       getBase64(
         new Blob([file.originFileObj], { type: file.type }),
-        imageUrl => {
+        (imageUrl) => {
           setImageUrl(imageUrl);
         }
       );
@@ -87,4 +87,3 @@ function ImageUploadAndNameInputs(props) {
 }
 
 export default ImageUploadAndNameInputs;
-

@@ -77,6 +77,10 @@ const ProviderCreationContainer = ({ closeModal }) => {
           binaryFile: file.originFileObj,
         });
 
+        response.data.Files = [{ ...results.file.data }];
+
+        providerStore.updateOne(response.data);
+
         if (results.success) {
           notification.success({
             message: 'Success',

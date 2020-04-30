@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal } from 'antd';
 
 export default function FormModal({
@@ -9,6 +9,7 @@ export default function FormModal({
   role,
   providerId = null,
 }) {
+  useEffect(() => {}, [role]);
   return (
     <Modal
       className="custom-modal"
@@ -24,7 +25,6 @@ export default function FormModal({
       {visible && (
         <FormComponent
           closeModal={onCancel}
-          scopedToProvider={true}
           role={role}
           providerId={providerId}
         />

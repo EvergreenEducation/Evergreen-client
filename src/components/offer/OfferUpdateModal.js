@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import moment from 'moment';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
-import { compact, orderBy } from 'lodash';
+import { compact, orderBy, head } from 'lodash';
 import 'scss/antd-overrides.scss';
 
 configure({
@@ -109,6 +109,13 @@ export default function OfferUpdateModal({
           binaryFile: file.originFileObj,
         });
 
+        const offerEntity = offerStore.entities[response.data.id];
+        offerEntity.Files.push({
+          ...results.file.data,
+        });
+
+        offerStore.updateOne(offerEntity);
+
         if (results.success) {
           notification.success({
             message: 'Success',
@@ -166,21 +173,13 @@ export default function OfferUpdateModal({
       populateFields(offer, form);
     }
     if (offer.Files) {
-      const orderedFiles = orderBy(
+      let orderedFiles = orderBy(
         offer.Files,
-        ['fileable_type', 'createdAt'],
-        ['desc', 'desc']
+        ['fileable_type', 'createdAt', 'id'],
+        ['desc', 'desc', 'asc']
       );
-      for (let i = 0; i < orderedFiles.length; i++) {
-        if (!orderedFiles[i]) {
-          break;
-        }
-
-        if (orderedFiles[i].fileable_type === 'offer') {
-          setFile(orderedFiles[i]);
-          break;
-        }
-      }
+      orderedFiles = orderedFiles.filter((f) => f.fileable_type === 'offer');
+      setFile(head(orderedFiles));
     }
   }, [updateOfferPayload, offer, updateOfferError]);
 
