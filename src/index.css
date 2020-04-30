@@ -55,3 +55,7 @@ code {
 .ant-table-filter-dropdown {
   border-radius: 0.25rem;
 }
+
+.cursor-grab {
+  cursor: grab;
+}

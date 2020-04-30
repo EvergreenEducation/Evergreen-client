@@ -30,6 +30,18 @@ export default function () {
   const [{ data: offerPayload }] = useAxios('/offers?scope=with_details');
   const [{ data: providerPayload }] = useAxios('/providers');
 
+  useEffect(() => {
+    if (dataFieldPayload) {
+      datafield.addMany(dataFieldPayload);
+    }
+    if (offerPayload) {
+      offerStore.addMany(offerPayload);
+    }
+    if (providerPayload) {
+      provider.addMany(providerPayload);
+    }
+  }, [dataFieldPayload, offerPayload, providerPayload]);
+
   const [currentTopic, setCurrentTopic] = useState(null);
   const [onCurrentChange, setOnCurrentChange] = useState(null);
 
@@ -84,11 +96,15 @@ export default function () {
     }
 
     return currentOffers.map((offer, index) => {
-      const p = provider.entities[offer.provider_id];
+      let p = null;
+      if (offer && offer.provider_id) {
+        p = provider.entities[offer.provider_id];
+      }
 
       return (
         <Link
-          to={`?offer=${offer.id}`}
+          key={index}
+          to={offer && offer.id ? `/student/offer/${offer.id}` : null}
           className="block relative mx-auto my-4 rounded"
           style={{
             width: 425,
@@ -100,24 +116,11 @@ export default function () {
             offer={offer}
             provider={p}
             groupedDataFields={groupedDataFields}
-            key={index}
           />
         </Link>
       );
     });
   };
-
-  useEffect(() => {
-    if (dataFieldPayload) {
-      datafield.addMany(dataFieldPayload);
-    }
-    if (offerPayload) {
-      offerStore.addMany(offerPayload);
-    }
-    if (providerPayload) {
-      provider.addMany(providerPayload);
-    }
-  }, [dataFieldPayload, offerPayload, providerPayload]);
 
   return (
     <div className="h-auto">
@@ -127,12 +130,14 @@ export default function () {
         classNames={{ middleSpan: 'text-base' }}
       />
       <Carousel
-        className="custom-carousel mb-2"
+        className="custom-carousel mb-2 cursor-grab"
+        centerMode
+        infiniteLoop
+        centerSlidePercentage={50}
         showArrows={true}
         showIndicators={false}
         swipeable={true}
         emulateTouch={true}
-        centerSlidePercentage={80}
         onChange={handleChange}
         showStatus={true}
         statusFormatter={handleCurrentItem}
