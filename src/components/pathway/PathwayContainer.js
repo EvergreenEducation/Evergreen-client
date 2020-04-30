@@ -138,7 +138,6 @@ export default function PathwayContainer({
             data={showData}
             handleUpdateModal={openAndPopulateUpdateModal}
             offers={offerStore.entities}
-            scopedToProvider={role === 'provider'}
           />
           <FormModal
             title="New Pathway"
@@ -157,7 +156,6 @@ export default function PathwayContainer({
               setModalStates({ ...modalStates, pathwayUpdate: false })
             }
             pathwayStore={pathwayStore}
-            scopedToProvider={role === 'provider'}
             role={role}
             providers={Object.values(providerStore.entities)}
           />

@@ -6,7 +6,6 @@ import {
   Row,
   Col,
   Select,
-  Button,
   DatePicker,
   InputNumber,
 } from 'antd';
@@ -68,6 +67,7 @@ export default function OfferForm({
 
   return (
     <Layout>
+      {`role: ${role}`}
       <ImageUploadAndNameInputs
         className="mb-2"
         userId={userId}
@@ -76,7 +76,6 @@ export default function OfferForm({
       >
         <Row gutter={8}>
           <Col
-            //! Role seems to appear undefined for provider users.
             className={role === 'provider' ? 'hidden' : ''}
             xs={24}
             sm={24}
@@ -104,13 +103,6 @@ export default function OfferForm({
                   })}
                 </Select>
               </Form.Item>
-              <Button
-                className="rounded-l-none"
-                type="primary"
-                style={{ top: '2rem' }}
-              >
-                Use Image
-              </Button>
             </div>
           </Col>
           <Col span={9} xs={24} sm={24} md={role === 'provider' ? 10 : 9}>

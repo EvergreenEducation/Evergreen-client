@@ -1,10 +1,10 @@
 import React from 'react';
-import {Modal, Form, Button, notification, Col, InputNumber} from 'antd';
+import { Modal, Form, Button, notification, Col, InputNumber } from 'antd';
 import axiosInstance from 'services/AxiosInstance';
 import EnrollmentStore from 'store/Enrollment';
 import 'scss/antd-overrides.scss';
 
-export default function EnrollModal({offer, onCancel, visible}) {
+export default function EnrollModal({ offer, onCancel, visible, onSubmit }) {
   const enrollmentStore = EnrollmentStore.useContainer();
   const [form] = Form.useForm();
 
@@ -31,7 +31,7 @@ export default function EnrollModal({offer, onCancel, visible}) {
 
       if (createEnrollment.status === 201) {
         const enrollmentResponse = await axiosInstance.get(
-          `/enrollments?offer_id=${offer.id}&provider_id=${offer.provider_id}&scope=with_offers`
+          `/enrollments?offer_id=${offer.id}&provider_id=${offer.provider_id}`
         );
 
         enrollmentStore.addMany(enrollmentResponse.data);
@@ -40,7 +40,7 @@ export default function EnrollModal({offer, onCancel, visible}) {
           message: 'Success',
           description: 'Batch enrollments have been created.',
         });
-        onCancel();
+        onSubmit();
       } else {
         notification.warning({
           message: createEnrollment.status,
@@ -59,12 +59,12 @@ export default function EnrollModal({offer, onCancel, visible}) {
       title={'Create Batch Enrollments'}
       visible={visible}
       width={520}
-      bodyStyle={{backgroundColor: '#f0f2f5', padding: 0}}
+      bodyStyle={{ backgroundColor: '#f0f2f5', padding: 0 }}
       footer={true}
       onCancel={onCancel}
     >
       <Form form={form}>
-        <div className="p-6 overflow-y-auto" style={{maxHeight: '32rem'}}>
+        <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <Col span={24} className="mb-5">
             <Form.Item
               label="Number of enrollments"
@@ -72,12 +72,9 @@ export default function EnrollModal({offer, onCancel, visible}) {
               name="batch"
               colon={false}
               className="mb-0 inherit flex-col w-full"
-              rules={[{required: true, message: 'This field is required'}]}
+              rules={[{ required: true, message: 'This field is required' }]}
             >
-              <InputNumber
-                className="rounded"
-                min={0}
-              />
+              <InputNumber className="rounded" min={0} />
             </Form.Item>
           </Col>
         </div>

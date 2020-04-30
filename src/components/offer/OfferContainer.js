@@ -192,6 +192,13 @@ export default function OfferContainer(props) {
             <BatchEnrollmentModal
               offer={selectedOffer}
               visible={openable.batchEnrollModal}
+              onSubmit={() =>
+                setOpenable({
+                  ...openable,
+                  batchEnrollModal: false,
+                  drawer: false,
+                })
+              }
               onCancel={() =>
                 setOpenable({
                   ...openable,
