@@ -26,6 +26,7 @@ export default function PathwayUpdateModal({
 }) {
   const { id: userId, provider_id } = AuthService.currentSession;
   const [file, setFile] = useState(null);
+  const [onFileChange, setOnFileChange] = useState(false);
   const [groupsOfOffers, setGroupsOfOffers] = useState([]);
 
   const [form] = Form.useForm();
@@ -42,6 +43,7 @@ export default function PathwayUpdateModal({
     const { file } = e;
     if (file) {
       setFile(file);
+      setOnFileChange(true);
     }
   };
 
@@ -90,7 +92,7 @@ export default function PathwayUpdateModal({
         pathwayStore.updateOne(response.data);
       }
 
-      if (response.data && file && userId) {
+      if (onFileChange && response.data && file && userId) {
         const { name, type } = file;
         const results = await UploaderService.upload({
           name,

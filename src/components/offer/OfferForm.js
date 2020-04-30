@@ -67,7 +67,6 @@ export default function OfferForm({
 
   return (
     <Layout>
-      {`role: ${role}`}
       <ImageUploadAndNameInputs
         className="mb-2"
         userId={userId}

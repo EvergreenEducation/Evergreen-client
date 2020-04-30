@@ -73,11 +73,13 @@ export default function ProviderUpdateModal(props) {
 
   const { provider: providerStore } = useGlobalStore();
   const [file, setFile] = useState(null);
+  const [onFileChange, setOnFileChange] = useState(false);
 
   const onChangeUpload = (e) => {
     const { file } = e;
     if (file) {
       setFile(file);
+      setOnFileChange(true);
     }
   };
 
@@ -171,7 +173,7 @@ export default function ProviderUpdateModal(props) {
       });
 
       if (response && response.status === 200) {
-        if (response.data && file && userId) {
+        if (onFileChange && response.data && file && userId) {
           const { name, type } = file;
           const results = await UploaderService.upload({
             name,
@@ -192,10 +194,10 @@ export default function ProviderUpdateModal(props) {
 
         if (response.data) {
           providerStore.updateOne(response.data);
-          // notification.success({
-          //   message: response.status,
-          //   description: 'Successfully updated provider',
-          // });
+          notification.success({
+            message: response.status,
+            description: 'Successfully updated provider',
+          });
           onCancel();
         }
       }

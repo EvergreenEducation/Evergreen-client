@@ -29,8 +29,6 @@ export default function OfferUpdateModal({
   const [file, setFile] = useState(null);
   const [onFileChange, setOnFileChange] = useState(false);
 
-  // if onFileChange is true, call Uppy service
-
   const {
     RelatedOffers = [],
     PrerequisiteOffers = [],
@@ -100,7 +98,7 @@ export default function OfferUpdateModal({
         },
       });
 
-      if (response.data && file && userId) {
+      if (onFileChange && response.data && file && userId) {
         const { name, type } = file;
         const results = await UploaderService.upload({
           name,
@@ -179,7 +177,6 @@ export default function OfferUpdateModal({
         }
 
         if (orderedFiles[i].fileable_type === 'offer') {
-          // console.log(orderedFiles[i]);
           setFile(orderedFiles[i]);
           break;
         }
