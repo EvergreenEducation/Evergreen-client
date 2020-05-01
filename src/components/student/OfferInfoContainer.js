@@ -5,7 +5,7 @@ import { last, groupBy, property } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
-import { OfferCard, InfoLayout } from 'components/student';
+import { InfoCard, InfoLayout } from 'components/student';
 import { Carousel } from 'react-responsive-carousel';
 import { Empty } from 'antd';
 import 'scss/responsive-carousel-override.scss';
@@ -86,9 +86,9 @@ export default function (props) {
                   p = providerStore.entities[o.provider_id];
                 }
                 return (
-                  <OfferCard
+                  <InfoCard
                     key={index}
-                    offer={o}
+                    data={o}
                     provider={p}
                     groupedDataFields={groupedDataFields}
                     actions={[
@@ -130,9 +130,9 @@ export default function (props) {
                     p = providerStore.entities[o.provider_id];
                   }
                   return (
-                    <OfferCard
+                    <InfoCard
                       key={index}
-                      offer={o}
+                      data={o}
                       provider={p}
                       groupedDataFields={groupedDataFields}
                       actions={[

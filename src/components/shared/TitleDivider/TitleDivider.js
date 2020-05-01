@@ -6,14 +6,14 @@ function TitleDivider({
   align = 'normal',
   className,
   classNames = {
-    leftDiv: '',
+    leftContainer: '',
     middleSpan: '',
-    rightDiv: '',
+    rightContainer: '',
   },
   styles = {
-    leftDiv: {},
+    leftContainer: {},
     middleSpan: {},
-    rightDiv: {},
+    rightContainer: {},
   },
   style,
 }) {
@@ -23,9 +23,9 @@ function TitleDivider({
       style={style}
     >
       <div
-        className={classNames.leftDiv || ''}
+        className={classNames.leftContainer || ''}
         style={{
-          ...styles.leftDiv,
+          ...styles.leftContainer,
           width: align === 'center' ? '50%' : null,
         }}
       />
@@ -33,9 +33,9 @@ function TitleDivider({
         {title}
       </span>
       <div
-        className={classNames.rightDiv || ''}
+        className={classNames.rightContainer || ''}
         style={{
-          ...styles.rightDiv,
+          ...styles.rightContainer,
           width: align === 'center' ? '50%' : null,
         }}
       />

@@ -9,19 +9,9 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
-import {
-  Button,
-  // Spin
-} from 'antd';
+import { Button } from 'antd';
 import HomeScreen from 'screens/HomeScreen';
 import PrivateRoute from 'services/PrivateRoute';
-
-// import useAxios, { configure } from 'axios-hooks';
-// import axiosInstance from 'services/AxiosInstance';
-
-// configure({
-//   axios: axiosInstance,
-// });
 
 const AuthScreen = imported(() => import('screens/AuthScreen'));
 const Result = imported(() => import('antd/lib/result'));
@@ -35,26 +25,6 @@ function App() {
   } else {
     return window.location.replace(`/`);
   }
-
-  // const [{ data: myProfile, loading, error }] = useAxios(
-  //   `/users/${currentSession.id}`
-  // );
-
-  // if (loading) {
-  //   return (
-  //     <div className="w-full h-full flex justify-center items-center">
-  //       <Spin size="large" />
-  //     </div>
-  //   );
-  // }
-
-  // if (error) {
-  //   return window.location.replace(`/`);
-  // }
-
-  // if (myProfile) {
-  //   AuthService.setCurrentSession(myProfile);
-  // }
 
   return (
     <Router>

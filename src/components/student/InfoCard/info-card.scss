@@ -12,12 +12,7 @@ $secondaryPurple: hsl(261, 55%, 78%);
 $primaryBlue: hsl(207, 72%, 48%);
 $secondaryBlue: hsl(207, 72%, 68%);
 
-.offer-card-wrapper {
-  background: linear-gradient(135deg, $primary, $secondary);
-  padding: 0.1rem;
-}
-
-.offer-card {
+.info-card {
   border-radius: 1rem;
   border: none;
   width: 423px;
@@ -28,12 +23,10 @@ $secondaryBlue: hsl(207, 72%, 68%);
     padding: 0 8px;
   }
 
-  //   border: 1px solid $primary;
   .ant-card-head {
     display: flex;
     align-items: center;
     justify-content: center;
-    // border-bottom: 1px solid $primary;
     color: white;
     border-top-left-radius: $borderRadius;
     border-top-right-radius: $borderRadius;
@@ -52,7 +45,6 @@ $secondaryBlue: hsl(207, 72%, 68%);
   border-radius: 50%;
   color: white;
   &--purple {
-    // background: linear-gradient(135deg, $secondaryPurple, $primaryPurple);
     background: linear-gradient(135deg, rgb(142, 45, 226), rgb(74, 0, 224));
   }
   &--blue {

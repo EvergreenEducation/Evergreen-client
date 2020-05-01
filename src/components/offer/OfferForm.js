@@ -10,7 +10,7 @@ import {
   InputNumber,
 } from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
-import { groupBy, property, isNil, remove } from 'lodash';
+import { groupBy, property, isNil, remove, compact } from 'lodash';
 import 'scss/antd-overrides.scss';
 
 const { Option } = Select;
@@ -34,6 +34,7 @@ export default function OfferForm({
   userId = null,
   role,
 }) {
+  providers = compact(providers);
   datafields = Object.values(datafields);
 
   const grouped = groupBy(datafields, property('type'));

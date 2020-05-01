@@ -8,7 +8,7 @@ import axiosInstance from 'services/AxiosInstance';
 import { Carousel } from 'react-responsive-carousel';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { OfferCard } from 'components/student';
+import { InfoCard } from 'components/student';
 import { TitleDivider } from 'components/shared';
 import 'scss/responsive-carousel-override.scss';
 
@@ -102,11 +102,11 @@ export default function () {
       }
 
       return (
-        <OfferCard
+        <InfoCard
           key={index}
           className="mx-auto mb-4"
           style={{ width: 425, borderRadius: '1rem' }}
-          offer={offer}
+          data={offer}
           provider={p}
           groupedDataFields={groupedDataFields}
           actions={[

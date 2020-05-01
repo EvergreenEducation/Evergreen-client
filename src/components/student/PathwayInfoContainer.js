@@ -5,7 +5,7 @@ import { groupBy, property } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
-import { OfferCard, InfoLayout } from 'components/student';
+import { InfoCard, InfoLayout } from 'components/student';
 import { Empty } from 'antd';
 import 'scss/responsive-carousel-override.scss';
 
@@ -95,9 +95,9 @@ export default function (props) {
                       p = providerStore.entities[offer.provider_id];
                     }
                     return (
-                      <OfferCard
+                      <InfoCard
                         className="mb-4"
-                        offer={offer}
+                        data={offer}
                         provider={p}
                         key={index}
                         groupedDataFields={groupedDataFields}

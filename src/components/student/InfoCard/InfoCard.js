@@ -9,18 +9,21 @@ import {
 import { find } from 'lodash';
 import dayjs from 'dayjs';
 import { LearnAndEarnIcons } from 'components/shared';
-import './offer-card.scss';
+import './info-card.scss';
 
 export default function ({
-  offer,
+  data,
   provider,
   groupedDataFields,
   style,
   className,
   actions = [],
 }) {
-  const {
-    name = '',
+  if (!data) {
+    return null;
+  }
+  let {
+    name,
     learn_and_earn,
     cost,
     pay,
@@ -30,9 +33,11 @@ export default function ({
     length,
     frequency,
     provider_id,
-  } = offer;
-  let { start_date } = offer;
-  start_date = dayjs(start_date).format('MMM DD, YYYY');
+    start_date,
+  } = data;
+  if (start_date) {
+    start_date = dayjs(start_date).format('MMM DD, YYYY');
+  }
   const { name: providerName, location } = provider;
   const lengthUnit = find(groupedDataFields.length_unit, ({ id }) => {
     return id === Number(length_unit);
@@ -43,8 +48,8 @@ export default function ({
 
   return (
     <Card
-      title={name}
-      className={`offer-card ${className}`}
+      title={name || ''}
+      className={`info-card ${className}`}
       style={style}
       actions={actions}
     >
