@@ -5,7 +5,7 @@ $secondary_dark: hsl(156, 78%, 38%);
 
 $tertiary: hsl(185, 87%, 24%);
 $fourth: hsl(225, 84%, 17%);
-$borderRadis: 1rem;
+$borderRadius: 1rem;
 
 $primaryPurple: hsl(261, 55%, 58%);
 $secondaryPurple: hsl(261, 55%, 78%);
@@ -35,13 +35,19 @@ $secondaryBlue: hsl(207, 72%, 68%);
     justify-content: center;
     // border-bottom: 1px solid $primary;
     color: white;
-    border-top-left-radius: $borderRadis;
-    border-top-right-radius: $borderRadis;
+    border-top-left-radius: $borderRadius;
+    border-top-right-radius: $borderRadius;
     background: linear-gradient(135deg, $primary, $secondary);
+  }
+  .ant-card-actions {
+    background-color: white;
+    border-bottom-left-radius: $borderRadius;
+    border-bottom-right-radius: $borderRadius;
   }
 }
 
 .learn-earn-icon {
+  width: 23px;
   padding: 1px 8px;
   border-radius: 50%;
   color: white;

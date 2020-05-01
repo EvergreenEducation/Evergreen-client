@@ -102,22 +102,19 @@ export default function () {
       }
 
       return (
-        <Link
+        <OfferCard
           key={index}
-          to={offer && offer.id ? `/student/offer/${offer.id}` : null}
-          className="block relative mx-auto my-4 rounded"
-          style={{
-            width: 425,
-            height: 185,
-            borderRadius: '1rem',
-          }}
-        >
-          <OfferCard
-            offer={offer}
-            provider={p}
-            groupedDataFields={groupedDataFields}
-          />
-        </Link>
+          className="mx-auto mb-4"
+          style={{ width: 425, borderRadius: '1rem' }}
+          offer={offer}
+          provider={p}
+          groupedDataFields={groupedDataFields}
+          actions={[
+            <Link to={offer && offer.id ? `/student/offer/${offer.id}` : null}>
+              <p>View</p>
+            </Link>,
+          ]}
+        />
       );
     });
   };

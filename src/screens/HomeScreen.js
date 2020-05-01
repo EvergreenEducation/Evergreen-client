@@ -4,13 +4,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { GlobalProvider } from 'store/GlobalStore';
 import { TopicCarouselContainer } from 'components/student';
-import 'scss/screens/home-screen.scss';
 import { Route, withRouter } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
+import 'scss/screens/home-screen.scss';
 
 const { Header, Content } = Layout;
 
-const OfferInfo = imported(() => import('components/student/OfferInfo'));
+const OfferInfoContainer = imported(() =>
+  import('components/student/OfferInfoContainer')
+);
+
+const ProviderInfoContainer = imported(() =>
+  import('components/student/ProviderInfoContainer')
+);
+
+const PathwayInfoContainer = imported(() =>
+  import('components/student/PathwayInfoContainer')
+);
 
 function HomeScreen() {
   return (
@@ -21,7 +31,21 @@ function HomeScreen() {
             <Route exact path="/student">
               <TopicCarouselContainer />
             </Route>
-            <Route path="/student/offer/:id" component={OfferInfo} />
+            <Route
+              exact
+              path="/student/offer/:id"
+              component={OfferInfoContainer}
+            />
+            <Route
+              exact
+              path="/student/provider/:id"
+              component={ProviderInfoContainer}
+            />
+            <Route
+              exact
+              path="/student/pathway/:id"
+              component={PathwayInfoContainer}
+            />
           </Content>
         </div>
         <Header className="h-12 w-full bg-green-500 fixed bottom-0 z-10">

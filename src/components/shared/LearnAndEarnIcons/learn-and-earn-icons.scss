@@ -1,0 +1,11 @@
+.learn-earn-icon {
+  padding: 1px 8px;
+  border-radius: 50%;
+  color: white;
+  &--purple {
+    background: linear-gradient(135deg, rgb(142, 45, 226), rgb(74, 0, 224));
+  }
+  &--blue {
+    background: linear-gradient(135deg, rgb(0, 180, 219), rgb(0, 131, 176));
+  }
+}

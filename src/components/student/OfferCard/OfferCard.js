@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, Col, Row } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -7,28 +8,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { find } from 'lodash';
 import dayjs from 'dayjs';
+import { LearnAndEarnIcons } from 'components/shared';
 import './offer-card.scss';
-
-function renderLearnAndEarn(learn_and_earn) {
-  if (learn_and_earn === 'earn') {
-    return <div className="learn-earn-icon learn-earn-icon--blue">E</div>;
-  }
-  if (learn_and_earn === 'both') {
-    return (
-      <>
-        {' '}
-        <div className="learn-earn-icon mr-1 learn-earn-icon--purple">
-          L
-        </div>{' '}
-        <div className="learn-earn-icon learn-earn-icon--blue">E</div>
-      </>
-    );
-  }
-  if (learn_and_earn === 'learn') {
-    return <div className="learn-earn-icon learn-earn-icon--purple">L</div>;
-  }
-  return null;
-}
 
 export default function ({
   offer,
@@ -36,9 +17,10 @@ export default function ({
   groupedDataFields,
   style,
   className,
+  actions = [],
 }) {
   const {
-    name: offerName,
+    name = '',
     learn_and_earn,
     cost,
     pay,
@@ -47,6 +29,7 @@ export default function ({
     frequency_unit,
     length,
     frequency,
+    provider_id,
   } = offer;
   let { start_date } = offer;
   start_date = dayjs(start_date).format('MMM DD, YYYY');
@@ -59,11 +42,25 @@ export default function ({
   });
 
   return (
-    <Card title={offerName} className={`offer-card ${className}`} style={style}>
+    <Card
+      title={name}
+      className={`offer-card ${className}`}
+      style={style}
+      actions={actions}
+    >
       <Row>
         <Col span={12}>
-          <Row>{providerName}</Row>
-          <Row>{renderLearnAndEarn(learn_and_earn)}</Row>
+          <Row>
+            <Link
+              className={provider_id ? '' : 'pointer-events-none'}
+              to={`/student/provider/${provider_id}`}
+            >
+              {providerName}
+            </Link>
+          </Row>
+          <Row>
+            <LearnAndEarnIcons learnAndEarn={learn_and_earn} />
+          </Row>
           <Row>
             <div>
               <FontAwesomeIcon icon={faMapMarkerAlt} /> {location || '-'}
