@@ -110,7 +110,7 @@ export default function () {
           provider={p}
           groupedDataFields={groupedDataFields}
           actions={[
-            <Link to={offer && offer.id ? `/student/offer/${offer.id}` : null}>
+            <Link to={offer && offer.id ? `/offer/${offer.id}` : null}>
               <p>View</p>
             </Link>,
           ]}

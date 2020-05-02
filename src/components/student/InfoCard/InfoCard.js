@@ -58,7 +58,7 @@ export default function ({
           <Row>
             <Link
               className={provider_id ? '' : 'pointer-events-none'}
-              to={`/student/provider/${provider_id}`}
+              to={`/provider/${provider_id}`}
             >
               {providerName}
             </Link>

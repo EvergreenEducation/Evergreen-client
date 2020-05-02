@@ -85,7 +85,7 @@ export default function ({
             ) : (
               <Link
                 className={provider_id ? '' : 'pointer-events-none'}
-                to={`/student/provider/${provider_id}`}
+                to={`/provider/${provider_id}`}
               >
                 {Provider.name}
               </Link>

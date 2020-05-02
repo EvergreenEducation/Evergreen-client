@@ -44,7 +44,7 @@ function UserAuth({ user_id }) {
       case 'admin':
         return <Redirect to={{ pathname: '/dashboard' }} />;
       case 'student':
-        return <Redirect to={{ pathname: '/student' }} />;
+        return <Redirect to={{ pathname: '/' }} />;
       default:
         return <Redirect to={{ pathname: '/' }} />;
     }

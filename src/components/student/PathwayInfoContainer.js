@@ -103,11 +103,7 @@ export default function (props) {
                         groupedDataFields={groupedDataFields}
                         actions={[
                           <Link
-                            to={
-                              offer && offer.id
-                                ? `/student/offer/${offer.id}`
-                                : null
-                            }
+                            to={offer && offer.id ? `/offer/${offer.id}` : null}
                           >
                             View
                           </Link>,

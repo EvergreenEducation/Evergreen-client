@@ -28,24 +28,16 @@ function HomeScreen() {
       <Layout className="h-full bg-gray-100">
         <div className="w-full bg-gray-100" style={{ paddingBottom: 48 }}>
           <Content className="mx-auto max-w-4xl h-auto bg-gray-100">
-            <Route exact path="/student">
+            <Route exact path="/">
               <TopicCarouselContainer />
             </Route>
+            <Route exact path="/offer/:id" component={OfferInfoContainer} />
             <Route
               exact
-              path="/student/offer/:id"
-              component={OfferInfoContainer}
-            />
-            <Route
-              exact
-              path="/student/provider/:id"
+              path="/provider/:id"
               component={ProviderInfoContainer}
             />
-            <Route
-              exact
-              path="/student/pathway/:id"
-              component={PathwayInfoContainer}
-            />
+            <Route exact path="/pathway/:id" component={PathwayInfoContainer} />
           </Content>
         </div>
         <Header className="h-12 w-full bg-green-500 fixed bottom-0 z-10">

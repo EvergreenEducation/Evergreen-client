@@ -88,9 +88,7 @@ export default function (props) {
                   provider={p}
                   groupedDataFields={groupedDataFields}
                   actions={[
-                    <Link to={o && o.id ? `/student/offer/${o.id}` : null}>
-                      View
-                    </Link>,
+                    <Link to={o && o.id ? `/offer/${o.id}` : null}>View</Link>,
                   ]}
                 />
               );
@@ -118,9 +116,7 @@ export default function (props) {
                   actions={[
                     <Link
                       to={
-                        pathway && pathway.id
-                          ? `/student/pathway/${pathway.id}`
-                          : null
+                        pathway && pathway.id ? `/pathway/${pathway.id}` : null
                       }
                     >
                       View
