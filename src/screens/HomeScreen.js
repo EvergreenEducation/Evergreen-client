@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { GlobalProvider } from 'store/GlobalStore';
 import { TopicCarouselContainer } from 'components/student';
-import { Route, withRouter } from 'react-router-dom';
+import { Route, withRouter, useRouteMatch } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import 'scss/screens/home-screen.scss';
 
@@ -23,21 +23,27 @@ const PathwayInfoContainer = imported(() =>
 );
 
 function HomeScreen() {
+  let match = useRouteMatch();
   return (
     <GlobalProvider>
       <Layout className="h-full bg-gray-100">
         <div className="w-full bg-gray-100" style={{ paddingBottom: 48 }}>
           <Content className="mx-auto max-w-4xl h-auto bg-gray-100">
-            <Route exact path="/">
+            <Route exact path={`${match.url}`}>
               <TopicCarouselContainer />
             </Route>
-            <Route exact path="/offer/:id" component={OfferInfoContainer} />
             <Route
-              exact
-              path="/provider/:id"
+              path={`${match.url}/offer/:id`}
+              component={OfferInfoContainer}
+            />
+            <Route
+              path={`${match.url}/provider/:id`}
               component={ProviderInfoContainer}
             />
-            <Route exact path="/pathway/:id" component={PathwayInfoContainer} />
+            <Route
+              path={`${match.url}/pathway/:id`}
+              component={PathwayInfoContainer}
+            />
           </Content>
         </div>
         <Header className="h-12 w-full bg-green-500 fixed bottom-0 z-10">

@@ -1,9 +1,70 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Table, Button, Tag } from 'antd';
 import dayjs from 'dayjs';
 import 'scss/antd-overrides.scss';
 
 const { Column } = Table;
+
+const ProviderButtons = ({ record, handleUpdateModal, viewEnrollments }) => {
+  return (
+    <>
+      <Button
+        type="default"
+        className="mr-2 rounded"
+        onClick={() => handleUpdateModal(record)}
+      >
+        Update
+      </Button>
+      <Button
+        className="rounded"
+        type="default"
+        onClick={() => viewEnrollments(record)}
+      >
+        View enrollments
+      </Button>
+    </>
+  );
+};
+
+const StudentButtons = ({ record }) => {
+  return (
+    <Button type="default" className="mr-2 rounded" onClick={() => {}}>
+      View My Class
+    </Button>
+  );
+};
+
+const ActionColumn = ({
+  role,
+  handleUpdateModal,
+  viewEnrollments,
+  handleEnrollOffer,
+}) => {
+  return (
+    <Column
+      className="antd-col"
+      title="Actions"
+      key="index"
+      render={(text, record) => {
+        return {
+          children:
+            role === 'student' ? (
+              <StudentButtons record={record} />
+            ) : (
+              <ProviderButtons
+                record={record}
+                handleUpdateModal={handleUpdateModal}
+                viewEnrollments={viewEnrollments}
+              />
+            ),
+          props: {
+            'data-title': 'Actions',
+          },
+        };
+      }}
+    />
+  );
+};
 
 export default function OfferTable({
   data,
@@ -12,8 +73,21 @@ export default function OfferTable({
   handleUpdateModal,
   handleRowSelection,
   viewEnrollments,
+  role,
 }) {
-  useEffect(() => {}, [data]);
+  const doHandleRowSelection =
+    role === 'student'
+      ? null
+      : (record, rowIndex) => {
+          return {
+            onClick: event => {
+              if (event.target.type === 'button') {
+                return;
+              }
+              handleRowSelection(record, rowIndex);
+            },
+          };
+        };
 
   return (
     <Table
@@ -23,16 +97,7 @@ export default function OfferTable({
       className="ant-table-wrapper--responsive ant-table-row-selectable"
       rowClassName={() => 'antd-row'}
       rowKey="id"
-      onRow={(record, rowIndex) => {
-        return {
-          onClick: (event) => {
-            if (event.target.type === 'button') {
-              return;
-            }
-            handleRowSelection(record, rowIndex);
-          },
-        };
-      }}
+      onRow={doHandleRowSelection}
     >
       <Column
         className="antd-col"
@@ -63,7 +128,7 @@ export default function OfferTable({
         title="Category"
         dataIndex="category"
         key="category"
-        render={(id) => {
+        render={id => {
           let name = null;
           if (datafields[id]) {
             name = datafields[id].name;
@@ -79,7 +144,7 @@ export default function OfferTable({
         title="Provider"
         dataIndex="provider_id"
         key="provider_id"
-        render={(id) => {
+        render={id => {
           let name = 'N/A';
           if (providers[id]) {
             name = providers[id].name;
@@ -96,7 +161,7 @@ export default function OfferTable({
         dataIndex="DataFields"
         key="DataFields"
         render={(datafields = [], record) => {
-          datafields = datafields.filter((d) => d.type === 'topic');
+          datafields = datafields.filter(d => d.type === 'topic');
           let children = 'N/A';
 
           if (datafields.length) {
@@ -132,43 +197,18 @@ export default function OfferTable({
         title="Start Date"
         dataIndex="start_date"
         key="start_date"
-        render={(date) => {
+        render={date => {
           return {
             children: dayjs(date).format('MMM DD, YYYY'),
             props: { 'data-title': 'Start Date' },
           };
         }}
       />
-      <Column
-        className="antd-col"
-        title="Actions"
-        key="index"
-        render={(text, record) => {
-          return {
-            children: (
-              <>
-                <Button
-                  type="default"
-                  className="mr-2 rounded"
-                  onClick={() => handleUpdateModal(record)}
-                >
-                  Update
-                </Button>
-                <Button
-                  className="rounded"
-                  type="default"
-                  onClick={() => viewEnrollments(record)}
-                >
-                  View enrollments
-                </Button>
-              </>
-            ),
-            props: {
-              'data-title': 'Actions',
-            },
-          };
-        }}
-      />
+      {ActionColumn({
+        handleUpdateModal,
+        viewEnrollments,
+        role,
+      })}
     </Table>
   );
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useAxios, { configure } from 'axios-hooks';
 import { Card, Button } from 'antd';
-import { groupBy, property } from 'lodash';
+import { compact, groupBy, property } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { Carousel } from 'react-responsive-carousel';
@@ -16,14 +16,10 @@ configure({
   axios: axiosInstance,
 });
 
-export default function () {
+export default function() {
+  const [currentTopic, setCurrentTopic] = useState(null);
+  const [onCurrentChange, setOnCurrentChange] = useState(null);
   const { datafield, offer: offerStore, provider } = useGlobalStore();
-  const topics = Object.values(datafield.entities).filter(
-    (d) => d.type === 'topic'
-  );
-
-  const groupedDataFields = groupBy(datafield.entities, property('type'));
-
   const [{ data: dataFieldPayload }] = useAxios(
     '/datafields?scope=with_offers'
   );
@@ -42,10 +38,15 @@ export default function () {
     }
   }, [dataFieldPayload, offerPayload, providerPayload]);
 
-  const [currentTopic, setCurrentTopic] = useState(null);
-  const [onCurrentChange, setOnCurrentChange] = useState(null);
+  const topics = compact(
+    Object.values(datafield.entities).filter(d => d.type === 'topic')
+  );
 
-  const handleChange = (e) => {};
+  topics.push({ name: 'Others' });
+
+  const groupedDataFields = groupBy(datafield.entities, property('type'));
+
+  const handleChange = e => {};
 
   const handleCurrentItem = (current, total) => {
     const index = current - 1;
@@ -85,14 +86,17 @@ export default function () {
   };
 
   const renderOffers = () => {
-    const currentOffers = [];
+    let currentOffers = [];
     let offerId = null;
-    for (let i = 0; i < currentTopic.Offers.length; i++) {
-      offerId = currentTopic.Offers[i].id;
-      if (!offerId) {
-        break;
-      }
+    let renderOFfers = compact(currentTopic.Offers);
+
+    for (let i = 0; i < renderOFfers.length; i++) {
+      offerId = renderOFfers[i].id;
       currentOffers.push(offerStore.entities[offerId]);
+    }
+
+    if (currentTopic.name === 'Others') {
+      currentOffers = Object.values(offerStore.entities);
     }
 
     return currentOffers.map((offer, index) => {
@@ -110,7 +114,7 @@ export default function () {
           provider={p}
           groupedDataFields={groupedDataFields}
           actions={[
-            <Link to={offer && offer.id ? `/offer/${offer.id}` : null}>
+            <Link to={`/home/offer/${offer.id}`}>
               <p>View</p>
             </Link>,
           ]}
@@ -148,9 +152,6 @@ export default function () {
         swipeScrollTolerance={1}
       >
         {topics.map((topic, index) => {
-          if (!topic) {
-            return null;
-          }
           return (
             <Card
               className="mx-auto text-white text-lg w-auto flex justify-center items-center"

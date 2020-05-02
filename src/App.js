@@ -1,7 +1,13 @@
 import React from 'react';
 import { reactLocalStorage } from 'reactjs-localstorage';
 import AuthService from 'services/AuthService';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Link,
+  Redirect,
+} from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import { Button } from 'antd';
 import HomeScreen from 'screens/HomeScreen';
@@ -23,9 +29,10 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/" component={HomeScreen} />
+        <Redirect exact from="/" to="home" />
+        <Route path="/home" component={HomeScreen} />
         <Route path="/auth/:action" component={AuthScreen} />
-        <PrivateRoute path="/dashboard" component={() => <DashboardScreen />} />
+        <PrivateRoute path="/dashboard" component={DashboardScreen} />
         <Route
           exact
           path="/error/500"

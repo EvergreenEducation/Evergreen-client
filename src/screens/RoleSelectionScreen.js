@@ -9,38 +9,43 @@ import {
 import axiosInstance from 'services/AxiosInstance';
 import 'scss/screens/user-selection-screen.scss';
 import AuthService from 'services/AuthService';
+import { get } from 'lodash';
 
 import { Layout, Row, Col, Card, Button } from 'antd';
 const { Content } = Layout;
 
-function RoleSelectionScreen({ history }) {
-  let user_id = AuthService.currentSession.id;
+function RoleSelectionScreen(props) {
+  const { history, location } = props;
 
-  const createUserProfile = async (role) => {
+  const user_id = get(location, 'state.user_id');
+
+  if (!user_id) {
+    return <Redirect to={{ pathname: '/' }} />;
+  }
+
+  const createUserProfile = async role => {
     try {
+      let user;
       if (role === 'provider') {
         const { data } = await axiosInstance.post('/providers', {
           user_id,
         });
-        const { data: user } = await axiosInstance.put(`/users/${user_id}`, {
+        ({ data: user } = await axiosInstance.put(`/users/${user_id}`, {
           role,
           provider_id: data.id,
-        });
-        const { id: provider_id } = data;
-        AuthService.setCurrentSession(user);
-        history.push(`/dashboard/${provider_id}`);
+        }));
       } else {
         const { data } = await axiosInstance.post('/students', {
           user_id,
         });
-        const { data: user } = await axiosInstance.put(`/users/${user_id}`, {
+        ({ data: user } = await axiosInstance.put(`/users/${user_id}`, {
           role,
           student_id: data.id,
-        });
-        const { id: student_id } = data;
-        AuthService.setCurrentSession(user);
-        history.push(`/dashboard/${student_id}`); // redirect here Kev
+        }));
       }
+
+      AuthService.setCurrentSession(user);
+      history.push(`/dashboard/${user.id}`);
     } catch (e) {
       console.error(e);
     }

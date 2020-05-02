@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import useAxios, { configure } from 'axios-hooks';
 import { last, groupBy, property } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
@@ -14,10 +14,8 @@ configure({
   axios: axiosInstance,
 });
 
-export default function (props) {
-  const {
-    match: { params },
-  } = props;
+export default function(props) {
+  let { id: offerId } = useParams();
   const [{ data: dataFieldPayload }] = useAxios(
     '/datafields?scope=with_offers'
   );
@@ -35,7 +33,7 @@ export default function (props) {
       providerStore.addMany(providerPayload);
     }
   }, [dataFieldPayload, offerPayload, providerPayload]);
-  const offerId = Number(params.id);
+
   const {
     offer: offerStore,
     provider: providerStore,

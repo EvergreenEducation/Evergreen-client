@@ -11,9 +11,9 @@ import dayjs from 'dayjs';
 import { LearnAndEarnIcons } from 'components/shared';
 import './info-card.scss';
 
-export default function ({
+export default function({
   data,
-  provider,
+  provider = {},
   groupedDataFields,
   style,
   className,
