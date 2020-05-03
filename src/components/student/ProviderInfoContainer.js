@@ -6,7 +6,6 @@ import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
 import { InfoCard, InfoLayout } from 'components/student';
-import { Empty } from 'antd';
 import 'scss/responsive-carousel-override.scss';
 
 configure({
@@ -88,11 +87,14 @@ export default function (props) {
                   provider={p}
                   groupedDataFields={groupedDataFields}
                   actions={[
-                    <Link to={o && o.id ? `/offer/${o.id}` : null}>View</Link>,
+                    <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
+                      View
+                    </Link>,
                   ]}
                 />
               );
-            })) || <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+            })) ||
+            null}
         </section>
         <TitleDivider
           title={'PATHWAYS'}
@@ -116,7 +118,9 @@ export default function (props) {
                   actions={[
                     <Link
                       to={
-                        pathway && pathway.id ? `/pathway/${pathway.id}` : null
+                        pathway && pathway.id
+                          ? `/home/pathway/${pathway.id}`
+                          : null
                       }
                     >
                       View
@@ -124,7 +128,8 @@ export default function (props) {
                   ]}
                 />
               );
-            })) || <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+            })) ||
+            null}
         </section>
       </InfoLayout>
     </div>

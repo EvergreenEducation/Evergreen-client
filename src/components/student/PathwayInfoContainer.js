@@ -6,7 +6,6 @@ import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
 import { InfoCard, InfoLayout } from 'components/student';
-import { Empty } from 'antd';
 import 'scss/responsive-carousel-override.scss';
 
 configure({
@@ -76,7 +75,7 @@ export default function (props) {
             groupKeys.map((key, index) => {
               const group = groupsOfOffers[key];
               return (
-                <div>
+                <div key={index}>
                   <TitleDivider
                     title={key}
                     align="center"
@@ -99,11 +98,15 @@ export default function (props) {
                         className="mb-4"
                         data={offer}
                         provider={p}
-                        key={index}
+                        key={offer.id}
                         groupedDataFields={groupedDataFields}
                         actions={[
                           <Link
-                            to={offer && offer.id ? `/offer/${offer.id}` : null}
+                            to={
+                              offer && offer.id
+                                ? `/home/offer/${offer.id}`
+                                : null
+                            }
                           >
                             View
                           </Link>,
@@ -113,7 +116,8 @@ export default function (props) {
                   })}
                 </div>
               );
-            })) || <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+            })) ||
+            null}
         </section>
       </InfoLayout>
     </div>

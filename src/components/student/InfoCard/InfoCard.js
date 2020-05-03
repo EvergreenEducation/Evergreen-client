@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import { LearnAndEarnIcons } from 'components/shared';
 import './info-card.scss';
 
-export default function({
+export default function ({
   data,
   provider = {},
   groupedDataFields,
@@ -55,23 +55,23 @@ export default function({
     >
       <Row>
         <Col span={12}>
-          <Row>
+          <Row className="mb-1">
             <Link
               className={provider_id ? '' : 'pointer-events-none'}
-              to={`/provider/${provider_id}`}
+              to={`/home/provider/${provider_id}`}
             >
               {providerName}
             </Link>
           </Row>
-          <Row>
+          <Row className="my-1">
             <LearnAndEarnIcons learnAndEarn={learn_and_earn} />
           </Row>
-          <Row>
+          <Row className="my-1">
             <div>
               <FontAwesomeIcon icon={faMapMarkerAlt} /> {location || '-'}
             </div>
           </Row>
-          <Row>
+          <Row className="mt-1">
             {length && (
               <div className="unit-tag mr-2 text-white rounded px-1">
                 {Number(length)} {lengthUnit.name}

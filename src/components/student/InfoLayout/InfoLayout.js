@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Row, Col, Tag, Empty } from 'antd';
+import { Row, Col, Tag } from 'antd';
 import { find, last } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -58,18 +58,22 @@ export default function ({
 
   return (
     <div style={{ width: 423 }}>
-      <header className="mx-auto relative" style={{ minHeight: 135 }}>
+      <header className="mx-auto relative" style={{ minHeight: 52 }}>
         <span
           className="block text-white text-center text-lg absolute text-white w-full bottom-0 p-3"
-          style={{ background: 'rgba(0, 0, 0, 0.75)' }}
+          style={{
+            background: 'rgba(0, 0, 0, 0.75)',
+            borderTopLeftRadius: !src ? '1rem' : 'none',
+            borderTopRightRadius: !src ? '1rem' : 'none',
+          }}
         >
           {name || '---'}
         </span>
-        {(src && (
+        {src && (
           <figure className="mx-auto">
             <img className="h-full w-full object-cover" src={src} alt={alt} />
           </figure>
-        )) || <Empty className="pb-16" image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+        )}
       </header>
       <section
         className="bg-white px-2 pb-4"
@@ -85,7 +89,7 @@ export default function ({
             ) : (
               <Link
                 className={provider_id ? '' : 'pointer-events-none'}
-                to={`/provider/${provider_id}`}
+                to={`/home/provider/${provider_id}`}
               >
                 {Provider.name}
               </Link>
@@ -104,7 +108,7 @@ export default function ({
             <LearnAndEarnIcons learnAndEarn={data.learn_and_earn} />
           </Col>
           <Col span={12} className="flex flex-col items-right text-right">
-            <span className="text-base text-gray-600">TOPICS</span>
+            <span className="text-gray-600">TOPICS</span>
             <div className="flex flex-row-reverse flex-wrap items-right">
               {topics.map((t, index) => {
                 if (t.type !== 'topic') {
@@ -124,7 +128,7 @@ export default function ({
           </Col>
         </Row>
         <hr />
-        <Row className="py-2">
+        <Row className="mt-2 mb-1">
           <Col span={8}>Cost : {cost ? `$${cost}` : '---'}</Col>
           <Col span={8} className="flex justify-center">
             Credit : {credit ? `$${credit}` : '---'}
@@ -133,7 +137,7 @@ export default function ({
             Pay : {pay ? `$${pay}` : '---'}
           </Col>
         </Row>
-        <Row className="py-2">
+        <Row className="mt-1 mb-2">
           <Col span={12} className="flex flex-row items-center">
             {type !== 'provider' && length && (
               <div className="unit-tag mr-2 text-white rounded px-1">

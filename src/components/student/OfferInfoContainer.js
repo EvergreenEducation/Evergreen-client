@@ -7,14 +7,13 @@ import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
 import { InfoCard, InfoLayout } from 'components/student';
 import { Carousel } from 'react-responsive-carousel';
-import { Empty } from 'antd';
 import 'scss/responsive-carousel-override.scss';
 
 configure({
   axios: axiosInstance,
 });
 
-export default function(props) {
+export default function (props) {
   let { id: offerId } = useParams();
   const [{ data: dataFieldPayload }] = useAxios(
     '/datafields?scope=with_offers'
@@ -90,7 +89,7 @@ export default function(props) {
                     provider={p}
                     groupedDataFields={groupedDataFields}
                     actions={[
-                      <Link to={o && o.id ? `/offer/${o.id}` : null}>
+                      <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
                         View
                       </Link>,
                     ]}
@@ -98,7 +97,8 @@ export default function(props) {
                 );
               })}
             </Carousel>
-          )) || <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+          )) ||
+            null}
         </section>
         <TitleDivider
           title={'PREREQUISITES'}
@@ -134,7 +134,7 @@ export default function(props) {
                       provider={p}
                       groupedDataFields={groupedDataFields}
                       actions={[
-                        <Link to={o && o.id ? `/offer/${o.id}` : null}>
+                        <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
                           View
                         </Link>,
                       ]}
@@ -142,7 +142,8 @@ export default function(props) {
                   );
                 })}
               </Carousel>
-            )) || <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+            )) ||
+            null}
         </section>
       </InfoLayout>
     </div>
