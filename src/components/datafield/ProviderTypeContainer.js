@@ -37,6 +37,12 @@ export default function ProviderTypeContainer() {
         loading={loading}
         store={datafield}
         type="provider"
+        rules={[
+          {
+            required: true,
+            message: 'Please enter a provider type name',
+          },
+        ]}
         columns={[
           {
             title: 'Cod',

@@ -16,7 +16,7 @@ configure({
   axios: axiosInstance,
 });
 
-export default function() {
+export default function () {
   const [currentTopic, setCurrentTopic] = useState(null);
   const [onCurrentChange, setOnCurrentChange] = useState(null);
   const { datafield, offer: offerStore, provider } = useGlobalStore();
@@ -39,14 +39,14 @@ export default function() {
   }, [dataFieldPayload, offerPayload, providerPayload]);
 
   const topics = compact(
-    Object.values(datafield.entities).filter(d => d.type === 'topic')
+    Object.values(datafield.entities).filter((d) => d.type === 'topic')
   );
 
   topics.push({ name: 'Others' });
 
   const groupedDataFields = groupBy(datafield.entities, property('type'));
 
-  const handleChange = e => {};
+  const handleChange = (e) => {};
 
   const handleCurrentItem = (current, total) => {
     const index = current - 1;
@@ -85,18 +85,28 @@ export default function() {
     );
   };
 
+  const hasNoTopics = (offer) => {
+    const { DataFields = [] } = offer;
+    for (let k = 0; k < DataFields.length; k++) {
+      if (DataFields[k].type === 'topic') {
+        return false;
+      }
+    }
+    return true;
+  };
+
   const renderOffers = () => {
     let currentOffers = [];
     let offerId = null;
-    let renderOFfers = compact(currentTopic.Offers);
+    let _offers = compact(currentTopic.Offers);
 
-    for (let i = 0; i < renderOFfers.length; i++) {
-      offerId = renderOFfers[i].id;
+    for (let i = 0; i < _offers.length; i++) {
+      offerId = _offers[i].id;
       currentOffers.push(offerStore.entities[offerId]);
     }
 
     if (currentTopic.name === 'Others') {
-      currentOffers = Object.values(offerStore.entities);
+      currentOffers = Object.values(offerStore.entities).filter(hasNoTopics);
     }
 
     return currentOffers.map((offer, index) => {
