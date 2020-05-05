@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Row, Col, Tag } from 'antd';
+import { Row, Col, Tag, Button, Input, Form, message } from 'antd';
 import { find, last } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMapMarkerAlt,
   faCalendarAlt,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { faHandshake } from '@fortawesome/free-regular-svg-icons';
-import { LearnAndEarnIcons } from 'components/shared';
+import { reactLocalStorage } from 'reactjs-localstorage';
 import dayjs from 'dayjs';
+import { LearnAndEarnIcons } from 'components/shared';
 import './info-layout.scss';
+import 'scss/antd-overrides.scss';
 
 export default function ({
   children,
@@ -18,7 +21,9 @@ export default function ({
   data = {},
   groupedDataFields,
 }) {
+  const [openCodeInput, setOpenCodeInput] = useState(false);
   const {
+    id,
     cost,
     credit,
     pay,
@@ -35,6 +40,33 @@ export default function ({
     financial_aid,
     location,
   } = data;
+
+  const [form] = Form.useForm();
+  const onApply = async () => {
+    if (type === 'offer') {
+      if (openCodeInput) {
+        try {
+          const { activation_code } = await form.validateFields([
+            'activation_code',
+          ]);
+          if (activation_code.length) {
+            message.success('Success');
+          }
+        } catch (err) {
+          console.error(err);
+        }
+        return;
+      } else {
+        if (type === 'offer') {
+          reactLocalStorage.set('offer_id', id);
+        }
+      }
+    }
+    if (type === 'pathway') {
+      return;
+    }
+    return;
+  };
 
   const topics = DataFields.filter((d) => d.type === 'topic');
   const offerCategory = find(DataFields, ['type', 'offer_category']);
@@ -146,7 +178,8 @@ export default function ({
             )}
             {type !== 'provider' && frequency && (
               <div className="unit-tag text-white rounded px-1">
-                {Number(frequency)} {frequencyUnit.name}
+                {Number(frequency) || null}{' '}
+                {frequencyUnit ? frequencyUnit.name : null}
               </div>
             )}
             {type === 'provider' && (
@@ -178,6 +211,64 @@ export default function ({
             </Tag>
           )}
         </section>
+        {type === 'pathway' && (
+          <Button
+            type="primary"
+            className="w-1/2 rounded mx-auto block mt-2"
+            onClick={onApply}
+          >
+            Apply
+          </Button>
+        )}
+        {type === 'offer' && (
+          <Form form={form}>
+            <Row className="flex-col mt-2 justify-center items-center">
+              <Button
+                type="primary"
+                className="w-1/2 rounded"
+                onClick={onApply}
+              >
+                Apply
+              </Button>
+              {openCodeInput && (
+                <Row className={`w-1/2 ${openCodeInput ? 'mt-2' : ''}`}>
+                  <Col span={20}>
+                    <Form.Item
+                      name="activation_code"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Requires code',
+                        },
+                      ]}
+                    >
+                      <Input
+                        className="flex items-center rounded-l rounded-r-none ant-input-group-add-on-border-none-p-0"
+                        style={{ paddingBottom: 4.5, zIndex: 2 }}
+                        allowClear
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={4}>
+                    <Button
+                      className={`rounded-l-none rounded-r`}
+                      onClick={() => setOpenCodeInput(false)}
+                      icon={<FontAwesomeIcon icon={faTimes} />}
+                    />
+                  </Col>
+                </Row>
+              )}
+              {!openCodeInput && (
+                <Button
+                  type="link"
+                  onClick={() => setOpenCodeInput(!openCodeInput)}
+                >
+                  Already have code?
+                </Button>
+              )}
+            </Row>
+          </Form>
+        )}
       </section>
       <section>{children}</section>
     </div>

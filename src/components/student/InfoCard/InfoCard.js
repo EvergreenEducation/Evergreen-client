@@ -79,7 +79,8 @@ export default function ({
             )}
             {frequency && (
               <div className="unit-tag text-white rounded px-1">
-                {Number(frequency)} {frequencyUnit.name}
+                {Number(frequency) || null}{' '}
+                {frequencyUnit ? frequencyUnit.name : null}
               </div>
             )}
           </Row>

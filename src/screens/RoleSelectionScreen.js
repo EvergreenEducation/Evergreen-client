@@ -23,7 +23,7 @@ function RoleSelectionScreen(props) {
     return <Redirect to={{ pathname: '/' }} />;
   }
 
-  const createUserProfile = async role => {
+  const createUserProfile = async (role) => {
     try {
       let user;
       if (role === 'provider') {
@@ -42,6 +42,10 @@ function RoleSelectionScreen(props) {
           role,
           student_id: data.id,
         }));
+
+        AuthService.setCurrentSession(user);
+        history.push(`/`);
+        return;
       }
 
       AuthService.setCurrentSession(user);

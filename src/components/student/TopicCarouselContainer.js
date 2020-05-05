@@ -144,7 +144,7 @@ export default function () {
         className="custom-carousel mb-2 cursor-grab"
         centerMode
         infiniteLoop
-        centerSlidePercentage={50}
+        centerSlidePercentage={90}
         showArrows={true}
         showIndicators={false}
         swipeable={true}
