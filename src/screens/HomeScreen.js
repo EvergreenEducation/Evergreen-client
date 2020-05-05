@@ -73,8 +73,8 @@ function HomeScreen() {
                   alt="logo"
                 />
                 <span
-                  className="font-bold relative"
-                  style={{ bottom: 12, color: 'darkgreen' }}
+                  className="font-bold relative h-full flex items-center"
+                  style={{ color: 'darkgreen' }}
                 >
                   EVERGREEN
                 </span>

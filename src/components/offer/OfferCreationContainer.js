@@ -13,12 +13,7 @@ configure({
   axios: axiosInstance,
 });
 
-const OfferCreationContainer = ({
-  scopedToProvider = false,
-  closeModal,
-  role,
-  providerId,
-}) => {
+const OfferCreationContainer = ({ closeModal, role, providerId }) => {
   const { id: userId, provider_id } = AuthService.currentSession;
 
   const [file, setFile] = useState(null);
@@ -149,6 +144,7 @@ const OfferCreationContainer = ({
       <Form form={form} name="offerForm">
         <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <OfferForm
+            role={role}
             offers={Object.values(offerStore.entities)}
             datafields={datafieldStore.entities}
             providers={providerEntities}
@@ -156,7 +152,6 @@ const OfferCreationContainer = ({
             providerId={provider_id}
             file={file}
             onChangeUpload={onChangeUpload}
-            scopedToProvider={scopedToProvider}
           />
         </div>
         <section

@@ -89,7 +89,7 @@ export default function DataFieldTable({
     ),
   });
 
-  const includeAddButton = (row, index) => {
+  const includeDeleteButton = (row, index) => {
     if (index === 0) {
       return row;
     }
@@ -111,7 +111,7 @@ export default function DataFieldTable({
     };
   };
 
-  newData = newData.map(includeAddButton);
+  newData = newData.map(includeDeleteButton);
 
   return (
     <Form form={form}>
