@@ -39,6 +39,12 @@ export default function OfferCategoryContainer(props) {
         store={datafield}
         type="offer_category"
         loading={loading}
+        rules={[
+          {
+            required: true,
+            message: 'Please enter a category name',
+          },
+        ]}
         columns={[
           {
             title: 'Cod',

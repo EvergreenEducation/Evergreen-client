@@ -39,10 +39,10 @@ export default function EnrollmentContainer({
   const offer = Number(query.get('offer'));
 
   const getEnrollmentsUrl = () => {
-    const url = '/enrollments?scope=with_offers';
+    const url = '/enrollments';
 
     if (role === 'provider') {
-      return `${url}&provider_id=${providerId}`;
+      return `${url}?provider_id=${providerId}`;
     }
 
     return url;

@@ -41,16 +41,20 @@ function DashboardScreen(props) {
   let { match } = props;
   const { url: basePath } = match;
 
-  let role = null;
-
-  if (AuthService.currentSession && AuthService.currentSession.role) {
-    role = AuthService.currentSession.role;
-  }
+  const myProviderId = AuthService.currentSession.provider_id;
+  const role = AuthService.currentSession.role;
 
   const [modalStates, setModalStates] = useState({
     providerUpdateModal: false,
     providerSimpleUpdateModal: false,
   });
+
+  useEffect(() => {
+    if (role === 'provider') {
+      // only check if login user is a provider
+      getProviderInfo(myProviderId);
+    }
+  }, [myProviderId]);
 
   const openProviderUpdateModal = () => {
     setModalStates({
@@ -58,8 +62,6 @@ function DashboardScreen(props) {
       providerSimpleUpdateModal: false,
     });
   };
-
-  const myProviderId = AuthService.currentSession.provider_id;
 
   async function getProviderInfo(providerId) {
     const { data } = await axiosInstance(`/providers/${providerId}`);
@@ -70,13 +72,6 @@ function DashboardScreen(props) {
       return () => clearTimeout(modalDelay);
     }
   }
-
-  useEffect(() => {
-    getProviderInfo(myProviderId);
-    return function () {
-      return null;
-    };
-  }, [myProviderId]);
 
   return (
     <GlobalProvider>

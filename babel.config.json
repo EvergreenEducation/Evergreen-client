@@ -1,24 +1,21 @@
 {
-    "presets": [
-        "react-app",
-        ["@babel/env", { "targets": { "node": 6 } }]
+  "presets": ["react-app", ["@babel/env", { "targets": { "node": 6 } }]],
+  "plugins": [
+    "lodash",
+    [
+      "react-hot-loader/babel",
+      {
+        "safetyNet": true
+      }
     ],
-    "plugins": [
-        "lodash",
-        [
-            "react-hot-loader/babel",
-            {
-                "safetyNet": true
-            }
-        ],
-        [
-            "imports",
-            {
-                "libraryName": "antd",
-                "libraryDirectory": "es",
-                "style": true
-            },
-            "antd"
-        ]
+    [
+      "imports",
+      {
+        "libraryName": "antd",
+        "libraryDirectory": "es",
+        "style": true
+      },
+      "antd"
     ]
+  ]
 }

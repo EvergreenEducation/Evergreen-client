@@ -26,6 +26,7 @@ export default function PathwayUpdateModal({
 }) {
   const { id: userId, provider_id } = AuthService.currentSession;
   const [file, setFile] = useState(null);
+  const [onFileChange, setOnFileChange] = useState(false);
   const [groupsOfOffers, setGroupsOfOffers] = useState([]);
 
   const [form] = Form.useForm();
@@ -42,6 +43,7 @@ export default function PathwayUpdateModal({
     const { file } = e;
     if (file) {
       setFile(file);
+      setOnFileChange(true);
     }
   };
 
@@ -90,7 +92,7 @@ export default function PathwayUpdateModal({
         pathwayStore.updateOne(response.data);
       }
 
-      if (response.data && file && userId) {
+      if (onFileChange && response.data && file && userId) {
         const { name, type } = file;
         const results = await UploaderService.upload({
           name,
@@ -100,6 +102,13 @@ export default function PathwayUpdateModal({
           fileable_id: response.data.id,
           binaryFile: file.originFileObj,
         });
+
+        const pathwayEntity = pathwayStore.entities[response.data.id];
+        pathwayEntity.Files.push({
+          ...results.file.data,
+        });
+
+        pathwayStore.updateOne(pathwayEntity);
 
         if (results.success) {
           notification.success({
@@ -159,21 +168,14 @@ export default function PathwayUpdateModal({
       populateFields(pathway, form);
     }
     if (pathway.Files) {
-      const orderedFiles = orderBy(
+      let orderedFiles = orderBy(
         pathway.Files,
-        ['fileable_type', 'createdAt'],
-        ['desc', 'desc']
+        ['fileable_type', 'createdAt', 'id'],
+        ['desc', 'desc', 'asc']
       );
-      for (let i = 0; i < orderedFiles.length; i++) {
-        if (!orderedFiles[i]) {
-          break;
-        }
 
-        if (orderedFiles[i].fileable_type === 'pathway') {
-          setFile(orderedFiles[i]);
-          break;
-        }
-      }
+      orderedFiles = orderedFiles.filter((f) => f.fileable_type === 'pathway');
+      setFile(head(orderedFiles));
     }
   }, [putData, pathway, putError]);
 

@@ -24,7 +24,6 @@ export default function FormModal({
       {visible && (
         <FormComponent
           closeModal={onCancel}
-          scopedToProvider={true}
           role={role}
           providerId={providerId}
         />

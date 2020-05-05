@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Select, Table, Popconfirm, Input, Button } from 'antd';
 import OfferStore from 'store/Offer';
-import { each, groupBy, map, find, findIndex } from 'lodash';
+import { each, groupBy, map, find, findIndex, sortBy } from 'lodash';
+import dayjs from 'dayjs';
 import 'scss/antd-overrides.scss';
 
 const { Option } = Select;
@@ -36,8 +37,53 @@ function getExistingOffers(pathway) {
     });
   });
 
-  // not efficient but for render table shake
   return offers;
+}
+
+function MiniOfferTable(props) {
+  let { groupOfOffers = [] } = props;
+  const Store = OfferStore.useContainer();
+  groupOfOffers = sortBy(groupOfOffers, (date) => new Date(date.createdAt));
+
+  return (
+    <Table
+      dataSource={groupOfOffers}
+      pagination={{ position: ['topRight'], pageSize: 4 }}
+      rowKey="createdAt"
+    >
+      <Column
+        dataIndex="group_name"
+        key="index"
+        render={(text, record, index) => ({
+          children: index + 1,
+        })}
+      />
+      <Column
+        title="Offer"
+        dataIndex="offer_id"
+        key="offer_id"
+        render={(offerId, record, index) => {
+          const offer = Store.entities[offerId];
+          return {
+            children: offer.name || '',
+          };
+        }}
+      />
+      <Column
+        title="Created"
+        dataIndex="offer_id"
+        key="createdAt"
+        render={(offerId, record, index) => {
+          const offer = Store.entities[offerId];
+          return {
+            children: offer.createdAt
+              ? dayjs(offer.createdAt).format('MM-DD-YYYY')
+              : null,
+          };
+        }}
+      />
+    </Table>
+  );
 }
 
 export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
@@ -80,6 +126,7 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
   };
 
   let renderData = groupsOfOffers.filter((item) => !item.removed);
+  renderData = sortBy(renderData, (date) => new Date(date));
 
   return (
     <>
@@ -101,11 +148,24 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
       />
       <Table
         dataSource={renderData}
+        size="small"
         bordered
         className="ant-table-wrapper--responsive w-full mt-1"
         rowClassName={() => 'antd-row'}
         rowKey="id"
       >
+        <Column
+          className="antd-col"
+          title=""
+          dataIndex="group_name"
+          key="group_name"
+          render={(text, record, index) => ({
+            children: index + 1,
+            props: {
+              'data-title': '',
+            },
+          })}
+        />
         <Column
           className="antd-col"
           title="Offer Group"
@@ -130,8 +190,9 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
             return {
               children: (
                 <Form.Item className="my-auto" name={inputName}>
+                  <MiniOfferTable groupOfOffers={record.offers} />
                   <Select
-                    className="w-full rounded custom-select-rounded-tr-none custom-vertical-ant-select-selector"
+                    className="mt-1 w-full rounded custom-select-rounded-tr-none"
                     showSearch
                     mode="multiple"
                     defaultValue={defaultValues}
@@ -151,7 +212,7 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
         />
         <Column
           className="antd-col"
-          title=""
+          title="Action"
           key="index"
           render={(text, record) => ({
             children: (
@@ -166,7 +227,7 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
               </Popconfirm>
             ),
             props: {
-              'data-title': '',
+              'data-title': 'Action',
             },
           })}
         />

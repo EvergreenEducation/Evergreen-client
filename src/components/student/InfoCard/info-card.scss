@@ -1,0 +1,58 @@
+$primary: hsl(103, 100%, 76%);
+$secondary: hsl(156, 78%, 41%);
+
+$secondary_dark: hsl(156, 78%, 38%);
+
+$tertiary: hsl(185, 87%, 24%);
+$fourth: hsl(225, 84%, 17%);
+$borderRadius: 1rem;
+
+$primaryPurple: hsl(261, 55%, 58%);
+$secondaryPurple: hsl(261, 55%, 78%);
+$primaryBlue: hsl(207, 72%, 48%);
+$secondaryBlue: hsl(207, 72%, 68%);
+
+.info-card {
+  border-radius: 1rem;
+  border: none;
+  width: 423px;
+  font-weight: 600;
+  color: $tertiary;
+  .ant-card-head-title {
+    text-align: center;
+    padding: 0 8px;
+  }
+
+  .ant-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border-top-left-radius: $borderRadius;
+    border-top-right-radius: $borderRadius;
+    background: linear-gradient(135deg, $primary, $secondary);
+  }
+  .ant-card-actions {
+    background-color: white;
+    border-bottom-left-radius: $borderRadius;
+    border-bottom-right-radius: $borderRadius;
+  }
+}
+
+.learn-earn-icon {
+  width: 23px;
+  padding: 1px 8px;
+  border-radius: 50%;
+  color: white;
+  &--purple {
+    background: linear-gradient(135deg, rgb(142, 45, 226), rgb(74, 0, 224));
+  }
+  &--blue {
+    background: linear-gradient(135deg, rgb(0, 180, 219), rgb(0, 131, 176));
+  }
+}
+
+.unit-tag {
+  font-weight: normal;
+  background: linear-gradient(135deg, $secondary, $secondary_dark);
+}

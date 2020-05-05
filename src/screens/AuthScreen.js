@@ -28,23 +28,25 @@ function UserAuth({ user_id }) {
   } else if (error) {
     return <Redirect to={{ pathname: '/error/500' }} />;
   } else {
+    if (!myProfile.role) {
+      return (
+        <Redirect to={{ pathname: 'role_selection', state: { user_id } }} />
+      );
+    }
+
     AuthService.setCurrentSession({
       ...myProfile,
     });
 
-    if (!myProfile.role) {
-      return <Redirect to={{ pathname: 'role_selection' }} />;
-    }
-
     switch (myProfile.role) {
+      case 'student':
+        return <Redirect to={{ pathname: `/` }} />;
       case 'provider':
         return (
           <Redirect to={{ pathname: `/dashboard/${myProfile.provider_id}` }} />
         );
       case 'admin':
         return <Redirect to={{ pathname: '/dashboard' }} />;
-      case 'student':
-        return <Redirect to={{ pathname: '/student' }} />;
       default:
         return <Redirect to={{ pathname: '/' }} />;
     }

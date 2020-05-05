@@ -37,6 +37,17 @@ export default function TopicContainer(props) {
         store={datafield}
         type="topic"
         loading={loading}
+        rules={[
+          {
+            required: true,
+            message: 'Please enter a topic name',
+          },
+          {
+            required: true,
+            message: '"Others" is already reserved. It cannot be used.',
+            pattern: new RegExp(/^(?!(Others)$).+$/gm),
+          },
+        ]}
         columns={[
           {
             title: 'Cod',

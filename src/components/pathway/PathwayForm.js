@@ -9,9 +9,9 @@ import {
   DatePicker,
   InputNumber,
 } from 'antd';
-import TitleDivider from 'components/TitleDivider';
+import { TitleDivider } from 'components/shared';
 import { ImageUploadAndNameInputs } from 'components/shared';
-import { groupBy, property, isNil } from 'lodash';
+import { groupBy, property, isNil, compact } from 'lodash';
 import 'scss/antd-overrides.scss';
 import OfferGroupTable from './OfferGroupTable';
 
@@ -37,6 +37,7 @@ export default function PathwayForm({
   providers,
   role,
 }) {
+  providers = compact(providers);
   datafields = Object.values(datafields);
 
   const grouped = groupBy(datafields, property('type'));

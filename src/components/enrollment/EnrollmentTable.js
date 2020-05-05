@@ -40,12 +40,9 @@ export default function EnrollmentTable({
   const enrollmentStore = EnrollmentStore.useContainer();
 
   const updateEnrollment = async (enrollment) => {
-    return axiosInstance.put(
-      `/enrollments/${enrollment.id}?scope=with_offers`,
-      {
-        status: 'Approved',
-      }
-    );
+    return axiosInstance.put(`/enrollments/${enrollment.id}`, {
+      status: 'Approved',
+    });
   };
 
   const setStatusToApprove = async (enrollment) => {

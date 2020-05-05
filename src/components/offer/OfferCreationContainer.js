@@ -13,12 +13,7 @@ configure({
   axios: axiosInstance,
 });
 
-const OfferCreationContainer = ({
-  scopedToProvider = false,
-  closeModal,
-  role,
-  providerId,
-}) => {
+const OfferCreationContainer = ({ closeModal, role, providerId }) => {
   const { id: userId, provider_id } = AuthService.currentSession;
 
   const [file, setFile] = useState(null);
@@ -31,7 +26,7 @@ const OfferCreationContainer = ({
     { manual: true }
   );
 
-  const onChangeUpload = e => {
+  const onChangeUpload = (e) => {
     const { file } = e;
     if (file) {
       setFile(file);
@@ -46,10 +41,10 @@ const OfferCreationContainer = ({
 
   let providerEntities = Object.values(providerStore.entities);
 
-  if (scopedToProvider) {
+  if (role === 'provider') {
     if (providerEntities.length) {
-      providerEntities = reject(providerEntities, p => {
-        return !(p.id === userId);
+      providerEntities = reject(providerEntities, (p) => {
+        return !(p.id === providerId);
       });
 
       form.setFieldsValue({
@@ -94,6 +89,10 @@ const OfferCreationContainer = ({
         },
       });
 
+      if (offerResponse.data) {
+        offerStore.addOne(offerResponse.data);
+      }
+
       if (offerResponse.data && file && userId) {
         const { name, type } = file;
         const results = await UploaderService.upload({
@@ -105,7 +104,9 @@ const OfferCreationContainer = ({
           binaryFile: file.originFileObj,
         });
 
-        // Call store.updateOne and put file url inside offer object
+        offerResponse.data.Files = [{ ...results.file.data }];
+
+        offerStore.updateOne(offerResponse);
 
         if (results.success) {
           notification.success({
@@ -129,9 +130,6 @@ const OfferCreationContainer = ({
   };
 
   useEffect(() => {
-    if (offerPayload) {
-      offerStore.addOne(offerPayload);
-    }
     if (offerError) {
       const { status, statusText } = offerError.request;
       notification.error({
@@ -146,14 +144,14 @@ const OfferCreationContainer = ({
       <Form form={form} name="offerForm">
         <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <OfferForm
+            role={role}
             offers={Object.values(offerStore.entities)}
             datafields={datafieldStore.entities}
-            providers={providerStore.entities}
+            providers={providerEntities}
             userId={userId}
             providerId={provider_id}
             file={file}
             onChangeUpload={onChangeUpload}
-            scopedToProvider={scopedToProvider}
           />
         </div>
         <section
