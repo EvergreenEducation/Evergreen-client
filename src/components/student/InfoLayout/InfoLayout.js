@@ -173,7 +173,7 @@ export default function ({
           <Col span={12} className="flex flex-row items-center">
             {type !== 'provider' && length && (
               <div className="unit-tag mr-2 text-white rounded px-1">
-                {Number(length)} {lengthUnit.name || ''}
+                {Number(length) || null} {lengthUnit ? lengthUnit.name : null}
               </div>
             )}
             {type !== 'provider' && frequency && (

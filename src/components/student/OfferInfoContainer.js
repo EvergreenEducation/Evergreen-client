@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import useAxios, { configure } from 'axios-hooks';
-import { last, groupBy, property } from 'lodash';
+import { last, groupBy, property, uniqueId } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
@@ -18,20 +18,20 @@ export default function (props) {
   const [{ data: dataFieldPayload }] = useAxios(
     '/datafields?scope=with_offers'
   );
-  const [{ data: offerPayload }] = useAxios('/offers?scope=with_details');
-  const [{ data: providerPayload }] = useAxios('/providers');
 
-  useEffect(() => {
-    if (dataFieldPayload) {
-      datafield.addMany(dataFieldPayload);
-    }
-    if (offerPayload) {
-      offerStore.addMany(offerPayload);
-    }
-    if (providerPayload) {
-      providerStore.addMany(providerPayload);
-    }
-  }, [dataFieldPayload, offerPayload, providerPayload]);
+  async function getOffer(_offerId) {
+    const response = await axiosInstance.get(
+      `/offers/${_offerId}?scope=with_details`
+    );
+    offerStore.addOne(response.data);
+  }
+
+  async function getProvider(providerId) {
+    const response = await axiosInstance.get(
+      `/providers/${providerId}?scope=with_details`
+    );
+    providerStore.addOne(response.data);
+  }
 
   const {
     offer: offerStore,
@@ -40,6 +40,16 @@ export default function (props) {
   } = useGlobalStore();
   const groupedDataFields = groupBy(datafield.entities, property('type'));
   const offer = offerStore.entities[offerId];
+
+  useEffect(() => {
+    if (dataFieldPayload) {
+      datafield.addMany(dataFieldPayload);
+    }
+    if (!offer) {
+      getOffer(offerId);
+    }
+  }, [dataFieldPayload, offer]);
+
   let imageSrc = null;
   let alt = '';
 
@@ -81,6 +91,9 @@ export default function (props) {
                 let p = null;
                 if (o && o.provider_id) {
                   p = providerStore.entities[o.provider_id];
+                  if (!p) {
+                    getProvider(o.provider_id);
+                  }
                 }
                 return (
                   <InfoCard
@@ -126,10 +139,13 @@ export default function (props) {
                   let p = null;
                   if (o && o.provider_id) {
                     p = providerStore.entities[o.provider_id];
+                    if (!p) {
+                      getProvider(o.provider_id);
+                    }
                   }
                   return (
                     <InfoCard
-                      key={index}
+                      key={uniqueId('prereq_card_')}
                       data={o}
                       provider={p}
                       groupedDataFields={groupedDataFields}

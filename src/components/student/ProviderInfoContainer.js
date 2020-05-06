@@ -26,8 +26,25 @@ export default function (props) {
     '/datafields?scope=with_offers'
   );
   const [{ data: offerPayload }] = useAxios('/offers?scope=with_details');
-  const [{ data: providerPayload }] = useAxios('/providers?scope=with_details');
-  const [{ data: pathwayPayload }] = useAxios('/pathways?scope=with_details');
+
+  const providerId = Number(params.id);
+  const groupedDataFields = groupBy(datafield.entities, property('type'));
+
+  const provider = providerStore.entities[providerId];
+
+  async function getPathway(_pathwayId) {
+    const response = await axiosInstance.get(
+      `/pathways/${_pathwayId}?scope=with_details`
+    );
+    pathwayStore.addOne(response.data);
+  }
+
+  async function getProvider(_providerId) {
+    const response = await axiosInstance.get(
+      `/providers/${_providerId}?scope=with_details`
+    );
+    providerStore.addOne(response.data);
+  }
 
   useEffect(() => {
     if (dataFieldPayload) {
@@ -36,18 +53,10 @@ export default function (props) {
     if (offerPayload) {
       offerStore.addMany(offerPayload);
     }
-    if (providerPayload) {
-      providerStore.addMany(providerPayload);
+    if (!provider) {
+      getProvider(providerId);
     }
-    if (pathwayPayload) {
-      pathwayStore.addMany(pathwayPayload);
-    }
-  }, [dataFieldPayload, offerPayload, providerPayload, pathwayPayload]);
-
-  const providerId = Number(params.id);
-  const groupedDataFields = groupBy(datafield.entities, property('type'));
-
-  const provider = providerStore.entities[providerId];
+  }, [dataFieldPayload, offerPayload, provider]);
 
   let Offers = [];
   if (provider && provider.Offers) {
@@ -104,9 +113,15 @@ export default function (props) {
         <section style={{ maxWidth: 896 }}>
           {(Pathways.length &&
             Pathways.map((pathway, index) => {
+              if (!pathwayStore.entities[pathway.id]) {
+                getPathway(pathway.id);
+              }
               let p = null;
               if (pathway && pathway.provider_id) {
                 p = providerStore.entities[pathway.provider_id];
+                if (!p) {
+                  getProvider(pathway.provider_id);
+                }
               }
               return (
                 <InfoCard
