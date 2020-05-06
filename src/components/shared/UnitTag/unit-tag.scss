@@ -1,0 +1,7 @@
+$secondary: hsl(156, 78%, 41%);
+$secondary_dark: hsl(156, 78%, 38%);
+
+.unit-tag {
+  font-weight: normal;
+  background: linear-gradient(135deg, $secondary, $secondary_dark);
+}

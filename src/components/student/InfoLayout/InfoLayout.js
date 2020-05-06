@@ -11,7 +11,7 @@ import {
 import { faHandshake } from '@fortawesome/free-regular-svg-icons';
 import { reactLocalStorage } from 'reactjs-localstorage';
 import dayjs from 'dayjs';
-import { LearnAndEarnIcons } from 'components/shared';
+import { LearnAndEarnIcons, UnitTag } from 'components/shared';
 import './info-layout.scss';
 import 'scss/antd-overrides.scss';
 
@@ -172,15 +172,10 @@ export default function ({
         <Row className="mt-1 mb-2">
           <Col span={12} className="flex flex-row items-center">
             {type !== 'provider' && length && (
-              <div className="unit-tag mr-2 text-white rounded px-1">
-                {Number(length) || null} {lengthUnit ? lengthUnit.name : null}
-              </div>
+              <UnitTag number={length} unit={lengthUnit} />
             )}
             {type !== 'provider' && frequency && (
-              <div className="unit-tag text-white rounded px-1">
-                {Number(frequency) || null}{' '}
-                {frequencyUnit ? frequencyUnit.name : null}
-              </div>
+              <UnitTag number={frequency} unit={frequencyUnit} />
             )}
             {type === 'provider' && (
               <>
