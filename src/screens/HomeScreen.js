@@ -81,20 +81,9 @@ function HomeScreen() {
               </Row>
             </Col>
             <Col span={8} className="flex justify-end items-center h-full">
-              {!session.length && !session.role && (
-                <Button
-                  type="primary"
-                  shape="circle"
-                  onClick={() => {
-                    window.location.replace(
-                      `${process.env.REACT_APP_API_URL}/login`
-                    );
-                  }}
-                >
-                  <FontAwesomeIcon className="text-white" icon={faSignInAlt} />
-                </Button>
-              )}
-              {session && session.role === 'student' && (
+              {/* {!session.length && !session.role && ( */}
+              {/* )} */}
+              {(session && session.role === 'student' && (
                 <Popover
                   trigger="click"
                   placement="topRight"
@@ -124,6 +113,18 @@ function HomeScreen() {
                     <FontAwesomeIcon className="text-white" icon={faUser} />
                   </Button>
                 </Popover>
+              )) || (
+                <Button
+                  type="primary"
+                  shape="circle"
+                  onClick={() => {
+                    window.location.replace(
+                      `${process.env.REACT_APP_API_URL}/login`
+                    );
+                  }}
+                >
+                  <FontAwesomeIcon className="text-white" icon={faSignInAlt} />
+                </Button>
               )}
             </Col>
           </Row>

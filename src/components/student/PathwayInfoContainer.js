@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import useAxios, { configure } from 'axios-hooks';
-import { groupBy, property } from 'lodash';
+import { groupBy, property, uniqueId } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
@@ -25,29 +25,37 @@ export default function (props) {
   const [{ data: dataFieldPayload }] = useAxios(
     '/datafields?scope=with_offers'
   );
-  const [{ data: offerPayload }] = useAxios('/offers?scope=with_details');
   const [{ data: providerPayload }] = useAxios('/providers?scope=with_details');
-  const [{ data: pathwayPayload }] = useAxios('/pathways?scope=with_details');
-
-  useEffect(() => {
-    if (dataFieldPayload) {
-      datafield.addMany(dataFieldPayload);
-    }
-    if (offerPayload) {
-      offerStore.addMany(offerPayload);
-    }
-    if (providerPayload) {
-      providerStore.addMany(providerPayload);
-    }
-    if (pathwayPayload) {
-      pathwayStore.addMany(pathwayPayload);
-    }
-  }, [dataFieldPayload, offerPayload, providerPayload, pathwayPayload]);
 
   const pathwayId = Number(params.id);
   const groupedDataFields = groupBy(datafield.entities, property('type'));
 
   const pathway = pathwayStore.entities[pathwayId];
+
+  async function getOffer(offerId) {
+    const response = await axiosInstance.get(
+      `/offers/${offerId}?scope=with_details`
+    );
+    offerStore.addOne(response.data);
+  }
+
+  useEffect(() => {
+    if (dataFieldPayload) {
+      datafield.addMany(dataFieldPayload);
+    }
+    if (providerPayload) {
+      providerStore.addMany(providerPayload);
+    }
+    if (!pathway) {
+      async function getPathway(_pathwayId) {
+        const response = await axiosInstance.get(
+          `/pathways/${_pathwayId}?scope=with_details`
+        );
+        pathwayStore.addOne(response.data);
+      }
+      getPathway(pathwayId);
+    }
+  }, [dataFieldPayload, providerPayload, pathway]);
 
   let groupsOfOffers = {};
   let groupKeys = [];
@@ -75,7 +83,7 @@ export default function (props) {
             groupKeys.map((key, index) => {
               const group = groupsOfOffers[key];
               return (
-                <div key={index}>
+                <div key={uniqueId('div_')}>
                   <TitleDivider
                     title={key}
                     align="center"
@@ -90,6 +98,9 @@ export default function (props) {
                     }
                     let p = null;
                     const offer = offerStore.entities[g.offer_id];
+                    if (!offer) {
+                      getOffer(g.offer_id);
+                    }
                     if (offer && offer.provider_id) {
                       p = providerStore.entities[offer.provider_id];
                     }
@@ -98,7 +109,7 @@ export default function (props) {
                         className="mb-4"
                         data={offer}
                         provider={p}
-                        key={offer.id}
+                        key={uniqueId('card_')}
                         groupedDataFields={groupedDataFields}
                         actions={[
                           <Link

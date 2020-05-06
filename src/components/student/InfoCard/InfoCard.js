@@ -74,7 +74,7 @@ export default function ({
           <Row className="mt-1">
             {length && (
               <div className="unit-tag mr-2 text-white rounded px-1">
-                {Number(length)} {lengthUnit.name}
+                {Number(length) || null} {lengthUnit ? lengthUnit.name : null}
               </div>
             )}
             {frequency && (
