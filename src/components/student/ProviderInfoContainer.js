@@ -53,7 +53,7 @@ export default function (props) {
     if (offerPayload) {
       offerStore.addMany(offerPayload);
     }
-    if (!provider) {
+    if (!provider || !provider.Offers || !provider.Pathways) {
       getProvider(providerId);
     }
   }, [dataFieldPayload, offerPayload, provider]);
