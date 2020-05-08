@@ -46,12 +46,15 @@ export default function ({
   const [form] = Form.useForm();
   const onApply = async () => {
     if (type === 'offer' && session && session.role === 'student') {
-      const studentId = session.id;
+      const studentId = session.student_id;
       const offerId = id;
       try {
-        await axiosInstance.put(
+        const response = await axiosInstance.put(
           `/students/${studentId}/offers/${offerId}/enroll`
         );
+        if (response.status === 200) {
+          message.success(`You've enrolled in ${data.name}`);
+        }
       } catch (e) {
         console.error(e);
         if (e.response.status === 400) {
