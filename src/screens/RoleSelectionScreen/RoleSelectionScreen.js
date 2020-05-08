@@ -5,11 +5,11 @@ import {
   faChalkboardTeacher,
   faUserGraduate,
 } from '@fortawesome/free-solid-svg-icons';
-
-import axiosInstance from 'services/AxiosInstance';
-import 'scss/screens/user-selection-screen.scss';
-import AuthService from 'services/AuthService';
 import { get } from 'lodash';
+
+import AuthService from 'services/AuthService';
+import axiosInstance from 'services/AxiosInstance';
+import './role-selection-screen.scss';
 
 import { Layout, Row, Col, Card, Button } from 'antd';
 const { Content } = Layout;

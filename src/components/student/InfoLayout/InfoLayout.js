@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import axiosInstance from 'services/AxiosInstance';
 import { LearnAndEarnIcons, UnitTag } from 'components/shared';
 import './info-layout.scss';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 
 export default function ({
   children,

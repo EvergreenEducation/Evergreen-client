@@ -7,7 +7,7 @@ import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
 import { InfoCard, InfoLayout } from 'components/student';
 import { Carousel } from 'react-responsive-carousel';
-import 'scss/responsive-carousel-override.scss';
+import 'assets/scss/responsive-carousel-override.scss';
 
 configure({
   axios: axiosInstance,

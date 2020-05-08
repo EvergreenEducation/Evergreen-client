@@ -6,7 +6,7 @@ import { reactLocalStorage } from 'reactjs-localstorage';
 
 import axiosInstance from 'services/AxiosInstance';
 import useAxios, { configure } from 'axios-hooks';
-import RoleSelectionScreen from 'screens/RoleSelectionScreen';
+import RoleSelectionScreen from 'screens/RoleSelectionScreen/RoleSelectionScreen';
 import EmailNotVerifiedScreen from 'screens/EmailNotVerifiedScreen';
 
 configure({

@@ -10,7 +10,7 @@ import {
 } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import { Button } from 'antd';
-import HomeScreen from 'screens/HomeScreen';
+import HomeScreen from 'screens/HomeScreen/HomeScreen';
 import PrivateRoute from 'services/PrivateRoute';
 
 const AuthScreen = imported(() => import('screens/AuthScreen'));

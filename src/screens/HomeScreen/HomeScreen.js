@@ -8,7 +8,7 @@ import { Route, withRouter, useRouteMatch } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import AuthService from 'services/AuthService';
 import Logo from 'assets/svgs/evergreen-optimized-logo.svg';
-import 'scss/screens/home-screen.scss';
+import './home-screen.scss';
 
 const { Header, Content } = Layout;
 

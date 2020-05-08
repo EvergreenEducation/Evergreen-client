@@ -6,7 +6,7 @@ import { orderBy } from 'lodash';
 import ProviderStore from 'store/Provider';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 
 export default function ProviderSimpleUpdateModal(props) {
   const providerStore = ProviderStore.useContainer();

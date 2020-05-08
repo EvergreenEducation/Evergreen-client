@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Form, Button, notification, Col, InputNumber } from 'antd';
 import axiosInstance from 'services/AxiosInstance';
 import EnrollmentStore from 'store/Enrollment';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 
 export default function EnrollModal({ offer, onCancel, visible, onSubmit }) {
   const enrollmentStore = EnrollmentStore.useContainer();

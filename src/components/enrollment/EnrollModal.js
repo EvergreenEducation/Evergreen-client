@@ -1,14 +1,17 @@
 import React from 'react';
 import {
-  Modal, Form, Button,
+  Modal,
+  Form,
+  Button,
   // notification, Input,
-  Select, Col,
+  Select,
+  Col,
 } from 'antd';
 // import axiosInstance from 'services/AxiosInstance';
 // import EnrollmentStore from 'store/Enrollment';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 
-export default function EnrollModal({offer, onCancel, visible}) {
+export default function EnrollModal({ offer, onCancel, visible }) {
   // const enrollmentStore = EnrollmentStore.useContainer();
   const [form] = Form.useForm();
 
@@ -57,12 +60,12 @@ export default function EnrollModal({offer, onCancel, visible}) {
       title={'Enroll Student'}
       visible={visible}
       width={520}
-      bodyStyle={{backgroundColor: '#f0f2f5', padding: 0}}
+      bodyStyle={{ backgroundColor: '#f0f2f5', padding: 0 }}
       footer={true}
       onCancel={onCancel}
     >
       <Form form={form}>
-        <div className="p-6 overflow-y-auto" style={{maxHeight: '32rem'}}>
+        <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <Col span={24} className="mb-5">
             <Form.Item
               label="Student"
@@ -108,4 +111,3 @@ export default function EnrollModal({offer, onCancel, visible}) {
     </Modal>
   );
 }
-

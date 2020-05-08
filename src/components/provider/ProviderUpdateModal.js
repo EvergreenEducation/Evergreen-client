@@ -7,7 +7,7 @@ import { configure } from 'axios-hooks';
 import useGlobalStore from 'store/GlobalStore';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 
 configure({
   axios: axiosInstance,

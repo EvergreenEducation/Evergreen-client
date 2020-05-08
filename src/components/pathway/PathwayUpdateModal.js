@@ -5,7 +5,7 @@ import axiosInstance from 'services/AxiosInstance';
 import DataFieldStore from 'store/DataField';
 import PathwayForm from 'components/pathway/PathwayForm';
 import dayjs from 'dayjs';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 import moment from 'moment';
 import { groupBy, isNil, orderBy, map, head, reject } from 'lodash';
 import AuthService from 'services/AuthService';

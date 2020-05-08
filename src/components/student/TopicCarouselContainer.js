@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { InfoCard } from 'components/student';
 import { TitleDivider } from 'components/shared';
-import 'scss/responsive-carousel-override.scss';
+import 'assets/scss/responsive-carousel-override.scss';
 
 configure({
   axios: axiosInstance,
