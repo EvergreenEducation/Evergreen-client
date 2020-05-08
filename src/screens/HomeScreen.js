@@ -42,7 +42,9 @@ function HomeScreen() {
             </Route>
             <Route
               path={`${match.url}/offer/:id`}
-              component={OfferInfoContainer}
+              component={(props) => (
+                <OfferInfoContainer {...props} session={session} />
+              )}
             />
             <Route
               path={`${match.url}/provider/:id`}
@@ -50,8 +52,10 @@ function HomeScreen() {
             />
             <Route
               path={`${match.url}/pathway/:id`}
-              component={PathwayInfoContainer}
-            />
+              component={(props) => (
+                <PathwayInfoContainer {...props} session={session} />
+              )}
+            ></Route>
           </Content>
         </div>
         <Header className="h-12 w-full bg-green-500 fixed bottom-0 z-10">
@@ -81,8 +85,6 @@ function HomeScreen() {
               </Row>
             </Col>
             <Col span={8} className="flex justify-end items-center h-full">
-              {/* {!session.length && !session.role && ( */}
-              {/* )} */}
               {(session && session.role === 'student' && (
                 <Popover
                   trigger="click"

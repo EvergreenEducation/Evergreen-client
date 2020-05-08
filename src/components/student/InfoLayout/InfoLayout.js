@@ -11,6 +11,7 @@ import {
 import { faHandshake } from '@fortawesome/free-regular-svg-icons';
 import { reactLocalStorage } from 'reactjs-localstorage';
 import dayjs from 'dayjs';
+import axiosInstance from 'services/AxiosInstance';
 import { LearnAndEarnIcons, UnitTag } from 'components/shared';
 import './info-layout.scss';
 import 'scss/antd-overrides.scss';
@@ -20,6 +21,7 @@ export default function ({
   type = 'offer',
   data = {},
   groupedDataFields,
+  session = {},
 }) {
   const [openCodeInput, setOpenCodeInput] = useState(false);
   const {
@@ -43,28 +45,30 @@ export default function ({
 
   const [form] = Form.useForm();
   const onApply = async () => {
-    if (type === 'offer') {
-      if (openCodeInput) {
-        try {
-          const { activation_code } = await form.validateFields([
-            'activation_code',
-          ]);
-          if (activation_code.length) {
-            message.success('Success');
-          }
-        } catch (err) {
-          console.error(err);
-        }
-        return;
-      } else {
-        if (type === 'offer') {
-          reactLocalStorage.set('offer_id', id);
+    if (type === 'offer' && session && session.role === 'student') {
+      const studentId = session.id;
+      const offerId = id;
+      try {
+        await axiosInstance.put(
+          `/students/${studentId}/offers/${offerId}/enroll`
+        );
+      } catch (e) {
+        console.error(e);
+        if (e.response.status === 400) {
+          message.error(
+            'There are no enrollments available. Please contact the provider.'
+          );
         }
       }
-    }
-    if (type === 'pathway') {
       return;
     }
+    if (type === 'offer') {
+      reactLocalStorage.set('offer_id', id);
+    }
+    if (type === 'pathway') {
+      reactLocalStorage.set('pathway_id', id);
+    }
+    window.location.replace(`${process.env.REACT_APP_API_URL}/login`);
     return;
   };
 
@@ -212,7 +216,7 @@ export default function ({
             className="w-1/2 rounded mx-auto block mt-2"
             onClick={onApply}
           >
-            Apply
+            Enroll
           </Button>
         )}
         {type === 'offer' && (
@@ -223,7 +227,7 @@ export default function ({
                 className="w-1/2 rounded"
                 onClick={onApply}
               >
-                Apply
+                Enroll
               </Button>
               {openCodeInput && (
                 <Row className={`w-1/2 ${openCodeInput ? 'mt-2' : ''}`}>

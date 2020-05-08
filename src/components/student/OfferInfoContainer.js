@@ -14,6 +14,7 @@ configure({
 });
 
 export default function (props) {
+  const { session } = props;
   let { id: offerId } = useParams();
   const [{ data: dataFieldPayload }] = useAxios(
     '/datafields?scope=with_offers'
@@ -65,6 +66,7 @@ export default function (props) {
         data={offer}
         src={imageSrc}
         alt={alt}
+        session={session}
         groupedDataFields={groupedDataFields}
       >
         <TitleDivider
