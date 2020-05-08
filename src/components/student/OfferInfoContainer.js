@@ -69,63 +69,16 @@ export default function (props) {
         session={session}
         groupedDataFields={groupedDataFields}
       >
-        <TitleDivider
-          title={'RELATED OFFERS'}
-          align="center"
-          classNames={{ middleSpan: 'text-base' }}
-        />
         <section style={{ maxWidth: 896 }}>
           {(offer && offer.RelatedOffers && offer.RelatedOffers.length && (
-            <Carousel
-              className="custom-carousel mb-2 cursor-grab"
-              centerMode
-              infiniteLoop
-              centerSlidePercentage={100}
-              showArrows={true}
-              showIndicators={false}
-              swipeable={true}
-              emulateTouch={true}
-              showThumbs={false}
-              showStatus={false}
-              swipeScrollTolerance={10}
-            >
-              {offer.RelatedOffers.map((o, index) => {
-                let p = null;
-                if (o && o.provider_id) {
-                  p = providerStore.entities[o.provider_id];
-                  if (!p) {
-                    getProvider(o.provider_id);
-                  }
-                }
-                return (
-                  <InfoCard
-                    key={index}
-                    data={o}
-                    provider={p}
-                    groupedDataFields={groupedDataFields}
-                    actions={[
-                      <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
-                        View
-                      </Link>,
-                    ]}
-                  />
-                );
-              })}
-            </Carousel>
-          )) ||
-            null}
-        </section>
-        <TitleDivider
-          title={'PREREQUISITES'}
-          align="center"
-          classNames={{ middleSpan: 'text-base' }}
-        />
-        <section style={{ maxWidth: 896 }}>
-          {(offer &&
-            offer.PrerequisiteOffers &&
-            offer.PrerequisiteOffers.length && (
+            <>
+              <TitleDivider
+                title={'RELATED OFFERS'}
+                align="center"
+                classNames={{ middleSpan: 'text-base' }}
+              />
               <Carousel
-                className="custom-carousel mb-4 cursor-grab"
+                className="custom-carousel mb-2 cursor-grab"
                 centerMode
                 infiniteLoop
                 centerSlidePercentage={100}
@@ -137,7 +90,7 @@ export default function (props) {
                 showStatus={false}
                 swipeScrollTolerance={10}
               >
-                {offer.PrerequisiteOffers.map((o, index) => {
+                {offer.RelatedOffers.map((o, index) => {
                   let p = null;
                   if (o && o.provider_id) {
                     p = providerStore.entities[o.provider_id];
@@ -147,7 +100,7 @@ export default function (props) {
                   }
                   return (
                     <InfoCard
-                      key={uniqueId('prereq_card_')}
+                      key={index}
                       data={o}
                       provider={p}
                       groupedDataFields={groupedDataFields}
@@ -160,6 +113,57 @@ export default function (props) {
                   );
                 })}
               </Carousel>
+            </>
+          )) ||
+            null}
+        </section>
+        <section style={{ maxWidth: 896 }}>
+          {(offer &&
+            offer.PrerequisiteOffers &&
+            offer.PrerequisiteOffers.length && (
+              <>
+                <TitleDivider
+                  title={'PREREQUISITES'}
+                  align="center"
+                  classNames={{ middleSpan: 'text-base' }}
+                />
+                <Carousel
+                  className="custom-carousel mb-4 cursor-grab"
+                  centerMode
+                  infiniteLoop
+                  centerSlidePercentage={100}
+                  showArrows={true}
+                  showIndicators={false}
+                  swipeable={true}
+                  emulateTouch={true}
+                  showThumbs={false}
+                  showStatus={false}
+                  swipeScrollTolerance={10}
+                >
+                  {offer.PrerequisiteOffers.map((o, index) => {
+                    let p = null;
+                    if (o && o.provider_id) {
+                      p = providerStore.entities[o.provider_id];
+                      if (!p) {
+                        getProvider(o.provider_id);
+                      }
+                    }
+                    return (
+                      <InfoCard
+                        key={uniqueId('prereq_card_')}
+                        data={o}
+                        provider={p}
+                        groupedDataFields={groupedDataFields}
+                        actions={[
+                          <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
+                            View
+                          </Link>,
+                        ]}
+                      />
+                    );
+                  })}
+                </Carousel>
+              </>
             )) ||
             null}
         </section>

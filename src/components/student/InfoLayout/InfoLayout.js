@@ -93,7 +93,7 @@ export default function ({
   }
 
   return (
-    <div style={{ width: 423 }}>
+    <div className="infoLayout">
       <header className="mx-auto relative" style={{ minHeight: 52 }}>
         <span
           className="block text-white text-center text-lg absolute text-white w-full bottom-0 p-3"

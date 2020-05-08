@@ -73,12 +73,15 @@ export default function (props) {
         groupedDataFields={groupedDataFields}
         type="pathway"
       >
-        <TitleDivider
-          title={'GROUPS OF OFFERS'}
-          align="center"
-          classNames={{ middleSpan: 'text-base' }}
-        />
         <section style={{ maxWidth: 896 }}>
+          {(groupKeys.length && (
+            <TitleDivider
+              title={'GROUPS OF OFFERS'}
+              align="center"
+              classNames={{ middleSpan: 'text-base' }}
+            />
+          )) ||
+            null}
           {(groupKeys.length &&
             groupKeys.map((key, index) => {
               const group = groupsOfOffers[key];
