@@ -12,7 +12,7 @@ import {
 import { TitleDivider } from 'components/shared';
 import { ImageUploadAndNameInputs } from 'components/shared';
 import { groupBy, property, isNil, compact } from 'lodash';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 import OfferGroupTable from './OfferGroupTable';
 
 const { Option } = Select;

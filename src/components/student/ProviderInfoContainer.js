@@ -6,7 +6,7 @@ import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
 import { InfoCard, InfoLayout } from 'components/student';
-import 'scss/responsive-carousel-override.scss';
+import 'assets/scss/responsive-carousel-override.scss';
 
 configure({
   axios: axiosInstance,
@@ -53,7 +53,7 @@ export default function (props) {
     if (offerPayload) {
       offerStore.addMany(offerPayload);
     }
-    if (!provider) {
+    if (!provider || !provider.Offers || !provider.Pathways) {
       getProvider(providerId);
     }
   }, [dataFieldPayload, offerPayload, provider]);
@@ -76,11 +76,6 @@ export default function (props) {
         groupedDataFields={groupedDataFields}
         type="provider"
       >
-        <TitleDivider
-          title={'OFFERS'}
-          align="center"
-          classNames={{ middleSpan: 'text-base' }}
-        />
         <section style={{ maxWidth: 896 }}>
           {(Offers.length &&
             Offers.map((o, index) => {
@@ -89,27 +84,29 @@ export default function (props) {
                 p = providerStore.entities[o.provider_id];
               }
               return (
-                <InfoCard
-                  className="mb-4"
-                  key={index}
-                  data={o}
-                  provider={p}
-                  groupedDataFields={groupedDataFields}
-                  actions={[
-                    <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
-                      View
-                    </Link>,
-                  ]}
-                />
+                <>
+                  <TitleDivider
+                    title={'OFFERS'}
+                    align="center"
+                    classNames={{ middleSpan: 'text-base' }}
+                  />
+                  <InfoCard
+                    className="mb-4"
+                    key={index}
+                    data={o}
+                    provider={p}
+                    groupedDataFields={groupedDataFields}
+                    actions={[
+                      <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
+                        View
+                      </Link>,
+                    ]}
+                  />
+                </>
               );
             })) ||
             null}
         </section>
-        <TitleDivider
-          title={'PATHWAYS'}
-          align="center"
-          classNames={{ middleSpan: 'text-base' }}
-        />
         <section style={{ maxWidth: 896 }}>
           {(Pathways.length &&
             Pathways.map((pathway, index) => {
@@ -124,24 +121,31 @@ export default function (props) {
                 }
               }
               return (
-                <InfoCard
-                  className="mb-4"
-                  key={index}
-                  data={pathway}
-                  provider={p}
-                  groupedDataFields={groupedDataFields}
-                  actions={[
-                    <Link
-                      to={
-                        pathway && pathway.id
-                          ? `/home/pathway/${pathway.id}`
-                          : null
-                      }
-                    >
-                      View
-                    </Link>,
-                  ]}
-                />
+                <>
+                  <TitleDivider
+                    title={'PATHWAYS'}
+                    align="center"
+                    classNames={{ middleSpan: 'text-base' }}
+                  />
+                  <InfoCard
+                    className="mb-4"
+                    key={index}
+                    data={pathway}
+                    provider={p}
+                    groupedDataFields={groupedDataFields}
+                    actions={[
+                      <Link
+                        to={
+                          pathway && pathway.id
+                            ? `/home/pathway/${pathway.id}`
+                            : null
+                        }
+                      >
+                        View
+                      </Link>,
+                    ]}
+                  />
+                </>
               );
             })) ||
             null}

@@ -6,7 +6,7 @@ import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
 import { InfoCard, InfoLayout } from 'components/student';
-import 'scss/responsive-carousel-override.scss';
+import 'assets/scss/responsive-carousel-override.scss';
 
 configure({
   axios: axiosInstance,
@@ -73,12 +73,15 @@ export default function (props) {
         groupedDataFields={groupedDataFields}
         type="pathway"
       >
-        <TitleDivider
-          title={'GROUPS OF OFFERS'}
-          align="center"
-          classNames={{ middleSpan: 'text-base' }}
-        />
         <section style={{ maxWidth: 896 }}>
+          {(groupKeys.length && (
+            <TitleDivider
+              title={'GROUPS OF OFFERS'}
+              align="center"
+              classNames={{ middleSpan: 'text-base' }}
+            />
+          )) ||
+            null}
           {(groupKeys.length &&
             groupKeys.map((key, index) => {
               const group = groupsOfOffers[key];

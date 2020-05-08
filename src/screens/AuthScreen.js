@@ -2,10 +2,11 @@ import React from 'react';
 import AuthService from 'services/AuthService';
 import { useParams, Redirect, useLocation } from 'react-router-dom';
 import { Spin } from 'antd';
+import { reactLocalStorage } from 'reactjs-localstorage';
 
 import axiosInstance from 'services/AxiosInstance';
 import useAxios, { configure } from 'axios-hooks';
-import RoleSelectionScreen from 'screens/RoleSelectionScreen';
+import RoleSelectionScreen from 'screens/RoleSelectionScreen/RoleSelectionScreen';
 import EmailNotVerifiedScreen from 'screens/EmailNotVerifiedScreen';
 
 configure({
@@ -39,8 +40,19 @@ function UserAuth({ user_id }) {
     });
 
     switch (myProfile.role) {
-      case 'student':
+      case 'student': {
+        const offerId = reactLocalStorage.get('offer_id');
+        if (offerId) {
+          reactLocalStorage.remove('offer_id');
+          return <Redirect to={{ pathname: `/home/offer/${offerId}` }} />;
+        }
+        const pathwayId = reactLocalStorage.get('pathway_id');
+        if (pathwayId) {
+          reactLocalStorage.remove('pathway_id');
+          return <Redirect to={{ pathname: `/home/pathway/${pathwayId}` }} />;
+        }
         return <Redirect to={{ pathname: `/` }} />;
+      }
       case 'provider':
         return (
           <Redirect to={{ pathname: `/dashboard/${myProfile.provider_id}` }} />

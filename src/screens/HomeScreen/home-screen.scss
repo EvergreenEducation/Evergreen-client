@@ -1,0 +1,39 @@
+$width: 423px;
+
+.homeScreen {
+  &__homeButton {
+    @media only screen and (max-width: 320px) {
+      display: none;
+    }
+  }
+  &__navWrapper {
+    @media only screen and (max-width: 480px) {
+      padding: 0;
+    }
+  }
+  &__navbar {
+    max-width: $width;
+    @media only screen and (max-width: 480px) {
+      padding: 0 0.5rem;
+    }
+  }
+  &__carouselContent {
+    max-width: $width;
+  }
+  &__brandLogo {
+    padding-right: 3px;
+    padding-left: 3px;
+    background-color: darkgreen;
+    border-radius: 50%;
+    height: 40px;
+    @media only screen and (max-width: 480px) {
+      margin: 0 auto;
+    }
+  }
+  &__brandName {
+    height: 48px;
+    @media only screen and (max-width: 480px) {
+      display: none;
+    }
+  }
+}

@@ -12,10 +12,12 @@ $secondaryPurple: hsl(261, 55%, 78%);
 $primaryBlue: hsl(207, 72%, 48%);
 $secondaryBlue: hsl(207, 72%, 68%);
 
+$dark: hsl(185, 87%, 24%);
+
 .info-card {
   border-radius: 1rem;
   border: none;
-  width: 423px;
+  width: 100%;
   font-weight: 600;
   color: $tertiary;
   .ant-card-head-title {
@@ -33,9 +35,15 @@ $secondaryBlue: hsl(207, 72%, 68%);
     background: linear-gradient(135deg, $primary, $secondary);
   }
   .ant-card-actions {
-    background-color: white;
+    background: linear-gradient(135deg, $secondary, $dark);
     border-bottom-left-radius: $borderRadius;
     border-bottom-right-radius: $borderRadius;
+    a {
+      color: white !important;
+    }
+    a:hover {
+      color: #40a9ff;
+    }
   }
 }
 

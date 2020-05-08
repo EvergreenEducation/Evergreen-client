@@ -11,7 +11,7 @@ import {
 } from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
 import { groupBy, property, isNil, remove, compact } from 'lodash';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 
 const { Option } = Select;
 

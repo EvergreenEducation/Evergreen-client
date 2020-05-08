@@ -7,7 +7,7 @@ import axiosInstance from 'services/AxiosInstance';
 import { GlobalProvider } from 'store/GlobalStore';
 import Sidebar from 'components/Sidebar';
 import PrivateRoute from 'services/PrivateRoute';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 
 const ProviderContainer = imported(() =>
   import('components/provider/ProviderContainer')

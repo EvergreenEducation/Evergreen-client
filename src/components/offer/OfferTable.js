@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Button, Tag } from 'antd';
 import dayjs from 'dayjs';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 
 const { Column } = Table;
 
@@ -80,7 +80,7 @@ export default function OfferTable({
       ? null
       : (record, rowIndex) => {
           return {
-            onClick: event => {
+            onClick: (event) => {
               if (event.target.type === 'button') {
                 return;
               }
@@ -128,7 +128,7 @@ export default function OfferTable({
         title="Category"
         dataIndex="category"
         key="category"
-        render={id => {
+        render={(id) => {
           let name = null;
           if (datafields[id]) {
             name = datafields[id].name;
@@ -144,7 +144,7 @@ export default function OfferTable({
         title="Provider"
         dataIndex="provider_id"
         key="provider_id"
-        render={id => {
+        render={(id) => {
           let name = 'N/A';
           if (providers[id]) {
             name = providers[id].name;
@@ -161,7 +161,7 @@ export default function OfferTable({
         dataIndex="DataFields"
         key="DataFields"
         render={(datafields = [], record) => {
-          datafields = datafields.filter(d => d.type === 'topic');
+          datafields = datafields.filter((d) => d.type === 'topic');
           let children = 'N/A';
 
           if (datafields.length) {
@@ -197,7 +197,7 @@ export default function OfferTable({
         title="Start Date"
         dataIndex="start_date"
         key="start_date"
-        render={date => {
+        render={(date) => {
           return {
             children: dayjs(date).format('MMM DD, YYYY'),
             props: { 'data-title': 'Start Date' },

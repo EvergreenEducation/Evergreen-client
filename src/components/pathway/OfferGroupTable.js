@@ -3,7 +3,7 @@ import { Form, Select, Table, Popconfirm, Input, Button } from 'antd';
 import OfferStore from 'store/Offer';
 import { each, groupBy, map, find, findIndex, sortBy } from 'lodash';
 import dayjs from 'dayjs';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 
 const { Option } = Select;
 const { Column } = Table;

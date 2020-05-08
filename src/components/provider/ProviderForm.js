@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Layout, Form, Input, InputNumber, Row, Col, Select } from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
 import { groupBy, isNil } from 'lodash';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 
 const { Option } = Select;
 

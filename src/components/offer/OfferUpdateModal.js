@@ -9,7 +9,7 @@ import moment from 'moment';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import { compact, orderBy, head } from 'lodash';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 
 configure({
   axios: axiosInstance,

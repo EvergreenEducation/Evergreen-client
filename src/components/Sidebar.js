@@ -44,7 +44,7 @@ const routesList = (role) => {
       path: 'settings',
       name: 'Settings',
       icon: faCog,
-      enabled: ['admin', 'provider'].includes(role),
+      enabled: role === 'admin',
     },
   ];
 };

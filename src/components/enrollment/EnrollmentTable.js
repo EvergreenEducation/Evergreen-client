@@ -4,11 +4,10 @@ import axiosInstance from 'services/AxiosInstance';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import EnrollmentStore from 'store/Enrollment';
-import 'scss/antd-overrides.scss';
 import { EnrollModal } from 'components/enrollment';
 import matchSorter from 'match-sorter';
 import { useForm } from 'antd/lib/form/util';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 const { Column } = Table;
 const { Option } = Select;
 

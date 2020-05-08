@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { InfoCard } from 'components/student';
 import { TitleDivider } from 'components/shared';
-import 'scss/responsive-carousel-override.scss';
+import 'assets/scss/responsive-carousel-override.scss';
 
 configure({
   axios: axiosInstance,
@@ -118,8 +118,8 @@ export default function () {
       return (
         <InfoCard
           key={index}
-          className="mx-auto mb-4"
-          style={{ width: 425, borderRadius: '1rem' }}
+          className="mx-auto mb-4 w-full"
+          style={{ borderRadius: '1rem' }}
           data={offer}
           provider={p}
           groupedDataFields={groupedDataFields}
@@ -134,7 +134,7 @@ export default function () {
   };
 
   return (
-    <div className="h-auto">
+    <div className="h-auto w-full">
       <TitleDivider
         title={'OFFERS BY TOPICS'}
         align="center"
@@ -166,7 +166,6 @@ export default function () {
             <Card
               className="mx-auto text-white text-lg w-auto flex justify-center items-center"
               style={{
-                width: 375,
                 backgroundColor: 'rgb(7, 25, 80)',
                 height: 50,
               }}

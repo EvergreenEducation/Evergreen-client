@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Tag, Button } from 'antd';
 import { find, matchesProperty, isNil } from 'lodash';
-import 'scss/antd-overrides.scss';
+import 'assets/scss/antd-overrides.scss';
 
 const { Column } = Table;
 
