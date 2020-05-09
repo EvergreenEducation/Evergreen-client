@@ -44,7 +44,7 @@ export default function ({
   } = data;
 
   const [form] = Form.useForm();
-  const onApply = async () => {
+  const onEnroll = async () => {
     if (type === 'offer' && session && session.role === 'student') {
       const studentId = session.student_id;
       const offerId = id;
@@ -62,6 +62,25 @@ export default function ({
             'There are no enrollments available. Please contact the provider.'
           );
         }
+      }
+      return;
+    }
+    if (type === 'pathway' && session && session.role === 'student') {
+      const studentId = session.student_id;
+      const pathwayId = id;
+      try {
+        const response = await axiosInstance.post(
+          `/students/${studentId}/pathways/${pathwayId}/enroll`
+        );
+        if (response.status === 200) {
+          message.info(`You''re already enrolled in ${data.name}`);
+        }
+        if (response.status === 201) {
+          message.success(`You've enrolled in ${data.name}`);
+        }
+        return response;
+      } catch (e) {
+        console.error(e);
       }
       return;
     }
@@ -217,7 +236,7 @@ export default function ({
           <Button
             type="primary"
             className="w-1/2 rounded mx-auto block mt-2"
-            onClick={onApply}
+            onClick={onEnroll}
           >
             Enroll
           </Button>
@@ -228,7 +247,7 @@ export default function ({
               <Button
                 type="primary"
                 className="w-1/2 rounded"
-                onClick={onApply}
+                onClick={onEnroll}
               >
                 Enroll
               </Button>

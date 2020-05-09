@@ -15,6 +15,7 @@ configure({
 export default function (props) {
   const {
     match: { params },
+    session,
   } = props;
   const {
     offer: offerStore,
@@ -72,6 +73,7 @@ export default function (props) {
         data={pathway}
         groupedDataFields={groupedDataFields}
         type="pathway"
+        session={session}
       >
         <section style={{ maxWidth: 896 }}>
           {(groupKeys.length && (
@@ -119,8 +121,9 @@ export default function (props) {
                             to={
                               offer && offer.id
                                 ? `/home/offer/${offer.id}`
-                                : null
+                                : '/'
                             }
+                            disabled={offer && offer.id ? false : true}
                           >
                             View
                           </Link>,
