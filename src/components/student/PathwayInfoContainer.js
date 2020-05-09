@@ -121,8 +121,9 @@ export default function (props) {
                             to={
                               offer && offer.id
                                 ? `/home/offer/${offer.id}`
-                                : null
+                                : '/'
                             }
+                            disabled={offer && offer.id ? false : true}
                           >
                             View
                           </Link>,

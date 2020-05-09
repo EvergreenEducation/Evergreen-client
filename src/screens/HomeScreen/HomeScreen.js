@@ -50,8 +50,15 @@ const PathwayInfoContainer = imported(() =>
   import('components/student/PathwayInfoContainer')
 );
 
+const StudentDashboard = imported(() =>
+  import('components/student/StudentDashboard/StudentDashboard')
+);
+
 function HomeScreen() {
-  const [toggleSearch, setToggleSearch] = useState(false);
+  const [toggeables, setToggeables] = useState({
+    search: false,
+    studentDashboard: false,
+  });
   let match = useRouteMatch();
   const history = useHistory();
 
@@ -62,30 +69,44 @@ function HomeScreen() {
       <Layout className="homeScreen h-full bg-gray-100">
         <div className="w-full bg-gray-100" style={{ paddingBottom: 48 }}>
           <Content className="homeScreen__carouselContent mx-auto h-auto bg-gray-100">
-            <Route exact path={`${match.url}`}>
-              <TopicCarouselContainer />
-            </Route>
-            <Route
-              path={`${match.url}/offer/:id`}
-              component={(props) => (
-                <OfferInfoContainer {...props} session={session} />
-              )}
-            />
-            <Route
-              path={`${match.url}/provider/:id`}
-              component={ProviderInfoContainer}
-            />
-            <Route
-              path={`${match.url}/pathway/:id`}
-              component={(props) => (
-                <PathwayInfoContainer {...props} session={session} />
-              )}
-            ></Route>
+            {(!toggeables.studentDashboard && (
+              <>
+                <Route exact path={`${match.url}`}>
+                  <TopicCarouselContainer />
+                </Route>
+                <Route
+                  path={`${match.url}/offer/:id`}
+                  component={(props) => (
+                    <OfferInfoContainer {...props} session={session} />
+                  )}
+                />
+                <Route
+                  path={`${match.url}/pathway/:id`}
+                  component={(props) => (
+                    <PathwayInfoContainer {...props} session={session} />
+                  )}
+                />
+                <Route
+                  path={`${match.url}/provider/:id`}
+                  component={ProviderInfoContainer}
+                />
+              </>
+            )) ||
+              (session && session.role === 'student' && (
+                <StudentDashboard
+                  session={session}
+                  toggeables={toggeables}
+                  setToggeables={setToggeables}
+                />
+              ))}
           </Content>
         </div>
         <Header className="homeScreen__navWrapper h-12 w-full bg-green-500 fixed bottom-0 z-10">
           <Row className="homeScreen__navbar mx-auto h-full">
-            <Col span={!toggleSearch ? 8 : 8} className="flex items-center">
+            <Col
+              span={!toggeables.search ? 8 : 8}
+              className="flex items-center"
+            >
               <div className="inherit">
                 <Button
                   className="mr-2"
@@ -105,22 +126,32 @@ function HomeScreen() {
                     <FontAwesomeIcon className="text-white" icon={faHome} />
                   </Link>
                 </Button>
-                {!toggleSearch && (
+                {!toggeables.search && (
                   <Button
                     type="primary"
                     shape="circle"
-                    onClick={() => setToggleSearch(true)}
+                    onClick={() =>
+                      setToggeables({
+                        ...toggeables,
+                        search: true,
+                      })
+                    }
                   >
                     <FontAwesomeIcon className="text-white" icon={faSearch} />
                   </Button>
                 )}
-                {toggleSearch && (
+                {toggeables.search && (
                   <>
                     <Button
                       danger
                       type="primary"
                       shape="circle"
-                      onClick={() => setToggleSearch(false)}
+                      onClick={() =>
+                        setToggeables({
+                          ...toggeables,
+                          search: false,
+                        })
+                      }
                     >
                       <FontAwesomeIcon className="text-white" icon={faTimes} />
                     </Button>
@@ -129,10 +160,10 @@ function HomeScreen() {
               </div>
             </Col>
             <Col
-              span={!toggleSearch ? 8 : 11}
+              span={!toggeables.search ? 8 : 11}
               className="flex justify-center items-center h-full"
             >
-              {(!toggleSearch && (
+              {(!toggeables.search && (
                 <Row className="flex justify-center items-center">
                   <img
                     className="homeScreen__brandLogo relative mr-1"
@@ -179,12 +210,24 @@ function HomeScreen() {
               )}
             </Col>
             <Col
-              span={!toggleSearch ? 8 : 5}
+              span={!toggeables.search ? 8 : 5}
               className="flex justify-end items-center h-full"
             >
               {(session && session.role === 'student' && (
                 <div>
-                  <Button type="primary" shape="circle" className="mr-2">
+                  <Button
+                    type="primary"
+                    shape="circle"
+                    className={`mr-2 ${
+                      toggeables.studentDashboard ? 'antd-btn-active' : ''
+                    }`}
+                    onClick={() =>
+                      setToggeables({
+                        search: false,
+                        studentDashboard: !toggeables.studentDashboard,
+                      })
+                    }
+                  >
                     <FontAwesomeIcon
                       className="text-white"
                       icon={faClipboardList}
