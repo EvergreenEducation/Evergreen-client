@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Collapse, Alert, Button } from 'antd';
+import { Collapse, Alert, Button, message } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
+import { isEqual, groupBy, filter } from 'lodash';
 import axiosInstance from 'services/AxiosInstance';
 import useGlobalStore from 'store/GlobalStore';
-import { isEqual } from 'lodash';
 import { TitleDivider } from 'components/shared';
+import { SmallInfoCard } from 'components/student';
 import './student-dashboard.scss';
 
 configure({
@@ -20,12 +21,7 @@ export default function ({ session = {}, toggeables, setToggeables }) {
   const [{ data: studentPayload }] = useAxios(
     `/students/${studentId}?scope=with_details`
   );
-  const {
-    offer: offerStore,
-    provider: providerStore,
-    datafield: datafieldStore,
-    pathway: pathwayStore,
-  } = useGlobalStore();
+  const { offer: offerStore, pathway: pathwayStore } = useGlobalStore();
 
   async function getPathway(pathwayId) {
     const response = await axiosInstance.get(
@@ -41,6 +37,31 @@ export default function ({ session = {}, toggeables, setToggeables }) {
     offerStore.addOne(response.data);
   }
 
+  const enrollOffer = async (offer) => {
+    if (!session.student_id) {
+      return;
+    }
+    if (!offer || !offer.id) {
+      return;
+    }
+    const studentId = session.student_id;
+    try {
+      const response = await axiosInstance.put(
+        `/students/${studentId}/offers/${offer.id}/enroll`
+      );
+      if (response.status === 200) {
+        message.success(`You've enrolled in ${offer.name}`);
+      }
+    } catch (e) {
+      console.error(e);
+      if (e.response.status === 400) {
+        message.error(
+          'There are no enrollments available. Please contact the provider.'
+        );
+      }
+    }
+  };
+
   useEffect(() => {
     if (studentPayload) {
       const isNewStudentInfo = isEqual(student, studentPayload);
@@ -49,6 +70,11 @@ export default function ({ session = {}, toggeables, setToggeables }) {
       }
     }
   }, [studentPayload]);
+
+  let offerIds = filter(student.Enrollments || [], ['status', 'Activated']);
+  offerIds = groupBy(offerIds, 'offer_id');
+  offerIds = Object.keys(offerIds);
+
   return (
     <main className="pb-4">
       <TitleDivider
@@ -59,13 +85,26 @@ export default function ({ session = {}, toggeables, setToggeables }) {
       {(student &&
         student.StudentPathways &&
         student.StudentPathways.length &&
-        student.StudentPathways.map((pathway) => {
+        student.StudentPathways.map((pathway, idx) => {
           const pathwayEntity = pathwayStore.entities[pathway.id];
+          let groupsOfOffers = {};
+          let groupNames = [];
           if (!pathwayEntity) {
             getPathway(pathway.id);
           }
+          if (
+            pathwayEntity &&
+            pathwayEntity.GroupsOfOffers &&
+            pathwayEntity.GroupsOfOffers.length
+          ) {
+            groupsOfOffers = groupBy(
+              pathwayEntity.GroupsOfOffers,
+              'group_name'
+            );
+            groupNames = Object.keys(groupsOfOffers);
+          }
           return (
-            <section className="bg-white mb-2 rounded">
+            <section className="bg-white mb-2 rounded" key={idx}>
               <div className="px-2 pt-2">
                 <span className="block text-lg">
                   <Link
@@ -96,36 +135,55 @@ export default function ({ session = {}, toggeables, setToggeables }) {
               <div className="px-2 pb-2">
                 {(pathwayEntity &&
                   pathwayEntity.GroupsOfOffers &&
-                  pathwayEntity.GroupsOfOffers.length &&
-                  pathwayEntity.GroupsOfOffers.map((g) => {
-                    const offer = offerStore.entities[g.offer_id];
-                    if (!offer) {
-                      getOffer(g.offer_id);
-                    }
+                  groupNames.length &&
+                  groupNames.map((key, index) => {
+                    const group = groupsOfOffers[key];
                     return (
-                      <Collapse className="rounded mb-2">
-                        <Panel className="rounded" header={g.group_name}>
-                          <div className="flex flex-row justify-between">
-                            <span className="block">{offer.name}</span>
-                            <Button
-                              type="primary"
-                              className="rounded"
-                              size="small"
-                            >
-                              <Link
-                                className="text-blue"
-                                to={`/home/offer/${offer.id}`}
-                                onClick={() =>
-                                  setToggeables({
-                                    ...toggeables,
-                                    studentDashboard: false,
-                                  })
-                                }
+                      <Collapse className="rounded mb-2" key={index}>
+                        <Panel className="rounded" header={key}>
+                          {group.map((g, _index) => {
+                            if (!g) {
+                              return null;
+                            }
+                            const offer = offerStore.entities[g.offer_id];
+                            if (!offer) {
+                              getOffer(g.offer_id);
+                            }
+                            return (
+                              <SmallInfoCard
+                                key={_index}
+                                offer={offer}
+                                color={_index % 2 ? 'primary' : 'secondary'}
                               >
-                                View
-                              </Link>
-                            </Button>
-                          </div>
+                                <Button
+                                  type="link"
+                                  className="rounded mr-2"
+                                  size="small"
+                                >
+                                  <Link
+                                    className="text-blue"
+                                    to={offer ? `/home/offer/${offer.id}` : '/'}
+                                    onClick={() =>
+                                      setToggeables({
+                                        ...toggeables,
+                                        studentDashboard: false,
+                                      })
+                                    }
+                                  >
+                                    View
+                                  </Link>
+                                </Button>
+                                <Button
+                                  type="primary"
+                                  className="rounded"
+                                  size="small"
+                                  onClick={() => enrollOffer(offer)}
+                                >
+                                  Enroll
+                                </Button>
+                              </SmallInfoCard>
+                            );
+                          })}
                         </Panel>
                       </Collapse>
                     );
@@ -151,11 +209,42 @@ export default function ({ session = {}, toggeables, setToggeables }) {
         align="center"
         classNames={{ middleSpan: 'text-base' }}
       />
-      <Alert
-        className="mx-auto text-center rounded"
-        type="info"
-        message="You haven't enrolled in any offers yet."
-      />
+      {(offerIds.length &&
+        offerIds.map((offerId, index) => {
+          offerId = Number(offerId);
+          const offer = offerStore.entities[offerId];
+          if (!offer) {
+            getOffer(offerId);
+          }
+          return (
+            <SmallInfoCard
+              key={index}
+              offer={offer}
+              color={index % 2 ? 'primary' : 'secondary'}
+            >
+              <Button type="primary" className="rounded mr-2" size="small">
+                <Link
+                  className="text-blue"
+                  to={offer ? `/home/offer/${offer.id}` : '/'}
+                  onClick={() =>
+                    setToggeables({
+                      ...toggeables,
+                      studentDashboard: false,
+                    })
+                  }
+                >
+                  View
+                </Link>
+              </Button>
+            </SmallInfoCard>
+          );
+        })) || (
+        <Alert
+          className="mx-auto text-center rounded"
+          type="info"
+          message="You haven't enrolled in any offers yet."
+        />
+      )}
     </main>
   );
 }

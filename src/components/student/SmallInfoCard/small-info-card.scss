@@ -1,0 +1,19 @@
+$primary: #b31e6f;
+$secondary: seagreen;
+
+.smallInfoCard {
+  &--primaryBorder {
+    border-width: 1px;
+    border-color: $primary !important;
+  }
+  &--secondaryBorder {
+    border-width: 1px;
+    border-color: $secondary !important;
+  }
+  &__footer {
+    border-top: 1px solid;
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
+  }
+}
