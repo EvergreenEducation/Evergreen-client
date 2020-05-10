@@ -77,6 +77,13 @@ export default function (props) {
         type="provider"
       >
         <section style={{ maxWidth: 896 }}>
+          {Offers.length ? (
+            <TitleDivider
+              title={'OFFERS'}
+              align="center"
+              classNames={{ middleSpan: 'text-base' }}
+            />
+          ) : null}
           {(Offers.length &&
             Offers.map((o, index) => {
               let p = null;
@@ -84,30 +91,31 @@ export default function (props) {
                 p = providerStore.entities[o.provider_id];
               }
               return (
-                <>
-                  <TitleDivider
-                    title={'OFFERS'}
-                    align="center"
-                    classNames={{ middleSpan: 'text-base' }}
-                  />
-                  <InfoCard
-                    className="mb-4"
-                    key={index}
-                    data={o}
-                    provider={p}
-                    groupedDataFields={groupedDataFields}
-                    actions={[
-                      <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
-                        View
-                      </Link>,
-                    ]}
-                  />
-                </>
+                <InfoCard
+                  className="mb-4"
+                  key={`${o.name}_${index}`}
+                  data={o}
+                  provider={p}
+                  groupedDataFields={groupedDataFields}
+                  actions={[
+                    <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
+                      View
+                    </Link>,
+                  ]}
+                />
               );
             })) ||
             null}
         </section>
         <section style={{ maxWidth: 896 }}>
+          {(Pathways.length && (
+            <TitleDivider
+              title={'PATHWAYS'}
+              align="center"
+              classNames={{ middleSpan: 'text-base' }}
+            />
+          )) ||
+            null}
           {(Pathways.length &&
             Pathways.map((pathway, index) => {
               if (!pathwayStore.entities[pathway.id]) {
@@ -121,31 +129,24 @@ export default function (props) {
                 }
               }
               return (
-                <>
-                  <TitleDivider
-                    title={'PATHWAYS'}
-                    align="center"
-                    classNames={{ middleSpan: 'text-base' }}
-                  />
-                  <InfoCard
-                    className="mb-4"
-                    key={index}
-                    data={pathway}
-                    provider={p}
-                    groupedDataFields={groupedDataFields}
-                    actions={[
-                      <Link
-                        to={
-                          pathway && pathway.id
-                            ? `/home/pathway/${pathway.id}`
-                            : null
-                        }
-                      >
-                        View
-                      </Link>,
-                    ]}
-                  />
-                </>
+                <InfoCard
+                  className="mb-4"
+                  key={index}
+                  data={pathway}
+                  provider={p}
+                  groupedDataFields={groupedDataFields}
+                  actions={[
+                    <Link
+                      to={
+                        pathway && pathway.id
+                          ? `/home/pathway/${pathway.id}`
+                          : null
+                      }
+                    >
+                      View
+                    </Link>,
+                  ]}
+                />
               );
             })) ||
             null}

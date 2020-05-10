@@ -34,7 +34,7 @@ export default function OfferForm({
   userId = null,
   role,
 }) {
-  providers = compact(providers);
+  providers = compact(Object.values(providers));
   datafields = Object.values(datafields);
 
   const grouped = groupBy(datafields, property('type'));
@@ -93,7 +93,13 @@ export default function OfferForm({
               </Form.Item>
             </div>
           </Col>
-          <Col span={9} xs={24} sm={24} md={role === 'provider' ? 10 : 9}>
+          <Col
+            span={9}
+            xs={24}
+            sm={24}
+            md={role === 'provider' ? 10 : 9}
+            className="media-margin-top"
+          >
             <Form.Item
               label="Generic Offer"
               name="category"

@@ -38,7 +38,6 @@ export default function ({
   if (start_date) {
     start_date = dayjs(start_date).format('MMM DD, YYYY');
   }
-  const { name: providerName, location } = provider;
   const lengthUnit = find(groupedDataFields.length_unit, ({ id }) => {
     return id === Number(length_unit);
   });
@@ -60,7 +59,7 @@ export default function ({
               className={provider_id ? '' : 'pointer-events-none'}
               to={`/home/provider/${provider_id}`}
             >
-              {providerName}
+              {provider && provider.name ? provider.name : null}
             </Link>
           </Row>
           <Row className="my-1">
@@ -68,7 +67,8 @@ export default function ({
           </Row>
           <Row className="my-1">
             <div>
-              <FontAwesomeIcon icon={faMapMarkerAlt} /> {location || '-'}
+              <FontAwesomeIcon icon={faMapMarkerAlt} />{' '}
+              {provider && provider.location ? provider.location : '-'}
             </div>
           </Row>
           <Row className="mt-1">

@@ -144,18 +144,21 @@ export default function ({
           <Col span={12}>
             {type === 'provider' ? (
               <span>{industry}</span>
-            ) : (
+            ) : provider_id ? (
               <Link
                 className={provider_id ? '' : 'pointer-events-none'}
                 to={`/home/provider/${provider_id}`}
               >
                 {Provider.name}
               </Link>
-            )}
+            ) : null}
           </Col>
           <Col span={12} className="flex flex-row-reverse items-center">
             <span className="block ml-1">
-              {type === 'provider' ? location || '-' : Provider.location || '-'}
+              {type === 'provider' && Provider
+                ? Provider.location || null
+                : null}
+              {type !== 'provider' ? location || null : null}
             </span>
             <FontAwesomeIcon icon={faMapMarkerAlt} />
           </Col>
