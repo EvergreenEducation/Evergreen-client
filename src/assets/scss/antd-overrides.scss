@@ -185,3 +185,9 @@ $firstBreak: 1060px;
     align-items: flex-start;
   }
 }
+
+.media-margin-top {
+  @media only screen and (max-width: 767px) {
+    margin-top: 2rem;
+  }
+}

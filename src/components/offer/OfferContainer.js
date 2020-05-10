@@ -62,7 +62,7 @@ export default function OfferContainer(props) {
 
   const [{ data: offersData, error: offerError }] = useAxios(getOffersUrl);
 
-  const openAndPopulateUpdateModal = offer => {
+  const openAndPopulateUpdateModal = (offer) => {
     setSelectedOffer(offer);
     setOpenable({
       ...openable,
@@ -90,7 +90,7 @@ export default function OfferContainer(props) {
     });
   };
 
-  const viewEnrollments = offer => {
+  const viewEnrollments = (offer) => {
     if (offer) {
       history.push(`${basePath}/enrollments?offer=${offer.id}`);
       return;
@@ -106,14 +106,14 @@ export default function OfferContainer(props) {
     return matchSorter(data, searchString, { keys });
   };
 
-  const handleDataSearch = searchVal => {
+  const handleDataSearch = (searchVal) => {
     return setSearchString(searchVal);
   };
 
   let showData = handleDataAfterSearch(Object.values(entities));
 
   if (role === 'provider') {
-    showData = showData.filter(offer => {
+    showData = showData.filter((offer) => {
       return offer.provider_id === providerId;
     });
   }
