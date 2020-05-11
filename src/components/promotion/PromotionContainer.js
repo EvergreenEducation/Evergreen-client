@@ -3,12 +3,13 @@ import { imported } from 'react-imported-component/macro';
 import { Layout, Tooltip, Button, Card, Empty } from 'antd';
 import { debounce } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import matchSorter from 'match-sorter';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import { LogOutTopbar, SearchHeader } from 'components/shared';
 import useGlobalStore from 'store/GlobalStore';
+import PromoCard from 'components/promotion/PromoteCard/PromoCard';
 
 configure({
   axios: axiosInstance,
@@ -18,17 +19,18 @@ const { Content } = Layout;
 
 export default function () {
   const [searchString, setSearchString] = useState('');
+  const [showPromoted, setShowPromoted] = useState(true);
   const {
     provider: providerStore,
     pathway: pathwayStore,
     offer: offerStore,
   } = useGlobalStore();
 
-  const [{ data: getPathways }] = useAxios('/pathways');
+  const [{ data: getPathways }] = useAxios('/pathways?scope=with_files');
 
-  const [{ data: getOffers }] = useAxios('/offers');
+  const [{ data: getOffers }] = useAxios('/offers?scope=with_files');
 
-  const [{ data: getProviders }] = useAxios('/providers');
+  const [{ data: getProviders }] = useAxios('/providers?scope=with_files');
 
   const offers = Object.values(offerStore.entities).map((o) => {
     return {
@@ -58,6 +60,12 @@ export default function () {
   };
 
   const handleOnChange = (event) => {
+    if (showPromoted) {
+      setShowPromoted(false);
+    }
+    if (event.target.value.length === 0) {
+      setShowPromoted(true);
+    }
     setSearchString(event.target.value);
   };
 
@@ -65,7 +73,13 @@ export default function () {
     return matchSorter(data, searchString, { keys });
   };
 
-  const showData = handleDataAfterSearch(data);
+  let showData = handleDataAfterSearch(data);
+
+  if (showPromoted) {
+    showData = handleDataAfterSearch(data).filter((d) => {
+      return d.is_main_promo === true || d.is_local_promo === true;
+    });
+  }
 
   useEffect(() => {
     if (getPathways) {
@@ -80,7 +94,7 @@ export default function () {
   }, [getPathways, getOffers, getProviders]);
 
   return (
-    <Layout className="bg-transparent h-full">
+    <Layout className="bg-transparent h-auto">
       <LogOutTopbar>
         <SearchHeader
           title="PROMOTIONS"
@@ -89,18 +103,10 @@ export default function () {
         ></SearchHeader>
       </LogOutTopbar>
       <Content className="p-6">
-        <main className="shadow-md rounded-md w-full bg-white h-full pt-4 px-5 flex flex-wrap justify-between">
+        <main className="shadow-md rounded-md w-full bg-white h-full pt-4 px-5 flex flex-wrap">
           {(showData.length &&
             showData.map((d, index) => {
-              return (
-                <Card
-                  key={index}
-                  className="border rounded border-solid mt-2"
-                  style={{ width: 200, height: 70 }}
-                >
-                  {d.name}
-                </Card>
-              );
+              return <PromoCard key={index} data={d} />;
             })) || <Empty className="m-auto" />}
         </main>
       </Content>
