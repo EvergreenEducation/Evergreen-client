@@ -37,6 +37,10 @@ const DataFieldContainer = imported(() =>
   import('components/datafield/DataFieldContainer')
 );
 
+const PromotionContainer = imported(() =>
+  import('components/promotion/PromotionContainer')
+);
+
 function DashboardScreen(props) {
   let { match } = props;
   const { url: basePath } = match;
@@ -125,6 +129,12 @@ function DashboardScreen(props) {
                 role={role}
                 providerId={myProviderId}
               />
+            )}
+          />
+          <PrivateRoute
+            path={`${basePath}/promotions`}
+            component={() => (
+              <PromotionContainer role={role} providerId={myProviderId} />
             )}
           />
           <PrivateRoute
