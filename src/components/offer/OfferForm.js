@@ -53,7 +53,7 @@ export default function OfferForm({
   let offerOptions = null;
 
   if (!isNil(offers) && offers.length) {
-    const updatedOffers = remove(offers, o => {
+    const updatedOffers = remove(offers, (o) => {
       return !(o.id === offer.id);
     });
     offerOptions = preloadOptions(updatedOffers);
@@ -375,30 +375,33 @@ export default function OfferForm({
             </Select>
           </Form.Item>
         </Col>
-        <Col xs={24} sm={24} md={6}>
-          <Form.Item
-            name="is_local_promo"
-            labelAlign={'left'}
-            colon={false}
-            className="mt-2 mb-0 inherit"
-          >
-            <Checkbox checked={''} disabled={''} onChange={''}>
-              Local Promo
-            </Checkbox>
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={24} md={6}>
-          <Form.Item
-            name="is_main_promo"
-            labelAlign={'left'}
-            colon={false}
-            className="mt-2 mb-0 inherit"
-          >
-            <Checkbox checked={''} disabled={''} onChange={''}>
-              Main Offer
-            </Checkbox>
-          </Form.Item>
-        </Col>
+        {(role === 'admin' && (
+          <Row className="w-full">
+            <Col xs={24} sm={24} md={6}>
+              <Form.Item
+                name="is_local_promo"
+                labelAlign={'left'}
+                colon={false}
+                className="mt-2 mb-0 inherit"
+                valuePropName="checked"
+              >
+                <Checkbox defaultChecked={false}>Local Promo</Checkbox>
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={6}>
+              <Form.Item
+                name="is_main_promo"
+                labelAlign={'left'}
+                colon={false}
+                className="mt-2 mb-0 inherit"
+                valuePropName="checked"
+              >
+                <Checkbox defaultChecked={false}>Main Promo</Checkbox>
+              </Form.Item>
+            </Col>
+          </Row>
+        )) ||
+          null}
       </Row>
     </Layout>
   );

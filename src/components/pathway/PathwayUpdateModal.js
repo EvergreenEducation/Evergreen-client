@@ -74,6 +74,8 @@ export default function PathwayUpdateModal({
         'type',
         'keywords',
         'provider_id',
+        'is_local_promo',
+        'is_main_promo',
       ]);
 
       const { start_date } = values;

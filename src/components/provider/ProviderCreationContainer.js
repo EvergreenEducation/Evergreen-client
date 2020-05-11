@@ -11,7 +11,7 @@ configure({
   axios: axiosInstance,
 });
 
-const ProviderCreationContainer = ({ closeModal }) => {
+const ProviderCreationContainer = ({ closeModal, role }) => {
   const { id: userId } = AuthService.currentSession;
   const [file, setFile] = useState(null);
 
@@ -57,6 +57,8 @@ const ProviderCreationContainer = ({ closeModal }) => {
         'cost',
         'topics',
         'keywords',
+        'is_local_promo',
+        'is_main_promo',
       ]);
 
       const response = await createProvider({
@@ -120,6 +122,7 @@ const ProviderCreationContainer = ({ closeModal }) => {
       <Form form={form} name="providerForm">
         <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <ProviderForm
+            role={role}
             userId={userId}
             datafields={Object.values(datafieldStore.entities)}
             onChangeUpload={onChangeUpload}

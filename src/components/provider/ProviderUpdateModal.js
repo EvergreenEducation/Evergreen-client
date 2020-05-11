@@ -68,7 +68,7 @@ export default function ProviderUpdateModal(props) {
   const { id: userId } = AuthService.currentSession;
   const [form] = Form.useForm();
   const formRef = React.createRef();
-  const { provider = {}, onCancel, visible, datafields } = props;
+  const { provider = {}, onCancel, visible, datafields, role } = props;
   const { Offers = [], Pathways = [] } = provider;
 
   const { provider: providerStore } = useGlobalStore();
@@ -103,21 +103,9 @@ export default function ProviderUpdateModal(props) {
 
   function populateFields(p, ref) {
     ref.current.setFieldsValue({
-      name: p.name,
+      ...p,
       type: providerType,
-      learn_and_earn: p.learn_and_earn,
-      industry: p.industry,
-      location: p.location,
-      description: p.description,
       topics: topics,
-      cost: p.cost,
-      pay: p.pay,
-      credit: p.credit,
-      contact: p.contact,
-      is_public: p.is_public,
-      financial_aid: p.financial_aid,
-      news: p.news,
-      keywords: p.keywords,
     });
   }
 
@@ -158,6 +146,8 @@ export default function ProviderUpdateModal(props) {
         'cost',
         'topics',
         'keywords',
+        'is_local_promo',
+        'is_main_promo',
       ]);
 
       const response = await axiosInstance.put(`/providers/${provider.id}`, {
@@ -223,6 +213,7 @@ export default function ProviderUpdateModal(props) {
       <Form form={form}>
         <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <ProviderForm
+            role={role}
             datafields={datafields}
             userId={userId}
             onChangeUpload={onChangeUpload}

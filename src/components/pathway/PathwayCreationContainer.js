@@ -41,7 +41,7 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
     createPathway,
   ] = useAxios(
     {
-      url: '/pathways',
+      url: '/pathways?scope=with_details',
       method: 'POST',
     },
     { manual: true }
@@ -71,6 +71,8 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
         'type',
         'keywords',
         'provider_id',
+        'is_local_promo',
+        'is_main_promo',
       ]);
 
       const { start_date } = values;

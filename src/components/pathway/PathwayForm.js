@@ -8,6 +8,7 @@ import {
   Select,
   DatePicker,
   InputNumber,
+  Checkbox,
 } from 'antd';
 import { TitleDivider } from 'components/shared';
 import { ImageUploadAndNameInputs } from 'components/shared';
@@ -307,6 +308,33 @@ export default function PathwayForm({
           </Form.Item>
         </Col>
       </Row>
+      {(role === 'admin' && (
+        <Row className="w-full">
+          <Col xs={24} sm={24} md={6}>
+            <Form.Item
+              name="is_local_promo"
+              labelAlign={'left'}
+              colon={false}
+              className="mt-2 mb-0 inherit"
+              valuePropName="checked"
+            >
+              <Checkbox defaultChecked={false}>Local Promo</Checkbox>
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={6}>
+            <Form.Item
+              name="is_main_promo"
+              labelAlign={'left'}
+              colon={false}
+              className="mt-2 mb-0 inherit"
+              valuePropName="checked"
+            >
+              <Checkbox defaultChecked={false}>Main Promo</Checkbox>
+            </Form.Item>
+          </Col>
+        </Row>
+      )) ||
+        null}
     </Layout>
   );
 }
