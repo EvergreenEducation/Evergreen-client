@@ -8,6 +8,7 @@ import {
   Select,
   DatePicker,
   InputNumber,
+  Checkbox,
 } from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
 import { groupBy, property, isNil, remove, compact } from 'lodash';
@@ -52,7 +53,7 @@ export default function OfferForm({
   let offerOptions = null;
 
   if (!isNil(offers) && offers.length) {
-    const updatedOffers = remove(offers, (o) => {
+    const updatedOffers = remove(offers, o => {
       return !(o.id === offer.id);
     });
     offerOptions = preloadOptions(updatedOffers);
@@ -372,6 +373,30 @@ export default function OfferForm({
                 ? preloadOptions(length_unit)
                 : null}
             </Select>
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={6}>
+          <Form.Item
+            name="is_local_promo"
+            labelAlign={'left'}
+            colon={false}
+            className="mt-2 mb-0 inherit"
+          >
+            <Checkbox checked={''} disabled={''} onChange={''}>
+              Local Promo
+            </Checkbox>
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={6}>
+          <Form.Item
+            name="is_main_promo"
+            labelAlign={'left'}
+            colon={false}
+            className="mt-2 mb-0 inherit"
+          >
+            <Checkbox checked={''} disabled={''} onChange={''}>
+              Main Offer
+            </Checkbox>
           </Form.Item>
         </Col>
       </Row>
