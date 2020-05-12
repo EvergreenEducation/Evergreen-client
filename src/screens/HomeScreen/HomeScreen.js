@@ -22,6 +22,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { GlobalProvider } from 'store/GlobalStore';
 import { TopicCarouselContainer } from 'components/student';
+import PromoCarouselsContainer from 'components/promotion/PromoCarouselsContainer/PromoCarouselsContainer';
 import {
   Route,
   withRouter,
@@ -72,6 +73,7 @@ function HomeScreen() {
             {(!toggeables.studentDashboard && (
               <>
                 <Route exact path={`${match.url}`}>
+                  <PromoCarouselsContainer />
                   <TopicCarouselContainer />
                 </Route>
                 <Route

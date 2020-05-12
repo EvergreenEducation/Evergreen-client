@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 import axiosInstance from 'services/AxiosInstance';
 import useGlobalStore from 'store/GlobalStore';
-import './promo-card.scss';
+import './promote-card.scss';
 
 export default function ({ data = {} }) {
   const { provider, offer, pathway } = useGlobalStore();
@@ -62,22 +62,22 @@ export default function ({ data = {} }) {
     togglePromo(data);
   }
 
-  let themeBorder = 'promo-card--offerBorder';
-  let themeBackground = 'promo-card--offerBg';
+  let themeBorder = 'promote-card--offerBorder';
+  let themeBackground = 'promote-card--offerBg';
 
   if (data && data.entity_type === 'provider') {
-    themeBorder = 'promo-card--providerBorder';
-    themeBackground = 'promo-card--providerBg';
+    themeBorder = 'promote-card--providerBorder';
+    themeBackground = 'promote-card--providerBg';
   }
 
   if (data && data.entity_type === 'pathway') {
-    themeBorder = 'promo-card--pathwayBorder';
-    themeBackground = 'promo-card--pathwayBg';
+    themeBorder = 'promote-card--pathwayBorder';
+    themeBackground = 'promote-card--pathwayBg';
   }
 
   return (
     <div
-      className={`promo-card h-auto w-48 mr-3 mb-3 rounded border border-solid ${themeBorder} shadow`}
+      className={`promote-card h-auto w-48 mr-3 mb-3 rounded border border-solid ${themeBorder} shadow`}
     >
       <header
         className={`py-1 px-2 text-center capitalize ${themeBackground}`}
@@ -116,10 +116,10 @@ export default function ({ data = {} }) {
         <footer>
           <Button
             size="small"
-            className={`mr-1 rounded text-white border-none promo-card__toggleBtn promo-card__toggleBtn--main ${
+            className={`mr-1 rounded text-white border-none promote-card__toggleBtn promote-card__toggleBtn--main ${
               data && data.is_main_promo
-                ? 'promo-card--toggledMain shadow-inner'
-                : 'promo-card--notToggled shadow-md'
+                ? 'promote-card--toggledMain shadow-inner'
+                : 'promote-card--notToggled shadow-md'
             }`}
             onClick={() => {
               if (data) {
@@ -131,10 +131,10 @@ export default function ({ data = {} }) {
           </Button>
           <Button
             size="small"
-            className={`rounded text-white border-none promo-card__toggleBtn promo-card__toggleBtn--local ${
+            className={`rounded text-white border-none promote-card__toggleBtn promote-card__toggleBtn--local ${
               data && data.is_local_promo
-                ? 'promo-card--toggledLocal shadow-inner'
-                : 'promo-card--notToggled shadow-md'
+                ? 'promote-card--toggledLocal shadow-inner'
+                : 'promote-card--notToggled shadow-md'
             }`}
             onClick={() => {
               if (data) {

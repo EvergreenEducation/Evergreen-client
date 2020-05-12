@@ -7,7 +7,7 @@ import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import { LogOutTopbar, SearchHeader } from 'components/shared';
 import useGlobalStore from 'store/GlobalStore';
-import PromoCard from 'components/promotion/PromoteCard/PromoCard';
+import PromoteCard from 'components/promotion/PromoteCard/PromoteCard';
 
 configure({
   axios: axiosInstance,
@@ -201,7 +201,7 @@ export default function () {
         <main className="shadow-md rounded-md w-full bg-white h-full pt-4 px-5 flex flex-wrap">
           {(showData.length &&
             showData.map((d, index) => {
-              return <PromoCard key={index} data={d} />;
+              return <PromoteCard key={index} data={d} />;
             })) || <Empty className="m-auto" />}
         </main>
       </Content>

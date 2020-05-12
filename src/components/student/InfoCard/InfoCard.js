@@ -48,7 +48,7 @@ export default function ({
   return (
     <Card
       title={name || ''}
-      className={`info-card ${className}`}
+      className={`info-card shadow ${className}`}
       style={style}
       actions={actions}
     >
