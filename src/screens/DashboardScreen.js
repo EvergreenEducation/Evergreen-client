@@ -4,7 +4,6 @@ import { withRouter, Redirect } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import { Layout } from 'antd';
 import axiosInstance from 'services/AxiosInstance';
-import { GlobalProvider } from 'store/GlobalStore';
 import Sidebar from 'components/Sidebar';
 import PrivateRoute from 'services/PrivateRoute';
 import 'assets/scss/antd-overrides.scss';
@@ -78,7 +77,7 @@ function DashboardScreen(props) {
   }
 
   return (
-    <GlobalProvider>
+    <>
       <Layout className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto">
         <Sidebar {...props} role={role} />
         <div className="h-min-full w-full">
@@ -172,7 +171,7 @@ function DashboardScreen(props) {
           />
         </>
       )}
-    </GlobalProvider>
+    </>
   );
 }
 

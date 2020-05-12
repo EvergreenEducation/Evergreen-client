@@ -1,7 +1,7 @@
 import React from 'react';
 import './learn-and-earn-icons.scss';
 
-export default function ({ learnAndEarn, align = 'left' }) {
+export default function ({ learnAndEarn, align = 'left', style }) {
   if (learnAndEarn === 'learn') {
     return <div className="learn-earn-icon learn-earn-icon--purple">L</div>;
   }
@@ -11,6 +11,7 @@ export default function ({ learnAndEarn, align = 'left' }) {
   if (learnAndEarn === 'both') {
     return (
       <div
+        style={style}
         className={`flex flex-row ${
           align === 'right' ? 'flex-row-reverse' : ''
         }`}

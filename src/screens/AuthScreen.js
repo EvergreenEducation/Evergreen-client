@@ -51,7 +51,7 @@ function UserAuth({ user_id }) {
           reactLocalStorage.remove('pathway_id');
           return <Redirect to={{ pathname: `/home/pathway/${pathwayId}` }} />;
         }
-        return <Redirect to={{ pathname: `/` }} />;
+        return <Redirect to={{ pathname: `/home/student` }} />;
       }
       case 'provider':
         return (

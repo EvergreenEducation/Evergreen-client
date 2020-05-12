@@ -35,7 +35,7 @@ export default function ({ data }) {
             alt=""
           />
         ) : (
-          <div className="flex bg-gray-100" style={{ height: 300 }}>
+          <div className="flex bg-gray-200" style={{ height: 300 }}>
             <FontAwesomeIcon
               className="text-6xl text-gray-400 m-auto block"
               icon={faImage}

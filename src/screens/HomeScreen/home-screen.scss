@@ -42,3 +42,18 @@ $width: 423px;
   background-color: #096dd9 !important;
   border-color: #096dd9 !important;
 }
+
+.custom-searchbox {
+  .ant-input-suffix {
+    display: flex;
+    align-items: center;
+  }
+  .ant-input-group-addon {
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    padding: 0;
+    cursor: pointer;
+    background: #1890ff;
+    border-color: #1890ff;
+  }
+}
