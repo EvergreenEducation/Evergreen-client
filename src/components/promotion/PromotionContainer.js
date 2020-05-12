@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { imported } from 'react-imported-component/macro';
-import { Layout, Tooltip, Button, Card, Empty } from 'antd';
-import { debounce } from 'lodash';
+import { Layout, Button, Empty, Popover, Switch, Row, Col } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import matchSorter from 'match-sorter';
@@ -20,6 +18,11 @@ const { Content } = Layout;
 export default function () {
   const [searchString, setSearchString] = useState('');
   const [showPromoted, setShowPromoted] = useState(true);
+  const [filters, setFilters] = useState({
+    offer: true,
+    pathway: true,
+    provider: true,
+  });
   const {
     provider: providerStore,
     pathway: pathwayStore,
@@ -55,6 +58,50 @@ export default function () {
 
   const data = [...offers, ...pathways, ...providers];
 
+  function toggleFilter(key = 'offer') {
+    setFilters({
+      ...filters,
+      [key]: !filters[key],
+    });
+  }
+
+  function filterContent() {
+    return (
+      <div>
+        <Row className="justify-between mb-1" gutter={6}>
+          <Col>Providers</Col>
+          <Col>
+            <Switch
+              size="small"
+              defaultChecked={filters.provider}
+              onClick={() => toggleFilter('provider')}
+            />
+          </Col>
+        </Row>
+        <Row className="justify-between mb-1" gutter={6}>
+          <Col>Offers</Col>
+          <Col>
+            <Switch
+              size="small"
+              defaultChecked={filters.offer}
+              onClick={() => toggleFilter('offer')}
+            />
+          </Col>
+        </Row>
+        <Row className="justify-between" gutter={6}>
+          <Col>Pathways</Col>
+          <Col>
+            <Switch
+              size="small"
+              defaultChecked={filters.pathway}
+              onClick={() => toggleFilter('pathway')}
+            />
+          </Col>
+        </Row>
+      </div>
+    );
+  }
+
   const handleDataSearch = (searchVal) => {
     return setSearchString(searchVal);
   };
@@ -76,8 +123,46 @@ export default function () {
   let showData = handleDataAfterSearch(data);
 
   if (showPromoted) {
-    showData = handleDataAfterSearch(data).filter((d) => {
-      return d.is_main_promo === true || d.is_local_promo === true;
+    showData = showData.filter((d) => {
+      if (
+        filters.offer &&
+        d.entity_type === 'offer' &&
+        (d.is_main_promo || d.is_local_promo)
+      ) {
+        return true;
+      }
+
+      if (
+        filters.provider &&
+        d.entity_type === 'provider' &&
+        (d.is_main_promo || d.is_local_promo)
+      ) {
+        return true;
+      }
+
+      if (
+        filters.pathway &&
+        d.entity_type === 'pathway' &&
+        (d.is_main_promo || d.is_local_promo)
+      ) {
+        return true;
+      }
+      return false;
+    });
+  } else {
+    showData = showData.filter((d) => {
+      if (filters.offer && d.entity_type === 'offer') {
+        return true;
+      }
+
+      if (filters.provider && d.entity_type === 'provider') {
+        return true;
+      }
+
+      if (filters.pathway && d.entity_type === 'pathway') {
+        return true;
+      }
+      return false;
     });
   }
 
@@ -100,7 +185,17 @@ export default function () {
           title="PROMOTIONS"
           onSearch={handleDataSearch}
           onChange={handleOnChange}
-        ></SearchHeader>
+        >
+          <Popover content={filterContent} trigger="click">
+            <Button
+              className="rounded ml-1 px-4 text-center"
+              type="primary"
+              size="small"
+            >
+              <FontAwesomeIcon className="text-white text-xs" icon={faFilter} />
+            </Button>
+          </Popover>
+        </SearchHeader>
       </LogOutTopbar>
       <Content className="p-6">
         <main className="shadow-md rounded-md w-full bg-white h-full pt-4 px-5 flex flex-wrap">
