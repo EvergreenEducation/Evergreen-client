@@ -8,6 +8,7 @@ import {
   Input,
   Checkbox,
   Select,
+  Switch,
 } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -31,6 +32,7 @@ import {
 } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import matchSorter from 'match-sorter';
+import { find } from 'lodash';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import AuthService from 'services/AuthService';
@@ -72,8 +74,11 @@ function HomeScreen() {
     offer: true,
     pathway: true,
     provider: true,
+    learn: false,
+    earn: false,
   });
   const {
+    datafield: datafieldStore,
     provider: providerStore,
     pathway: pathwayStore,
     offer: offerStore,
@@ -82,6 +87,7 @@ function HomeScreen() {
     search: false,
     popover: false,
   });
+  const [results, setResults] = useState([]);
 
   const handleVisibleChange = (visible) => {
     setToggeables({
@@ -94,6 +100,8 @@ function HomeScreen() {
   const history = useHistory();
 
   const session = AuthService.currentSession;
+
+  const [{ data: getTopics }] = useAxios('/datafields?type=topic');
 
   const [{ data: getPathways }] = useAxios('/pathways?scope=with_files');
 
@@ -134,13 +142,91 @@ function HomeScreen() {
     return searchString;
   };
 
+  function handleLearnCheckbox(e) {
+    setFilters({
+      ...filters,
+      learn: e.target.checked,
+    });
+  }
+
+  function handleEarnCheckbox(e) {
+    setFilters({
+      ...filters,
+      earn: e.target.checked,
+    });
+  }
+
   const handleDataAfterSearch = (data, keys = ['name']) => {
     return matchSorter(data, searchString, { keys });
   };
 
-  let showData = handleDataAfterSearch(data);
+  const topics = Object.values(datafieldStore.entities).filter((df) => {
+    return df.type === 'topic';
+  });
+
+  let showData = handleDataAfterSearch(data).filter((d) => {
+    if (filters.offer && d.entity_type === 'offer') {
+      return true;
+    }
+
+    if (filters.provider && d.entity_type === 'provider') {
+      return true;
+    }
+
+    if (filters.pathway && d.entity_type === 'pathway') {
+      return true;
+    }
+    return false;
+  });
+
+  if (filters.learn && !filters.earn) {
+    showData = showData.filter((d) => {
+      if (!d.learn_and_earn) {
+        return false;
+      }
+      return d.learn_and_earn === 'learn';
+    });
+  }
+
+  if (filters.earn && !filters.learn) {
+    showData = showData.filter((d) => {
+      if (!d.learn_and_earn) {
+        return false;
+      }
+      return d.learn_and_earn === 'earn';
+    });
+  }
+
+  if (filters.earn && filters.learn) {
+    showData = showData.filter((d) => {
+      if (!d.learn_and_earn) {
+        return false;
+      }
+      return d.learn_and_earn === 'both';
+    });
+  }
+
+  function toggleFilter(key) {
+    if (!key) {
+      return;
+    }
+    setFilters({
+      ...filters,
+      [key]: !filters[key],
+    });
+  }
+
+  function onSelectChange(dataFieldId) {
+    const filteredByTopic = showData.filter((d) => {
+      return find(d.DataFields, ['id', dataFieldId]);
+    });
+    setResults(filteredByTopic);
+  }
 
   useEffect(() => {
+    if (getTopics) {
+      datafieldStore.addMany(getTopics);
+    }
     if (getPathways) {
       pathwayStore.addMany(getPathways);
     }
@@ -192,7 +278,7 @@ function HomeScreen() {
             </>
           )) || (
             <SearchResultContainer
-              data={showData}
+              data={results.length ? results : showData}
               setToggeables={setToggeables}
               toggeables={toggeables}
             />
@@ -280,18 +366,73 @@ function HomeScreen() {
                       trigger="click"
                       placement="topRight"
                       content={
-                        <div className="flex flex-col">
-                          <div>
-                            <Checkbox>Learn</Checkbox>
-                            <Checkbox>Earn</Checkbox>
-                          </div>
-                          <Select className="mt-1" defaultValue="all">
-                            <Option value="all">All</Option>
-                            <Option value="providers">Providers</Option>
-                            <Option value="offers">Offers</Option>
-                            <Option value="pathways">Pathways</Option>
-                          </Select>
-                        </div>
+                        <Row gutter={8} style={{ width: 297 }}>
+                          <Col className="w-full">
+                            <Select
+                              className="w-full mb-2"
+                              size="small"
+                              placeholder="Topics"
+                              allowClear
+                              onChange={onSelectChange}
+                            >
+                              {topics.map((t, index) => {
+                                return (
+                                  <Option
+                                    className="text-xs"
+                                    value={t.id}
+                                    key={index}
+                                  >
+                                    {t.name}
+                                  </Option>
+                                );
+                              })}
+                            </Select>
+                            <div>
+                              <Checkbox
+                                checked={filters.learn}
+                                onChange={handleLearnCheckbox}
+                              >
+                                Learn
+                              </Checkbox>
+                              <Checkbox
+                                checked={filters.earn}
+                                onChange={handleEarnCheckbox}
+                              >
+                                Earn
+                              </Checkbox>
+                            </div>
+                            <Row className="justify-between mb-1" gutter={6}>
+                              <Col>Providers</Col>
+                              <Col>
+                                <Switch
+                                  size={'small'}
+                                  defaultChecked={filters.provider}
+                                  onClick={() => toggleFilter('provider')}
+                                />
+                              </Col>
+                            </Row>
+                            <Row className="justify-between mb-1" gutter={6}>
+                              <Col>Offers</Col>
+                              <Col>
+                                <Switch
+                                  size="small"
+                                  defaultChecked={filters.offer}
+                                  onClick={() => toggleFilter('offer')}
+                                />
+                              </Col>
+                            </Row>
+                            <Row className="justify-between" gutter={6}>
+                              <Col>Pathways</Col>
+                              <Col>
+                                <Switch
+                                  size="small"
+                                  defaultChecked={filters.pathway}
+                                  onClick={() => toggleFilter('pathway')}
+                                />
+                              </Col>
+                            </Row>
+                          </Col>
+                        </Row>
                       }
                     >
                       <div className="h-full w-full px-3">

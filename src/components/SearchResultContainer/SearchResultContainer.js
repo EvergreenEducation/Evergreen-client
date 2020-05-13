@@ -14,6 +14,10 @@ export default function ({ data = [], toggeables, setToggeables }) {
   const group = groupBy(data, 'entity_type');
   const groupKeys = Object.keys(group);
 
+  if (!data.length) {
+    return <Empty className="m-auto" />;
+  }
+
   return (
     <div className="h-full">
       {data && data.length && <p className="text-2xl text-center">Results</p>}
@@ -121,7 +125,8 @@ export default function ({ data = [], toggeables, setToggeables }) {
                 null}
             </div>
           );
-        })) || <Empty className="m-auto" />}
+        })) ||
+        null}
     </div>
   );
 }
