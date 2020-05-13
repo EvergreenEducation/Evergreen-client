@@ -47,11 +47,17 @@ export default function ({ session = {}, toggeables, setToggeables }) {
     const studentId = session.student_id;
     try {
       const response = await axiosInstance.put(
-        `/students/${studentId}/offers/${offer.id}/enroll`
+        `/students/${studentId}/offers/${offer.id}/provider/${offer.provider_id}/enroll`
       );
       if (response.status === 200) {
         message.success(`You've enrolled in ${offer.name}`);
       }
+      if (response.status === 201) {
+        message.info(
+          `We'll notify the provider about your enrollment in ${offer.name}`
+        );
+      }
+      return response;
     } catch (e) {
       console.error(e);
       if (e.response.status === 400) {

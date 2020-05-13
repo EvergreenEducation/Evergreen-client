@@ -16,7 +16,9 @@ export default function ({ children, offer = null, color = 'primary' }) {
             {offer && offer.name ? offer.name : null}
           </span>
           <span className="block text-xs">
-            {offer && offer.Provider.name ? offer.Provider.name : null}
+            {offer && offer.Provider && offer.Provider.name
+              ? offer.Provider.name
+              : null}
           </span>
         </div>
         <div className="text-right">

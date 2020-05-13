@@ -56,7 +56,7 @@ export default function ({
         message.success(`You've enrolled in ${data.name}`);
       }
       if (response.status === 201) {
-        message.success(
+        message.info(
           `We'll notify the provider about your enrollment in ${data.name}`
         );
       }
