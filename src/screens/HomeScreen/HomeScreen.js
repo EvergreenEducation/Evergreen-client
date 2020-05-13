@@ -101,13 +101,13 @@ function HomeScreen() {
 
   const session = AuthService.currentSession;
 
-  const [{ data: getTopics }] = useAxios('/datafields?type=topic');
+  const [{ data: getDataFields }] = useAxios('/datafields?scope=with_offers');
 
-  const [{ data: getPathways }] = useAxios('/pathways?scope=with_files');
+  const [{ data: getPathways }] = useAxios('/pathways?scope=with_details');
 
-  const [{ data: getOffers }] = useAxios('/offers?scope=with_files');
+  const [{ data: getOffers }] = useAxios('/offers?scope=with_details');
 
-  const [{ data: getProviders }] = useAxios('/providers?scope=with_files');
+  const [{ data: getProviders }] = useAxios('/providers?scope=with_details');
 
   const offers = Object.values(offerStore.entities).map((o) => {
     return { ...o, entity_type: 'offer' };
@@ -224,8 +224,8 @@ function HomeScreen() {
   }
 
   useEffect(() => {
-    if (getTopics) {
-      datafieldStore.addMany(getTopics);
+    if (getDataFields) {
+      datafieldStore.addMany(getDataFields);
     }
     if (getPathways) {
       pathwayStore.addMany(getPathways);

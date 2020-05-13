@@ -260,7 +260,7 @@ export default function ({
             className="w-1/2 rounded mx-auto block mt-2"
             onClick={onEnroll}
           >
-            Enroll
+            Enroll pathway
           </Button>
         )}
         {type === 'offer' && (
@@ -269,9 +269,9 @@ export default function ({
               <Button
                 type="primary"
                 className="w-1/2 rounded"
-                onClick={onEnroll}
+                onClick={() => onEnroll()}
               >
-                Enroll
+                Enroll offer
               </Button>
               {openCodeInput && (
                 <Row className={`w-1/2 ${openCodeInput ? 'mt-2' : ''}`}>
