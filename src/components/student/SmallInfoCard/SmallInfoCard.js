@@ -5,18 +5,16 @@ import './small-info-card.scss';
 
 export default function ({ children, offer = null, color = 'primary' }) {
   return (
-    <div
-      className={`smallInfoCard border-solid rounded mb-2 bg-white ${
-        color === 'primary' ? 'smallInfoCard--primaryBorder' : 'border'
-      } ${color === 'secondary' ? 'smallInfoCard--secondaryBorder' : 'border'}`}
-    >
+    <div className={`smallInfoCard rounded mb-2 bg-white`}>
       <div className="flex flex-row justify-between px-2 pt-2">
         <div>
           <span className="block text-base font-bold mb-0 pb-0">
             {offer && offer.name ? offer.name : null}
           </span>
           <span className="block text-xs">
-            {offer && offer.Provider.name ? offer.Provider.name : null}
+            {offer && offer.Provider && offer.Provider.name
+              ? offer.Provider.name
+              : null}
           </span>
         </div>
         <div className="text-right">
@@ -34,13 +32,7 @@ export default function ({ children, offer = null, color = 'primary' }) {
         <span>Credit: ${offer ? offer.credit : '---'}</span>
         <span>Pay: ${offer ? offer.pay : '---'}</span>
       </div>
-      <div
-        className={`smallInfoCard__footer text-right p-2 ${
-          color === 'primary' ? 'smallInfoCard--primaryBorder' : ''
-        } ${color === 'secondary' ? 'smallInfoCard--secondaryBorder' : ''}`}
-      >
-        {children}
-      </div>
+      <div className={`smallInfoCard__footer text-right p-2`}>{children}</div>
     </div>
   );
 }

@@ -1,87 +1,86 @@
 import { keyBy } from 'lodash';
 
 export default (currentState, setState) => {
-
   const addOne = (payload) => {
     addMany([payload]);
-  }
+  };
 
   const addMany = (payload) => {
-    setState(currentState => {
+    setState((currentState) => {
       let idKey = currentState.idKey;
       let newItems = keyBy(payload, idKey);
       return {
         ...currentState,
         entities: {
           ...currentState.entities,
-          ...newItems
+          ...newItems,
         },
-        items: Object.keys(newItems) 
-      }
+        items: Object.keys(newItems),
+      };
     });
-  }
+  };
 
   const removeOne = (payload) => {
-    setState(currentState => {
+    setState((currentState) => {
       let idKey = currentState.idKey;
       let newEntities = {
         ...currentState.entities,
-      }
+      };
 
       delete newEntities[payload[idKey]];
 
       return {
         ...currentState,
         entities: newEntities,
-        items: Object.keys(newEntities)
-      }
+        items: Object.keys(newEntities),
+      };
     });
-  }
+  };
 
   const removeOneByIdKey = (idKey) => {
-    setState(currentState => {
+    setState((currentState) => {
       let newEntities = {
         ...currentState.entities,
-      }
+      };
 
       delete newEntities[idKey];
 
       return {
         ...currentState,
         entities: newEntities,
-        items: Object.keys(newEntities)
-      }
+        items: Object.keys(newEntities),
+      };
     });
-  }
+  };
 
   const addAll = (payload) => {
-    setState(currentState => {
+    setState((currentState) => {
       let idKey = currentState.idKey;
       let newEntities = keyBy(payload, idKey);
 
       return {
         ...currentState,
         entities: newEntities,
-        items: Object.keys(newEntities)
-      }
+        items: Object.keys(newEntities),
+      };
     });
-  }
+  };
 
   const removeAll = (payload) => {
     setState({
       entities: {},
-      items: []
-    })
-  }
+      items: [],
+    });
+  };
 
   return {
-    removeAll, 
-    removeOne, 
-    addOne, 
-    addMany, 
-    addAll, 
-    updateMany: addMany, 
+    removeAll,
+    removeOne,
+    addOne,
+    addMany,
+    addAll,
+    updateMany: addMany,
     updateOne: addOne,
-    removeOneByIdKey
-  }
-}
+    removeOneByIdKey,
+  };
+};

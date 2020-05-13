@@ -46,17 +46,15 @@ export default function ({
   });
 
   return (
-    <Card
-      title={name || ''}
-      className={`info-card ${className}`}
-      style={style}
-      actions={actions}
-    >
+    <Card className={`info-card shadow ${className}`} style={style}>
       <Row>
         <Col span={12}>
-          <Row className="mb-1">
+          <Row className="mb-1 flex-col">
+            <span className="text-left font-bold">{name}</span>
             <Link
-              className={provider_id ? '' : 'pointer-events-none'}
+              className={`text-xs font-normal text-left ${
+                provider_id ? '' : 'pointer-events-none'
+              }`}
               to={`/home/provider/${provider_id}`}
             >
               {provider && provider.name ? provider.name : null}

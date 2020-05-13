@@ -4,7 +4,6 @@ import { withRouter, Redirect } from 'react-router-dom';
 import { imported } from 'react-imported-component/macro';
 import { Layout } from 'antd';
 import axiosInstance from 'services/AxiosInstance';
-import { GlobalProvider } from 'store/GlobalStore';
 import Sidebar from 'components/Sidebar';
 import PrivateRoute from 'services/PrivateRoute';
 import 'assets/scss/antd-overrides.scss';
@@ -35,6 +34,10 @@ const PathwayContainer = imported(() =>
 
 const DataFieldContainer = imported(() =>
   import('components/datafield/DataFieldContainer')
+);
+
+const PromotionContainer = imported(() =>
+  import('components/promotion/PromotionContainer')
 );
 
 function DashboardScreen(props) {
@@ -74,7 +77,7 @@ function DashboardScreen(props) {
   }
 
   return (
-    <GlobalProvider>
+    <>
       <Layout className="w-full flex flex-row bg-gray-300 min-h-full overflow-y-auto">
         <Sidebar {...props} role={role} />
         <div className="h-min-full w-full">
@@ -128,6 +131,12 @@ function DashboardScreen(props) {
             )}
           />
           <PrivateRoute
+            path={`${basePath}/promotions`}
+            component={() => (
+              <PromotionContainer role={role} providerId={myProviderId} />
+            )}
+          />
+          <PrivateRoute
             path={`${basePath}/settings`}
             component={() => (
               <DataFieldContainer
@@ -162,7 +171,7 @@ function DashboardScreen(props) {
           />
         </>
       )}
-    </GlobalProvider>
+    </>
   );
 }
 

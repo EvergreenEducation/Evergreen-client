@@ -1,16 +1,11 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import useAxios, { configure } from 'axios-hooks';
 import { groupBy, property, uniqueId } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
 import { InfoCard, InfoLayout } from 'components/student';
 import 'assets/scss/responsive-carousel-override.scss';
-
-configure({
-  axios: axiosInstance,
-});
 
 export default function (props) {
   const {
@@ -19,44 +14,38 @@ export default function (props) {
   } = props;
   const {
     offer: offerStore,
-    provider: providerStore,
     datafield,
     pathway: pathwayStore,
   } = useGlobalStore();
-  const [{ data: dataFieldPayload }] = useAxios(
-    '/datafields?scope=with_offers'
-  );
-  const [{ data: providerPayload }] = useAxios('/providers?scope=with_details');
 
   const pathwayId = Number(params.id);
   const groupedDataFields = groupBy(datafield.entities, property('type'));
 
-  const pathway = pathwayStore.entities[pathwayId];
-
-  async function getOffer(offerId) {
-    const response = await axiosInstance.get(
+  const getOffer = async (offerId) => {
+    const { data } = await axiosInstance.get(
       `/offers/${offerId}?scope=with_details`
     );
-    offerStore.addOne(response.data);
-  }
+    offerStore.addOne(data);
+  };
+
+  const getPathway = async () => {
+    const { data } = await axiosInstance.get(
+      `/pathways/${pathwayId}?scope=with_details`
+    );
+    if (!pathwayStore.entities[pathwayId]) {
+      pathwayStore.addOne(data);
+    }
+  };
 
   useEffect(() => {
-    if (dataFieldPayload) {
-      datafield.addMany(dataFieldPayload);
-    }
-    if (providerPayload) {
-      providerStore.addMany(providerPayload);
-    }
-    if (!pathway) {
-      async function getPathway(_pathwayId) {
-        const response = await axiosInstance.get(
-          `/pathways/${_pathwayId}?scope=with_details`
-        );
-        pathwayStore.addOne(response.data);
-      }
-      getPathway(pathwayId);
-    }
-  }, [dataFieldPayload, providerPayload, pathway]);
+    getPathway();
+  }, []);
+
+  const pathway = pathwayStore.entities[pathwayId];
+
+  if (!pathway) {
+    return null;
+  }
 
   let groupsOfOffers = {};
   let groupKeys = [];
@@ -107,28 +96,21 @@ export default function (props) {
                       getOffer(g.offer_id);
                     }
                     if (offer && offer.provider_id) {
-                      p = providerStore.entities[offer.provider_id];
+                      p = offer.Provider;
                     }
                     return (
-                      <InfoCard
-                        className="mb-4"
-                        data={offer}
-                        provider={p}
-                        key={uniqueId('card_')}
-                        groupedDataFields={groupedDataFields}
-                        actions={[
-                          <Link
-                            to={
-                              offer && offer.id
-                                ? `/home/offer/${offer.id}`
-                                : '/'
-                            }
-                            disabled={offer && offer.id ? false : true}
-                          >
-                            View
-                          </Link>,
-                        ]}
-                      />
+                      <Link
+                        to={offer && offer.id ? `/home/offer/${offer.id}` : '/'}
+                        disabled={offer && offer.id ? false : true}
+                      >
+                        <InfoCard
+                          className="mb-4"
+                          data={offer}
+                          provider={p}
+                          key={uniqueId('card_')}
+                          groupedDataFields={groupedDataFields}
+                        />
+                      </Link>
                     );
                   })}
                 </div>

@@ -1,0 +1,73 @@
+$offerColor: rgb(21, 161, 183);
+$offerColorTwo: rgb(18, 133, 151);
+$providerColor: rgb(234, 123, 199);
+$providerColorTwo: rgb(226, 80, 180);
+$pathwayColor: rgb(161, 15, 240);
+$pathwayColorTwo: rgb(129, 12, 192);
+
+$mainPromoColor: rgb(23, 185, 120);
+$localPromoColor: rgb(255, 164, 92);
+$white: rgb(255, 255, 255);
+
+.promote-card {
+  &--offerBorder {
+    border-color: $offerColor !important;
+    border-top: 1px solid $offerColorTwo;
+    border-left: 1px solid $offerColorTwo;
+    border-right: 1px solid $offerColorTwo;
+    border-bottom: 1px solid $offerColor;
+  }
+  &--offerBg {
+    color: $white;
+    background: linear-gradient(135deg, $offerColor, $offerColorTwo);
+  }
+  &--providerBorder {
+    border-color: $providerColor !important;
+    border-top: 1px solid $providerColorTwo;
+    border-left: 1px solid $providerColorTwo;
+    border-right: 1px solid $providerColorTwo;
+    border-bottom: 1px solid $providerColor;
+  }
+  &--providerBg {
+    color: $white;
+    background-color: $providerColor;
+  }
+  &--pathwayBorder {
+    border-color: $pathwayColor !important;
+    border-top: 1px solid $pathwayColorTwo;
+    border-left: 1px solid $pathwayColorTwo;
+    border-right: 1px solid $pathwayColorTwo;
+    border-bottom: 1px solid $pathwayColor;
+  }
+  &__toggleBtn {
+    &--main {
+      &:hover {
+        color: $white;
+        border-color: $mainPromoColor;
+        background-color: $mainPromoColor;
+      }
+    }
+    &--local {
+      &:hover {
+        color: $white;
+        border-color: $localPromoColor;
+        background-color: $localPromoColor;
+      }
+    }
+  }
+  &--pathwayBg {
+    color: $white;
+    background-color: $pathwayColor;
+  }
+  &--toggledMain {
+    background-color: $mainPromoColor;
+  }
+  &--toggledLocal {
+    background-color: $localPromoColor;
+  }
+  &--notToggled {
+    border: 1px solid rgb(191, 191, 191);
+    background-color: rgb(237, 237, 237);
+    color: rgb(128, 128, 128);
+  }
+}

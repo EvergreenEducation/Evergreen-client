@@ -1,5 +1,14 @@
 import React, { useEffect } from 'react';
-import { Layout, Form, Input, InputNumber, Row, Col, Select } from 'antd';
+import {
+  Layout,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Col,
+  Select,
+  Checkbox,
+} from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
 import { groupBy, isNil } from 'lodash';
 import 'assets/scss/antd-overrides.scss';
@@ -7,7 +16,7 @@ import 'assets/scss/antd-overrides.scss';
 const { Option } = Select;
 
 const ProviderForm = (props) => {
-  const { datafields = [], userId = null, onChangeUpload, file } = props;
+  const { datafields = [], userId = null, onChangeUpload, file, role } = props;
 
   useEffect(() => {}, [props.datafields, file]);
 
@@ -221,6 +230,33 @@ const ProviderForm = (props) => {
           <Input className="rounded" />
         </Form.Item>
       </Col>
+      {(role === 'admin' && (
+        <Row className="w-full">
+          <Col xs={24} sm={24} md={6}>
+            <Form.Item
+              name="is_local_promo"
+              labelAlign={'left'}
+              colon={false}
+              className="mt-2 mb-0 inherit"
+              valuePropName="checked"
+            >
+              <Checkbox defaultChecked={false}>Local Promo</Checkbox>
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={6}>
+            <Form.Item
+              name="is_main_promo"
+              labelAlign={'left'}
+              colon={false}
+              className="mt-2 mb-0 inherit"
+              valuePropName="checked"
+            >
+              <Checkbox defaultChecked={false}>Main Promo</Checkbox>
+            </Form.Item>
+          </Col>
+        </Row>
+      )) ||
+        null}
     </Layout>
   );
 };

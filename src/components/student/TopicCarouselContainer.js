@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import useAxios, { configure } from 'axios-hooks';
 import { Card, Button } from 'antd';
 import { compact, groupBy, property } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
-import axiosInstance from 'services/AxiosInstance';
 import { Carousel } from 'react-responsive-carousel';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -12,31 +10,10 @@ import { InfoCard } from 'components/student';
 import { TitleDivider } from 'components/shared';
 import 'assets/scss/responsive-carousel-override.scss';
 
-configure({
-  axios: axiosInstance,
-});
-
 export default function () {
   const [currentTopic, setCurrentTopic] = useState(null);
   const [onCurrentChange, setOnCurrentChange] = useState(null);
-  const { datafield, offer: offerStore, provider } = useGlobalStore();
-  const [{ data: dataFieldPayload }] = useAxios(
-    '/datafields?scope=with_offers'
-  );
-  const [{ data: offerPayload }] = useAxios('/offers?scope=with_details');
-  const [{ data: providerPayload }] = useAxios('/providers');
-
-  useEffect(() => {
-    if (dataFieldPayload) {
-      datafield.addMany(dataFieldPayload);
-    }
-    if (offerPayload) {
-      offerStore.addMany(offerPayload);
-    }
-    if (providerPayload) {
-      provider.addMany(providerPayload);
-    }
-  }, [dataFieldPayload, offerPayload, providerPayload]);
+  const { datafield, offer: offerStore } = useGlobalStore();
 
   const topics = compact(
     Object.values(datafield.entities).filter((d) => d.type === 'topic')
@@ -111,24 +88,20 @@ export default function () {
 
     return currentOffers.map((offer, index) => {
       let p = null;
-      if (offer && offer.provider_id) {
-        p = provider.entities[offer.provider_id];
+      if (offer && offer.provider_id && offer.Provider) {
+        p = offer.Provider;
       }
 
       return (
-        <InfoCard
-          key={index}
-          className="mx-auto mb-4 w-full"
-          style={{ borderRadius: '1rem' }}
-          data={offer}
-          provider={p}
-          groupedDataFields={groupedDataFields}
-          actions={[
-            <Link to={`/home/offer/${offer.id}`}>
-              <p>View</p>
-            </Link>,
-          ]}
-        />
+        <Link to={`/home/offer/${offer.id}`} key={index}>
+          <InfoCard
+            key={index}
+            className="mx-auto mb-4 w-full"
+            data={offer}
+            provider={p}
+            groupedDataFields={groupedDataFields}
+          />
+        </Link>
       );
     });
   };

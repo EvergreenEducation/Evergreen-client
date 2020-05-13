@@ -8,6 +8,7 @@ import {
   Select,
   DatePicker,
   InputNumber,
+  Checkbox,
 } from 'antd';
 import { ImageUploadAndNameInputs } from 'components/shared';
 import { groupBy, property, isNil, remove, compact } from 'lodash';
@@ -374,6 +375,33 @@ export default function OfferForm({
             </Select>
           </Form.Item>
         </Col>
+        {(role === 'admin' && (
+          <Row className="w-full">
+            <Col xs={24} sm={24} md={6}>
+              <Form.Item
+                name="is_local_promo"
+                labelAlign={'left'}
+                colon={false}
+                className="mt-2 mb-0 inherit"
+                valuePropName="checked"
+              >
+                <Checkbox defaultChecked={false}>Local Promo</Checkbox>
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={6}>
+              <Form.Item
+                name="is_main_promo"
+                labelAlign={'left'}
+                colon={false}
+                className="mt-2 mb-0 inherit"
+                valuePropName="checked"
+              >
+                <Checkbox defaultChecked={false}>Main Promo</Checkbox>
+              </Form.Item>
+            </Col>
+          </Row>
+        )) ||
+          null}
       </Row>
     </Layout>
   );

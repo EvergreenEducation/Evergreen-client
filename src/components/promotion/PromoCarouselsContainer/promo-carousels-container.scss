@@ -1,0 +1,12 @@
+.promoCarousel {
+  .control-dots {
+    display: block;
+    position: relative;
+  }
+  .dot {
+    background: hsl(225, 84%, 17%) !important;
+  }
+  .dot.selected {
+    background: hsl(225, 84%, 17%);
+  }
+}

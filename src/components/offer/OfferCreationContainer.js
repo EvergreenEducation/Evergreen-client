@@ -20,7 +20,7 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
   const [form] = Form.useForm();
   const [{ data: offerPayload, error: offerError }, createOffer] = useAxios(
     {
-      url: '/offers?scope=with_details',
+      url: '/offers',
       method: 'POST',
     },
     { manual: true }
@@ -77,6 +77,8 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
         'keywords',
         'related_offers',
         'prerequisites',
+        'is_local_promo',
+        'is_main_promo',
       ]);
 
       const { start_date, provider_id } = values;

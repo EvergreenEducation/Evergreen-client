@@ -85,6 +85,8 @@ export default function OfferUpdateModal({
         'keywords',
         'related_offers',
         'prerequisites',
+        'is_local_promo',
+        'is_main_promo',
       ]);
 
       const { start_date } = values;

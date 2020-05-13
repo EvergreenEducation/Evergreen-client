@@ -28,7 +28,7 @@ configure({
 const { Content } = Layout;
 
 export default function ProviderContainer(props) {
-  const { history } = props;
+  const { history, role } = props;
   const [searchString, setSearchString] = useState('');
   const [modalStates, setModalStates] = useState({
     providerCreation: false,
@@ -103,6 +103,7 @@ export default function ProviderContainer(props) {
             handleUpdateModal={openAndPopulateUpdateModal}
           />
           <ProviderUpdateModal
+            role={role}
             datafields={datafieldError ? [] : dataFieldEntities}
             provider={selectedProvider}
             visible={modalStates.providerUpdate}
@@ -111,6 +112,7 @@ export default function ProviderContainer(props) {
             }
           />
           <FormModal
+            role={role}
             title="New Provider"
             visible={modalStates.providerCreation}
             FormComponent={ProviderCreationContainer}

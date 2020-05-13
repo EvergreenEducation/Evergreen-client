@@ -9,6 +9,7 @@ import {
   faTree,
   faRoute,
   faCog,
+  faNewspaper,
 } from '@fortawesome/free-solid-svg-icons';
 import { findIndex } from 'lodash';
 
@@ -39,6 +40,12 @@ const routesList = (role) => {
       name: 'Pathways',
       icon: faRoute,
       enabled: ['admin', 'provider'].includes(role),
+    },
+    {
+      path: 'promotions',
+      name: 'Promotions',
+      icon: faNewspaper,
+      enabled: role === 'admin',
     },
     {
       path: 'settings',

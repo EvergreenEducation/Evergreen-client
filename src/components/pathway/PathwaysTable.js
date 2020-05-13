@@ -6,7 +6,7 @@ import 'assets/scss/antd-overrides.scss';
 const { Column } = Table;
 
 function PathwaysTable(props) {
-  const { data, handleUpdateModal } = props;
+  const { data, handleUpdateModal, providers } = props;
   return (
     <Table
       dataSource={data}
@@ -43,18 +43,16 @@ function PathwaysTable(props) {
       <Column
         className="antd-col"
         title="Provider"
-        dataIndex="Provider"
-        key="Provider.id"
-        render={(provider, record) => {
+        dataIndex="provider_id"
+        key="provider_id"
+        render={(id, record) => {
           let children = 'N/A';
-          if (provider) {
-            children = provider.name;
+          if (providers[id]) {
+            children = providers[id].name;
           }
           return {
-            children,
-            props: {
-              'data-title': 'Provider',
-            },
+            children: children,
+            props: { 'data-title': 'Provider' },
           };
         }}
       />

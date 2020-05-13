@@ -44,54 +44,73 @@ export default function ({
   } = data;
 
   const [form] = Form.useForm();
-  const onEnroll = async () => {
-    if (type === 'offer' && session && session.role === 'student') {
-      const studentId = session.student_id;
-      const offerId = id;
-      try {
-        const response = await axiosInstance.put(
-          `/students/${studentId}/offers/${offerId}/enroll`
-        );
-        if (response.status === 200) {
-          message.success(`You've enrolled in ${data.name}`);
-        }
-      } catch (e) {
-        console.error(e);
-        if (e.response.status === 400) {
-          message.error(
-            'There are no enrollments available. Please contact the provider.'
-          );
-        }
+
+  const enrollOffer = async () => {
+    const studentId = session.student_id;
+    const offerId = id;
+    try {
+      const response = await axiosInstance.put(
+        `/students/${studentId}/offers/${offerId}/provider/${provider_id}/enroll`
+      );
+      if (response.status === 200) {
+        message.success(`You've enrolled in ${data.name}`);
       }
+      if (response.status === 201) {
+        message.info(
+          `We'll notify the provider about your enrollment in ${data.name}`
+        );
+      }
+      return response;
+    } catch (e) {
+      console.error(e);
       return;
     }
-    if (type === 'pathway' && session && session.role === 'student') {
-      const studentId = session.student_id;
-      const pathwayId = id;
-      try {
-        const response = await axiosInstance.post(
-          `/students/${studentId}/pathways/${pathwayId}/enroll`
-        );
-        if (response.status === 200) {
-          message.info(`You''re already enrolled in ${data.name}`);
-        }
-        if (response.status === 201) {
-          message.success(`You've enrolled in ${data.name}`);
-        }
-        return response;
-      } catch (e) {
-        console.error(e);
+  };
+
+  const enrollPathway = async () => {
+    const studentId = session.student_id;
+    const pathwayId = id;
+    try {
+      const response = await axiosInstance.post(
+        `/students/${studentId}/pathways/${pathwayId}/enroll`
+      );
+      if (response.status === 200) {
+        message.info(`You're already enrolled in ${data.name}`);
       }
-      return;
+      if (response.status === 201) {
+        message.success(`You've enrolled in ${data.name}`);
+      }
+      return response;
+    } catch (e) {
+      console.error(e);
+      return e;
     }
-    if (type === 'offer') {
-      reactLocalStorage.set('offer_id', id);
+  };
+
+  const onEnroll = () => {
+    if (!Object.keys(session).length) {
+      if (type === 'offer') {
+        reactLocalStorage.set('offer_id', id);
+      }
+      if (type === 'pathway') {
+        reactLocalStorage.set('pathway_id', id);
+      }
+      return window.location.replace(`${process.env.REACT_APP_API_URL}/login`);
     }
-    if (type === 'pathway') {
-      reactLocalStorage.set('pathway_id', id);
+    if (
+      type === 'offer' &&
+      Object.keys(session).length &&
+      session.role === 'student'
+    ) {
+      return enrollOffer();
     }
-    window.location.replace(`${process.env.REACT_APP_API_URL}/login`);
-    return;
+    if (
+      type === 'pathway' &&
+      Object.keys(session).length &&
+      session.role === 'student'
+    ) {
+      return enrollPathway();
+    }
   };
 
   const topics = DataFields.filter((d) => d.type === 'topic');
@@ -241,7 +260,7 @@ export default function ({
             className="w-1/2 rounded mx-auto block mt-2"
             onClick={onEnroll}
           >
-            Enroll
+            Enroll pathway
           </Button>
         )}
         {type === 'offer' && (
@@ -250,9 +269,9 @@ export default function ({
               <Button
                 type="primary"
                 className="w-1/2 rounded"
-                onClick={onEnroll}
+                onClick={() => onEnroll()}
               >
-                Enroll
+                Enroll offer
               </Button>
               {openCodeInput && (
                 <Row className={`w-1/2 ${openCodeInput ? 'mt-2' : ''}`}>

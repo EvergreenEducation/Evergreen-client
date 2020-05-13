@@ -1,25 +1,30 @@
-$primary: hsl(103, 100%, 76%);
-$secondary: hsl(156, 78%, 41%);
+$primary: rgb(167, 255, 133);
+$secondary: rgb(23, 186, 121);
 
-$secondary_dark: hsl(156, 78%, 38%);
+$secondary_dark: rgb(21, 172, 112);
 
-$tertiary: hsl(185, 87%, 24%);
-$fourth: hsl(225, 84%, 17%);
+$tertiary: rgb(8, 106, 114);
+$fourth: rgb(7, 25, 80);
 $borderRadius: 1rem;
 
-$primaryPurple: hsl(261, 55%, 58%);
-$secondaryPurple: hsl(261, 55%, 78%);
-$primaryBlue: hsl(207, 72%, 48%);
-$secondaryBlue: hsl(207, 72%, 68%);
+$primaryPurple: rgb(130, 89, 207);
+$secondaryPurple: rgb(190, 168, 230);
+$primaryBlue: rgb(34, 131, 211);
+$secondaryBlue: rgb(115, 179, 232);
 
-$dark: hsl(185, 87%, 24%);
+$dark: rgb(8, 106, 114);
 
 .info-card {
-  border-radius: 1rem;
   border: none;
+  border-top: 1px solid $secondary;
+  border-bottom: 1px solid $secondary;
+  border-radius: 0;
   width: 100%;
-  font-weight: 600;
   color: $tertiary;
+  &:hover,
+  &:active {
+    background: hsla(0, 0%, 50%, 0.059);
+  }
   .ant-card-head-title {
     text-align: center;
     padding: 0 8px;
@@ -30,19 +35,16 @@ $dark: hsl(185, 87%, 24%);
     align-items: center;
     justify-content: center;
     color: white;
-    border-top-left-radius: $borderRadius;
-    border-top-right-radius: $borderRadius;
     background: linear-gradient(135deg, $primary, $secondary);
   }
   .ant-card-actions {
     background: linear-gradient(135deg, $secondary, $dark);
-    border-bottom-left-radius: $borderRadius;
-    border-bottom-right-radius: $borderRadius;
-    a {
-      color: white !important;
+    &:hover,
+    &:active {
+      background: $secondary;
     }
-    a:hover {
-      color: #40a9ff;
+    a {
+      color: rgb(255, 255, 255) !important;
     }
   }
 }

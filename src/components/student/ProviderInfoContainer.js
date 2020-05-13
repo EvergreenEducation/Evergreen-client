@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import useAxios, { configure } from 'axios-hooks';
 import { groupBy, property } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
@@ -8,56 +7,43 @@ import { TitleDivider } from 'components/shared';
 import { InfoCard, InfoLayout } from 'components/student';
 import 'assets/scss/responsive-carousel-override.scss';
 
-configure({
-  axios: axiosInstance,
-});
-
 export default function (props) {
   const {
     match: { params },
   } = props;
   const {
-    offer: offerStore,
     provider: providerStore,
     datafield,
     pathway: pathwayStore,
   } = useGlobalStore();
-  const [{ data: dataFieldPayload }] = useAxios(
-    '/datafields?scope=with_offers'
-  );
-  const [{ data: offerPayload }] = useAxios('/offers?scope=with_details');
 
   const providerId = Number(params.id);
-  const groupedDataFields = groupBy(datafield.entities, property('type'));
 
   const provider = providerStore.entities[providerId];
 
-  async function getPathway(_pathwayId) {
+  const getPathway = async (_pathwayId) => {
     const response = await axiosInstance.get(
       `/pathways/${_pathwayId}?scope=with_details`
     );
-    pathwayStore.addOne(response.data);
-  }
+    if (!pathwayStore.entities[_pathwayId]) {
+      pathwayStore.addOne(response.data);
+    }
+  };
 
-  async function getProvider(_providerId) {
-    const response = await axiosInstance.get(
+  const getProvider = async (_providerId) => {
+    const { data } = await axiosInstance.get(
       `/providers/${_providerId}?scope=with_details`
     );
-    providerStore.addOne(response.data);
-  }
+    if (!providerStore.entities[_providerId]) {
+      providerStore.addOne(data);
+    }
+  };
 
   useEffect(() => {
-    if (dataFieldPayload) {
-      datafield.addMany(dataFieldPayload);
-    }
-    if (offerPayload) {
-      offerStore.addMany(offerPayload);
-    }
-    if (!provider || !provider.Offers || !provider.Pathways) {
-      getProvider(providerId);
-    }
-  }, [dataFieldPayload, offerPayload, provider]);
+    getProvider(providerId);
+  }, []);
 
+  const groupedDataFields = groupBy(datafield.entities, property('type'));
   let Offers = [];
   if (provider && provider.Offers) {
     Offers = provider.Offers;
@@ -91,18 +77,16 @@ export default function (props) {
                 p = providerStore.entities[o.provider_id];
               }
               return (
-                <InfoCard
-                  className="mb-4"
-                  key={`${o.name}_${index}`}
-                  data={o}
-                  provider={p}
-                  groupedDataFields={groupedDataFields}
-                  actions={[
-                    <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
-                      View
-                    </Link>,
-                  ]}
-                />
+                <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
+                  <InfoCard
+                    className="mb-4"
+                    key={`${o.name}_${index}`}
+                    data={o}
+                    provider={p}
+                    groupedDataFields={groupedDataFields}
+                    actions={[]}
+                  />
+                </Link>
               );
             })) ||
             null}
@@ -129,24 +113,19 @@ export default function (props) {
                 }
               }
               return (
-                <InfoCard
-                  className="mb-4"
-                  key={index}
-                  data={pathway}
-                  provider={p}
-                  groupedDataFields={groupedDataFields}
-                  actions={[
-                    <Link
-                      to={
-                        pathway && pathway.id
-                          ? `/home/pathway/${pathway.id}`
-                          : null
-                      }
-                    >
-                      View
-                    </Link>,
-                  ]}
-                />
+                <Link
+                  to={
+                    pathway && pathway.id ? `/home/pathway/${pathway.id}` : null
+                  }
+                >
+                  <InfoCard
+                    className="mb-4"
+                    key={index}
+                    data={pathway}
+                    provider={p}
+                    groupedDataFields={groupedDataFields}
+                  />
+                </Link>
               );
             })) ||
             null}
