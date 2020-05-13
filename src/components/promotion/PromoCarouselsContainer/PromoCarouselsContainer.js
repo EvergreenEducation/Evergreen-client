@@ -1,16 +1,10 @@
-import React, { useEffect } from 'react';
-import useAxios, { configure } from 'axios-hooks';
+import React from 'react';
 import useGlobalStore from 'store/GlobalStore';
-import axiosInstance from 'services/AxiosInstance';
 import { Carousel } from 'react-responsive-carousel';
 import { TitleDivider } from 'components/shared';
 import PromoCard from 'components/promotion/PromoCard/PromoCard';
 import 'assets/scss/responsive-carousel-override.scss';
 import './promo-carousels-container.scss';
-
-configure({
-  axios: axiosInstance,
-});
 
 export default function () {
   const {
@@ -18,12 +12,6 @@ export default function () {
     provider: providerStore,
     pathway: pathwayStore,
   } = useGlobalStore();
-
-  const [{ data: getPathways }] = useAxios('/pathways?scope=with_files');
-
-  const [{ data: getOffers }] = useAxios('/offers?scope=with_files');
-
-  const [{ data: getProviders }] = useAxios('/providers?scope=with_files');
 
   const offers = Object.values(offerStore.entities).map((o) => {
     return {
@@ -47,18 +35,6 @@ export default function () {
   });
 
   const data = [...offers, ...pathways, ...providers];
-
-  useEffect(() => {
-    if (getPathways) {
-      pathwayStore.addMany(getPathways);
-    }
-    if (getOffers) {
-      offerStore.addMany(getOffers);
-    }
-    if (getProviders) {
-      providerStore.addMany(getProviders);
-    }
-  }, [getPathways, getOffers, getProviders]);
 
   const localPromos = data.filter((d) => {
     return d.is_local_promo;
@@ -114,7 +90,7 @@ export default function () {
         swipeScrollTolerance={1}
       >
         {localPromos.map((promo, index) => {
-          return <PromoCard key={index} data={promo} />;
+          return <PromoCard key={index} data={promo} size="small" />;
         })}
       </Carousel>
     </div>

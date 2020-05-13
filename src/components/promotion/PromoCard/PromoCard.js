@@ -6,7 +6,7 @@ import { faImage, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import './promo-card.scss';
 import { Link } from 'react-router-dom';
 
-export default function ({ data }) {
+export default function ({ data, size = 'default' }) {
   const imageSrc =
     last(data.Files) && last(data.Files).file_link
       ? last(data.Files).file_link
@@ -30,12 +30,15 @@ export default function ({ data }) {
         imageSrc ? (
           <img
             className="object-cover"
-            style={{ height: 300 }}
             src={imageSrc}
             alt=""
+            style={{ height: size !== 'small' ? 200 : 150 }}
           />
         ) : (
-          <div className="flex bg-gray-200" style={{ height: 300 }}>
+          <div
+            className="flex bg-gray-200"
+            style={{ height: size !== 'small' ? 200 : 150 }}
+          >
             <FontAwesomeIcon
               className="text-6xl text-gray-400 m-auto block"
               icon={faImage}

@@ -78,17 +78,14 @@ export default function (props) {
               >
                 {offer.RelatedOffers.map((o, index) => {
                   return (
-                    <InfoCard
-                      key={index}
-                      data={o}
-                      provider={provider}
-                      groupedDataFields={groupedDataFields}
-                      actions={[
-                        <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
-                          View
-                        </Link>,
-                      ]}
-                    />
+                    <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
+                      <InfoCard
+                        key={index}
+                        data={o}
+                        provider={provider}
+                        groupedDataFields={groupedDataFields}
+                      />
+                    </Link>
                   );
                 })}
               </Carousel>
@@ -121,17 +118,14 @@ export default function (props) {
                 >
                   {offer.PrerequisiteOffers.map((o, index) => {
                     return (
-                      <InfoCard
-                        key={uniqueId('prereq_card_')}
-                        data={o}
-                        provider={provider}
-                        groupedDataFields={groupedDataFields}
-                        actions={[
-                          <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
-                            View
-                          </Link>,
-                        ]}
-                      />
+                      <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
+                        <InfoCard
+                          key={uniqueId('prereq_card_')}
+                          data={o}
+                          provider={provider}
+                          groupedDataFields={groupedDataFields}
+                        />
+                      </Link>
                     );
                   })}
                 </Carousel>

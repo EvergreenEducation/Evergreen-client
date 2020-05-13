@@ -77,18 +77,16 @@ export default function (props) {
                 p = providerStore.entities[o.provider_id];
               }
               return (
-                <InfoCard
-                  className="mb-4"
-                  key={`${o.name}_${index}`}
-                  data={o}
-                  provider={p}
-                  groupedDataFields={groupedDataFields}
-                  actions={[
-                    <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
-                      View
-                    </Link>,
-                  ]}
-                />
+                <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
+                  <InfoCard
+                    className="mb-4"
+                    key={`${o.name}_${index}`}
+                    data={o}
+                    provider={p}
+                    groupedDataFields={groupedDataFields}
+                    actions={[]}
+                  />
+                </Link>
               );
             })) ||
             null}
@@ -115,24 +113,19 @@ export default function (props) {
                 }
               }
               return (
-                <InfoCard
-                  className="mb-4"
-                  key={index}
-                  data={pathway}
-                  provider={p}
-                  groupedDataFields={groupedDataFields}
-                  actions={[
-                    <Link
-                      to={
-                        pathway && pathway.id
-                          ? `/home/pathway/${pathway.id}`
-                          : null
-                      }
-                    >
-                      View
-                    </Link>,
-                  ]}
-                />
+                <Link
+                  to={
+                    pathway && pathway.id ? `/home/pathway/${pathway.id}` : null
+                  }
+                >
+                  <InfoCard
+                    className="mb-4"
+                    key={index}
+                    data={pathway}
+                    provider={p}
+                    groupedDataFields={groupedDataFields}
+                  />
+                </Link>
               );
             })) ||
             null}

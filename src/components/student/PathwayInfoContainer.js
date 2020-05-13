@@ -99,25 +99,18 @@ export default function (props) {
                       p = offer.Provider;
                     }
                     return (
-                      <InfoCard
-                        className="mb-4"
-                        data={offer}
-                        provider={p}
-                        key={uniqueId('card_')}
-                        groupedDataFields={groupedDataFields}
-                        actions={[
-                          <Link
-                            to={
-                              offer && offer.id
-                                ? `/home/offer/${offer.id}`
-                                : '/'
-                            }
-                            disabled={offer && offer.id ? false : true}
-                          >
-                            View
-                          </Link>,
-                        ]}
-                      />
+                      <Link
+                        to={offer && offer.id ? `/home/offer/${offer.id}` : '/'}
+                        disabled={offer && offer.id ? false : true}
+                      >
+                        <InfoCard
+                          className="mb-4"
+                          data={offer}
+                          provider={p}
+                          key={uniqueId('card_')}
+                          groupedDataFields={groupedDataFields}
+                        />
+                      </Link>
                     );
                   })}
                 </div>

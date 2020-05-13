@@ -93,19 +93,15 @@ export default function () {
       }
 
       return (
-        <InfoCard
-          key={index}
-          className="mx-auto mb-4 w-full"
-          style={{ borderRadius: '1rem' }}
-          data={offer}
-          provider={p}
-          groupedDataFields={groupedDataFields}
-          actions={[
-            <Link to={`/home/offer/${offer.id}`}>
-              <p>View</p>
-            </Link>,
-          ]}
-        />
+        <Link to={`/home/offer/${offer.id}`} key={index}>
+          <InfoCard
+            key={index}
+            className="mx-auto mb-4 w-full"
+            data={offer}
+            provider={p}
+            groupedDataFields={groupedDataFields}
+          />
+        </Link>
       );
     });
   };
