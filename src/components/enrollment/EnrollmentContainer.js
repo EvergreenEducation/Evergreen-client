@@ -62,7 +62,7 @@ export default function EnrollmentContainer({
     }
   }, [enrollmentBody]);
 
-  const handleDataAfterSearch = (data, keys = ['name']) => {
+  const handleDataAfterSearch = (data, keys = ['name', 'keywords']) => {
     const results = matchSorter(data, searchString, { keys });
     return results;
   };

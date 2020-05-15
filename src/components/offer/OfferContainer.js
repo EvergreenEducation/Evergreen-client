@@ -102,7 +102,7 @@ export default function OfferContainer(props) {
     history.push('/error/500');
   }
 
-  const handleDataAfterSearch = (data, keys = ['name']) => {
+  const handleDataAfterSearch = (data, keys = ['name', 'keywords']) => {
     return matchSorter(data, searchString, { keys });
   };
 
