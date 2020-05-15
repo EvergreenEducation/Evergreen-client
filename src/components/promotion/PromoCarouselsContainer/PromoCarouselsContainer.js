@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import useGlobalStore from 'store/GlobalStore';
 import { Carousel } from 'react-responsive-carousel';
 import { TitleDivider } from 'components/shared';
@@ -7,6 +7,7 @@ import 'assets/scss/responsive-carousel-override.scss';
 import './promo-carousels-container.scss';
 
 export default function () {
+  const [localSliderPercentage, setLocalSliderPercentage] = useState(100);
   const {
     offer: offerStore,
     provider: providerStore,
@@ -43,20 +44,37 @@ export default function () {
   const mainPromos = data.filter((d) => {
     return d.is_main_promo;
   });
+
+  useEffect(() => {
+    const handleSliderPercentOnResize = () => {
+      if (window.innerWidth >= 769) {
+        setLocalSliderPercentage(34);
+      } else {
+        setLocalSliderPercentage(100);
+      }
+    };
+
+    if (window.innerWidth >= 769) {
+      setLocalSliderPercentage(34);
+    } else {
+      setLocalSliderPercentage(100);
+    }
+
+    window.addEventListener('resize', handleSliderPercentOnResize);
+
+    return () =>
+      window.removeEventListener('resize', handleSliderPercentOnResize);
+  }, [localSliderPercentage]);
+
   return (
     <div className="h-auto w-full">
-      <TitleDivider
-        title={'MAIN PROMOS'}
-        align="center"
-        classNames={{ middleSpan: 'text-base' }}
-      />
       <Carousel
         className="custom-carousel promoCarousel mb-2 cursor-grab"
         centerMode
         infiniteLoop
         centerSlidePercentage={100}
         showArrows={true}
-        showIndicators={true}
+        showIndicators={false}
         swipeable={true}
         emulateTouch={true}
         showStatus={false}
@@ -78,9 +96,9 @@ export default function () {
         className="custom-carousel promoCarousel mb-2 cursor-grab"
         centerMode
         infiniteLoop
-        centerSlidePercentage={100}
+        centerSlidePercentage={localSliderPercentage}
         showArrows={true}
-        showIndicators={true}
+        showIndicators={false}
         swipeable={true}
         emulateTouch={true}
         showStatus={false}

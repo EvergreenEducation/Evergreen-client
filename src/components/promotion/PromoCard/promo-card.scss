@@ -1,20 +1,15 @@
-$height: 48px;
-
 .promoCard {
-  .ant-card-head {
-    height: $height;
-  }
-  .ant-card-head-wrapper {
-    text-transform: capitalize;
-    height: $height;
+  &__entityType {
+    left: -1px;
+    top: 0;
   }
   .ant-card-body {
-    display: none;
+    padding: 0.5rem;
   }
-  &__link {
-    color: #086a72 !important;
-    &:hover {
-      color: #1890ff !important;
+  &:hover,
+  &:active {
+    .promoCard__link {
+      color: #1890ff;
     }
   }
 }

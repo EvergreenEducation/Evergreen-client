@@ -8,6 +8,8 @@ import { InfoCard, InfoLayout } from 'components/student';
 import { Carousel } from 'react-responsive-carousel';
 import 'assets/scss/responsive-carousel-override.scss';
 
+const centerSlidePercentage = 90;
+
 export default function (props) {
   const { session } = props;
   let { id: offerId } = useParams();
@@ -67,7 +69,7 @@ export default function (props) {
                 className="custom-carousel mb-2 cursor-grab"
                 centerMode
                 infiniteLoop
-                centerSlidePercentage={100}
+                centerSlidePercentage={centerSlidePercentage}
                 showArrows={true}
                 showIndicators={false}
                 swipeable={true}
@@ -107,7 +109,7 @@ export default function (props) {
                   className="custom-carousel mb-4 cursor-grab"
                   centerMode
                   infiniteLoop
-                  centerSlidePercentage={100}
+                  centerSlidePercentage={centerSlidePercentage}
                   showArrows={true}
                   showIndicators={false}
                   swipeable={true}
