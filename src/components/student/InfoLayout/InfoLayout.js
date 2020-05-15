@@ -57,7 +57,7 @@ export default function ({
       }
       if (response.status === 201) {
         message.info(
-          `We'll notify the provider about your enrollment in ${data.name}`
+          `You've enrolled in ${data.name}. We will notify the provider`
         );
       }
       return response;
