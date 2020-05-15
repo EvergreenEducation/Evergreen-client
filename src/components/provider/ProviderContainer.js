@@ -66,7 +66,7 @@ export default function ProviderContainer(props) {
   const entities = Object.values(provider.entities);
   const dataFieldEntities = Object.values(datafield.entities);
 
-  const handleDataAfterSearch = (data, keys = ['name']) => {
+  const handleDataAfterSearch = (data, keys = ['name', 'keywords']) => {
     return matchSorter(data, searchString, { keys });
   };
 

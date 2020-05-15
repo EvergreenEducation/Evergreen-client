@@ -1,4 +1,5 @@
 $width: 423px;
+$firstBreakPt: 769px;
 
 .homeScreen {
   &__homeButton {
@@ -6,9 +7,20 @@ $width: 423px;
       display: none;
     }
   }
+  &__contentWrapper {
+    padding-bottom: 3rem;
+    padding-top: 1rem;
+    @media only screen and (min-width: $firstBreakPt) {
+      padding-top: 3rem;
+      padding-bottom: 1rem;
+    }
+  }
   &__navWrapper {
     @media only screen and (max-width: 480px) {
       padding: 0;
+    }
+    @media only screen and (min-width: $firstBreakPt) {
+      top: 0;
     }
   }
   &__navbar {
@@ -18,6 +30,12 @@ $width: 423px;
     }
   }
   &__carouselContent {
+    @media only screen and (min-width: $firstBreakPt) {
+      max-width: 100%;
+    }
+    max-width: $width;
+  }
+  &__carouselContentTwo {
     max-width: $width;
   }
   &__brandLogo {

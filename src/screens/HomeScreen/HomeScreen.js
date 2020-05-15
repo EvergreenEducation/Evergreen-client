@@ -156,7 +156,7 @@ function HomeScreen() {
     });
   }
 
-  const handleDataAfterSearch = (data, keys = ['name']) => {
+  const handleDataAfterSearch = (data, keys = ['name', 'keywords']) => {
     return matchSorter(data, searchString, { keys });
   };
 
@@ -242,111 +242,104 @@ function HomeScreen() {
 
   return (
     <Layout className="homeScreen h-full bg-gray-100">
-      <div className="w-full bg-gray-100" style={{ paddingBottom: 48 }}>
+      <div className="homeScreen__contentWrapper w-full bg-gray-100 pb-6">
         <Content className="homeScreen__carouselContent mx-auto h-auto bg-gray-100">
           {(!search && (
             <>
               <Route exact path={`${match.url}`}>
                 <PromoCarouselsContainer />
-                <TopicCarouselContainer />
+                <div className="homeScreen__carouselContentTwo mx-auto">
+                  <TopicCarouselContainer />
+                </div>
               </Route>
-              <Route
-                path={`${match.url}/offer/:id`}
-                component={(props) => (
-                  <OfferInfoContainer {...props} session={session} />
-                )}
-              />
-              <Route
-                path={`${match.url}/pathway/:id`}
-                component={(props) => (
-                  <PathwayInfoContainer {...props} session={session} />
-                )}
-              />
-              <Route
-                path={`${match.url}/provider/:id`}
-                component={ProviderInfoContainer}
-              />
-              <Route exact path={`${match.url}/student`}>
-                {(session && session.role === 'student' && (
-                  <StudentDashboard
-                    session={session}
-                    toggeables={toggeables}
-                    setToggeables={setToggeables}
-                  />
-                )) || <Redirect to="/error/401" />}
-              </Route>
+              <div className="homeScreen__carouselContentTwo mx-auto">
+                <Route
+                  path={`${match.url}/offer/:id`}
+                  component={(props) => (
+                    <OfferInfoContainer {...props} session={session} />
+                  )}
+                />
+                <Route
+                  path={`${match.url}/pathway/:id`}
+                  component={(props) => (
+                    <PathwayInfoContainer {...props} session={session} />
+                  )}
+                />
+                <Route
+                  path={`${match.url}/provider/:id`}
+                  component={ProviderInfoContainer}
+                />
+                <Route exact path={`${match.url}/student`}>
+                  {(session && session.role === 'student' && (
+                    <StudentDashboard
+                      session={session}
+                      toggeables={toggeables}
+                      setToggeables={setToggeables}
+                    />
+                  )) || <Redirect to="/error/401" />}
+                </Route>
+              </div>
             </>
           )) || (
-            <SearchResultContainer
-              data={results.length ? results : showData}
-              setToggeables={setToggeables}
-              toggeables={toggeables}
-            />
+            <div className="homeScreen__carouselContentTwo mx-auto">
+              <SearchResultContainer
+                data={results.length ? results : showData}
+                setToggeables={setToggeables}
+                toggeables={toggeables}
+              />
+            </div>
           )}
         </Content>
       </div>
       <Header className="homeScreen__navWrapper h-12 w-full bg-green-500 fixed bottom-0 z-10">
         <Row className="homeScreen__navbar mx-auto h-full">
-          <Col span={!search ? 8 : 6} className="flex items-center">
+          <Col span={!search ? 8 : 3} className="flex items-center">
             <div className="inherit">
               <Button
                 className="mr-2"
                 type="primary"
                 shape="circle"
-                onClick={() => history.goBack()}
+                onClick={() => {
+                  history.goBack();
+                  setToggeables({
+                    ...toggeables,
+                    search: false,
+                    isSearching: false,
+                  });
+                }}
               >
                 <FontAwesomeIcon className="text-white" icon={faArrowLeft} />
               </Button>
               <Button
-                className="homeScreen__homeButton mr-2"
+                className="homeScreen__homeButton mr-2 p-0 z-10"
                 type="primary"
                 shape="circle"
               >
-                {' '}
-                <Link to="/">
-                  <FontAwesomeIcon className="text-white" icon={faHome} />
-                </Link>
-              </Button>
-              {!search && (
-                <Button
-                  type="primary"
-                  shape="circle"
-                  onClick={() =>
+                <Link
+                  className="flex w-full h-full"
+                  to="/"
+                  onClick={() => {
                     setToggeables({
                       ...toggeables,
-                      search: true,
-                    })
-                  }
+                      search: false,
+                      isSearching: false,
+                    });
+                  }}
                 >
-                  <FontAwesomeIcon className="text-white" icon={faSearch} />
-                </Button>
-              )}
-              {search && (
-                <>
-                  <Button
-                    danger
-                    type="primary"
-                    shape="circle"
-                    onClick={() =>
-                      setToggeables({
-                        ...toggeables,
-                        search: false,
-                        isSearching: false,
-                      })
-                    }
-                  >
-                    <FontAwesomeIcon className="text-white" icon={faTimes} />
-                  </Button>
-                </>
-              )}
+                  <FontAwesomeIcon
+                    className="text-white m-auto"
+                    icon={faHome}
+                  />
+                </Link>
+              </Button>
             </div>
           </Col>
           <Col
-            span={!search ? 8 : 16}
+            span={!search ? 8 : 18}
             className="flex justify-center items-center h-full"
           >
             {(!search && (
-              <Row className="flex justify-center items-center">
+              <Row className="flex justify-center items-center select-none">
                 <img
                   className="homeScreen__brandLogo relative mr-1"
                   src={Logo}
@@ -448,9 +441,43 @@ function HomeScreen() {
             )}
           </Col>
           <Col
-            span={!toggeables.search ? 8 : 2}
+            span={!toggeables.search ? 8 : 3}
             className="flex justify-end items-center h-full"
           >
+            {search && (
+              <>
+                <Button
+                  className="mr-2"
+                  danger
+                  type="primary"
+                  shape="circle"
+                  onClick={() =>
+                    setToggeables({
+                      ...toggeables,
+                      search: false,
+                      isSearching: false,
+                    })
+                  }
+                >
+                  <FontAwesomeIcon className="text-white" icon={faTimes} />
+                </Button>
+              </>
+            )}
+            {!search && (
+              <Button
+                className="mr-2"
+                type="primary"
+                shape="circle"
+                onClick={() =>
+                  setToggeables({
+                    ...toggeables,
+                    search: true,
+                  })
+                }
+              >
+                <FontAwesomeIcon className="text-white" icon={faSearch} />
+              </Button>
+            )}
             {(session && session.role === 'student' && (
               <div>
                 <Popover

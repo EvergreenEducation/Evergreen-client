@@ -96,7 +96,7 @@ export default function PathwayContainer({
     }
   }, [getPathways, getOffers, getProviders, getDataFields]);
 
-  const handleDataAfterSearch = (data, keys = ['name']) => {
+  const handleDataAfterSearch = (data, keys = ['name', 'keywords']) => {
     return matchSorter(data, searchString, { keys });
   };
 
