@@ -269,15 +269,22 @@ function HomeScreen() {
                   path={`${match.url}/provider/:id`}
                   component={ProviderInfoContainer}
                 />
-                <Route exact path={`${match.url}/student`}>
-                  {(session && session.role === 'student' && (
-                    <StudentDashboard
-                      session={session}
-                      toggeables={toggeables}
-                      setToggeables={setToggeables}
-                    />
-                  )) || <Redirect to="/error/401" />}
-                </Route>
+                <Route
+                  exact
+                  path={`${match.url}/student`}
+                  component={(props) => {
+                    return (
+                      (session && session.role === 'student' && (
+                        <StudentDashboard
+                          {...props}
+                          session={session}
+                          toggeables={toggeables}
+                          setToggeables={setToggeables}
+                        />
+                      )) || <Redirect to="/error/401" />
+                    );
+                  }}
+                />
               </div>
             </>
           )) || (
