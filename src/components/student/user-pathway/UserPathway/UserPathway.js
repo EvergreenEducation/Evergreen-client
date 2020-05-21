@@ -8,12 +8,16 @@ import {
   faEdit,
   faCheck,
   faCalendarAlt,
+  faChartBar,
+  faChartLine,
 } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
+import { Carousel } from 'react-responsive-carousel';
+import { find, groupBy } from 'lodash';
 import axiosInstance from 'services/AxiosInstance';
 import useGlobalStore from 'store/GlobalStore';
 import { LearnAndEarnIcons } from 'components/shared';
-import { find } from 'lodash';
+import { UserPathwayChart, ExpenseEarningChart } from 'components/student';
 import './user-pathway.scss';
 import 'assets/scss/antd-overrides.scss';
 
@@ -21,6 +25,7 @@ const { TextArea } = Input;
 
 export default function ({ children, data = {}, studentsPathways }) {
   const [openNotes, setOpenNotes] = useState(false);
+  const [switchChart, setSwitchChart] = useState(false);
   const [formRef, setFormRef] = useState();
   const {
     id: pathwayId,
@@ -32,6 +37,7 @@ export default function ({ children, data = {}, studentsPathways }) {
     provider_id,
     name,
     StudentsPathways,
+    GroupsOfOffers,
   } = data;
 
   const { pathway: pathwayStore } = useGlobalStore();
@@ -75,15 +81,58 @@ export default function ({ children, data = {}, studentsPathways }) {
     }
   }, [formRef]);
 
+  const groups = groupBy(GroupsOfOffers, 'group_name');
+  const groupNames = Object.keys(groups);
+
   return (
     <div className="infoLayout mb-3">
-      <header className="mx-auto relative" style={{ minHeight: 52 }}>
+      <header className="mx-auto relative bg-white pt-2">
+        {(!switchChart && (
+          <Carousel
+            className="cursor-grab"
+            centerMode
+            infiniteLoop
+            centerSlidePercentage={100}
+            showArrows={true}
+            showIndicators={false}
+            swipeable={true}
+            emulateTouch={true}
+            showStatus={false}
+            showThumbs={false}
+            swipeScrollTolerance={1}
+          >
+            {groupNames.map((group_name, index) => {
+              const group = groups[group_name];
+              return (
+                <UserPathwayChart
+                  group={group}
+                  groupName={group_name}
+                  key={index}
+                />
+              );
+            }) || 'N/A'}
+          </Carousel>
+        )) || <ExpenseEarningChart pathway={data} />}
+        <div className="flex bg-white justify-end px-2">
+          <Button
+            className="rounded flex justify-center"
+            style={{ paddingRight: '1rem', paddingLeft: '1rem' }}
+            type="primary"
+            size="small"
+            onClick={() => setSwitchChart(!switchChart)}
+            icon={
+              !switchChart ? (
+                <FontAwesomeIcon icon={faChartBar} />
+              ) : (
+                <FontAwesomeIcon icon={faChartLine} />
+              )
+            }
+          />
+        </div>
         <span
-          className="block text-white text-center text-lg absolute text-white w-full bottom-0 p-3"
+          className="block text-white text-center text-lg text-white w-full bottom-0 p-3 mt-2"
           style={{
             background: 'rgba(0, 0, 0, 0.75)',
-            borderTopLeftRadius: '1rem',
-            borderTopRightRadius: '1rem',
           }}
         >
           {name || '---'}
