@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Modal, Form, Button, notification } from 'antd';
 import ProviderSimpleForm from 'components/provider/ProviderSimpleForm';
 import axiosInstance from 'services/AxiosInstance';
@@ -9,10 +9,10 @@ import UploaderService from 'services/Uploader';
 import 'assets/scss/antd-overrides.scss';
 
 export default function ProviderSimpleUpdateModal(props) {
+  const formRef = useRef(null);
   const providerStore = ProviderStore.useContainer();
   const { id: userId } = AuthService.currentSession;
   const [form] = Form.useForm();
-  const formRef = React.createRef();
   const { provider = {}, onCancel, visible } = props;
 
   const [file, setFile] = useState(null);
@@ -24,8 +24,8 @@ export default function ProviderSimpleUpdateModal(props) {
     }
   };
 
-  function populateFields(p, ref) {
-    ref.current.setFieldsValue({
+  function populateFields(p) {
+    form.setFieldsValue({
       name: p.name,
       location: p.location,
       description: p.description,
@@ -33,9 +33,8 @@ export default function ProviderSimpleUpdateModal(props) {
   }
 
   useEffect(() => {
-    formRef.current = form;
     if (formRef.current) {
-      populateFields(provider, formRef);
+      populateFields(provider);
     }
 
     if (provider.Files) {
@@ -55,7 +54,7 @@ export default function ProviderSimpleUpdateModal(props) {
         }
       }
     }
-  }, [props, form, provider, provider.Files]);
+  }, [props, provider, provider.Files, formRef]);
 
   const submitUpdate = async () => {
     const values = form.getFieldsValue([
@@ -117,7 +116,7 @@ export default function ProviderSimpleUpdateModal(props) {
         setFile(null);
       }}
     >
-      <Form form={form}>
+      <Form form={form} ref={formRef}>
         <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <ProviderSimpleForm
             userId={userId}

@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Collapse, Alert, Button, message } from 'antd';
+import { Alert, Button } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import { isEqual, groupBy, filter } from 'lodash';
 import axiosInstance from 'services/AxiosInstance';
 import useGlobalStore from 'store/GlobalStore';
 import { TitleDivider } from 'components/shared';
 import { SmallInfoCard } from 'components/student';
+import UserPathwayContainer from 'components/student/user-pathway/UserPathwayContainer';
 import './student-dashboard.scss';
 
 configure({
   axios: axiosInstance,
 });
 
-const { Panel } = Collapse;
-
-export default function ({ session = {}, toggeables, setToggeables }) {
+export default function (props) {
+  const { session = {}, toggeables, setToggeables } = props;
   const studentId = session.student_id;
   const [student, setStudent] = useState({});
   const [{ data: studentPayload }] = useAxios(
@@ -36,37 +36,6 @@ export default function ({ session = {}, toggeables, setToggeables }) {
     );
     offerStore.addOne(response.data);
   }
-
-  const enrollOffer = async (offer) => {
-    if (!session.student_id) {
-      return;
-    }
-    if (!offer || !offer.id) {
-      return;
-    }
-    const studentId = session.student_id;
-    try {
-      const response = await axiosInstance.put(
-        `/students/${studentId}/offers/${offer.id}/provider/${offer.provider_id}/enroll`
-      );
-      if (response.status === 200) {
-        message.success(`You've enrolled in ${offer.name}`);
-      }
-      if (response.status === 201) {
-        message.info(
-          `We'll notify the provider about your enrollment in ${offer.name}`
-        );
-      }
-      return response;
-    } catch (e) {
-      console.error(e);
-      if (e.response.status === 400) {
-        message.error(
-          'There are no enrollments available. Please contact the provider.'
-        );
-      }
-    }
-  };
 
   useEffect(() => {
     if (studentPayload) {
@@ -93,115 +62,16 @@ export default function ({ session = {}, toggeables, setToggeables }) {
         student.StudentPathways.length &&
         student.StudentPathways.map((pathway, idx) => {
           const pathwayEntity = pathwayStore.entities[pathway.id];
-          let groupsOfOffers = {};
-          let groupNames = [];
           if (!pathwayEntity) {
             getPathway(pathway.id);
           }
-          if (
-            pathwayEntity &&
-            pathwayEntity.GroupsOfOffers &&
-            pathwayEntity.GroupsOfOffers.length
-          ) {
-            groupsOfOffers = groupBy(
-              pathwayEntity.GroupsOfOffers,
-              'group_name'
-            );
-            groupNames = Object.keys(groupsOfOffers);
-          }
           return (
-            <section className="bg-white mb-2 rounded" key={idx}>
-              <div className="px-2 pt-2">
-                <span className="block text-lg">
-                  <Link
-                    to={`/home/pathway/${pathway.id}`}
-                    onClick={() =>
-                      setToggeables({ ...toggeables, studentDashboard: false })
-                    }
-                  >
-                    {pathway.name}
-                  </Link>
-                </span>
-                <span className="block">
-                  <Link
-                    to={`/home/provider/${pathway.Provider.id}`}
-                    onClick={() =>
-                      setToggeables({ ...toggeables, studentDashboard: false })
-                    }
-                  >
-                    {pathway.Provider.name}
-                  </Link>
-                </span>
-              </div>
-              <TitleDivider
-                title={'Groups of Offers'}
-                align="center"
-                classNames={{ middleSpan: 'text-base' }}
-              />
-              <div className="px-2 pb-2">
-                {(pathwayEntity &&
-                  pathwayEntity.GroupsOfOffers &&
-                  groupNames.length &&
-                  groupNames.map((key, index) => {
-                    const group = groupsOfOffers[key];
-                    return (
-                      <Collapse className="rounded mb-2" key={index}>
-                        <Panel className="rounded" header={key}>
-                          {group.map((g, _index) => {
-                            if (!g) {
-                              return null;
-                            }
-                            const offer = offerStore.entities[g.offer_id];
-                            if (!offer) {
-                              getOffer(g.offer_id);
-                            }
-                            return (
-                              <SmallInfoCard
-                                key={_index}
-                                offer={offer}
-                                color={_index % 2 ? 'primary' : 'secondary'}
-                              >
-                                <Button
-                                  type="link"
-                                  className="rounded mr-2"
-                                  size="small"
-                                >
-                                  <Link
-                                    className="text-blue"
-                                    to={offer ? `/home/offer/${offer.id}` : '/'}
-                                    onClick={() =>
-                                      setToggeables({
-                                        ...toggeables,
-                                        studentDashboard: false,
-                                      })
-                                    }
-                                  >
-                                    View
-                                  </Link>
-                                </Button>
-                                <Button
-                                  type="primary"
-                                  className="rounded"
-                                  size="small"
-                                  onClick={() => enrollOffer(offer)}
-                                >
-                                  Enroll
-                                </Button>
-                              </SmallInfoCard>
-                            );
-                          })}
-                        </Panel>
-                      </Collapse>
-                    );
-                  })) || (
-                  <Alert
-                    className="mx-auto text-center rounded"
-                    type="info"
-                    message="This pathway doesn't have any groups of offers yet."
-                  />
-                )}
-              </div>
-            </section>
+            <UserPathwayContainer
+              {...props}
+              key={idx}
+              pathway={pathwayEntity}
+              student={student}
+            />
           );
         })) || (
         <Alert

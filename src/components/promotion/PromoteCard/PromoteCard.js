@@ -1,14 +1,15 @@
 import React from 'react';
 import { Button, Popconfirm } from 'antd';
-import { last } from 'lodash';
+import { last, findIndex } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 import axiosInstance from 'services/AxiosInstance';
 import useGlobalStore from 'store/GlobalStore';
 import './promote-card.scss';
 
-export default function ({ data = {} }) {
+export default function ({ data = {}, session }) {
   const { provider, offer, pathway } = useGlobalStore();
+  const adminId = session.id;
 
   const update = async (id, endpoint, data, container) => {
     if (!id || !endpoint || !data) {
@@ -22,17 +23,69 @@ export default function ({ data = {} }) {
     return response;
   };
 
+  const removeAdminId = (userIdsArr, _adminId, incomingPromoData) => {
+    const foundAdminIndex = findIndex(userIdsArr, function (item) {
+      return item === _adminId;
+    });
+    const newMainPromotedByUserIds = userIdsArr;
+    newMainPromotedByUserIds.splice(foundAdminIndex, 1);
+    return {
+      ...incomingPromoData,
+      [userIdsArr]: newMainPromotedByUserIds,
+    };
+  };
+
   function togglePromo(data, promoType) {
-    const { is_local_promo, entity_type, is_main_promo } = data;
-    const localPromoData = { is_local_promo: !is_local_promo };
-    const mainPromoData = { is_main_promo: !is_main_promo };
-    const resetPromoData = { is_main_promo: false, is_local_promo: false };
+    const {
+      is_local_promo,
+      entity_type,
+      is_main_promo,
+      local_promoted_by_user_ids,
+      main_promoted_by_user_ids,
+    } = data;
+    let localPromoData = { is_local_promo: !is_local_promo };
+    let mainPromoData = { is_main_promo: !is_main_promo };
+    const resetPromoData = {
+      is_main_promo: false,
+      is_local_promo: false,
+      local_promoted_by_user_ids: [],
+      main_promoted_by_user_ids: [],
+    };
 
     if (entity_type === 'offer') {
       if (promoType === 'local') {
+        if (localPromoData.is_local_promo) {
+          localPromoData = {
+            ...localPromoData,
+            local_promoted_by_user_ids: [
+              ...local_promoted_by_user_ids,
+              adminId,
+            ],
+          };
+        } else {
+          localPromoData = removeAdminId(
+            local_promoted_by_user_ids,
+            adminId,
+            localPromoData
+          );
+        }
+
         return update(data.id, 'offers', localPromoData, offer);
       }
       if (promoType === 'main') {
+        if (mainPromoData.is_main_promo) {
+          mainPromoData = {
+            ...mainPromoData,
+            main_promoted_by_user_ids: [...main_promoted_by_user_ids, adminId],
+          };
+        } else {
+          mainPromoData = removeAdminId(
+            main_promoted_by_user_ids,
+            adminId,
+            mainPromoData
+          );
+        }
+
         return update(data.id, 'offers', mainPromoData, offer);
       }
       return update(data.id, 'offers', resetPromoData, offer);

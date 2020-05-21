@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Button, Form, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -15,7 +15,7 @@ configure({
 
 const OfferCreationContainer = ({ closeModal, role, providerId }) => {
   const { id: userId, provider_id } = AuthService.currentSession;
-
+  const formRef = useRef(null);
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
   const [{ data: offerPayload, error: offerError }, createOffer] = useAxios(
@@ -40,18 +40,6 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
   } = useGlobalStore();
 
   let providerEntities = Object.values(providerStore.entities);
-
-  if (role === 'provider') {
-    if (providerEntities.length) {
-      providerEntities = reject(providerEntities, (p) => {
-        return !(p.id === providerId);
-      });
-
-      form.setFieldsValue({
-        provider_id: head(providerEntities).id,
-      });
-    }
-  }
 
   const submit = async () => {
     try {
@@ -132,6 +120,18 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
   };
 
   useEffect(() => {
+    if (formRef.current && role === 'provider') {
+      if (providerEntities.length) {
+        providerEntities = reject(providerEntities, (p) => {
+          return !(p.id === providerId);
+        });
+
+        form.setFieldsValue({
+          provider_id: head(providerEntities).id,
+        });
+      }
+    }
+
     if (offerError) {
       const { status, statusText } = offerError.request;
       notification.error({
@@ -139,11 +139,11 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
         description: statusText,
       });
     }
-  }, [offerPayload, offerError]);
+  }, [offerPayload, offerError, formRef]);
 
   return (
     <div>
-      <Form form={form} name="offerForm">
+      <Form form={form} name="offerForm" ref={formRef}>
         <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <OfferForm
             role={role}

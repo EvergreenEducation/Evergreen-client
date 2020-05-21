@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Modal, Form, Button, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -24,6 +24,7 @@ export default function PathwayUpdateModal({
   providers,
   role,
 }) {
+  const formRef = useRef(null);
   const { id: userId, provider_id } = AuthService.currentSession;
   const [file, setFile] = useState(null);
   const [onFileChange, setOnFileChange] = useState(false);
@@ -32,7 +33,7 @@ export default function PathwayUpdateModal({
   const [form] = Form.useForm();
   const datafieldStore = DataFieldStore.useContainer();
   const offerStore = OfferStore.useContainer();
-  const [{ data: putData, error: putError }, updatePathway] = useAxios(
+  const [{ error: putError }, updatePathway] = useAxios(
     {
       method: 'PUT',
     },
@@ -146,8 +147,8 @@ export default function PathwayUpdateModal({
     }, []);
   }
 
-  function populateFields(p, formInstance) {
-    formInstance.setFieldsValue({
+  function populateFields(p) {
+    form.setFieldsValue({
       ...p,
       length_unit: Number(p.length_unit),
       credit_unit: Number(p.credit_unit),
@@ -159,15 +160,27 @@ export default function PathwayUpdateModal({
   }
 
   useEffect(() => {
+    if (formRef.current) {
+      populateFields(pathway);
+    }
+
+    if (formRef.current && role === 'provider') {
+      if (providerEntities.length) {
+        providerEntities = reject(providerEntities, (p) => {
+          return !(p.id === provider_id);
+        });
+
+        form.setFieldsValue({
+          provider_id: head(providerEntities).id || null,
+        });
+      }
+    }
     if (putError) {
       const { status, statusText } = putError.request;
       notification.error({
         message: status,
         description: statusText,
       });
-    }
-    if (pathway) {
-      populateFields(pathway, form);
     }
     if (pathway.Files) {
       let orderedFiles = orderBy(
@@ -179,21 +192,9 @@ export default function PathwayUpdateModal({
       orderedFiles = orderedFiles.filter((f) => f.fileable_type === 'pathway');
       setFile(head(orderedFiles));
     }
-  }, [putData, pathway, putError]);
+  }, [pathway, putError, formRef]);
 
   let providerEntities = providers;
-
-  if (role === 'provider') {
-    if (providerEntities.length) {
-      providerEntities = reject(providerEntities, (p) => {
-        return !(p.id === provider_id);
-      });
-
-      form.setFieldsValue({
-        provider_id: head(providerEntities).id || null,
-      });
-    }
-  }
 
   return (
     <Modal
@@ -211,6 +212,7 @@ export default function PathwayUpdateModal({
     >
       <Form
         form={form}
+        ref={formRef}
         initialValues={{
           provider_id:
             role === 'provider' && providers && providers.length

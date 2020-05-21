@@ -108,7 +108,9 @@ export default function () {
         swipeScrollTolerance={1}
       >
         {localPromos.map((promo, index) => {
-          return <PromoCard key={index} data={promo} size="small" />;
+          return (
+            <PromoCard key={index} data={promo} size="small" className="mx-1" />
+          );
         })}
       </Carousel>
     </div>

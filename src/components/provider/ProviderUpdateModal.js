@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Modal, Form, Table, Button, notification } from 'antd';
 import ProviderForm from 'components/provider/ProviderForm';
 import axiosInstance from 'services/AxiosInstance';
@@ -65,9 +65,9 @@ const renderColumns = (nameTitle, descriptionTitle) => {
 };
 
 export default function ProviderUpdateModal(props) {
+  const formRef = useRef(null);
   const { id: userId } = AuthService.currentSession;
   const [form] = Form.useForm();
-  const formRef = React.createRef();
   const { provider = {}, onCancel, visible, datafields, role } = props;
   const { Offers = [], Pathways = [] } = provider;
 
@@ -101,8 +101,8 @@ export default function ProviderUpdateModal(props) {
     }, []);
   }
 
-  function populateFields(p, ref) {
-    ref.current.setFieldsValue({
+  function populateFields(p) {
+    form.setFieldsValue({
       ...p,
       type: providerType,
       topics: topics,
@@ -110,9 +110,8 @@ export default function ProviderUpdateModal(props) {
   }
 
   useEffect(() => {
-    formRef.current = form;
     if (formRef.current) {
-      populateFields(provider, formRef);
+      populateFields(provider);
     }
 
     if (provider.Files) {
@@ -125,7 +124,8 @@ export default function ProviderUpdateModal(props) {
       orderedFiles = orderedFiles.filter((f) => f.fileable_type === 'provider');
       setFile(head(orderedFiles));
     }
-  }, [form, provider, provider.Files]);
+    return;
+  }, [provider, provider.Files, formRef]);
 
   const submitUpdate = async () => {
     try {
@@ -210,7 +210,7 @@ export default function ProviderUpdateModal(props) {
         setFile(null);
       }}
     >
-      <Form form={form}>
+      <Form form={form} ref={formRef}>
         <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <ProviderForm
             role={role}
