@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import './promo-card.scss';
 
-export default function ({ data, size = 'default' }) {
+export default function ({ data, size = 'default', style, className }) {
   const imageSrc =
     last(data.Files) && last(data.Files).file_link
       ? last(data.Files).file_link
@@ -23,21 +23,21 @@ export default function ({ data, size = 'default' }) {
     link = `/home/pathway/${data.id}`;
   }
   return (
-    <Link to={link} className="text-base shadow font-bold promoCard__link">
+    <Link to={link} className="text-base font-bold promoCard__link">
       <Card
-        className="promoCard"
+        className={`promoCard ${className}`}
         cover={
           imageSrc ? (
             <img
-              className="object-cover"
+              className="object-contain bg-gray-200"
               src={imageSrc}
               alt=""
-              style={{ height: size !== 'small' ? 270 : 220 }}
+              style={{ height: size !== 'small' ? 325 : 220 }}
             />
           ) : (
             <div
               className="flex bg-gray-200"
-              style={{ height: size !== 'small' ? 270 : 220 }}
+              style={{ height: size !== 'small' ? 325 : 220 }}
             >
               <FontAwesomeIcon
                 className="text-6xl text-gray-400 m-auto block"

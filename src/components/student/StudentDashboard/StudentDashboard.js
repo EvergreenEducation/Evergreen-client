@@ -70,6 +70,7 @@ export default function (props) {
               {...props}
               key={idx}
               pathway={pathwayEntity}
+              student={student}
             />
           );
         })) || (

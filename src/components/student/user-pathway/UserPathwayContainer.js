@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { groupBy, property, uniqueId } from 'lodash';
+import { useHistory } from 'react-router-dom';
+import { groupBy, property, uniqueId, keyBy } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
@@ -9,7 +9,8 @@ import UserPathway from 'components/student/user-pathway/UserPathway/UserPathway
 import 'assets/scss/responsive-carousel-override.scss';
 
 export default function (props) {
-  const { session, pathway } = props;
+  const history = useHistory();
+  const { session, pathway, student } = props;
   const {
     offer: offerStore,
     datafield,
@@ -54,6 +55,24 @@ export default function (props) {
     groupKeys = Object.keys(groupsOfOffers);
   }
 
+  let studentsPathways = null;
+
+  const keyedByStudentPathwayId = keyBy(
+    student.StudentPathways,
+    'StudentPathway.pathway_id'
+  );
+
+  if (keyedByStudentPathwayId[pathway.id]) {
+    studentsPathways = keyedByStudentPathwayId[pathway.id];
+  }
+
+  const redirectToOffer = (offerId) => {
+    if (!offerId) {
+      return;
+    }
+    history.push(`/home/offer/${offerId}`);
+  };
+
   return (
     <div className="flex flex-col items-center">
       <UserPathway
@@ -61,6 +80,7 @@ export default function (props) {
         data={pathway}
         groupedDataFields={groupedDataFields}
         session={session}
+        studentsPathways={studentsPathways}
       >
         <section style={{ maxWidth: 896 }}>
           {(groupKeys.length && (
@@ -97,10 +117,15 @@ export default function (props) {
                       p = offer.Provider;
                     }
                     return (
-                      <Link
+                      <div
+                        className="cursor-pointer"
                         key={idx}
-                        to={offer && offer.id ? `/home/offer/${offer.id}` : '/'}
-                        disabled={offer && offer.id ? false : true}
+                        onClick={(event) => {
+                          if (offer && offer.id) {
+                            redirectToOffer(offer.id);
+                          }
+                          event.stopPropagation();
+                        }}
                       >
                         <InfoCard
                           className="mb-4"
@@ -109,7 +134,7 @@ export default function (props) {
                           key={uniqueId('card_')}
                           groupedDataFields={groupedDataFields}
                         />
-                      </Link>
+                      </div>
                     );
                   })}
                 </div>

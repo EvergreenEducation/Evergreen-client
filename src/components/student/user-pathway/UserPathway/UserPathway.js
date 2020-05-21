@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Col, Tag, Button, Input, Form } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,15 +10,20 @@ import {
   faCalendarAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
+import axiosInstance from 'services/AxiosInstance';
+import useGlobalStore from 'store/GlobalStore';
 import { LearnAndEarnIcons } from 'components/shared';
+import { find } from 'lodash';
 import './user-pathway.scss';
 import 'assets/scss/antd-overrides.scss';
 
 const { TextArea } = Input;
 
-export default function ({ children, data = {}, session = {} }) {
+export default function ({ children, data = {}, studentsPathways }) {
   const [openNotes, setOpenNotes] = useState(false);
+  const [formRef, setFormRef] = useState();
   const {
+    id: pathwayId,
     cost,
     credit,
     pay,
@@ -26,7 +31,12 @@ export default function ({ children, data = {}, session = {} }) {
     Provider,
     provider_id,
     name,
+    StudentsPathways,
   } = data;
+
+  const { pathway: pathwayStore } = useGlobalStore();
+
+  const { student_id } = studentsPathways.StudentPathway;
 
   const [form] = Form.useForm();
 
@@ -34,8 +44,39 @@ export default function ({ children, data = {}, session = {} }) {
   let { start_date } = data;
   start_date = dayjs(start_date).format('MMM DD, YYYY');
 
+  const updatePathwayNotes = async (_studentId, _pathwayId) => {
+    try {
+      const values = await form.validateFields(['notes']);
+      const response = await axiosInstance.put(
+        `/students/${_studentId}/pathways/${pathwayId}`,
+        { notes: values.notes }
+      );
+      pathwayStore.updateOne(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  let notes = null;
+
+  const _StudentsPathways = find(StudentsPathways, function (item) {
+    return item.StudentPathway.student_id === student_id;
+  });
+
+  if (_StudentsPathways && _StudentsPathways.StudentPathway.notes) {
+    notes = _StudentsPathways.StudentPathway.notes;
+  }
+
+  useEffect(() => {
+    if (formRef) {
+      form.setFieldsValue({
+        notes,
+      });
+    }
+  }, [formRef]);
+
   return (
-    <div className="infoLayout">
+    <div className="infoLayout mb-3">
       <header className="mx-auto relative" style={{ minHeight: 52 }}>
         <span
           className="block text-white text-center text-lg absolute text-white w-full bottom-0 p-3"
@@ -118,7 +159,7 @@ export default function ({ children, data = {}, session = {} }) {
         <hr />
         <Col span={24} className="mt-2">
           <Row className="justify-between items-center">
-            <span className="blockmy-auto">Notes:</span>
+            <span className="block my-auto">Notes:</span>
             {!openNotes && (
               <Button
                 className="pl-2 rounded"
@@ -142,6 +183,7 @@ export default function ({ children, data = {}, session = {} }) {
                   type="primary"
                   size="small"
                   shape="circle"
+                  onClick={() => updatePathwayNotes(student_id, pathwayId)}
                   icon={<FontAwesomeIcon icon={faCheck} />}
                 />
                 <Button
@@ -157,12 +199,13 @@ export default function ({ children, data = {}, session = {} }) {
             )}
           </Row>
           {openNotes && (
-            <Form form={form} className="mt-2">
-              <Form.Item>
+            <Form ref={setFormRef} form={form} className="mt-2">
+              <Form.Item name="notes">
                 <TextArea className="rounded shadow-inner" />
               </Form.Item>
             </Form>
           )}
+          {!openNotes && <p>{notes}</p>}
         </Col>
       </section>
       <section>{children}</section>
