@@ -5,7 +5,7 @@ import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import matchSorter from 'match-sorter';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
-import { LogOutTopbar, SearchHeader } from 'components/shared';
+import { LogOutTopbar, SearchHeader, TitleDivider } from 'components/shared';
 import useGlobalStore from 'store/GlobalStore';
 import PromoteCard from 'components/promotion/PromoteCard/PromoteCard';
 
@@ -15,7 +15,9 @@ configure({
 
 const { Content } = Layout;
 
-export default function () {
+export default function (props) {
+  const { session } = props;
+  const adminId = session.id;
   const [searchString, setSearchString] = useState('');
   const [showPromoted, setShowPromoted] = useState(true);
   const [filters, setFilters] = useState({
@@ -198,10 +200,48 @@ export default function () {
         </SearchHeader>
       </LogOutTopbar>
       <Content className="p-6">
+        <TitleDivider
+          title="My Promotions"
+          styles={{
+            leftContainer: {
+              backgroundColor: '#4a5568',
+            },
+            rightContainer: {
+              backgroundColor: '#4a5568',
+            },
+          }}
+        />
+        <div className="shadow-md rounded-md w-full bg-white h-full pt-4 px-5 flex flex-wrap mb-1">
+          {(showData.length &&
+            showData
+              .filter(function ({
+                main_promoted_by_user_ids,
+                local_promoted_by_user_ids,
+              }) {
+                return (
+                  main_promoted_by_user_ids.includes(adminId) ||
+                  local_promoted_by_user_ids.includes(adminId)
+                );
+              })
+              .map((d, index) => {
+                return <PromoteCard key={index} data={d} session={session} />;
+              })) || <Empty className="m-auto" />}
+        </div>
+        <TitleDivider
+          title="Other Promotions	&amp; Search Results"
+          styles={{
+            leftContainer: {
+              backgroundColor: '#4a5568',
+            },
+            rightContainer: {
+              backgroundColor: '#4a5568',
+            },
+          }}
+        />
         <main className="shadow-md rounded-md w-full bg-white h-full pt-4 px-5 flex flex-wrap">
           {(showData.length &&
             showData.map((d, index) => {
-              return <PromoteCard key={index} data={d} />;
+              return <PromoteCard key={index} data={d} session={session} />;
             })) || <Empty className="m-auto" />}
         </main>
       </Content>

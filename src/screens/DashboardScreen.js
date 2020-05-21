@@ -133,7 +133,11 @@ function DashboardScreen(props) {
           <PrivateRoute
             path={`${basePath}/promotions`}
             component={() => (
-              <PromotionContainer role={role} providerId={myProviderId} />
+              <PromotionContainer
+                role={role}
+                providerId={myProviderId}
+                session={AuthService.currentSession}
+              />
             )}
           />
           <PrivateRoute
