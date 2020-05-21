@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Modal, Form, Table, Button, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -25,6 +25,7 @@ export default function OfferUpdateModal({
   scopedToProvider = false,
   role,
 }) {
+  const formRef = useRef(null);
   const { id: userId, provider_id } = AuthService.currentSession;
   const [file, setFile] = useState(null);
   const [onFileChange, setOnFileChange] = useState(false);
@@ -139,8 +140,8 @@ export default function OfferUpdateModal({
     }
   };
 
-  function populateFields(o, formInstance) {
-    formInstance.setFieldsValue({
+  function populateFields(o) {
+    form.setFieldsValue({
       ...o,
       part_of_day: Number(o.part_of_day),
       pay_unit: Number(o.pay_unit),
@@ -171,8 +172,8 @@ export default function OfferUpdateModal({
         description: statusText,
       });
     }
-    if (form) {
-      populateFields(offer, form);
+    if (formRef.current) {
+      populateFields(offer);
     }
     if (offer.Files) {
       let orderedFiles = orderBy(
@@ -183,7 +184,7 @@ export default function OfferUpdateModal({
       orderedFiles = orderedFiles.filter((f) => f.fileable_type === 'offer');
       setFile(head(orderedFiles));
     }
-  }, [updateOfferPayload, offer, updateOfferError]);
+  }, [updateOfferPayload, offer, updateOfferError, formRef]);
 
   return (
     <Modal
@@ -199,7 +200,7 @@ export default function OfferUpdateModal({
         setFile(null);
       }}
     >
-      <Form form={form}>
+      <Form form={form} ref={formRef}>
         <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <OfferForm
             offers={Object.values(offerStore.entities)}

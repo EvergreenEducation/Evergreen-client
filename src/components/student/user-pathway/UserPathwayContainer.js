@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { groupBy, property, uniqueId, keyBy } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
@@ -9,7 +9,6 @@ import UserPathway from 'components/student/user-pathway/UserPathway/UserPathway
 import 'assets/scss/responsive-carousel-override.scss';
 
 export default function (props) {
-  const history = useHistory();
   const { session, pathway, student } = props;
   const {
     offer: offerStore,
@@ -66,13 +65,6 @@ export default function (props) {
     studentsPathways = keyedByStudentPathwayId[pathway.id];
   }
 
-  const redirectToOffer = (offerId) => {
-    if (!offerId) {
-      return;
-    }
-    history.push(`/home/offer/${offerId}`);
-  };
-
   return (
     <div className="flex flex-col items-center">
       <UserPathway
@@ -117,16 +109,7 @@ export default function (props) {
                       p = offer.Provider;
                     }
                     return (
-                      <div
-                        className="cursor-pointer"
-                        key={idx}
-                        onClick={(event) => {
-                          if (offer && offer.id) {
-                            redirectToOffer(offer.id);
-                          }
-                          event.stopPropagation();
-                        }}
-                      >
+                      <Link to={`/home/offer/${offer.id}`}>
                         <InfoCard
                           className="mb-4"
                           data={offer}
@@ -134,7 +117,7 @@ export default function (props) {
                           key={uniqueId('card_')}
                           groupedDataFields={groupedDataFields}
                         />
-                      </div>
+                      </Link>
                     );
                   })}
                 </div>
