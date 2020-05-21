@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Button, Form, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -17,6 +17,7 @@ configure({
 
 const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
   const { id: userId } = AuthService.currentSession;
+  const formRef = useRef(null);
   const [file, setFile] = useState(null);
   const [groupsOfOffers, setGroupsOfOffers] = useState([]);
   const [form] = Form.useForm();
@@ -124,8 +125,8 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
   };
   let providerEntities = Object.values(providerStore.entities);
 
-  if (role === 'provider') {
-    if (providerEntities.length) {
+  useEffect(() => {
+    if (formRef.current && role === 'provider') {
       providerEntities = reject(providerEntities, (p) => {
         return !(p.id === providerId);
       });
@@ -134,9 +135,6 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
         provider_id: head(providerEntities).id,
       });
     }
-  }
-
-  useEffect(() => {
     if (getDataFields) {
       datafieldStore.addMany(getDataFields);
     }
@@ -162,11 +160,11 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
     if (getProviders) {
       providerStore.addMany(getProviders);
     }
-  }, [getDataFields, response, postError, getProviders]);
+  }, [getDataFields, response, postError, getProviders, formRef]);
 
   return (
     <div>
-      <Form form={form} name="offerForm">
+      <Form form={form} ref={formRef}>
         <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <PathwayForm
             datafields={datafieldStore.entities}
