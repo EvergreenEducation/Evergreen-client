@@ -13,7 +13,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import { Carousel } from 'react-responsive-carousel';
-import { find, groupBy } from 'lodash';
+import { find, groupBy, each } from 'lodash';
 import axiosInstance from 'services/AxiosInstance';
 import useGlobalStore from 'store/GlobalStore';
 import { LearnAndEarnIcons } from 'components/shared';
@@ -24,14 +24,15 @@ import 'assets/scss/antd-overrides.scss';
 const { TextArea } = Input;
 
 export default function ({ children, data = {}, studentsPathways }) {
+  const [totalPay, setTotalPay] = useState(0);
+  const [totalCredit, setTotalCredit] = useState(0);
+  const [totalCost, setTotalCost] = useState(0);
+
   const [openNotes, setOpenNotes] = useState(false);
   const [switchChart, setSwitchChart] = useState(false);
   const [formRef, setFormRef] = useState();
   const {
     id: pathwayId,
-    cost,
-    credit,
-    pay,
     DataFields = [],
     Provider,
     provider_id,
@@ -40,7 +41,7 @@ export default function ({ children, data = {}, studentsPathways }) {
     GroupsOfOffers,
   } = data;
 
-  const { pathway: pathwayStore } = useGlobalStore();
+  const { pathway: pathwayStore, offer: offerStore } = useGlobalStore();
 
   const { student_id } = studentsPathways.StudentPathway;
 
@@ -73,16 +74,44 @@ export default function ({ children, data = {}, studentsPathways }) {
     notes = _StudentsPathways.StudentPathway.notes;
   }
 
+  const groups = groupBy(GroupsOfOffers, 'group_name');
+  const groupNames = Object.keys(groups);
+
+  let _totalPay = 0;
+  let _totalCredit = 0;
+  let _totalCost = 0;
+
+  each(Object.values(groups), function (_group) {
+    each(_group, function (o) {
+      const offer = offerStore.entities[o.offer_id];
+      if (offer.pay) {
+        _totalPay += offer.pay;
+      }
+      if (offer.credit) {
+        _totalCredit += offer.credit;
+      }
+      if (offer.cost) {
+        _totalCost += offer.cost;
+      }
+    });
+  });
+
   useEffect(() => {
     if (formRef) {
       form.setFieldsValue({
         notes,
       });
     }
-  }, [formRef]);
-
-  const groups = groupBy(GroupsOfOffers, 'group_name');
-  const groupNames = Object.keys(groups);
+    if (_totalPay > 0) {
+      setTotalPay(_totalPay);
+    }
+    if (_totalCredit > 0) {
+      setTotalCredit(_totalCredit);
+    }
+    if (_totalCost > 0) {
+      setTotalCost(_totalCost);
+    }
+  }, [formRef, totalPay, totalCost, totalCredit]);
 
   return (
     <div className="infoLayout mb-3">
@@ -190,12 +219,12 @@ export default function ({ children, data = {}, studentsPathways }) {
         </Row>
         <hr />
         <Row className="mt-2 mb-1">
-          <Col span={8}>Cost : {cost ? `$${cost}` : '---'}</Col>
+          <Col span={8}>Cost : {totalCost > 0 ? `$${totalCost}` : '---'}</Col>
           <Col span={8} className="flex justify-center">
-            Credit : {credit ? `$${credit}` : '---'}
+            Credit : {totalCredit > 0 ? `${totalCredit}` : '---'}
           </Col>
           <Col span={8} className="flex flex-row-reverse">
-            Pay : {pay ? `$${pay}` : '---'}
+            Pay : {totalPay > 0 ? `$${totalPay}` : '---'}
           </Col>
         </Row>
         <Row className="mt-1 mb-2">
