@@ -41,7 +41,11 @@ export default function ({ children, data = {}, studentsPathways }) {
     GroupsOfOffers,
   } = data;
 
-  const { pathway: pathwayStore, offer: offerStore } = useGlobalStore();
+  const {
+    pathway: pathwayStore,
+    offer: offerStore,
+    enrollment,
+  } = useGlobalStore();
 
   const { student_id } = studentsPathways.StudentPathway;
 

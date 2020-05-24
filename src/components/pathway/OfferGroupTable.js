@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Select, Table, Popconfirm, Input, Button } from 'antd';
+import {
+  Form,
+  Select,
+  Table,
+  Popconfirm,
+  Button,
+  InputNumber,
+  Input,
+  Row,
+} from 'antd';
 import OfferStore from 'store/Offer';
-import { each, groupBy, map, find, findIndex, sortBy } from 'lodash';
+import { each, groupBy, map, find, findIndex, sortBy, indexOf } from 'lodash';
 import dayjs from 'dayjs';
 import 'assets/scss/antd-overrides.scss';
 
@@ -14,7 +23,7 @@ function getOfferOptions({ existingOffers = [] }) {
   const offers = Object.values(entities);
 
   const allOptions = offers.map((offer, index) => (
-    <Option value={offer.id} key={offer.id}>
+    <Option value={offer.id} key={index}>
       {offer.name}
     </Option>
   ));
@@ -87,6 +96,7 @@ function MiniOfferTable(props) {
 }
 
 export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
+  const Store = OfferStore.useContainer();
   const [groupNameField, setGroupNameField] = useState('');
 
   useEffect(() => {
@@ -125,8 +135,8 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
     setGroupsOfOffers(currentOffers);
   };
 
-  let renderData = groupsOfOffers.filter((item) => !item.removed);
-  renderData = sortBy(renderData, (date) => new Date(date));
+  let groupsData = groupsOfOffers.filter((item) => !item.removed);
+  groupsData = sortBy(groupsData, (date) => new Date(date));
 
   return (
     <>
@@ -147,7 +157,7 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
         }
       />
       <Table
-        dataSource={renderData}
+        dataSource={groupsData}
         size="small"
         bordered
         className="ant-table-wrapper--responsive w-full mt-1"
@@ -156,27 +166,45 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
       >
         <Column
           className="antd-col"
-          title=""
-          dataIndex="group_name"
-          key="group_name"
-          render={(text, record, index) => ({
-            children: index + 1,
-            props: {
-              'data-title': '',
-            },
-          })}
-        />
-        <Column
-          className="antd-col"
           title="Offer Group"
           dataIndex="group_name"
           key="group_name"
-          render={(text, record) => ({
-            children: text,
-            props: {
-              'data-title': 'Offer Group',
-            },
-          })}
+          render={(groupNameText, { offers }, index) => {
+            let totalCost = 0;
+            each(offers, function (o) {
+              if (Store.entities[o.offer_id]) {
+                totalCost += Store.entities[o.offer_id].cost;
+              }
+            });
+            const defaultVal = indexOf(pathway.group_sort_order, groupNameText);
+            return {
+              children: (
+                <ul>
+                  <li className="font-bold">{groupNameText}</li>
+                  <li>Cost: ${totalCost}</li>
+                  <li>
+                    <Row className="items-center" style={{ width: 130 }}>
+                      Year:
+                      <Form.Item
+                        className="my-auto mx-1"
+                        name={groupNameText}
+                        initialValue={defaultVal + 1 || index + 1}
+                      >
+                        <InputNumber
+                          size="small"
+                          min={1}
+                          max={groupsData.length}
+                        />
+                      </Form.Item>
+                    </Row>
+                  </li>
+                </ul>
+              ),
+              props: {
+                'data-title': 'Offer Group',
+              },
+            };
+          }}
         />
         <Column
           className="antd-col"
