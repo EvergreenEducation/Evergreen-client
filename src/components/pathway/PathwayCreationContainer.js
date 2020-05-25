@@ -5,7 +5,7 @@ import axiosInstance from 'services/AxiosInstance';
 import PathwayForm from 'components/pathway/PathwayForm';
 import PathwayStore from 'store/Pathway';
 import dayjs from 'dayjs';
-import { reject, head, map } from 'lodash';
+import { reject, head, map, sortBy } from 'lodash';
 import OfferStore from 'store/Offer';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
@@ -78,15 +78,32 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
 
       const { start_date } = values;
 
+      let groupOrderByYearNum = [];
       let groups_of_offers = map(groupsOfOffers, (g) => {
+        groupOrderByYearNum.push(g.group_name);
         return {
           group_name: g.group_name,
           offer_ids: g.removed ? [] : map(g.offers, 'offer_id'),
         };
       });
+
+      const groupOrder = await form.validateFields(groupOrderByYearNum);
+      let yearSubmission = [];
+      for (const key in groupOrder) {
+        yearSubmission.push({
+          group_name: key,
+          year: groupOrder[key],
+        });
+      }
+
+      yearSubmission = sortBy(yearSubmission, ['year']).map(
+        ({ group_name }) => group_name
+      );
+
       const response = await createPathway({
         data: {
           ...values,
+          group_sort_order: yearSubmission,
           groups_of_offers,
           start_date: dayjs(start_date).toISOString() || null,
         },
@@ -176,6 +193,7 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
             file={file}
             providers={providerEntities}
             role={role}
+            form={form}
           />
         </div>
         <section

@@ -249,6 +249,7 @@ export default function PathwayUpdateModal({
             file={file}
             providers={providerEntities}
             role={role}
+            form={form}
           />
         </div>
         <section

@@ -10,7 +10,16 @@ import {
   Row,
 } from 'antd';
 import OfferStore from 'store/Offer';
-import { each, groupBy, map, find, findIndex, sortBy, indexOf } from 'lodash';
+import {
+  each,
+  groupBy,
+  map,
+  find,
+  findIndex,
+  sortBy,
+  indexOf,
+  uniqueId,
+} from 'lodash';
 import dayjs from 'dayjs';
 import 'assets/scss/antd-overrides.scss';
 
@@ -58,11 +67,12 @@ function MiniOfferTable(props) {
     <Table
       dataSource={groupOfOffers}
       pagination={{ position: ['topRight'], pageSize: 4 }}
-      rowKey="createdAt"
+      rowKey={(record) => {
+        return uniqueId(record.group_name + '__');
+      }}
     >
       <Column
         dataIndex="group_name"
-        key="index"
         render={(text, record, index) => ({
           children: index + 1,
         })}
@@ -95,7 +105,7 @@ function MiniOfferTable(props) {
   );
 }
 
-export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
+export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
   const Store = OfferStore.useContainer();
   const [groupNameField, setGroupNameField] = useState('');
 
@@ -135,11 +145,29 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
     setGroupsOfOffers(currentOffers);
   };
 
+  const groupNames = [];
+
   let groupsData = groupsOfOffers.filter((item) => !item.removed);
-  groupsData = sortBy(groupsData, (date) => new Date(date));
+
+  if (pathway && pathway.group_sort_order) {
+    groupsData = groupsData.map((g) => {
+      groupNames.push(g.group_name);
+      const year = indexOf(pathway.group_sort_order, g.group_name) + 1;
+      return {
+        ...g,
+        year,
+      };
+    });
+    groupsData = sortBy(groupsData, ['year']);
+  }
+
+  const onChangeAlsoValidate = (inputVal) => {
+    form.validateFields(groupNames);
+    return inputVal;
+  };
 
   return (
-    <>
+    <div className="w-full">
       <Input
         className="w-full rounded-l rounded-r-none ant-input-group-add-on-border-none-p-0"
         style={{ width: '400px', marginBottom: '3px' }}
@@ -162,7 +190,9 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
         bordered
         className="ant-table-wrapper--responsive w-full mt-1"
         rowClassName={() => 'antd-row'}
-        rowKey="id"
+        rowKey={(record) => {
+          return uniqueId(record.group_name + '__');
+        }}
       >
         <Column
           className="antd-col"
@@ -170,16 +200,20 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
           dataIndex="group_name"
           key="group_name"
           render={(groupNameText, { offers }, index) => {
+            const [validationStatus, setValidationStatus] = useState('success');
             let totalCost = 0;
             each(offers, function (o) {
               if (Store.entities[o.offer_id]) {
                 totalCost += Store.entities[o.offer_id].cost;
               }
             });
-            const defaultVal = indexOf(pathway.group_sort_order, groupNameText);
+            let defaultVal = null;
+            if (pathway && pathway.group_sort_order) {
+              defaultVal = indexOf(pathway.group_sort_order, groupNameText);
+            }
             return {
               children: (
-                <ul>
+                <ul key={groupNameText + '__' + index}>
                   <li className="font-bold">{groupNameText}</li>
                   <li>Cost: ${totalCost}</li>
                   <li>
@@ -188,12 +222,38 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
                       <Form.Item
                         className="my-auto mx-1"
                         name={groupNameText}
-                        initialValue={defaultVal + 1 || index + 1}
+                        initialValue={defaultVal ? defaultVal + 1 : index + 1}
+                        rules={[
+                          (formInstance) => {
+                            const { getFieldValue } = formInstance;
+                            return {
+                              validator(rule, currentYearInput) {
+                                for (let i = 0; i < groupsData.length; i++) {
+                                  if (i !== index) {
+                                    const otherYear = getFieldValue(
+                                      groupsData[i].group_name
+                                    );
+                                    if (otherYear === currentYearInput) {
+                                      setValidationStatus('error');
+                                      return Promise.reject(
+                                        'Please enter a different Year number'
+                                      );
+                                    }
+                                  }
+                                }
+                                setValidationStatus('success');
+                                return Promise.resolve();
+                              },
+                            };
+                          },
+                        ]}
+                        validateStatus={validationStatus}
                       >
                         <InputNumber
                           size="small"
                           min={1}
                           max={groupsData.length}
+                          onChange={onChangeAlsoValidate}
                         />
                       </Form.Item>
                     </Row>
@@ -241,10 +301,10 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
         <Column
           className="antd-col"
           title="Action"
-          key="index"
-          render={(text, record) => ({
+          render={(text, record, index) => ({
             children: (
               <Popconfirm
+                key={index}
                 className="text-red-500 cursor-pointer"
                 title="Are you sure you want to delete this group?"
                 onConfirm={() => removeGroupHandler(record.group_name)}
@@ -260,6 +320,6 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers }) {
           })}
         />
       </Table>
-    </>
+    </div>
   );
 }

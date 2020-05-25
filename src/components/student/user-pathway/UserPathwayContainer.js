@@ -65,6 +65,10 @@ export default function (props) {
     studentsPathways = keyedByStudentPathwayId[pathway.id];
   }
 
+  if (pathway && pathway.group_sort_order && pathway.group_sort_order.length) {
+    groupKeys = pathway.group_sort_order;
+  }
+
   return (
     <div className="flex flex-col items-center">
       <UserPathway
@@ -75,7 +79,7 @@ export default function (props) {
         studentsPathways={studentsPathways}
       >
         <section style={{ maxWidth: 896 }}>
-          {(groupKeys.length && (
+          {(groupKeys && groupKeys.length && (
             <TitleDivider
               title={'GROUPS OF OFFERS'}
               align="center"
@@ -83,7 +87,8 @@ export default function (props) {
             />
           )) ||
             null}
-          {(groupKeys.length &&
+          {(groupKeys &&
+            groupKeys.length &&
             groupKeys.map((key, index) => {
               const group = groupsOfOffers[key];
               return (
@@ -109,7 +114,7 @@ export default function (props) {
                       p = offer.Provider;
                     }
                     return (
-                      <Link to={`/home/offer/${offer.id}`}>
+                      <Link to={`/home/offer/${offer.id}`} key={idx}>
                         <InfoCard
                           className="mb-4"
                           data={offer}

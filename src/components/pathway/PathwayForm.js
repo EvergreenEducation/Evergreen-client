@@ -37,6 +37,7 @@ export default function PathwayForm({
   pathway,
   providers,
   role,
+  form,
 }) {
   providers = compact(providers);
   datafields = Object.values(datafields);
@@ -102,6 +103,7 @@ export default function PathwayForm({
           pathway={pathway}
           groupsOfOffers={groupsOfOffers}
           setGroupsOfOffers={setGroupsOfOffers}
+          form={form}
         />
         <div
           className="w-full mb-4"
