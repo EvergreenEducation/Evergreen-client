@@ -63,3 +63,11 @@ code {
 .cursor-grab {
   cursor: grab;
 }
+
+.anticon.anticon-left,
+.anticon.anticon-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}

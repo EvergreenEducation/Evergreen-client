@@ -7,7 +7,7 @@ import PathwayForm from 'components/pathway/PathwayForm';
 import dayjs from 'dayjs';
 import 'assets/scss/antd-overrides.scss';
 import moment from 'moment';
-import { groupBy, isNil, orderBy, map, head, reject } from 'lodash';
+import { groupBy, isNil, orderBy, map, head, reject, sortBy } from 'lodash';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import OfferStore from 'store/Offer';
@@ -50,12 +50,6 @@ export default function PathwayUpdateModal({
 
   const submitUpdate = async () => {
     try {
-      let groups_of_offers = map(groupsOfOffers, (g) => {
-        return {
-          group_name: g.group_name,
-          offer_ids: g.removed ? [] : map(g.offers, 'offer_id'),
-        };
-      });
       const values = await form.validateFields([
         'description',
         'learn_and_earn',
@@ -81,10 +75,33 @@ export default function PathwayUpdateModal({
 
       const { start_date } = values;
 
+      let groupOrderByYearNum = [];
+      let groups_of_offers = map(groupsOfOffers, (g) => {
+        groupOrderByYearNum.push(g.group_name);
+        return {
+          group_name: g.group_name,
+          offer_ids: g.removed ? [] : map(g.offers, 'offer_id'),
+        };
+      });
+
+      const groupOrder = await form.validateFields(groupOrderByYearNum);
+      let yearSubmission = [];
+      for (const key in groupOrder) {
+        yearSubmission.push({
+          group_name: key,
+          year: groupOrder[key],
+        });
+      }
+
+      yearSubmission = sortBy(yearSubmission, ['year']).map(
+        ({ group_name }) => group_name
+      );
+
       const response = await updatePathway({
         url: `/pathways/${pathway.id}`,
         data: {
           ...values,
+          group_sort_order: yearSubmission,
           groups_of_offers,
           start_date: dayjs(start_date).toISOString() || null,
           updatedAt: new dayjs().toISOString(),
@@ -232,6 +249,7 @@ export default function PathwayUpdateModal({
             file={file}
             providers={providerEntities}
             role={role}
+            form={form}
           />
         </div>
         <section

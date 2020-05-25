@@ -14,7 +14,7 @@
     "@testing-library/user-event": "^7.2.1",
     "@uppy/aws-s3": "^1.5.5",
     "@uppy/core": "^1.9.0",
-    "antd": "^4.1.1",
+    "antd": "^4.2.5",
     "autoprefixer": "^9.7.5",
     "axios": "^0.19.2",
     "axios-hooks": "^1.9.0",
