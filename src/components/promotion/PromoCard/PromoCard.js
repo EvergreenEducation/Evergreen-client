@@ -29,7 +29,7 @@ export default function ({ data, size = 'default', style, className }) {
         cover={
           imageSrc ? (
             <img
-              className="object-contain bg-gray-200"
+              className="object-cover bg-gray-200"
               src={imageSrc}
               alt=""
               style={{ height: size !== 'small' ? 325 : 220 }}

@@ -23,16 +23,24 @@ export default function ({ data = {}, session }) {
     return response;
   };
 
-  const removeAdminId = (userIdsArr, _adminId, incomingPromoData) => {
+  const removeAdminId = (nameOfUserIdArr, userIdsArr, incomingPromoData) => {
     const foundAdminIndex = findIndex(userIdsArr, function (item) {
-      return item === _adminId;
+      return item === adminId;
     });
     const newMainPromotedByUserIds = userIdsArr;
     newMainPromotedByUserIds.splice(foundAdminIndex, 1);
     return {
       ...incomingPromoData,
-      [userIdsArr]: newMainPromotedByUserIds,
+      [nameOfUserIdArr]: newMainPromotedByUserIds,
     };
+  };
+
+  const includeAdminId = (promoData, nameOfUserIdArr, userIdArr) => {
+    const newObj = {
+      ...promoData,
+      [nameOfUserIdArr]: [...userIdArr, adminId],
+    };
+    return newObj;
   };
 
   function togglePromo(data, promoType) {
@@ -55,17 +63,15 @@ export default function ({ data = {}, session }) {
     if (entity_type === 'offer') {
       if (promoType === 'local') {
         if (localPromoData.is_local_promo) {
-          localPromoData = {
-            ...localPromoData,
-            local_promoted_by_user_ids: [
-              ...local_promoted_by_user_ids,
-              adminId,
-            ],
-          };
+          localPromoData = includeAdminId(
+            localPromoData,
+            'local_promoted_by_user_ids',
+            local_promoted_by_user_ids
+          );
         } else {
           localPromoData = removeAdminId(
+            'local_promoted_by_user_ids',
             local_promoted_by_user_ids,
-            adminId,
             localPromoData
           );
         }
@@ -74,14 +80,15 @@ export default function ({ data = {}, session }) {
       }
       if (promoType === 'main') {
         if (mainPromoData.is_main_promo) {
-          mainPromoData = {
-            ...mainPromoData,
-            main_promoted_by_user_ids: [...main_promoted_by_user_ids, adminId],
-          };
+          mainPromoData = includeAdminId(
+            mainPromoData,
+            'main_promoted_by_user_ids',
+            main_promoted_by_user_ids
+          );
         } else {
           mainPromoData = removeAdminId(
+            'main_promoted_by_user_ids',
             main_promoted_by_user_ids,
-            adminId,
             mainPromoData
           );
         }
@@ -92,18 +99,70 @@ export default function ({ data = {}, session }) {
     }
     if (entity_type === 'provider') {
       if (promoType === 'local') {
+        if (localPromoData.is_local_promo) {
+          localPromoData = includeAdminId(
+            localPromoData,
+            'local_promoted_by_user_ids',
+            local_promoted_by_user_ids
+          );
+        } else {
+          localPromoData = removeAdminId(
+            'local_promoted_by_user_ids',
+            local_promoted_by_user_ids,
+            localPromoData
+          );
+        }
         return update(data.id, 'providers', localPromoData, provider);
       }
       if (promoType === 'main') {
+        if (mainPromoData.is_main_promo) {
+          mainPromoData = includeAdminId(
+            mainPromoData,
+            'main_promoted_by_user_ids',
+            main_promoted_by_user_ids
+          );
+        } else {
+          mainPromoData = removeAdminId(
+            'main_promoted_by_user_ids',
+            main_promoted_by_user_ids,
+            mainPromoData
+          );
+        }
         return update(data.id, 'providers', mainPromoData, provider);
       }
       return update(data.id, 'providers', resetPromoData, provider);
     }
     if (entity_type === 'pathway') {
       if (promoType === 'local') {
+        if (localPromoData.is_local_promo) {
+          localPromoData = includeAdminId(
+            localPromoData,
+            'local_promoted_by_user_ids',
+            local_promoted_by_user_ids
+          );
+        } else {
+          localPromoData = removeAdminId(
+            'local_promoted_by_user_ids',
+            local_promoted_by_user_ids,
+            localPromoData
+          );
+        }
         return update(data.id, 'pathways', localPromoData, pathway);
       }
       if (promoType === 'main') {
+        if (mainPromoData.is_main_promo) {
+          mainPromoData = includeAdminId(
+            mainPromoData,
+            'main_promoted_by_user_ids',
+            main_promoted_by_user_ids
+          );
+        } else {
+          mainPromoData = removeAdminId(
+            'main_promoted_by_user_ids',
+            main_promoted_by_user_ids,
+            mainPromoData
+          );
+        }
         return update(data.id, 'pathways', mainPromoData, pathway);
       }
       return update(data.id, 'pathways', resetPromoData, pathway);
