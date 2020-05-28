@@ -9,7 +9,7 @@ import UserPathway from 'components/student/user-pathway/UserPathway/UserPathway
 import 'assets/scss/responsive-carousel-override.scss';
 
 export default function (props) {
-  const { session, pathway, student } = props;
+  const { session, pathway, student, completedEnrollments } = props;
   const {
     offer: offerStore,
     datafield,
@@ -77,6 +77,7 @@ export default function (props) {
         groupedDataFields={groupedDataFields}
         session={session}
         studentsPathways={studentsPathways}
+        completedEnrollments={completedEnrollments}
       >
         <section style={{ maxWidth: 896 }}>
           {(groupKeys && groupKeys.length && (

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Alert, Button } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
-import { isEqual, groupBy, filter } from 'lodash';
+import { isEqual, groupBy, filter, keyBy } from 'lodash';
 import axiosInstance from 'services/AxiosInstance';
 import useGlobalStore from 'store/GlobalStore';
 import { TitleDivider } from 'components/shared';
@@ -21,7 +21,11 @@ export default function (props) {
   const [{ data: studentPayload }] = useAxios(
     `/students/${studentId}?scope=with_details`
   );
-  const { offer: offerStore, pathway: pathwayStore } = useGlobalStore();
+  const {
+    offer: offerStore,
+    pathway: pathwayStore,
+    enrollment: enrollmentStore,
+  } = useGlobalStore();
 
   async function getPathway(pathwayId) {
     const response = await axiosInstance.get(
@@ -37,6 +41,32 @@ export default function (props) {
     offerStore.addOne(response.data);
   }
 
+  const getEnrollments = async (studentId) => {
+    if (!studentId) {
+      return null;
+    }
+
+    if (!Object.keys(enrollmentStore.entities).length) {
+      const { data } = await axiosInstance.get(
+        `/enrollments?student_id=${studentId}`
+      );
+
+      if (data.length) {
+        enrollmentStore.addMany(data);
+      }
+    }
+  };
+
+  let completedEnrollments = [];
+
+  if (studentId) {
+    completedEnrollments = filter(Object.values(enrollmentStore.entities), {
+      status: 'Completed',
+      student_id: studentId,
+    });
+    completedEnrollments = keyBy(completedEnrollments, 'offer_id');
+  }
+
   useEffect(() => {
     if (studentPayload) {
       const isNewStudentInfo = isEqual(student, studentPayload);
@@ -44,6 +74,7 @@ export default function (props) {
         setStudent(studentPayload);
       }
     }
+    getEnrollments(studentId);
   }, [studentPayload]);
 
   let offerIds = filter(student.Enrollments || [], ['status', 'Activated']);
@@ -71,6 +102,7 @@ export default function (props) {
               key={idx}
               pathway={pathwayEntity}
               student={student}
+              completedEnrollments={completedEnrollments}
             />
           );
         })) || (

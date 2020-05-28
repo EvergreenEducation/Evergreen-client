@@ -23,7 +23,12 @@ import 'assets/scss/antd-overrides.scss';
 
 const { TextArea } = Input;
 
-export default function ({ children, data = {}, studentsPathways }) {
+export default function ({
+  children,
+  data = {},
+  studentsPathways,
+  completedEnrollments,
+}) {
   const [totalPay, setTotalPay] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
@@ -80,10 +85,14 @@ export default function ({ children, data = {}, studentsPathways }) {
   let _totalPay = 0;
   let _totalCredit = 0;
   let _totalCost = 0;
+  let creditEarned = 0;
 
   each(Object.values(groups), function (_group) {
     each(_group, function (o) {
       const offer = offerStore.entities[o.offer_id];
+      if (completedEnrollments[offer.id]) {
+        creditEarned += offer.credit;
+      }
       if (offer.pay) {
         _totalPay += offer.pay;
       }
@@ -221,7 +230,8 @@ export default function ({ children, data = {}, studentsPathways }) {
         <Row className="mt-2 mb-1">
           <Col span={8}>Cost : {totalCost > 0 ? `$${totalCost}` : '---'}</Col>
           <Col span={8} className="flex justify-center">
-            Credit : {totalCredit > 0 ? `${totalCredit}` : '---'}
+            Credit : {totalCredit > 0 ? `${creditEarned}` : '---'}/
+            {totalCredit > 0 ? `${totalCredit}` : '---'}
           </Col>
           <Col span={8} className="flex flex-row-reverse">
             Pay : {totalPay > 0 ? `$${totalPay}` : '---'}
