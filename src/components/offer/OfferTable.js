@@ -11,7 +11,10 @@ const ProviderButtons = ({ record, handleUpdateModal, viewEnrollments }) => {
       <Button
         type="default"
         className="mr-2 rounded"
-        onClick={() => handleUpdateModal(record)}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleUpdateModal(record);
+        }}
       >
         Update
       </Button>
