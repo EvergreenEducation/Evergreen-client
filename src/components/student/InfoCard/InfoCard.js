@@ -2,10 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Col, Row } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faMapMarkerAlt,
-  faCalendarAlt,
-} from '@fortawesome/free-solid-svg-icons';
+import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import { find } from 'lodash';
 import dayjs from 'dayjs';
 import { LearnAndEarnIcons } from 'components/shared';
@@ -87,11 +84,7 @@ export default function ({
           <ol>
             <li>Cost : {`$${Number(cost) || '---'}`}</li>
             <li>Pay : {`$${Number(pay) || '---'}`}</li>
-            <li>Credit : {`$${Number(credit) || '---'}`}</li>
-            <li>
-              {' '}
-              <FontAwesomeIcon icon={faCalendarAlt} /> {start_date || '---'}
-            </li>
+            <li>Credit : {`${Number(credit) || '---'}`}</li>
           </ol>
         </Col>
       </Row>

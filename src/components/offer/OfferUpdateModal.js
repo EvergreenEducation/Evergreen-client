@@ -68,7 +68,6 @@ export default function OfferUpdateModal({
         'category',
         'description',
         'learn_and_earn',
-        'part_of_day',
         'frequency',
         'frequency_unit',
         'cost',
@@ -78,7 +77,6 @@ export default function OfferUpdateModal({
         'length',
         'length_unit',
         'name',
-        'start_date',
         'provider_id',
         'topics',
         'pay',
@@ -90,13 +88,10 @@ export default function OfferUpdateModal({
         'is_main_promo',
       ]);
 
-      const { start_date } = values;
-
       const response = await updateOffer({
         url: `/offers/${offer.id}`,
         data: {
           ...values,
-          start_date: dayjs(start_date).toISOString() || null,
           updatedAt: new dayjs().toISOString(),
         },
       });
@@ -143,7 +138,6 @@ export default function OfferUpdateModal({
   function populateFields(o) {
     form.setFieldsValue({
       ...o,
-      part_of_day: Number(o.part_of_day),
       pay_unit: Number(o.pay_unit),
       length_unit: Number(o.length_unit),
       credit_unit: Number(o.credit_unit),

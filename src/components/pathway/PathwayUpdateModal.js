@@ -5,12 +5,11 @@ import axiosInstance from 'services/AxiosInstance';
 import DataFieldStore from 'store/DataField';
 import PathwayForm from 'components/pathway/PathwayForm';
 import dayjs from 'dayjs';
-import 'assets/scss/antd-overrides.scss';
-import moment from 'moment';
 import { groupBy, isNil, orderBy, map, head, reject, sortBy } from 'lodash';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import OfferStore from 'store/Offer';
+import 'assets/scss/antd-overrides.scss';
 
 configure({
   axios: axiosInstance,
@@ -167,11 +166,7 @@ export default function PathwayUpdateModal({
   function populateFields(p) {
     form.setFieldsValue({
       ...p,
-      length_unit: Number(p.length_unit),
-      credit_unit: Number(p.credit_unit),
       frequency_unit: Number(p.frequency_unit),
-      pay_unit: Number(p.pay_unit),
-      start_date: moment(p.start_date),
       topics: myTopics,
     });
   }

@@ -6,7 +6,6 @@ import {
   Row,
   Col,
   Select,
-  DatePicker,
   InputNumber,
   Checkbox,
 } from 'antd';
@@ -41,7 +40,6 @@ export default function OfferForm({
   const grouped = groupBy(datafields, property('type'));
   const {
     offer_category = [],
-    part_of_day_unit = [],
     payment_unit = [],
     length_unit = [],
     credit_unit = [],
@@ -120,21 +118,7 @@ export default function OfferForm({
           </Col>
         </Row>
         <Row gutter={8}>
-          <Col span={10}>
-            <Form.Item
-              label="Start Date"
-              name="start_date"
-              labelAlign={'left'}
-              colon={false}
-              className="mb-0 inherit"
-            >
-              <DatePicker
-                className="w-full custom-datepicker rounded"
-                format="MM-DD-YYYY"
-              />
-            </Form.Item>
-          </Col>
-          <Col span={14}>
+          <Col span={24}>
             <Form.Item
               label="Keywords"
               name="keywords"
@@ -213,22 +197,6 @@ export default function OfferForm({
               <Option value="learn">Learn</Option>
               <Option value="earn">Earn</Option>
               <Option value="both">Learn and Earn</Option>
-            </Select>
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={24} md={6}>
-          <Form.Item
-            label="Day &#38; Time"
-            name="part_of_day"
-            labelAlign={'left'}
-            colon={false}
-            className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select an option' }]}
-          >
-            <Select className="rounded custom-select">
-              {!isNil(part_of_day_unit) && part_of_day_unit.length
-                ? preloadOptions(part_of_day_unit)
-                : null}
             </Select>
           </Form.Item>
         </Col>
@@ -354,7 +322,6 @@ export default function OfferForm({
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please fill in this field' }]}
           >
             <InputNumber className="rounded w-full" />
           </Form.Item>
@@ -366,7 +333,6 @@ export default function OfferForm({
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select an option' }]}
           >
             <Select className="rounded custom-select">
               {!isNil(length_unit) && length_unit.length

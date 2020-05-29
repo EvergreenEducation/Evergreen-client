@@ -90,12 +90,15 @@ export default function (props) {
             null}
           {(groupKeys &&
             groupKeys.length &&
-            groupKeys.map((key, index) => {
-              const group = groupsOfOffers[key];
+            groupKeys.map((groupName, index) => {
+              const group = groupsOfOffers[groupName];
+              if (!group) {
+                return null;
+              }
               return (
                 <div key={uniqueId('div_')}>
                   <TitleDivider
-                    title={key}
+                    title={groupName}
                     align="center"
                     classNames={{
                       middleSpan:

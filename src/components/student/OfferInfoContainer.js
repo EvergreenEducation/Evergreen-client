@@ -69,7 +69,9 @@ export default function (props) {
                 className="custom-carousel mb-2 cursor-grab"
                 centerMode
                 infiniteLoop
-                centerSlidePercentage={centerSlidePercentage}
+                centerSlidePercentage={
+                  offer.RelatedOffers.length === 1 ? 100 : centerSlidePercentage
+                }
                 showArrows={true}
                 showIndicators={false}
                 swipeable={true}
@@ -80,9 +82,11 @@ export default function (props) {
               >
                 {offer.RelatedOffers.map((o, index) => {
                   return (
-                    <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
+                    <Link
+                      key={uniqueId('related_card_')}
+                      to={o && o.id ? `/home/offer/${o.id}` : null}
+                    >
                       <InfoCard
-                        key={index}
                         data={o}
                         provider={provider}
                         groupedDataFields={groupedDataFields}
@@ -109,7 +113,11 @@ export default function (props) {
                   className="custom-carousel mb-4 cursor-grab"
                   centerMode
                   infiniteLoop
-                  centerSlidePercentage={centerSlidePercentage}
+                  centerSlidePercentage={
+                    offer.PrerequisiteOffers.length === 1
+                      ? 100
+                      : centerSlidePercentage
+                  }
                   showArrows={true}
                   showIndicators={false}
                   swipeable={true}
@@ -120,9 +128,11 @@ export default function (props) {
                 >
                   {offer.PrerequisiteOffers.map((o, index) => {
                     return (
-                      <Link to={o && o.id ? `/home/offer/${o.id}` : null}>
+                      <Link
+                        key={uniqueId('prereq_card_')}
+                        to={o && o.id ? `/home/offer/${o.id}` : null}
+                      >
                         <InfoCard
-                          key={uniqueId('prereq_card_')}
                           data={o}
                           provider={provider}
                           groupedDataFields={groupedDataFields}

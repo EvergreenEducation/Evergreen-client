@@ -4,7 +4,6 @@ import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import OfferForm from 'components/offer/OfferForm';
 import useGlobalStore from 'store/GlobalStore';
-import dayjs from 'dayjs';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import { head, reject } from 'lodash';
@@ -47,7 +46,6 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
         'category',
         'description',
         'learn_and_earn',
-        'part_of_day',
         'frequency',
         'frequency_unit',
         'cost',
@@ -57,7 +55,6 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
         'length',
         'length_unit',
         'name',
-        'start_date',
         'provider_id',
         'topics',
         'pay',
@@ -69,12 +66,11 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
         'is_main_promo',
       ]);
 
-      const { start_date, provider_id } = values;
+      const { provider_id } = values;
 
       const offerResponse = await createOffer({
         data: {
           ...values,
-          start_date: dayjs(start_date).toISOString() || null,
           provider_id,
         },
       });

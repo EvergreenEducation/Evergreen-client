@@ -100,6 +100,7 @@ export default function (props) {
                     }
                     return (
                       <Link
+                        key={uniqueId('card_')}
                         to={offer && offer.id ? `/home/offer/${offer.id}` : '/'}
                         disabled={offer && offer.id ? false : true}
                       >
@@ -107,7 +108,6 @@ export default function (props) {
                           className="mb-4"
                           data={offer}
                           provider={p}
-                          key={uniqueId('card_')}
                           groupedDataFields={groupedDataFields}
                         />
                       </Link>

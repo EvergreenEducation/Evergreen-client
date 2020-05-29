@@ -60,7 +60,7 @@ export default function ({
     try {
       const values = await form.validateFields(['notes']);
       const response = await axiosInstance.put(
-        `/students/${_studentId}/pathways/${pathwayId}`,
+        `/students/${_studentId}/pathways/${pathwayId}?scope=with_details`,
         { notes: values.notes }
       );
       pathwayStore.updateOne(response.data);
@@ -90,17 +90,19 @@ export default function ({
   each(Object.values(groups), function (_group) {
     each(_group, function (o) {
       const offer = offerStore.entities[o.offer_id];
-      if (completedEnrollments[offer.id]) {
-        creditEarned += offer.credit;
-      }
-      if (offer.pay) {
-        _totalPay += offer.pay;
-      }
-      if (offer.credit) {
-        _totalCredit += offer.credit;
-      }
-      if (offer.cost) {
-        _totalCost += offer.cost;
+      if (offer) {
+        if (completedEnrollments[offer.id]) {
+          creditEarned += offer.credit;
+        }
+        if (offer.pay) {
+          _totalPay += offer.pay;
+        }
+        if (offer.credit) {
+          _totalCredit += offer.credit;
+        }
+        if (offer.cost) {
+          _totalCost += offer.cost;
+        }
       }
     });
   });
@@ -141,13 +143,7 @@ export default function ({
           >
             {groupNames.map((group_name, index) => {
               const group = groups[group_name];
-              return (
-                <UserPathwayChart
-                  group={group}
-                  groupName={group_name}
-                  key={index}
-                />
-              );
+              return <UserPathwayChart group={group} key={index} />;
             }) || 'N/A'}
           </Carousel>
         )) || <ExpenseEarningChart pathway={data} />}

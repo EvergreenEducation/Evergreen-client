@@ -4,15 +4,23 @@ import { head } from 'lodash';
 import dayjs from 'dayjs';
 
 export default function (props) {
-  const { group, groupName } = props;
+  let label = [];
+  const { group } = props;
   const firstGroup = head(group);
   const firstYear = dayjs(firstGroup.createdAt).get('year');
   const numOfOffers = group.length;
+  if (firstGroup) {
+    if (firstGroup.OffersPathways) {
+      label = [firstGroup.OffersPathways.group_name];
+    } else {
+      label = [firstGroup.group_name];
+    }
+  }
   const data = {
     labels: [firstYear, firstYear + 1, firstYear + 2, firstYear + 3],
     datasets: [
       {
-        label: [groupName],
+        label,
         backgroundColor: 'rgba(255,99,132,0.2)',
         borderColor: 'rgba(255,99,132,1)',
         borderWidth: 1,

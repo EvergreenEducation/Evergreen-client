@@ -1,6 +1,5 @@
 import React from 'react';
 import { Table, Button, Tag } from 'antd';
-import dayjs from 'dayjs';
 import 'assets/scss/antd-overrides.scss';
 
 const { Column } = Table;
@@ -192,18 +191,6 @@ export default function OfferTable({
             props: {
               'data-title': 'Topics',
             },
-          };
-        }}
-      />
-      <Column
-        className="antd-col"
-        title="Start Date"
-        dataIndex="start_date"
-        key="start_date"
-        render={(date) => {
-          return {
-            children: dayjs(date).format('MMM DD, YYYY'),
-            props: { 'data-title': 'Start Date' },
           };
         }}
       />
