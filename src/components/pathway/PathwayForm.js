@@ -6,7 +6,6 @@ import {
   Row,
   Col,
   Select,
-  DatePicker,
   InputNumber,
   Checkbox,
 } from 'antd';
@@ -43,13 +42,7 @@ export default function PathwayForm({
   datafields = Object.values(datafields);
 
   const grouped = groupBy(datafields, property('type'));
-  const {
-    payment_unit = [],
-    length_unit = [],
-    credit_unit = [],
-    topic = [],
-    frequency_unit = [],
-  } = grouped;
+  const { topic = [], frequency_unit = [] } = grouped;
 
   return (
     <Layout>
@@ -70,21 +63,7 @@ export default function PathwayForm({
           <Input.TextArea className="rounded" rows={2} />
         </Form.Item>
         <Row gutter={8}>
-          <Col span={10}>
-            <Form.Item
-              label="Start Date"
-              name="start_date"
-              labelAlign={'left'}
-              colon={false}
-              className="mb-0 inherit"
-            >
-              <DatePicker
-                className="w-full custom-datepicker rounded"
-                placeholder=""
-              />
-            </Form.Item>
-          </Col>
-          <Col span={14}>
+          <Col span={24}>
             <Form.Item
               label="Keywords"
               name="keywords"
@@ -167,34 +146,6 @@ export default function PathwayForm({
       <Row gutter={8}>
         <Col xs={24} sm={24} md={6}>
           <Form.Item
-            label="Length"
-            name="length"
-            labelAlign={'left'}
-            colon={false}
-            className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please fill in this field' }]}
-          >
-            <InputNumber className="rounded w-full" />
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={24} md={6}>
-          <Form.Item
-            label="Length Unit"
-            name="length_unit"
-            labelAlign={'left'}
-            colon={false}
-            className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select an option' }]}
-          >
-            <Select className="rounded custom-select">
-              {!isNil(length_unit) && length_unit.length
-                ? preloadOptions(length_unit)
-                : null}
-            </Select>
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={24} md={6}>
-          <Form.Item
             label="Frequency"
             name="frequency"
             labelAlign={'left'}
@@ -219,67 +170,7 @@ export default function PathwayForm({
             </Select>
           </Form.Item>
         </Col>
-      </Row>
-      <Row gutter={8}>
-        <Col xs={24} sm={24} md={6}>
-          <Form.Item
-            label="Credit"
-            name="credit"
-            labelAlign={'left'}
-            colon={false}
-            className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please fill in this field' }]}
-          >
-            <InputNumber className="rounded w-full" />
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={24} md={6}>
-          <Form.Item
-            label="Credit Unit"
-            name="credit_unit"
-            labelAlign={'left'}
-            colon={false}
-            className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select an option' }]}
-          >
-            <Select className="rounded custom-select">
-              {!isNil(credit_unit) && credit_unit.length
-                ? preloadOptions(credit_unit)
-                : null}
-            </Select>
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={24} md={6}>
-          <Form.Item
-            label="Pay"
-            name="pay"
-            labelAlign={'left'}
-            colon={false}
-            className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please fill in this field' }]}
-          >
-            <InputNumber className="rounded w-full" />
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={24} md={6}>
-          <Form.Item
-            label="Pay Unit"
-            name="pay_unit"
-            labelAlign={'left'}
-            colon={false}
-            className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select an option' }]}
-          >
-            <Select className="rounded custom-select">
-              {!isNil(payment_unit) && payment_unit.length
-                ? preloadOptions(payment_unit)
-                : null}
-            </Select>
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={8}>
-        <Col span={12}>
+        <Col xs={24} sm={24} md={12}>
           <Form.Item
             label="Outlook"
             name="outlook"
@@ -290,6 +181,8 @@ export default function PathwayForm({
             <Input className="rounded" />
           </Form.Item>
         </Col>
+      </Row>
+      <Row gutter={8}>
         <Col span={12} className={role === 'provider' ? 'hidden' : ''}>
           <Form.Item
             label="Provider"

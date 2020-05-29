@@ -55,15 +55,8 @@ export default function PathwayUpdateModal({
         'learn_and_earn',
         'frequency',
         'frequency_unit',
-        'credit_unit',
-        'pay_unit',
-        'length',
-        'length_unit',
         'name',
-        'start_date',
         'topics',
-        'pay',
-        'credit',
         'outlook',
         'earnings',
         'type',
@@ -73,15 +66,23 @@ export default function PathwayUpdateModal({
         'is_main_promo',
       ]);
 
-      const { start_date } = values;
-
       let groupOrderByYearNum = [];
       let groups_of_offers = map(groupsOfOffers, (g) => {
         groupOrderByYearNum.push(g.group_name);
-        return {
+        const results = {
           group_name: g.group_name,
           offer_ids: g.removed ? [] : map(g.offers, 'offer_id'),
         };
+        const semester = form.getFieldValue(`${g.group_name}_semester`);
+
+        if (semester) {
+          return {
+            ...results,
+            semester,
+          };
+        }
+
+        return results;
       });
 
       const groupOrder = await form.validateFields(groupOrderByYearNum);
@@ -103,7 +104,6 @@ export default function PathwayUpdateModal({
           ...values,
           group_sort_order: yearSubmission,
           groups_of_offers,
-          start_date: dayjs(start_date).toISOString() || null,
           updatedAt: new dayjs().toISOString(),
         },
       });
