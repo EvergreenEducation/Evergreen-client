@@ -52,7 +52,10 @@ export default function ({
     const offerId = id;
     try {
       const response = await axiosInstance.put(
-        `/students/${studentId}/offers/${offerId}/provider/${provider_id}/enroll`
+        `/students/${studentId}/offers/${offerId}/provider/${provider_id}/enroll`,
+        {
+          start_date: dayjs().toISOString(),
+        }
       );
       if (response.status === 200) {
         message.success(`You've enrolled in ${data.name}`);

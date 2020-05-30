@@ -7,6 +7,7 @@ import EnrollmentStore from 'store/Enrollment';
 import { EnrollModal } from 'components/enrollment';
 import matchSorter from 'match-sorter';
 import { useForm } from 'antd/lib/form/util';
+import dayjs from 'dayjs';
 import 'assets/scss/antd-overrides.scss';
 const { Column } = Table;
 const { Option } = Select;
@@ -312,6 +313,20 @@ export default function EnrollmentTable({
               'data-title': 'Status',
             },
           })}
+        />
+        <Column
+          title="Start Date"
+          className="antd-col"
+          dataIndex="start_date"
+          key="start_date"
+          render={(date, record, index) => {
+            return {
+              children: date ? dayjs(date).format('MM-DD-YYYY') : 'N/A',
+              props: {
+                'data-title': 'Start Date',
+              },
+            };
+          }}
         />
         <Column
           className="antd-col"
