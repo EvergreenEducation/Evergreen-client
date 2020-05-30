@@ -23,7 +23,13 @@ import 'assets/scss/antd-overrides.scss';
 
 const { TextArea } = Input;
 
-export default function ({ children, data = {}, studentsPathways }) {
+export default function ({
+  children,
+  pathway = {},
+  studentsPathways,
+  completedEnrollments,
+  enrollmentsByOfferId,
+}) {
   const [totalPay, setTotalPay] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
@@ -39,7 +45,7 @@ export default function ({ children, data = {}, studentsPathways }) {
     name,
     StudentsPathways,
     GroupsOfOffers,
-  } = data;
+  } = pathway;
 
   const { pathway: pathwayStore, offer: offerStore } = useGlobalStore();
 
@@ -48,14 +54,14 @@ export default function ({ children, data = {}, studentsPathways }) {
   const [form] = Form.useForm();
 
   const topics = DataFields.filter((d) => d.type === 'topic');
-  let { start_date } = data;
+  let { start_date } = pathway;
   start_date = dayjs(start_date).format('MMM DD, YYYY');
 
   const updatePathwayNotes = async (_studentId, _pathwayId) => {
     try {
       const values = await form.validateFields(['notes']);
       const response = await axiosInstance.put(
-        `/students/${_studentId}/pathways/${pathwayId}`,
+        `/students/${_studentId}/pathways/${pathwayId}?scope=with_details`,
         { notes: values.notes }
       );
       pathwayStore.updateOne(response.data);
@@ -80,18 +86,24 @@ export default function ({ children, data = {}, studentsPathways }) {
   let _totalPay = 0;
   let _totalCredit = 0;
   let _totalCost = 0;
+  let creditEarned = 0;
 
   each(Object.values(groups), function (_group) {
     each(_group, function (o) {
       const offer = offerStore.entities[o.offer_id];
-      if (offer.pay) {
-        _totalPay += offer.pay;
-      }
-      if (offer.credit) {
-        _totalCredit += offer.credit;
-      }
-      if (offer.cost) {
-        _totalCost += offer.cost;
+      if (offer) {
+        if (completedEnrollments[offer.id]) {
+          creditEarned += offer.credit;
+        }
+        if (offer.pay) {
+          _totalPay += offer.pay;
+        }
+        if (offer.credit) {
+          _totalCredit += offer.credit;
+        }
+        if (offer.cost) {
+          _totalCost += offer.cost;
+        }
       }
     });
   });
@@ -132,16 +144,18 @@ export default function ({ children, data = {}, studentsPathways }) {
           >
             {groupNames.map((group_name, index) => {
               const group = groups[group_name];
+              const groupedBySemester = groupBy(group, 'semester');
               return (
                 <UserPathwayChart
                   group={group}
-                  groupName={group_name}
                   key={index}
+                  groupedBySemester={groupedBySemester}
+                  enrollmentsByOfferId={enrollmentsByOfferId}
                 />
               );
             }) || 'N/A'}
           </Carousel>
-        )) || <ExpenseEarningChart pathway={data} />}
+        )) || <ExpenseEarningChart pathway={pathway} />}
         <div className="flex bg-white justify-end px-2">
           <Button
             className="rounded flex justify-center"
@@ -195,7 +209,7 @@ export default function ({ children, data = {}, studentsPathways }) {
         <hr />
         <Row className="py-2">
           <Col span={12} className="flex items-center">
-            <LearnAndEarnIcons learnAndEarn={data.learn_and_earn} />
+            <LearnAndEarnIcons learnAndEarn={pathway.learn_and_earn} />
           </Col>
           <Col span={12} className="flex flex-col items-right text-right">
             <span className="text-gray-600">TOPICS</span>
@@ -221,7 +235,8 @@ export default function ({ children, data = {}, studentsPathways }) {
         <Row className="mt-2 mb-1">
           <Col span={8}>Cost : {totalCost > 0 ? `$${totalCost}` : '---'}</Col>
           <Col span={8} className="flex justify-center">
-            Credit : {totalCredit > 0 ? `${totalCredit}` : '---'}
+            Credit : {totalCredit > 0 ? `${creditEarned}` : '---'}/
+            {totalCredit > 0 ? `${totalCredit}` : '---'}
           </Col>
           <Col span={8} className="flex flex-row-reverse">
             Pay : {totalPay > 0 ? `$${totalPay}` : '---'}

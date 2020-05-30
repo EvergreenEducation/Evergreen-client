@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Col, Tag, Button, Input, Form, message } from 'antd';
-import { find, last } from 'lodash';
+import { find, last, each, groupBy } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMapMarkerAlt,
@@ -13,6 +13,7 @@ import { reactLocalStorage } from 'reactjs-localstorage';
 import dayjs from 'dayjs';
 import axiosInstance from 'services/AxiosInstance';
 import { LearnAndEarnIcons, UnitTag } from 'components/shared';
+import useGlobalStore from 'store/GlobalStore';
 import './info-layout.scss';
 import 'assets/scss/antd-overrides.scss';
 
@@ -41,8 +42,9 @@ export default function ({
     industry,
     financial_aid,
     location,
+    GroupsOfOffers = [],
   } = data;
-
+  const { offer: offerStore } = useGlobalStore();
   const [form] = Form.useForm();
 
   const enrollOffer = async () => {
@@ -50,7 +52,10 @@ export default function ({
     const offerId = id;
     try {
       const response = await axiosInstance.put(
-        `/students/${studentId}/offers/${offerId}/provider/${provider_id}/enroll`
+        `/students/${studentId}/offers/${offerId}/provider/${provider_id}/enroll`,
+        {
+          start_date: dayjs().toISOString(),
+        }
       );
       if (response.status === 200) {
         message.success(`You've enrolled in ${data.name}`);
@@ -132,6 +137,30 @@ export default function ({
     src = file_link;
     alt = fileLocation;
   }
+  let totalPay = 0;
+  let totalCredit = 0;
+  let totalCost = 0;
+
+  if (type === 'pathway') {
+    const groups = groupBy(GroupsOfOffers, 'group_name');
+
+    each(Object.values(groups), function (_group) {
+      each(_group, function (o) {
+        const offer = offerStore.entities[o.offer_id];
+        if (offer) {
+          if (offer.pay) {
+            totalPay += offer.pay;
+          }
+          if (offer.credit) {
+            totalCredit += offer.credit;
+          }
+          if (offer.cost) {
+            totalCost += offer.cost;
+          }
+        }
+      });
+    });
+  }
 
   return (
     <div className="infoLayout">
@@ -174,9 +203,7 @@ export default function ({
           </Col>
           <Col span={12} className="flex flex-row-reverse items-center">
             <span className="block ml-1">
-              {type === 'provider' && Provider
-                ? Provider.location || null
-                : null}
+              {type === 'provider' && Provider ? Provider.location : '---'}
               {type !== 'provider' ? location || null : null}
             </span>
             <FontAwesomeIcon icon={faMapMarkerAlt} />
@@ -209,12 +236,19 @@ export default function ({
         </Row>
         <hr />
         <Row className="mt-2 mb-1">
-          <Col span={8}>Cost : {cost ? `$${cost}` : '---'}</Col>
+          <Col span={8}>
+            Cost :{' '}
+            {type === 'pathway'
+              ? `$${totalCost}` || '---'
+              : `$${cost}` || '---'}
+          </Col>
           <Col span={8} className="flex justify-center">
-            Credit : {credit ? `$${credit}` : '---'}
+            Credit :{' '}
+            {type === 'pathway' ? totalCredit || '---' : credit || '---'}
           </Col>
           <Col span={8} className="flex flex-row-reverse">
-            Pay : {pay ? `$${pay}` : '---'}
+            Pay :{' '}
+            {type === 'pathway' ? `$${totalPay}` || '---' : `$${pay}` || '---'}
           </Col>
         </Row>
         <Row className="mt-1 mb-2">

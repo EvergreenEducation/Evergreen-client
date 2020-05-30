@@ -71,3 +71,7 @@ code {
   justify-content: center;
   height: 100%;
 }
+
+.border-r-none {
+  border-right: none;
+}

@@ -19,6 +19,9 @@ import {
   sortBy,
   indexOf,
   uniqueId,
+  head,
+  uniqBy,
+  flow,
 } from 'lodash';
 import dayjs from 'dayjs';
 import 'assets/scss/antd-overrides.scss';
@@ -37,9 +40,11 @@ function getOfferOptions({ existingOffers = [] }) {
     </Option>
   ));
 
-  const defaultValues = map(existingOffers, (o) => {
-    return o.offer_id;
-  });
+  const defaultValues = uniqBy(
+    map(existingOffers, (o) => {
+      return o.offer_id;
+    })
+  );
 
   return { allOptions, defaultValues };
 }
@@ -61,7 +66,11 @@ function getExistingOffers(pathway) {
 function MiniOfferTable(props) {
   let { groupOfOffers = [] } = props;
   const Store = OfferStore.useContainer();
-  groupOfOffers = sortBy(groupOfOffers, (date) => new Date(date.createdAt));
+
+  groupOfOffers = flow([
+    (g) => uniqBy(g, 'offer_id'),
+    (g) => sortBy(g, (date) => new Date(date.createdAt)),
+  ])(groupOfOffers);
 
   return (
     <Table
@@ -137,11 +146,11 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
   };
 
   let updateGroupHandler = (groupName, selectedValues) => {
-    let currentOffers = [...groupsOfOffers]; // immutable
+    let currentOffers = [...groupsOfOffers];
     let offerIndex = findIndex(currentOffers, ['group_name', groupName]);
     currentOffers[offerIndex].offers = selectedValues.map((sv) => ({
       offer_id: sv,
-    })); //mimic same payload to send to server
+    }));
     setGroupsOfOffers(currentOffers);
   };
 
@@ -200,11 +209,17 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
           dataIndex="group_name"
           key="group_name"
           render={(groupNameText, { offers }, index) => {
+            const firstOffer = head(offers);
             const [validationStatus, setValidationStatus] = useState('success');
             let totalCost = 0;
+            let totalPay = 0;
+            let totalCredit = 0;
             each(offers, function (o) {
               if (Store.entities[o.offer_id]) {
-                totalCost += Store.entities[o.offer_id].cost;
+                const offer = Store.entities[o.offer_id];
+                totalCost += offer.cost;
+                totalPay += offer.pay;
+                totalCredit += offer.credit;
               }
             });
             let defaultVal = null;
@@ -216,6 +231,8 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
                 <ul key={groupNameText + '__' + index}>
                   <li className="font-bold">{groupNameText}</li>
                   <li>Cost: ${totalCost}</li>
+                  <li>Pay: ${totalPay}</li>
+                  <li>Credit: {totalCredit}</li>
                   <li>
                     <Row className="items-center" style={{ width: 130 }}>
                       Year:
@@ -255,6 +272,30 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
                           max={groupsData.length}
                           onChange={onChangeAlsoValidate}
                         />
+                      </Form.Item>
+                    </Row>
+                  </li>
+                  <li>
+                    <Row
+                      className="items-center flex-no-wrap"
+                      style={{ width: 130 }}
+                    >
+                      Semester:
+                      <Form.Item
+                        className="my-auto mx-1 w-full"
+                        name={`${groupNameText}_semester`}
+                        initialValue={
+                          firstOffer && firstOffer.semester
+                            ? firstOffer.semester
+                            : null
+                        }
+                      >
+                        <Select size="small" style={{ minWidth: '6rem' }}>
+                          <Option value="fall">Fall</Option>
+                          <Option value="winter">Winter</Option>
+                          <Option value="spring">Spring</Option>
+                          <Option value="summer">Summer</Option>
+                        </Select>
                       </Form.Item>
                     </Row>
                   </li>

@@ -4,7 +4,6 @@ import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import PathwayForm from 'components/pathway/PathwayForm';
 import PathwayStore from 'store/Pathway';
-import dayjs from 'dayjs';
 import { reject, head, map, sortBy } from 'lodash';
 import OfferStore from 'store/Offer';
 import AuthService from 'services/AuthService';
@@ -58,15 +57,8 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
         'learn_and_earn',
         'frequency',
         'frequency_unit',
-        'credit_unit',
-        'pay_unit',
-        'length',
-        'length_unit',
         'name',
-        'start_date',
         'topics',
-        'pay',
-        'credit',
         'outlook',
         'earnings',
         'type',
@@ -76,15 +68,23 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
         'is_main_promo',
       ]);
 
-      const { start_date } = values;
-
       let groupOrderByYearNum = [];
       let groups_of_offers = map(groupsOfOffers, (g) => {
         groupOrderByYearNum.push(g.group_name);
-        return {
+        const results = {
           group_name: g.group_name,
           offer_ids: g.removed ? [] : map(g.offers, 'offer_id'),
         };
+        const semester = form.getFieldValue(`${g.group_name}_semester`);
+
+        if (semester) {
+          return {
+            ...results,
+            semester,
+          };
+        }
+
+        return results;
       });
 
       const groupOrder = await form.validateFields(groupOrderByYearNum);
@@ -105,7 +105,6 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
           ...values,
           group_sort_order: yearSubmission,
           groups_of_offers,
-          start_date: dayjs(start_date).toISOString() || null,
         },
       });
 

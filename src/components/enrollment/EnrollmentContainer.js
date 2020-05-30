@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { imported } from 'react-imported-component/macro';
-import { Card, Layout, Tooltip, Button, Col } from 'antd';
+import { Card, Layout, Tooltip, Button, Col, Form } from 'antd';
 import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import useAxios, { configure } from 'axios-hooks';
@@ -11,6 +11,7 @@ import { LogOutTopbar, SearchHeader } from 'components/shared';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import matchSorter from 'match-sorter';
+import { useForm } from 'antd/lib/form/util';
 
 const ProviderUpdateContainer = imported(() =>
   import('components/provider/ProviderUpdateContainer')
@@ -33,6 +34,7 @@ export default function EnrollmentContainer({
   );
   const history = useHistory();
   const location = useLocation();
+  const [form] = useForm();
   const { enrollment: enrollmentStore } = useGlobalStore();
 
   const query = new URLSearchParams(location.search);
@@ -55,6 +57,40 @@ export default function EnrollmentContainer({
   if (enrollmentError) {
     history.push('/error/500');
   }
+
+  const updateEnrollmentCredit = async (enrollmentId, credit) => {
+    return axiosInstance.put(`/enrollments/${enrollmentId}`, {
+      credit,
+      status: 'Completed',
+    });
+  };
+
+  const submit = async () => {
+    for (let i = 0; i < dataSource.length; i++) {
+      if (!dataSource[i]) {
+        break;
+      }
+      const enrollment = dataSource[i];
+      const { credit } = enrollment;
+      const value = form.getFieldValue(`enrollment_${enrollment.id}`);
+      if (value && credit !== value) {
+        try {
+          const { data } = await updateEnrollmentCredit(enrollment.id, value);
+          enrollmentStore.updateOne(data);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  };
+
+  const handleCreditAssignment = () => {
+    if (activateCreditAssignment) {
+      submit();
+    }
+
+    setActivateCreditAssignment(!activateCreditAssignment);
+  };
 
   useEffect(() => {
     if (enrollmentBody) {
@@ -111,9 +147,7 @@ export default function EnrollmentContainer({
               className="rounded text-xs flex items-center ml-2"
               type="primary"
               size="small"
-              onClick={() =>
-                setActivateCreditAssignment(!activateCreditAssignment)
-              }
+              onClick={() => handleCreditAssignment()}
             >
               {activateCreditAssignment ? 'LOCK CREDIT' : 'ASSIGN CREDIT'}
             </Button>
@@ -122,11 +156,13 @@ export default function EnrollmentContainer({
       </LogOutTopbar>
       <Content className="p-6">
         <Card className="shadow-md rounded-md">
-          <EnrollmentTable
-            dataSource={dataSource}
-            activateCreditAssignment={activateCreditAssignment}
-            offer={offer}
-          />
+          <Form form={form}>
+            <EnrollmentTable
+              dataSource={dataSource}
+              activateCreditAssignment={activateCreditAssignment}
+              offer={offer}
+            />
+          </Form>
         </Card>
       </Content>
     </Layout>

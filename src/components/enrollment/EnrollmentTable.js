@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Popconfirm, Button, Input, Col, Select, Form } from 'antd';
+import { Table, Popconfirm, Button, Input, Col, Select, Form, Row } from 'antd';
 import axiosInstance from 'services/AxiosInstance';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -7,9 +7,20 @@ import EnrollmentStore from 'store/Enrollment';
 import { EnrollModal } from 'components/enrollment';
 import matchSorter from 'match-sorter';
 import { useForm } from 'antd/lib/form/util';
+import dayjs from 'dayjs';
 import 'assets/scss/antd-overrides.scss';
 const { Column } = Table;
 const { Option } = Select;
+
+function renderGradeOptions(letter) {
+  return (
+    <>
+      <Option value={letter + '+'}>{letter + '+'}</Option>
+      <Option value={letter}>{letter}</Option>
+      <Option value={letter + '-'}>{letter + '-'}</Option>
+    </>
+  );
+}
 
 export default function EnrollmentTable({
   activateCreditAssignment,
@@ -219,16 +230,39 @@ export default function EnrollmentTable({
           dataIndex="credit"
           key="credit"
           width={200}
-          render={(text, record) => ({
-            children: activateCreditAssignment ? (
-              <Input addonBefore="Score" className="w-64" />
-            ) : (
-              text
-            ),
-            props: {
-              'data-title': 'Credit',
-            },
-          })}
+          render={(credit, enrollment) => {
+            const { id, credit: _credit } = enrollment;
+            return {
+              children: activateCreditAssignment ? (
+                <Row className="p-0 items-center flex-no-wrap">
+                  <span
+                    className="px-1 bg-gray-100 border bordered border-r-none rounded-l flex items-center"
+                    style={{ height: 32 }}
+                  >
+                    Score
+                  </span>
+                  <Form.Item
+                    name={`enrollment_${id}`}
+                    className="w-64 my-auto"
+                    initialValue={_credit}
+                  >
+                    <Select className="rounded-r rounded-l-none">
+                      {renderGradeOptions('A')}
+                      {renderGradeOptions('B')}
+                      {renderGradeOptions('C')}
+                      {renderGradeOptions('D')}
+                      <Option value={'F'}>F</Option>
+                    </Select>
+                  </Form.Item>
+                </Row>
+              ) : (
+                credit
+              ),
+              props: {
+                'data-title': 'Credit',
+              },
+            };
+          }}
           filterIcon={(filtered) => (
             <FontAwesomeIcon
               style={{
@@ -279,6 +313,20 @@ export default function EnrollmentTable({
               'data-title': 'Status',
             },
           })}
+        />
+        <Column
+          title="Start Date"
+          className="antd-col"
+          dataIndex="start_date"
+          key="start_date"
+          render={(date, record, index) => {
+            return {
+              children: date ? dayjs(date).format('MM-DD-YYYY') : 'N/A',
+              props: {
+                'data-title': 'Start Date',
+              },
+            };
+          }}
         />
         <Column
           className="antd-col"

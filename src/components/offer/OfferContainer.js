@@ -180,7 +180,7 @@ export default function OfferContainer(props) {
             placement="bottom"
             visible={openable.drawer}
             onClose={() => setOpenable({ ...openable, drawer: false })}
-            height="bottom"
+            height={85}
           >
             <Button
               className="rounded"

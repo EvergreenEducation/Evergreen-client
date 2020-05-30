@@ -9,7 +9,13 @@ import UserPathway from 'components/student/user-pathway/UserPathway/UserPathway
 import 'assets/scss/responsive-carousel-override.scss';
 
 export default function (props) {
-  const { session, pathway, student } = props;
+  const {
+    session,
+    pathway,
+    student,
+    completedEnrollments,
+    enrollmentsByOfferId,
+  } = props;
   const {
     offer: offerStore,
     datafield,
@@ -73,10 +79,12 @@ export default function (props) {
     <div className="flex flex-col items-center">
       <UserPathway
         title={pathway && pathway.name ? pathway.name : '---'}
-        data={pathway}
+        pathway={pathway}
         groupedDataFields={groupedDataFields}
         session={session}
         studentsPathways={studentsPathways}
+        completedEnrollments={completedEnrollments}
+        enrollmentsByOfferId={enrollmentsByOfferId}
       >
         <section style={{ maxWidth: 896 }}>
           {(groupKeys && groupKeys.length && (
@@ -89,12 +97,15 @@ export default function (props) {
             null}
           {(groupKeys &&
             groupKeys.length &&
-            groupKeys.map((key, index) => {
-              const group = groupsOfOffers[key];
+            groupKeys.map((groupName, index) => {
+              const group = groupsOfOffers[groupName];
+              if (!group) {
+                return null;
+              }
               return (
                 <div key={uniqueId('div_')}>
                   <TitleDivider
-                    title={key}
+                    title={groupName}
                     align="center"
                     classNames={{
                       middleSpan:
