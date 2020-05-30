@@ -1,45 +1,81 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
-import { head } from 'lodash';
-import dayjs from 'dayjs';
+import { head, each } from 'lodash';
 
 export default function (props) {
-  let label = [];
-  const { group } = props;
+  const { group, groupedBySemester, enrollmentsByOfferId } = props;
+
   const firstGroup = head(group);
-  const firstYear = dayjs(firstGroup.createdAt).get('year');
-  const numOfOffers = group.length;
-  if (firstGroup) {
-    if (firstGroup.OffersPathways) {
-      label = [firstGroup.OffersPathways.group_name];
-    } else {
-      label = [firstGroup.group_name];
-    }
-  }
+
+  // const semesters = Object.keys(groupedBySemester);
+
+  let enrolled = {
+    fall: 0,
+    winter: 0,
+    spring: 0,
+    summer: 0,
+  };
+  let failed = {
+    fall: 0,
+    winter: 0,
+    spring: 0,
+    summer: 0,
+  };
+  let passed = {
+    fall: 0,
+    winter: 0,
+    spring: 0,
+    summer: 0,
+  };
+
+  each(groupedBySemester, (g) => {
+    each(g, (offerPathway) => {
+      const { offer_id, semester } = offerPathway;
+      const enrollments = enrollmentsByOfferId[offer_id];
+      each(enrollments, (en) => {
+        if (en.status === 'Activated' || en.status === 'Approvied') {
+          enrolled[semester] += 1;
+        } else if (en.status === 'Completed') {
+          passed[semester] += 1;
+        } else {
+          failed[semester] -= 1;
+        }
+      });
+    });
+  });
+
   const data = {
-    labels: [firstYear, firstYear + 1, firstYear + 2, firstYear + 3],
+    labels: ['fall', 'winter', 'spring', 'summer'],
     datasets: [
       {
-        label,
-        backgroundColor: 'rgba(255,99,132,0.2)',
-        borderColor: 'rgba(255,99,132,1)',
-        borderWidth: 1,
-        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-        hoverBorderColor: 'rgba(255,99,132,1)',
-        data: [numOfOffers],
+        label: 'Enrolled',
+        backgroundColor: 'rgb(0,0,255)',
+        data: Object.values(enrolled),
+      },
+      {
+        label: ['Failed'],
+        backgroundColor: 'rgb(255,99,132)',
+        data: Object.values(failed),
+      },
+      {
+        label: ['Passed'],
+        backgroundColor: 'rgb(214,233,198)',
+        data: Object.values(passed),
       },
     ],
   };
 
   const options = {
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
     scales: {
       yAxes: [
         {
           stacked: true,
-          ticks: {
-            stepSize: 1,
-          },
+        },
+      ],
+      xAxes: [
+        {
+          stacked: true,
         },
       ],
     },
@@ -47,6 +83,9 @@ export default function (props) {
 
   return (
     <div className="block bg-white" style={{ height: 400 }}>
+      <span className="text-center font-bold">
+        {firstGroup.group_name || null}
+      </span>
       <Bar data={data} width={100} height={50} options={options} />
     </div>
   );

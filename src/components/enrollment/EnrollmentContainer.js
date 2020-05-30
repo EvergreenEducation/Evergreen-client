@@ -12,7 +12,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import matchSorter from 'match-sorter';
 import { useForm } from 'antd/lib/form/util';
-import { each } from 'lodash';
 
 const ProviderUpdateContainer = imported(() =>
   import('components/provider/ProviderUpdateContainer')
@@ -66,8 +65,12 @@ export default function EnrollmentContainer({
     });
   };
 
-  const submit = () => {
-    each(dataSource, async function (enrollment) {
+  const submit = async () => {
+    for (let i = 0; i < dataSource.length; i++) {
+      if (!dataSource[i]) {
+        break;
+      }
+      const enrollment = dataSource[i];
       const { credit } = enrollment;
       const value = form.getFieldValue(`enrollment_${enrollment.id}`);
       if (value && credit !== value) {
@@ -78,7 +81,7 @@ export default function EnrollmentContainer({
           console.error(err);
         }
       }
-    });
+    }
   };
 
   const handleCreditAssignment = () => {

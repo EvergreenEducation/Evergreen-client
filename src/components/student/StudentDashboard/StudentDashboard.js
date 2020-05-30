@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Alert, Button } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
-import { isEqual, groupBy, filter, keyBy } from 'lodash';
+import { isEqual, groupBy, filter, keyBy, flow } from 'lodash';
 import axiosInstance from 'services/AxiosInstance';
 import useGlobalStore from 'store/GlobalStore';
 import { TitleDivider } from 'components/shared';
@@ -58,13 +58,25 @@ export default function (props) {
   };
 
   let completedEnrollments = [];
+  let enrollmentsByOfferId = [];
 
   if (studentId) {
-    completedEnrollments = filter(Object.values(enrollmentStore.entities), {
-      status: 'Completed',
-      student_id: studentId,
-    });
-    completedEnrollments = keyBy(completedEnrollments, 'offer_id');
+    completedEnrollments = flow([
+      (r) =>
+        filter(r, {
+          status: 'Completed',
+          student_id: studentId,
+        }),
+      (r) => keyBy(r, 'offer_id'),
+    ])(Object.values(enrollmentStore.entities));
+
+    enrollmentsByOfferId = flow([
+      (r) =>
+        filter(r, {
+          student_id: studentId,
+        }),
+      (r) => groupBy(r, 'offer_id'),
+    ])(Object.values(enrollmentStore.entities));
   }
 
   useEffect(() => {
@@ -103,6 +115,7 @@ export default function (props) {
               pathway={pathwayEntity}
               student={student}
               completedEnrollments={completedEnrollments}
+              enrollmentsByOfferId={enrollmentsByOfferId}
             />
           );
         })) || (

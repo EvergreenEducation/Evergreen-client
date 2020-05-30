@@ -25,9 +25,10 @@ const { TextArea } = Input;
 
 export default function ({
   children,
-  data = {},
+  pathway = {},
   studentsPathways,
   completedEnrollments,
+  enrollmentsByOfferId,
 }) {
   const [totalPay, setTotalPay] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
@@ -44,7 +45,7 @@ export default function ({
     name,
     StudentsPathways,
     GroupsOfOffers,
-  } = data;
+  } = pathway;
 
   const { pathway: pathwayStore, offer: offerStore } = useGlobalStore();
 
@@ -53,7 +54,7 @@ export default function ({
   const [form] = Form.useForm();
 
   const topics = DataFields.filter((d) => d.type === 'topic');
-  let { start_date } = data;
+  let { start_date } = pathway;
   start_date = dayjs(start_date).format('MMM DD, YYYY');
 
   const updatePathwayNotes = async (_studentId, _pathwayId) => {
@@ -143,10 +144,18 @@ export default function ({
           >
             {groupNames.map((group_name, index) => {
               const group = groups[group_name];
-              return <UserPathwayChart group={group} key={index} />;
+              const groupedBySemester = groupBy(group, 'semester');
+              return (
+                <UserPathwayChart
+                  group={group}
+                  key={index}
+                  groupedBySemester={groupedBySemester}
+                  enrollmentsByOfferId={enrollmentsByOfferId}
+                />
+              );
             }) || 'N/A'}
           </Carousel>
-        )) || <ExpenseEarningChart pathway={data} />}
+        )) || <ExpenseEarningChart pathway={pathway} />}
         <div className="flex bg-white justify-end px-2">
           <Button
             className="rounded flex justify-center"
@@ -200,7 +209,7 @@ export default function ({
         <hr />
         <Row className="py-2">
           <Col span={12} className="flex items-center">
-            <LearnAndEarnIcons learnAndEarn={data.learn_and_earn} />
+            <LearnAndEarnIcons learnAndEarn={pathway.learn_and_earn} />
           </Col>
           <Col span={12} className="flex flex-col items-right text-right">
             <span className="text-gray-600">TOPICS</span>
