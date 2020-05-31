@@ -85,6 +85,7 @@ export default function (props) {
         studentsPathways={studentsPathways}
         completedEnrollments={completedEnrollments}
         enrollmentsByOfferId={enrollmentsByOfferId}
+        student={student}
       >
         <section style={{ maxWidth: 896 }}>
           {(groupKeys && groupKeys.length && (

@@ -59,9 +59,13 @@ export default function EnrollmentContainer({
   }
 
   const updateEnrollmentCredit = async (enrollmentId, credit) => {
+    let status = 'Completed';
+    if (credit === 'D-' || credit === 'F') {
+      status = 'Failed';
+    }
     return axiosInstance.put(`/enrollments/${enrollmentId}`, {
       credit,
-      status: 'Completed',
+      status,
     });
   };
 

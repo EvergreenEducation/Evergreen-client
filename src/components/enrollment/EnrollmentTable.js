@@ -246,7 +246,10 @@ export default function EnrollmentTable({
                     className="w-64 my-auto"
                     initialValue={_credit}
                   >
-                    <Select className="rounded-r rounded-l-none">
+                    <Select
+                      className="rounded-r rounded-l-none"
+                      disabled={enrollment.student_id ? false : true}
+                    >
                       {renderGradeOptions('A')}
                       {renderGradeOptions('B')}
                       {renderGradeOptions('C')}
@@ -341,7 +344,7 @@ export default function EnrollmentTable({
                   onConfirm={() => setStatusToApprove(enrollment)}
                   okText="Yes"
                   cancelText="No"
-                  disabled={enrollment.status === 'Approved' ? true : false}
+                  disabled={enrollment.status === 'Approved' ? true : null}
                 >
                   <span
                     style={{

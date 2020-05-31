@@ -47,12 +47,20 @@ export default function (props) {
     }
 
     if (!Object.keys(enrollmentStore.entities).length) {
-      const { data } = await axiosInstance.get(
+      const studentEnrollments = await axiosInstance.get(
         `/enrollments?student_id=${studentId}`
       );
 
-      if (data.length) {
-        enrollmentStore.addMany(data);
+      const unenrollments = await axiosInstance.get(
+        `/enrollments?student_id=${null}`
+      );
+
+      if (studentEnrollments.data.length) {
+        enrollmentStore.addMany(studentEnrollments.data);
+      }
+
+      if (unenrollments.data.length) {
+        enrollmentStore.addMany(unenrollments.data);
       }
     }
   };
@@ -71,10 +79,11 @@ export default function (props) {
     ])(Object.values(enrollmentStore.entities));
 
     enrollmentsByOfferId = flow([
-      (r) =>
-        filter(r, {
-          student_id: studentId,
-        }),
+      (r) => {
+        return r.filter(
+          (v) => v.student_id === studentId || v.student_id === null
+        );
+      },
       (r) => groupBy(r, 'offer_id'),
     ])(Object.values(enrollmentStore.entities));
   }

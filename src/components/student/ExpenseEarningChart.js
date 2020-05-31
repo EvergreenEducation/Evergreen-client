@@ -3,7 +3,10 @@ import { Line } from 'react-chartjs-2';
 import dayjs from 'dayjs';
 
 export default function (props) {
-  const { pathway } = props;
+  const {
+    pathway,
+    // groups, enrollmentsByOfferId
+  } = props;
   const { start_date } = pathway;
 
   const firstYear = dayjs(start_date).get('year');
