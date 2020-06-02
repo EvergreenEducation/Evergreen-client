@@ -114,9 +114,14 @@ export default function ({
   let _totalCost = 0;
   let creditEarned = 0;
 
-  each(Object.values(groups), function (_group) {
+  const earningByGroup = {};
+
+  each(Object.values(groups), function (_group, index) {
+    let totalPayOfGroup = 0;
+
     each(_group, function (o) {
       const offer = offerStore.entities[o.offer_id];
+
       if (offer) {
         if (completedEnrollments[offer.id]) {
           creditEarned += offer.credit;
@@ -130,8 +135,16 @@ export default function ({
         if (offer.cost) {
           _totalCost += offer.cost;
         }
+        if (
+          completedEnrollments[offer.id] &&
+          completedEnrollments[offer.id].student_id === student.id
+        ) {
+          totalPayOfGroup += offer.pay;
+        }
       }
     });
+
+    earningByGroup[groupNames[index]] = totalPayOfGroup;
   });
 
   useEffect(() => {
@@ -154,53 +167,58 @@ export default function ({
   return (
     <div className="infoLayout mb-3">
       <header className="mx-auto relative bg-white pt-2">
-        {(!switchChart && (
+        {
           <>
-            <Carousel
-              className={`cursor-grab mb-4 ${
-                toggleFilterByGroup ? 'block' : 'hidden'
-              }`}
-              centerMode
-              infiniteLoop
-              centerSlidePercentage={100}
-              showArrows={true}
-              showIndicators={false}
-              swipeable={true}
-              emulateTouch={true}
-              showStatus={false}
-              showThumbs={false}
-              swipeScrollTolerance={1}
-            >
-              {groupNames.map((group_name, index) => {
-                const group = groups[group_name];
-                return (
-                  <UserPathwayChart
-                    group={group}
-                    groups={groups}
-                    groupName={group_name}
-                    key={index}
-                    enrollmentsByOfferId={enrollmentsByOfferId}
-                    student={student}
-                    pathway={pathway}
-                  />
-                );
-              }) || 'N/A'}
-            </Carousel>
-            <UserPathwayChart
-              className={`mb-2 ${!toggleFilterByGroup ? 'block' : 'hidden'}`}
+            <div className={`${!switchChart ? 'block' : 'hidden'}`}>
+              <Carousel
+                className={`cursor-grab mb-4 ${
+                  toggleFilterByGroup ? 'block' : 'hidden'
+                }`}
+                centerMode
+                infiniteLoop
+                centerSlidePercentage={100}
+                showArrows={true}
+                showIndicators={false}
+                swipeable={true}
+                emulateTouch={true}
+                showStatus={false}
+                showThumbs={false}
+                swipeScrollTolerance={1}
+              >
+                {groupNames.map((group_name, index) => {
+                  const group = groups[group_name];
+                  return (
+                    <UserPathwayChart
+                      group={group}
+                      groups={groups}
+                      groupName={group_name}
+                      key={index}
+                      enrollmentsByOfferId={enrollmentsByOfferId}
+                      student={student}
+                      pathway={pathway}
+                    />
+                  );
+                }) || 'N/A'}
+              </Carousel>
+              <UserPathwayChart
+                className={`mb-2 ${!toggleFilterByGroup ? 'block' : 'hidden'}`}
+                groups={groups}
+                enrollmentsByOfferId={enrollmentsByOfferId}
+                student={student}
+                pathway={pathway}
+              />
+            </div>
+            <ExpenseEarningChart
+              className={`${!switchChart ? 'hidden' : 'block'}`}
+              groupNames={groupNames}
+              pathway={pathway}
               groups={groups}
               enrollmentsByOfferId={enrollmentsByOfferId}
               student={student}
-              pathway={pathway}
+              earningByGroup={earningByGroup}
             />
           </>
-        )) || (
-          <ExpenseEarningChart
-            pathway={pathway}
-            groups={groups}
-            enrollmentsByOfferId={enrollmentsByOfferId}
-          />
-        )}
+        }
         <div className="flex bg-white justify-end px-2">
           {!switchChart && (
             <Button

@@ -65,7 +65,7 @@ export default function (props) {
 
   return (
     <div className={`block bg-white ${className}`}>
-      <span>{groupName}</span>
+      <span className="text-center font-bold">{groupName}</span>
       <Bar data={chartData} options={options} />
     </div>
   );
