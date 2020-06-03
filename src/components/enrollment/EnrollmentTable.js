@@ -22,6 +22,55 @@ function renderGradeOptions(letter) {
   );
 }
 
+function GradeScaleOptions(props) {
+  const { name, initialValue, enrollment } = props;
+  const [enablePointGradeScale, setEnablePointGradeScale] = useState(false);
+  return (
+    <div className="flex flex-no-wrap">
+      <Form.Item
+        name={name}
+        className="w-64 my-auto"
+        initialValue={initialValue}
+      >
+        <Select
+          className="rounded-r rounded-l-none"
+          disabled={enrollment.student_id ? false : true}
+        >
+          {!enablePointGradeScale && (
+            <>
+              {renderGradeOptions('A')}
+              {renderGradeOptions('B')}
+              {renderGradeOptions('C')}
+              {renderGradeOptions('D')}
+              <Option value={'F'}>F</Option>
+            </>
+          )}
+          {enablePointGradeScale && (
+            <>
+              <Option value={4.0}>4.0</Option>
+              <Option value={3.5}>3.5</Option>
+              <Option value={3.0}>3.0</Option>
+              <Option value={2.5}>2.5</Option>
+              <Option value={2.0}>2.0</Option>
+              <Option value={1.5}>1.5</Option>
+              <Option value={1.0}>1.0</Option>
+              <Option value={0.5}>0.5</Option>
+              <Option value={0.0}>0.0</Option>
+            </>
+          )}
+        </Select>
+      </Form.Item>
+      <Button
+        className="px-2"
+        onClick={() => setEnablePointGradeScale(!enablePointGradeScale)}
+        type={!enablePointGradeScale ? 'default' : 'primary'}
+      >
+        4.0 Scale
+      </Button>
+    </div>
+  );
+}
+
 export default function EnrollmentTable({
   activateCreditAssignment,
   dataSource = [],
@@ -242,7 +291,7 @@ export default function EnrollmentTable({
                   >
                     Score
                   </span>
-                  <Form.Item
+                  {/* <Form.Item
                     name={`enrollment_${id}`}
                     className="w-64 my-auto"
                     initialValue={_credit}
@@ -257,7 +306,12 @@ export default function EnrollmentTable({
                       {renderGradeOptions('D')}
                       <Option value={'F'}>F</Option>
                     </Select>
-                  </Form.Item>
+                  </Form.Item> */}
+                  <GradeScaleOptions
+                    name={`enrollment_${id}`}
+                    initialValue={_credit}
+                    enrollment={enrollment}
+                  />
                 </Row>
               ) : (
                 credit || 'N/A'
