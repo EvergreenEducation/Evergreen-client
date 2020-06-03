@@ -26,6 +26,7 @@ export default function EnrollmentTable({
   activateCreditAssignment,
   dataSource = [],
   offer,
+  students,
 }) {
   let filteredDataSource = dataSource;
   let presetOfferName = null;
@@ -218,7 +219,7 @@ export default function EnrollmentTable({
           dataIndex="activation_code"
           key="activation_code"
           render={(text, record) => ({
-            children: text,
+            children: text || 'N/A',
             props: {
               'data-title': 'Activation Code',
             },
@@ -259,7 +260,7 @@ export default function EnrollmentTable({
                   </Form.Item>
                 </Row>
               ) : (
-                credit
+                credit || 'N/A'
               ),
               props: {
                 'data-title': 'Credit',
@@ -372,6 +373,7 @@ export default function EnrollmentTable({
       <EnrollModal
         enrollment={selectedEnrollment}
         visible={enrollModalOpen}
+        students={students}
         onCancel={() => setEnrollModalOpen(false)}
       />
     </>

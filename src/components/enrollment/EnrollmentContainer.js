@@ -35,7 +35,10 @@ export default function EnrollmentContainer({
   const history = useHistory();
   const location = useLocation();
   const [form] = useForm();
-  const { enrollment: enrollmentStore } = useGlobalStore();
+  const {
+    enrollment: enrollmentStore,
+    student: studentStore,
+  } = useGlobalStore();
 
   const query = new URLSearchParams(location.search);
   const offer = Number(query.get('offer'));
@@ -50,13 +53,30 @@ export default function EnrollmentContainer({
     return url;
   };
 
-  const [{ data: enrollmentBody, error: enrollmentError }] = useAxios(
-    getEnrollmentsUrl()
+  const [
+    {
+      data: enrollmentBody,
+      loading: loadingEnrollments,
+      error: enrollmentError,
+    },
+  ] = useAxios(getEnrollmentsUrl());
+
+  const [{ data: getStudents, loading: loadingStudents }] = useAxios(
+    '/users?role=student'
   );
 
   if (enrollmentError) {
     history.push('/error/500');
   }
+
+  useEffect(() => {
+    if (enrollmentBody) {
+      enrollmentStore.addMany(enrollmentBody);
+    }
+    if (getStudents) {
+      studentStore.addMany(getStudents);
+    }
+  }, [loadingEnrollments, loadingStudents]);
 
   const updateEnrollmentCredit = async (enrollmentId, credit) => {
     let status = 'Completed';
@@ -95,12 +115,6 @@ export default function EnrollmentContainer({
 
     setActivateCreditAssignment(!activateCreditAssignment);
   };
-
-  useEffect(() => {
-    if (enrollmentBody) {
-      enrollmentStore.addMany(enrollmentBody);
-    }
-  }, [enrollmentBody]);
 
   const handleDataAfterSearch = (data, keys = ['name', 'keywords']) => {
     const results = matchSorter(data, searchString, { keys });
@@ -162,6 +176,7 @@ export default function EnrollmentContainer({
         <Card className="shadow-md rounded-md">
           <Form form={form}>
             <EnrollmentTable
+              students={Object.values(studentStore.entities) || []}
               dataSource={dataSource}
               activateCreditAssignment={activateCreditAssignment}
               offer={offer}
