@@ -13,7 +13,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import { Carousel } from 'react-responsive-carousel';
-import { find, groupBy, each } from 'lodash';
+import { find, groupBy, each, uniqBy, sortBy, last, head } from 'lodash';
 import axiosInstance from 'services/AxiosInstance';
 import useGlobalStore from 'store/GlobalStore';
 import { LearnAndEarnIcons } from 'components/shared';
@@ -29,13 +29,17 @@ export default function ({
   studentsPathways,
   completedEnrollments,
   enrollmentsByOfferId,
+  student,
 }) {
   const [totalPay, setTotalPay] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
 
   const [openNotes, setOpenNotes] = useState(false);
+
   const [switchChart, setSwitchChart] = useState(false);
+  const [toggleFilterByGroup, setToggleFilterByGroup] = useState(false);
+
   const [formRef, setFormRef] = useState();
   const {
     id: pathwayId,
@@ -54,8 +58,30 @@ export default function ({
   const [form] = Form.useForm();
 
   const topics = DataFields.filter((d) => d.type === 'topic');
-  let { start_date } = pathway;
-  start_date = dayjs(start_date).format('MMM DD, YYYY');
+
+  let pathwayOfferIds = [];
+
+  each(pathway.GroupsOfOffers, (offerGroup) => {
+    if (offerGroup.offer_id) {
+      pathwayOfferIds.push(offerGroup.offer_id);
+    }
+  });
+
+  pathwayOfferIds = uniqBy(pathwayOfferIds);
+
+  let latestDates = [];
+
+  each(pathwayOfferIds, (offerId) => {
+    const enrollments = sortBy(enrollmentsByOfferId[offerId], ['start_date']);
+    if (last(enrollments)) {
+      latestDates.push(last(enrollments).start_date);
+    }
+  });
+
+  latestDates = sortBy(latestDates, ['start_date']);
+
+  let latestEnrollmentDate = head(latestDates);
+  latestEnrollmentDate = dayjs(latestEnrollmentDate).format('MMM DD, YYYY');
 
   const updatePathwayNotes = async (_studentId, _pathwayId) => {
     try {
@@ -88,9 +114,14 @@ export default function ({
   let _totalCost = 0;
   let creditEarned = 0;
 
-  each(Object.values(groups), function (_group) {
+  const earningByGroup = {};
+
+  each(Object.values(groups), function (_group, index) {
+    let totalPayOfGroup = 0;
+
     each(_group, function (o) {
       const offer = offerStore.entities[o.offer_id];
+
       if (offer) {
         if (completedEnrollments[offer.id]) {
           creditEarned += offer.credit;
@@ -104,8 +135,16 @@ export default function ({
         if (offer.cost) {
           _totalCost += offer.cost;
         }
+        if (
+          completedEnrollments[offer.id] &&
+          completedEnrollments[offer.id].student_id === student.id
+        ) {
+          totalPayOfGroup += offer.pay;
+        }
       }
     });
+
+    earningByGroup[groupNames[index]] = totalPayOfGroup;
   });
 
   useEffect(() => {
@@ -128,37 +167,71 @@ export default function ({
   return (
     <div className="infoLayout mb-3">
       <header className="mx-auto relative bg-white pt-2">
-        {(!switchChart && (
-          <Carousel
-            className="cursor-grab"
-            centerMode
-            infiniteLoop
-            centerSlidePercentage={100}
-            showArrows={true}
-            showIndicators={false}
-            swipeable={true}
-            emulateTouch={true}
-            showStatus={false}
-            showThumbs={false}
-            swipeScrollTolerance={1}
-          >
-            {groupNames.map((group_name, index) => {
-              const group = groups[group_name];
-              const groupedBySemester = groupBy(group, 'semester');
-              return (
-                <UserPathwayChart
-                  group={group}
-                  key={index}
-                  groupedBySemester={groupedBySemester}
-                  enrollmentsByOfferId={enrollmentsByOfferId}
-                />
-              );
-            }) || 'N/A'}
-          </Carousel>
-        )) || <ExpenseEarningChart pathway={pathway} />}
+        {
+          <>
+            <div className={`${!switchChart ? 'block' : 'hidden'}`}>
+              <Carousel
+                className={`cursor-grab mb-4 ${
+                  toggleFilterByGroup ? 'block' : 'hidden'
+                }`}
+                centerMode
+                infiniteLoop
+                centerSlidePercentage={100}
+                showArrows={true}
+                showIndicators={false}
+                swipeable={true}
+                emulateTouch={true}
+                showStatus={false}
+                showThumbs={false}
+                swipeScrollTolerance={1}
+              >
+                {groupNames.map((group_name, index) => {
+                  const group = groups[group_name];
+                  return (
+                    <UserPathwayChart
+                      group={group}
+                      groups={groups}
+                      groupName={group_name}
+                      key={index}
+                      enrollmentsByOfferId={enrollmentsByOfferId}
+                      student={student}
+                      pathway={pathway}
+                    />
+                  );
+                }) || 'N/A'}
+              </Carousel>
+              <UserPathwayChart
+                className={`mb-2 ${!toggleFilterByGroup ? 'block' : 'hidden'}`}
+                groups={groups}
+                enrollmentsByOfferId={enrollmentsByOfferId}
+                student={student}
+                pathway={pathway}
+              />
+            </div>
+            <ExpenseEarningChart
+              className={`${!switchChart ? 'hidden' : 'block'}`}
+              groupNames={groupNames}
+              pathway={pathway}
+              groups={groups}
+              enrollmentsByOfferId={enrollmentsByOfferId}
+              student={student}
+              earningByGroup={earningByGroup}
+            />
+          </>
+        }
         <div className="flex bg-white justify-end px-2">
+          {!switchChart && (
+            <Button
+              className="flex justify-center items-center mx-2"
+              type={toggleFilterByGroup ? 'primary' : 'default'}
+              size="small"
+              onClick={() => setToggleFilterByGroup(!toggleFilterByGroup)}
+            >
+              Filter by group
+            </Button>
+          )}
           <Button
-            className="rounded flex justify-center"
+            className="rounded flex justify-center items-center"
             style={{ paddingRight: '1rem', paddingLeft: '1rem' }}
             type="primary"
             size="small"
@@ -245,7 +318,7 @@ export default function ({
         <Row className="mt-1 mb-2">
           <Col span={12} className="flex flex-row items-center">
             <FontAwesomeIcon icon={faCalendarAlt} className="mr-1" />
-            <span>{start_date || '---'}</span>
+            <span>{latestEnrollmentDate || '---'}</span>
           </Col>
           <Col span={12} className="flex flex-row items-center"></Col>
         </Row>

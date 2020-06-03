@@ -1,18 +1,26 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
-import dayjs from 'dayjs';
+import { each, head } from 'lodash';
 
 export default function (props) {
-  const { pathway } = props;
-  const { start_date } = pathway;
+  const { pathway, className, earningByGroup } = props;
+  const { group_sort_order = [] } = pathway;
 
-  const firstYear = dayjs(start_date).get('year');
+  const years = [];
+
+  const yData = [];
+
+  each(group_sort_order, (groupName, index) => {
+    const totalPay = earningByGroup[groupName];
+    years.push(`Year ${index + 1}`);
+    yData.push(totalPay);
+  });
 
   const data = {
-    labels: [firstYear, firstYear + 1, firstYear + 2, firstYear + 3],
+    labels: years,
     datasets: [
       {
-        label: 'Dummy dataset',
+        label: 'Earnings',
         fill: false,
         lineTension: 0.1,
         backgroundColor: 'rgba(75,192,192,0.4)',
@@ -30,12 +38,22 @@ export default function (props) {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [1010, 1500, 2000, 1300],
+        data: yData,
       },
     ],
   };
 
   const options = {
+    tooltips: {
+      callbacks: {
+        title: function (toolTipItem) {
+          let label = head(toolTipItem).label;
+          let yearNum = Number(label[label.length - 1]);
+          let index = yearNum - 1;
+          return group_sort_order[index];
+        },
+      },
+    },
     scales: {
       yAxes: [
         {
@@ -50,7 +68,7 @@ export default function (props) {
     },
   };
   return (
-    <div className="block bg-white">
+    <div className={`block bg-white ${className}`}>
       <Line data={data} options={options} />
     </div>
   );

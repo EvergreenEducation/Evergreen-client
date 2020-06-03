@@ -4,6 +4,7 @@ import ProviderStore from 'store/Provider';
 import EnrollmentStore from 'store/Enrollment';
 import OfferStore from 'store/Offer';
 import PathwayStore from 'store/Pathway';
+import StudentStore from 'store/Student';
 
 export function composeContainers(props, ...containers) {
   const { children } = props;
@@ -22,7 +23,8 @@ export function GlobalProvider(props) {
     ProviderStore,
     OfferStore,
     PathwayStore,
-    EnrollmentStore
+    EnrollmentStore,
+    StudentStore
   );
 }
 
@@ -42,6 +44,9 @@ export default function useGlobalStore() {
     },
     pathway: {
       ...PathwayStore.useContainer(),
+    },
+    student: {
+      ...StudentStore.useContainer(),
     },
   };
 }

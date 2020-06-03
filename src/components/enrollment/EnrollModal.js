@@ -1,56 +1,44 @@
 import React from 'react';
-import {
-  Modal,
-  Form,
-  Button,
-  // notification, Input,
-  Select,
-  Col,
-} from 'antd';
-// import axiosInstance from 'services/AxiosInstance';
-// import EnrollmentStore from 'store/Enrollment';
+import { Modal, Form, Button, notification, Select, Col } from 'antd';
+import axiosInstance from 'services/AxiosInstance';
+import useGlobalStore from 'store/GlobalStore';
 import 'assets/scss/antd-overrides.scss';
 
-export default function EnrollModal({ offer, onCancel, visible }) {
-  // const enrollmentStore = EnrollmentStore.useContainer();
+const { Option } = Select;
+
+export default function EnrollModal({
+  offer,
+  onCancel,
+  visible,
+  students,
+  enrollment,
+}) {
+  const { enrollment: enrollmentStore } = useGlobalStore();
   const [form] = Form.useForm();
 
   const submitEnrollment = async () => {
-    alert('! not implement yet');
-    return;
-    // try {
-    //   if (!offer || !offer.id) {
-    //     notification.warning({
-    //       message: 'Error',
-    //       description: "Could not fetch the offer's information.",
-    //     });
-    //     return;
-    //   }
-    //   const values = await form.validateFields(['credit', 'activation_code']);
-    //   const randomInteger = Math.floor(Math.random() * Math.floor(25));
-    //   const createEnrollment = await axiosInstance.post('/enrollments', {
-    //     ...values,
-    //     offer_id: offer.id,
-    //     student_id: randomInteger,
-    //     status: 'Incomplete',
-    //   });
+    if (enrollment && enrollment.id) {
+      const values = await form.validateFields(['student_id']);
+      if (values.student_id) {
+        const { data, status } = await axiosInstance.put(
+          `/enrollments/${enrollment.id}`,
+          {
+            student_id: values.student_id,
+          }
+        );
 
-    //   if (createEnrollment.status === 201) {
-    //     enrollmentStore.addOne(createEnrollment.data);
-    //     notification.success({
-    //       message: 'Success',
-    //       description: 'Student has been enrolled.',
-    //     });
-    //     onCancel();
-    //   } else {
-    //     notification.warning({
-    //       message: createEnrollment.status,
-    //       description: createEnrollment.statusText,
-    //     });
-    //   }
-    // } catch (err) {
-    //   console.error(err);
-    // }
+        if (data) {
+          enrollmentStore.updateOne(data);
+        }
+
+        if (status === 200) {
+          notification.success({
+            message: 'Enrollment updated',
+          });
+          onCancel();
+        }
+      }
+    }
   };
 
   return (
@@ -73,13 +61,20 @@ export default function EnrollModal({ offer, onCancel, visible }) {
               labelAlign={'left'}
               colon={false}
               className="mb-0 inherit flex-col w-full"
+              rules={[{ required: true, message: 'Please select a student' }]}
+              disabled={!students.length ? true : false}
             >
-              <Select
-                className="custom-select-rounded"
-                showSearch
-                name="student_id"
-                disabled
-              />
+              <Select className="custom-select-rounded">
+                {students &&
+                  students.length &&
+                  students.map(({ student_id }, index) => {
+                    return (
+                      <Option value={student_id} key={index}>
+                        {student_id}
+                      </Option>
+                    );
+                  })}
+              </Select>
             </Form.Item>
           </Col>
         </div>
