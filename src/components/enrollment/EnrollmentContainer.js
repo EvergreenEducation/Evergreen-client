@@ -106,7 +106,7 @@ export default function EnrollmentContainer({
       const enrollment = dataSource[i];
       const { credit } = enrollment;
       const value = form.getFieldValue(`enrollment_${enrollment.id}`);
-      if (value && credit !== value) {
+      if ((value || value === 0) && credit !== value) {
         try {
           const { data } = await updateEnrollmentCredit(enrollment.id, value);
           enrollmentStore.updateOne(data);

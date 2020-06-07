@@ -1,0 +1,7 @@
+.search-header {
+  &__title {
+    @media only screen and (max-width: 618px) {
+      display: none;
+    }
+  }
+}
