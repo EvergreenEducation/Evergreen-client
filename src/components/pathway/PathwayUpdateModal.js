@@ -67,10 +67,12 @@ export default function PathwayUpdateModal({
 
       let groupOrderByYearNum = [];
       let groups_of_offers = map(groupsOfOffers, (g) => {
+        const year = form.getFieldValue(g.group_name);
         groupOrderByYearNum.push(g.group_name);
         const results = {
           group_name: g.group_name,
           offer_ids: g.removed ? [] : map(g.offers, 'offer_id'),
+          year,
         };
         const semester = form.getFieldValue(`${g.group_name}_semester`);
 
@@ -78,6 +80,7 @@ export default function PathwayUpdateModal({
           return {
             ...results,
             semester,
+            year,
           };
         }
 
