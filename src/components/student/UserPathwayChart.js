@@ -48,6 +48,9 @@ export default function (props) {
       yAxes: [
         {
           stacked: true,
+          ticks: {
+            stepSize: 1,
+          },
         },
       ],
       xAxes: [
