@@ -1,6 +1,6 @@
 import React from 'react';
-import {Button, Row, Input} from 'antd';
-const {Search} = Input;
+import { Button, Row, Input } from 'antd';
+const { Search } = Input;
 
 export default function EnrollmentTopbar({
   title,
@@ -14,8 +14,8 @@ export default function EnrollmentTopbar({
       <h2 className="mr-2">{title}</h2>
       <Search
         enterButton
-        className="w-56 custom-search mr-2 rounded"
-        onSearch={value => {
+        className="w-56 mr-2 rounded"
+        onSearch={(value) => {
           handleSearch(value);
         }}
       />

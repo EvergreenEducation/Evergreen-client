@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Input } from 'antd';
+import './search-header.scss';
 
 const { Search } = Input;
 
@@ -11,10 +12,10 @@ export default function SearchHeader({
   onChange,
 }) {
   return (
-    <Row className="items-center flex-no-wrap">
-      <h2 className="mr-2 whitespace-pre">{title}</h2>
+    <Row className="items-center flex-no-wrap search-header">
+      <h2 className="mr-2 whitespace-pre search-header__title">{title}</h2>
       <Search
-        className="w-auto custom-search rounded"
+        className="w-auto rounded custom-search"
         enterButton={enterButton}
         allowClear
         onSearch={onSearch}

@@ -1,6 +1,6 @@
 import ImageUploadAndNameInputs from './ImageUploadAndNameInputs';
 import SearchModalHeader from './SearchModalHeader';
-import SearchHeader from './SearchHeader';
+import SearchHeader from './SearchHeader/SearchHeader';
 import LogOutTopbar from './LogOutTopbar';
 import FormModal from './FormModal';
 import ProviderLogOutTopbar from './ProviderLogOutTopbar';

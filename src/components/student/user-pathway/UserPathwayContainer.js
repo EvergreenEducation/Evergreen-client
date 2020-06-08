@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { groupBy, property, uniqueId, keyBy } from 'lodash';
+import { groupBy, property, uniqueId, keyBy, head } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
@@ -100,19 +100,25 @@ export default function (props) {
             groupKeys.length &&
             groupKeys.map((groupName, index) => {
               const group = groupsOfOffers[groupName];
+              const firstOfferPathway = head(group);
               if (!group) {
                 return null;
               }
               return (
                 <div key={uniqueId('div_')}>
-                  <TitleDivider
-                    title={groupName}
-                    align="center"
-                    classNames={{
-                      middleSpan:
-                        'text-base bg-teal-600 px-2 rounded text-white',
-                    }}
-                  />
+                  <div className="mb-2">
+                    <div className="flex flex-row mx-auto">
+                      <span className="px-2 font-bold bg-green-300">
+                        {groupName}
+                      </span>
+                      <span className="block capitalize px-2 bg-green-200">
+                        {firstOfferPathway.semester}
+                      </span>
+                      <span className="px-2 bg-gray-300">
+                        Year {firstOfferPathway.year}
+                      </span>
+                    </div>
+                  </div>
                   {group.map((g, idx) => {
                     if (!g) {
                       return null;

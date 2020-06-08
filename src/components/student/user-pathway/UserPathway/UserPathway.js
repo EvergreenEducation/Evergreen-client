@@ -128,18 +128,13 @@ export default function ({
         }
         if (offer.pay) {
           _totalPay += offer.pay;
+          totalPayOfGroup += offer.pay;
         }
         if (offer.credit) {
           _totalCredit += offer.credit;
         }
         if (offer.cost) {
           _totalCost += offer.cost;
-        }
-        if (
-          completedEnrollments[offer.id] &&
-          completedEnrollments[offer.id].student_id === student.id
-        ) {
-          totalPayOfGroup += offer.pay;
         }
       }
     });
@@ -210,11 +205,7 @@ export default function ({
             </div>
             <ExpenseEarningChart
               className={`${!switchChart ? 'hidden' : 'block'}`}
-              groupNames={groupNames}
               pathway={pathway}
-              groups={groups}
-              enrollmentsByOfferId={enrollmentsByOfferId}
-              student={student}
               earningByGroup={earningByGroup}
             />
           </>
