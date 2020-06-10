@@ -341,8 +341,21 @@ export default function OfferForm({
             </Select>
           </Form.Item>
         </Col>
+        <Col className="mt-2 mb-0" span={24}>
+          <span className="text-gray-700 relative" style={{ bottom: 2 }}>
+            External URL
+          </span>
+          <Form.Item
+            name="external_url"
+            labelAlign={'left'}
+            colon={false}
+            className="inherit mb-0"
+          >
+            <Input className="rounded" />
+          </Form.Item>
+        </Col>
         {(role === 'admin' && (
-          <Row className="w-full">
+          <Row className="w-full relative" style={{ left: '0.4em' }}>
             <Col xs={24} sm={24} md={6}>
               <Form.Item
                 name="is_local_promo"

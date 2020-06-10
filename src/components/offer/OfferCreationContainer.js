@@ -64,6 +64,7 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
         'prerequisites',
         'is_local_promo',
         'is_main_promo',
+        'external_url',
       ]);
 
       const { provider_id } = values;

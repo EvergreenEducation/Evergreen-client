@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Alert, Button } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
-import { isEqual, groupBy, filter, keyBy, flow } from 'lodash';
+import { isEqual, groupBy, filter, sortBy, flow, mapValues } from 'lodash';
 import axiosInstance from 'services/AxiosInstance';
 import useGlobalStore from 'store/GlobalStore';
 import { TitleDivider } from 'components/shared';
@@ -67,26 +67,39 @@ export default function (props) {
 
   let completedEnrollments = [];
   let enrollmentsByOfferId = [];
+  let myEnrollments = [];
+  const enrollmentEntities = Object.values(enrollmentStore.entities);
 
   if (studentId) {
-    completedEnrollments = flow([
-      (r) =>
-        filter(r, {
-          status: 'Completed',
-          student_id: studentId,
-        }),
-      (r) => keyBy(r, 'offer_id'),
-    ])(Object.values(enrollmentStore.entities));
+    for (let i = 0; i < enrollmentEntities.length; i++) {
+      if (!enrollmentEntities[i]) {
+        break;
+      }
 
-    enrollmentsByOfferId = flow([
-      (r) => {
-        return r.filter(
-          (v) => v.student_id === studentId || v.student_id === null
-        );
-      },
-      (r) => groupBy(r, 'offer_id'),
-    ])(Object.values(enrollmentStore.entities));
+      if (
+        enrollmentEntities[i].status === 'Completed' &&
+        enrollmentEntities[i].student_id === studentId
+      ) {
+        completedEnrollments.push(enrollmentEntities[i]);
+      }
+
+      if (enrollmentEntities[i].student_id === null) {
+        enrollmentsByOfferId.push(enrollmentEntities[i]);
+      }
+
+      if (enrollmentEntities[i].student_id === studentId) {
+        myEnrollments.push(enrollmentEntities[i]);
+        enrollmentsByOfferId.push(enrollmentEntities[i]);
+      }
+    }
   }
+
+  completedEnrollments = groupBy(completedEnrollments, 'offer_id');
+  enrollmentsByOfferId = groupBy(enrollmentsByOfferId, 'offer_id');
+  myEnrollments = flow([
+    (enrs) => groupBy(enrs, 'offer_id'),
+    (enrs) => mapValues(enrs, (enr) => sortBy(enr, 'updatedAt')),
+  ])(myEnrollments);
 
   useEffect(() => {
     if (studentPayload) {
@@ -125,6 +138,7 @@ export default function (props) {
               student={student}
               completedEnrollments={completedEnrollments}
               enrollmentsByOfferId={enrollmentsByOfferId}
+              myEnrollments={myEnrollments}
             />
           );
         })) || (
@@ -152,7 +166,7 @@ export default function (props) {
               offer={offer}
               color={index % 2 ? 'primary' : 'secondary'}
             >
-              <Button type="primary" className="rounded mr-2" size="small">
+              <Button type="primary" className="rounded" size="small">
                 <Link
                   className="text-blue"
                   to={offer ? `/home/offer/${offer.id}` : '/'}

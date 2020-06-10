@@ -66,6 +66,7 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
         'provider_id',
         'is_local_promo',
         'is_main_promo',
+        'external_url',
       ]);
 
       let groupOrderByYearNum = [];

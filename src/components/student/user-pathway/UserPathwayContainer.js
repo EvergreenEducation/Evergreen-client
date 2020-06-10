@@ -15,6 +15,7 @@ export default function (props) {
     student,
     completedEnrollments,
     enrollmentsByOfferId,
+    myEnrollments,
   } = props;
   const {
     offer: offerStore,
@@ -120,17 +121,28 @@ export default function (props) {
                     </div>
                   </div>
                   {group.map((g, idx) => {
+                    let latestEnrollment = null;
+
                     if (!g) {
                       return null;
                     }
+
                     let p = null;
+
                     const offer = offerStore.entities[g.offer_id];
+
                     if (!offer) {
                       getOffer(g.offer_id);
                     }
+
                     if (offer && offer.provider_id) {
                       p = offer.Provider;
                     }
+
+                    if (myEnrollments[g.offer_id]) {
+                      latestEnrollment = head(myEnrollments[g.offer_id]);
+                    }
+
                     return (
                       <Link to={`/home/offer/${offer.id}`} key={idx}>
                         <InfoCard
@@ -139,6 +151,8 @@ export default function (props) {
                           provider={p}
                           key={uniqueId('card_')}
                           groupedDataFields={groupedDataFields}
+                          latestEnrollment={latestEnrollment}
+                          enableStatus={true}
                         />
                       </Link>
                     );

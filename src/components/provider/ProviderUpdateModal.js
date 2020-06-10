@@ -148,6 +148,7 @@ export default function ProviderUpdateModal(props) {
         'keywords',
         'is_local_promo',
         'is_main_promo',
+        'external_url',
       ]);
 
       const response = await axiosInstance.put(`/providers/${provider.id}`, {

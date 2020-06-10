@@ -9,8 +9,18 @@ import matchSorter from 'match-sorter';
 import { useForm } from 'antd/lib/form/util';
 import dayjs from 'dayjs';
 import 'assets/scss/antd-overrides.scss';
+
 const { Column } = Table;
 const { Option } = Select;
+
+const substituteStatuses = {
+  Inactivate: 'Applied',
+  Approved: 'Enrolled',
+  Activated: 'Enrolled',
+  Completed: 'Completed',
+  Unenrolled: 'Unenrolled',
+  Failed: 'Failed',
+};
 
 function renderGradeOptions(letter) {
   return (
@@ -291,22 +301,6 @@ export default function EnrollmentTable({
                   >
                     Score
                   </span>
-                  {/* <Form.Item
-                    name={`enrollment_${id}`}
-                    className="w-64 my-auto"
-                    initialValue={_credit}
-                  >
-                    <Select
-                      className="rounded-r rounded-l-none"
-                      disabled={enrollment.student_id ? false : true}
-                    >
-                      {renderGradeOptions('A')}
-                      {renderGradeOptions('B')}
-                      {renderGradeOptions('C')}
-                      {renderGradeOptions('D')}
-                      <Option value={'F'}>F</Option>
-                    </Select>
-                  </Form.Item> */}
                   <GradeScaleOptions
                     name={`enrollment_${id}`}
                     initialValue={_credit}
@@ -365,12 +359,18 @@ export default function EnrollmentTable({
           title="Status"
           dataIndex="status"
           key="status"
-          render={(text, record) => ({
-            children: text,
-            props: {
-              'data-title': 'Status',
-            },
-          })}
+          render={(status, enrollment) => {
+            status = substituteStatuses[status];
+            if (!enrollment.student_id && enrollment.status === 'Inactivate') {
+              status = 'Inactivate';
+            }
+            return {
+              children: status,
+              props: {
+                'data-title': 'Status',
+              },
+            };
+          }}
         />
         <Column
           title="Start Date"
@@ -394,8 +394,12 @@ export default function EnrollmentTable({
             return {
               children: (
                 <Popconfirm
-                  className="cursor-pointer"
-                  title="Do you want to give this student their credit?"
+                  title={() => (
+                    <p style={{ maxWidth: '15em' }}>
+                      Do you want to approve and change status to{' '}
+                      <b>Enrolled</b>?
+                    </p>
+                  )}
                   onConfirm={() => setStatusToApprove(enrollment)}
                   okText="Yes"
                   cancelText="No"
