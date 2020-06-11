@@ -43,6 +43,7 @@ export default function ({
     financial_aid,
     location,
     GroupsOfOffers = [],
+    external_url,
   } = data;
   const { offer: offerStore } = useGlobalStore();
   const [form] = Form.useForm();
@@ -173,7 +174,13 @@ export default function ({
             borderTopRightRadius: !src ? '1rem' : 'none',
           }}
         >
-          {name || '---'}
+          {external_url ? (
+            <a href={external_url} target="_blank" rel="noopener noreferrer">
+              {name}
+            </a>
+          ) : (
+            name || '---'
+          )}
         </span>
         {src && (
           <figure className="mx-auto">

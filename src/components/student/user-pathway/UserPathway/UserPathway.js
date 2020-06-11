@@ -49,6 +49,7 @@ export default function ({
     name,
     StudentsPathways,
     GroupsOfOffers,
+    external_url,
   } = pathway;
 
   const { pathway: pathwayStore, offer: offerStore } = useGlobalStore();
@@ -188,7 +189,6 @@ export default function ({
                       groups={groups}
                       groupName={group_name}
                       key={index}
-                      enrollmentsByOfferId={enrollmentsByOfferId}
                       student={student}
                       pathway={pathway}
                     />
@@ -198,7 +198,6 @@ export default function ({
               <UserPathwayChart
                 className={`mb-2 ${!toggleFilterByGroup ? 'block' : 'hidden'}`}
                 groups={groups}
-                enrollmentsByOfferId={enrollmentsByOfferId}
                 student={student}
                 pathway={pathway}
               />
@@ -242,7 +241,13 @@ export default function ({
             background: 'rgba(0, 0, 0, 0.75)',
           }}
         >
-          {name || '---'}
+          {external_url ? (
+            <a href={external_url} target="_blank" rel="noopener noreferrer">
+              {name}
+            </a>
+          ) : (
+            name || '---'
+          )}
         </span>
       </header>
       <section

@@ -210,7 +210,6 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
           key="group_name"
           render={(groupNameText, { offers }, index) => {
             const firstOffer = head(offers);
-            const [validationStatus, setValidationStatus] = useState('success');
             let totalCost = 0;
             let totalPay = 0;
             let totalCredit = 0;
@@ -241,30 +240,8 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
                         name={groupNameText}
                         initialValue={defaultVal ? defaultVal + 1 : index + 1}
                         rules={[
-                          (formInstance) => {
-                            const { getFieldValue } = formInstance;
-                            return {
-                              validator(rule, currentYearInput) {
-                                for (let i = 0; i < groupsData.length; i++) {
-                                  if (i !== index) {
-                                    const otherYear = getFieldValue(
-                                      groupsData[i].group_name
-                                    );
-                                    if (otherYear === currentYearInput) {
-                                      setValidationStatus('error');
-                                      return Promise.reject(
-                                        'Please enter a different Year number'
-                                      );
-                                    }
-                                  }
-                                }
-                                setValidationStatus('success');
-                                return Promise.resolve();
-                              },
-                            };
-                          },
+                          { required: true, message: 'Please set a year' },
                         ]}
-                        validateStatus={validationStatus}
                       >
                         <InputNumber
                           size="small"

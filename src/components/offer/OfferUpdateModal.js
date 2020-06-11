@@ -86,6 +86,7 @@ export default function OfferUpdateModal({
         'prerequisites',
         'is_local_promo',
         'is_main_promo',
+        'external_url',
       ]);
 
       const response = await updateOffer({

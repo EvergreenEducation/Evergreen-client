@@ -63,6 +63,7 @@ export default function PathwayUpdateModal({
         'provider_id',
         'is_local_promo',
         'is_main_promo',
+        'external_url',
       ]);
 
       let groupOrderByYearNum = [];
