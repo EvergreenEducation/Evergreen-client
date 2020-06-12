@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { groupBy, property, uniqueId, keyBy, head } from 'lodash';
+import { groupBy, property, uniqueId, keyBy, head, last } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
@@ -140,7 +140,7 @@ export default function (props) {
                     }
 
                     if (myEnrollments[g.offer_id]) {
-                      latestEnrollment = head(myEnrollments[g.offer_id]);
+                      latestEnrollment = last(myEnrollments[g.offer_id]);
                     }
 
                     return (
