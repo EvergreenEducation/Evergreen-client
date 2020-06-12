@@ -98,7 +98,7 @@ export default function (props) {
   enrollmentsByOfferId = groupBy(enrollmentsByOfferId, 'offer_id');
   myEnrollments = flow([
     (enrs) => groupBy(enrs, 'offer_id'),
-    (enrs) => mapValues(enrs, (enr) => sortBy(enr, 'updatedAt')),
+    (enrs) => mapValues(enrs, (enr) => sortBy(enr, ['updatedAt'])),
   ])(myEnrollments);
 
   useEffect(() => {

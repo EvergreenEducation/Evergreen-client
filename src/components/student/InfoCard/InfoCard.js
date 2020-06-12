@@ -19,6 +19,11 @@ const statuses = {
     statusColor: 'rgb(0,0,255)',
     textColor: 'text-white',
   },
+  Enrolled: {
+    substituteStatus: 'Enrolled',
+    statusColor: 'rgb(0,0,255)',
+    textColor: 'text-white',
+  },
   Completed: {
     substituteStatus: 'Passed',
     statusColor: 'rgb(0,255,0)',
@@ -55,19 +60,23 @@ function InfoCardFooter(props) {
       <p
         className={`${
           enrollment && enrollment.status
-            ? statuses[enrollment.status].textColor
+            ? statuses[enrollment.status]
+              ? statuses[enrollment.status].textColor
+              : null
             : 'text-gray'
         } font-bold info-card__statusText`}
         style={{ minWidth: 68 }}
       >
         {enrollment.status === 'Completed' || enrollment.status === 'Failed' ? (
           <span>Credit&nbsp;&nbsp;{enrollment.credit}</span>
-        ) : (
+        ) : statuses[enrollment.status] ? (
           statuses[enrollment.status].substituteStatus
-        )}
+        ) : null}
       </p>
     );
-    backgroundColor = statuses[enrollment.status].statusColor;
+    backgroundColor = statuses[enrollment.status]
+      ? statuses[enrollment.status].statusColor
+      : 'rgba(255,255,0,0.2)';
   }
 
   return (

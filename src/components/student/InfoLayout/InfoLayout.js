@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Col, Tag, Button, Input, Form, message } from 'antd';
-import { find, last, each, groupBy } from 'lodash';
+import { find, last, each, groupBy, sortBy } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMapMarkerAlt,
@@ -45,8 +45,29 @@ export default function ({
     GroupsOfOffers = [],
     external_url,
   } = data;
+  const [offerEnrollments, setOfferEnrollments] = useState([]);
+  const [fetchEnrollments, setFetchEnrollments] = useState(false);
   const { offer: offerStore } = useGlobalStore();
   const [form] = Form.useForm();
+  const myOfferEnrollments = sortBy(offerEnrollments, ['start_date']);
+
+  useEffect(() => {
+    const getAvailableEnrollmentByOffer = async (offerId) => {
+      if (!fetchEnrollments) {
+        const { data } = await axiosInstance.get(
+          `/enrollments?status=Inactivate&student_id=null&offer_id=${offerId}`
+        );
+        if (!myOfferEnrollments.length) {
+          setOfferEnrollments(data);
+        }
+      }
+      setFetchEnrollments(true);
+    };
+
+    if (type === 'offer' && !fetchEnrollments && !myOfferEnrollments.length) {
+      getAvailableEnrollmentByOffer(id);
+    }
+  }, []);
 
   const enrollOffer = async () => {
     const studentId = session.student_id;
@@ -121,8 +142,6 @@ export default function ({
 
   const topics = DataFields.filter((d) => d.type === 'topic');
   const offerCategory = find(DataFields, ['type', 'offer_category']);
-  let { start_date } = data;
-  start_date = dayjs(start_date).format('MMM DD, YYYY');
   const lengthUnit = find(groupedDataFields.length_unit, ({ id }) => {
     return id === Number(length_unit);
   });
@@ -163,6 +182,30 @@ export default function ({
     });
   }
 
+  const EnrollAndExternalUrlRow = (
+    <Row
+      className={`w-full mx-auto ${
+        external_url ? 'justify-between' : 'justify-center'
+      }`}
+    >
+      <Button
+        type="primary"
+        className="rounded"
+        style={{ width: '49%' }}
+        onClick={() => onEnroll()}
+      >
+        Enroll
+      </Button>
+      {external_url ? (
+        <Button type="primary" className="rounded" style={{ width: '49%' }}>
+          <a href={external_url} target="_blank" rel="noopener noreferrer">
+            View Website
+          </a>
+        </Button>
+      ) : null}
+    </Row>
+  );
+
   return (
     <div className="infoLayout">
       <header className="mx-auto relative" style={{ minHeight: 52 }}>
@@ -174,13 +217,7 @@ export default function ({
             borderTopRightRadius: !src ? '1rem' : 'none',
           }}
         >
-          {external_url ? (
-            <a href={external_url} target="_blank" rel="noopener noreferrer">
-              {name}
-            </a>
-          ) : (
-            name || '---'
-          )}
+          {name || '---'}
         </span>
         {src && (
           <figure className="mx-auto">
@@ -246,8 +283,12 @@ export default function ({
           <Col span={8}>
             Cost :{' '}
             {type === 'pathway'
-              ? `$${totalCost}` || '---'
-              : `$${cost}` || '---'}
+              ? totalCost
+                ? `$${totalCost}`
+                : '---'
+              : cost
+              ? `$${cost}`
+              : '---'}
           </Col>
           <Col span={8} className="flex justify-center">
             Credit :{' '}
@@ -255,7 +296,13 @@ export default function ({
           </Col>
           <Col span={8} className="flex flex-row-reverse">
             Pay :{' '}
-            {type === 'pathway' ? `$${totalPay}` || '---' : `$${pay}` || '---'}
+            {type === 'pathway'
+              ? totalPay
+                ? `$${totalPay}`
+                : '---'
+              : pay
+              ? `$${pay}`
+              : '---'}
           </Col>
         </Row>
         <Row className="mt-1 mb-2">
@@ -278,81 +325,111 @@ export default function ({
               <Tag className="mr-0" color="purple">
                 {is_public ? 'Public' : 'Private'}
               </Tag>
-            ) : (
-              <>
-                <span className="ml-1">{start_date || '---'}</span>
-                <FontAwesomeIcon icon={faCalendarAlt} />
-              </>
-            )}
+            ) : null}
+            {(type === 'offer' &&
+              myOfferEnrollments &&
+              myOfferEnrollments.length && (
+                <>
+                  <span className="ml-1">
+                    {dayjs(last(myOfferEnrollments).start_date).format(
+                      'MMM D, YYYY'
+                    ) || null}
+                  </span>
+                  <FontAwesomeIcon icon={faCalendarAlt} />
+                </>
+              )) ||
+              null}
           </Col>
         </Row>
         <hr />
         <section className="flex flex-col justify-center">
-          <p className="text-center">{data.description}</p>
+          <p className="text-center break-words">{data.description}</p>
           {type === 'offer' && (
             <Tag className="mx-auto">
               {offerCategory ? offerCategory.name : null}
             </Tag>
           )}
         </section>
-        {type === 'pathway' && (
-          <Button
-            type="primary"
-            className="w-1/2 rounded mx-auto block mt-2"
-            onClick={onEnroll}
-          >
-            Enroll
-          </Button>
-        )}
-        {type === 'offer' && (
-          <Form form={form}>
-            <Row className="flex-col mt-2 justify-center items-center">
-              <Button
-                type="primary"
-                className="w-1/2 rounded"
-                onClick={() => onEnroll()}
-              >
-                Enroll
-              </Button>
-              {openCodeInput && (
-                <Row className={`w-1/2 ${openCodeInput ? 'mt-2' : ''}`}>
-                  <Col span={20}>
-                    <Form.Item
-                      name="activation_code"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Requires code',
-                        },
-                      ]}
-                    >
-                      <Input
-                        className="flex items-center rounded-l rounded-r-none ant-input-group-add-on-border-none-p-0"
-                        style={{ paddingBottom: 4.5, zIndex: 2 }}
-                        allowClear
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={4}>
-                    <Button
-                      className={`rounded-l-none rounded-r`}
-                      onClick={() => setOpenCodeInput(false)}
-                      icon={<FontAwesomeIcon icon={faTimes} />}
-                    />
-                  </Col>
-                </Row>
-              )}
-              {!openCodeInput && (
-                <Button
-                  type="link"
-                  onClick={() => setOpenCodeInput(!openCodeInput)}
+        <div>
+          {type === 'provider' && external_url ? (
+            <div className="flex justify-center w-full">
+              <Button type="primary" className="rounded w-1/2">
+                <a
+                  href={external_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  Already have code?
-                </Button>
-              )}
+                  View Website
+                </a>
+              </Button>
+            </div>
+          ) : null}
+          {type === 'pathway' && (
+            <Row
+              className={`flex-col mt-2 ${
+                external_url
+                  ? 'items-start justify-left'
+                  : 'justify-center items-center'
+              }`}
+            >
+              {EnrollAndExternalUrlRow}
             </Row>
-          </Form>
-        )}
+          )}
+          {type === 'offer' && (
+            <Form form={form}>
+              <Row
+                className={`flex-col mt-2 ${
+                  external_url
+                    ? 'items-start justify-left'
+                    : 'justify-center items-center'
+                }`}
+              >
+                {EnrollAndExternalUrlRow}
+                {openCodeInput && (
+                  <Row
+                    className={`${external_url ? 'w-full' : 'w-1/2'} ${
+                      openCodeInput ? 'mt-2' : ''
+                    }`}
+                  >
+                    <Col span={external_url ? 22 : 20}>
+                      <Form.Item
+                        name="activation_code"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Requires code',
+                          },
+                        ]}
+                      >
+                        <Input
+                          className="flex items-center rounded-l rounded-r-none ant-input-group-add-on-border-none-p-0"
+                          style={{ paddingBottom: 4.5, zIndex: 2 }}
+                          allowClear
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={external_url ? 2 : 4}>
+                      <Button
+                        className={`rounded-l-none rounded-r`}
+                        onClick={() => setOpenCodeInput(false)}
+                        icon={<FontAwesomeIcon icon={faTimes} />}
+                      />
+                    </Col>
+                  </Row>
+                )}
+                {!openCodeInput && (
+                  <Button
+                    className={external_url ? 'pl-0' : ''}
+                    type="link"
+                    onClick={() => setOpenCodeInput(!openCodeInput)}
+                  >
+                    Already have code?
+                  </Button>
+                )}
+              </Row>
+            </Form>
+          )}
+        </div>
       </section>
       <section>{children}</section>
     </div>

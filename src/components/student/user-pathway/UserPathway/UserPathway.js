@@ -241,13 +241,7 @@ export default function ({
             background: 'rgba(0, 0, 0, 0.75)',
           }}
         >
-          {external_url ? (
-            <a href={external_url} target="_blank" rel="noopener noreferrer">
-              {name}
-            </a>
-          ) : (
-            name || '---'
-          )}
+          {name || '---'}
         </span>
       </header>
       <section
@@ -317,6 +311,15 @@ export default function ({
             <span>{latestEnrollmentDate || '---'}</span>
           </Col>
           <Col span={12} className="flex flex-row items-center"></Col>
+        </Row>
+        <Row>
+          {external_url ? (
+            <Button type="primary" className="rounded w-1/2 mx-auto mb-2">
+              <a href={external_url} target="_blank" rel="noopener noreferrer">
+                View Website
+              </a>
+            </Button>
+          ) : null}
         </Row>
         <hr />
         <Col span={24} className="mt-2">
