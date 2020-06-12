@@ -31,6 +31,11 @@ export default function ({
   enrollmentsByOfferId,
   student,
 }) {
+  const [fetchPathwayChartData, setFetchPathwayChartData] = useState(false);
+  const [pathwayChartData, setPathwayChartData] = useState({});
+  const [groupChartData, setGroupChartData] = useState({});
+  const [currentGroupChartData, setCurrentGroupChartData] = useState({});
+
   const [totalPay, setTotalPay] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
@@ -143,6 +148,27 @@ export default function ({
     earningByGroup[groupNames[index]] = totalPayOfGroup;
   });
 
+  const getChartData = async (student_id, pathway_id, group_name) => {
+    let sendingBody = {
+      student_id,
+      pathway_id,
+    };
+
+    if (group_name) {
+      sendingBody = {
+        ...sendingBody,
+        group_name,
+      };
+    }
+
+    const response = await axiosInstance.post(
+      '/pathways/generate_userpathway_chart_data',
+      sendingBody
+    );
+
+    return response;
+  };
+
   useEffect(() => {
     if (formRef) {
       form.setFieldsValue({
@@ -158,7 +184,50 @@ export default function ({
     if (_totalCost > 0) {
       setTotalCost(_totalCost);
     }
-  }, [formRef, totalPay, totalCost, totalCredit]);
+    if (!fetchPathwayChartData) {
+      const generateChartData = async () => {
+        const { data } = await getChartData(student_id, pathwayId);
+
+        if (data) {
+          setPathwayChartData(data);
+        }
+        setFetchPathwayChartData(true);
+      };
+      generateChartData();
+    }
+  }, [
+    formRef,
+    totalPay,
+    totalCost,
+    totalCredit,
+    fetchPathwayChartData,
+    groupChartData,
+    currentGroupChartData,
+  ]);
+
+  const handleCurrentItem = (current, total) => {
+    const groupName = groupNames[current - 1];
+    if (toggleFilterByGroup) {
+      if (!groupChartData[groupName]) {
+        const generateGroupChart = async () => {
+          const { data } = await getChartData(student_id, pathwayId, groupName);
+          setGroupChartData({
+            ...groupChartData,
+            [groupName]: {
+              fetched: true,
+              data,
+            },
+          });
+          if (groupChartData[groupName] && groupChartData[groupName].data) {
+            setCurrentGroupChartData(groupChartData[groupName].data);
+          }
+        };
+
+        generateGroupChart();
+      }
+    }
+    return null;
+  };
 
   return (
     <div className="infoLayout mb-3">
@@ -177,20 +246,27 @@ export default function ({
                 showIndicators={false}
                 swipeable={true}
                 emulateTouch={true}
-                showStatus={false}
+                showStatus={true}
                 showThumbs={false}
                 swipeScrollTolerance={1}
+                statusFormatter={handleCurrentItem}
               >
                 {groupNames.map((group_name, index) => {
-                  const group = groups[group_name];
+                  let data = {};
+                  if (
+                    groupChartData[group_name] &&
+                    groupChartData[group_name].data
+                  ) {
+                    data = groupChartData[group_name].data;
+                  }
                   return (
                     <UserPathwayChart
-                      group={group}
                       groups={groups}
                       groupName={group_name}
                       key={index}
                       student={student}
                       pathway={pathway}
+                      data={data}
                     />
                   );
                 }) || 'N/A'}
@@ -200,6 +276,7 @@ export default function ({
                 groups={groups}
                 student={student}
                 pathway={pathway}
+                data={pathwayChartData}
               />
             </div>
             <ExpenseEarningChart
