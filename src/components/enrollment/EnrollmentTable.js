@@ -396,8 +396,8 @@ export default function EnrollmentTable({
                 <Popconfirm
                   title={() => (
                     <p style={{ maxWidth: '15em' }}>
-                      Do you want to approve and change status to{' '}
-                      <b>Enrolled</b>?
+                      Do you want to approve this student’s enrollment in this
+                      offer?
                     </p>
                   )}
                   onConfirm={() => setStatusToApprove(enrollment)}
