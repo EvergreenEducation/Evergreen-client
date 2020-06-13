@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Alert, Button } from 'antd';
+import { Alert } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
-import { isEqual, groupBy, filter, sortBy, flow, mapValues } from 'lodash';
+import {
+  isEqual,
+  groupBy,
+  filter,
+  sortBy,
+  flow,
+  mapValues,
+  uniqueId,
+  property,
+  last,
+} from 'lodash';
 import axiosInstance from 'services/AxiosInstance';
 import useGlobalStore from 'store/GlobalStore';
 import { TitleDivider } from 'components/shared';
-import { SmallInfoCard } from 'components/student';
+import { InfoCard } from 'components/student';
 import UserPathwayContainer from 'components/student/user-pathway/UserPathwayContainer';
 import './student-dashboard.scss';
 
@@ -15,7 +25,7 @@ configure({
 });
 
 export default function (props) {
-  const { session = {}, toggeables, setToggeables } = props;
+  const { session = {} } = props;
   const studentId = session.student_id;
   const [student, setStudent] = useState({});
   const [{ data: studentPayload }] = useAxios(
@@ -25,7 +35,10 @@ export default function (props) {
     offer: offerStore,
     pathway: pathwayStore,
     enrollment: enrollmentStore,
+    datafield,
   } = useGlobalStore();
+
+  const groupedDataFields = groupBy(datafield.entities, property('type'));
 
   async function getPathway(pathwayId) {
     const response = await axiosInstance.get(
@@ -157,30 +170,29 @@ export default function (props) {
         offerIds.map((offerId, index) => {
           offerId = Number(offerId);
           const offer = offerStore.entities[offerId];
+          let p = null;
+          let latestEnrollment = null;
           if (!offer) {
             getOffer(offerId);
           }
+          if (offer && offer.provider_id) {
+            p = offer.Provider;
+          }
+          if (offerId && myEnrollments[offerId]) {
+            latestEnrollment = last(myEnrollments[offerId]);
+          }
           return (
-            <SmallInfoCard
-              key={index}
-              offer={offer}
-              color={index % 2 ? 'primary' : 'secondary'}
-            >
-              <Button type="primary" className="rounded" size="small">
-                <Link
-                  className="text-blue"
-                  to={offer ? `/home/offer/${offer.id}` : '/'}
-                  onClick={() =>
-                    setToggeables({
-                      ...toggeables,
-                      studentDashboard: false,
-                    })
-                  }
-                >
-                  View
-                </Link>
-              </Button>
-            </SmallInfoCard>
+            <Link to={`/home/offer/${offer.id}`} key={index}>
+              <InfoCard
+                className="mb-4"
+                data={offer}
+                provider={p}
+                key={uniqueId('card_')}
+                groupedDataFields={groupedDataFields}
+                latestEnrollment={latestEnrollment}
+                enableStatus={true}
+              />
+            </Link>
           );
         })) || (
         <Alert
