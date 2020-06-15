@@ -30,6 +30,8 @@ export default function OfferForm({
   offers = [],
   offer = {},
   onChangeUpload,
+  onChangeBannerUpload,
+  bannerFile,
   file,
   userId = null,
   role,
@@ -63,7 +65,9 @@ export default function OfferForm({
         className="mb-2"
         userId={userId}
         onChangeUpload={onChangeUpload}
+        onChangeBannerUpload={onChangeBannerUpload}
         file={file}
+        bannerFile={bannerFile}
       >
         <Row gutter={8}>
           <Col

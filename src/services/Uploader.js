@@ -12,6 +12,7 @@ class UploadService {
     fileable_type,
     fileable_id,
     binaryFile,
+    meta = null,
   }) {
     const uppy = Uppy();
     const newFileName = `${cuid()}_${name}`;
@@ -50,12 +51,30 @@ class UploadService {
         fileable_id,
         fileable_type,
         uploaded_by_user_id,
+        meta,
       });
 
       return { success: true, file };
     } else {
       return { success: false };
     }
+  }
+
+  async uploadFile(
+    file,
+    { uploaded_by_user_id, fileable_type, fileable_id, meta = null }
+  ) {
+    const { name, type, originFileObj } = file;
+    let data = {
+      name,
+      mime_type: type,
+      uploaded_by_user_id,
+      fileable_type,
+      fileable_id,
+      binaryFile: originFileObj,
+      meta,
+    };
+    return await this.upload(data);
   }
 }
 
