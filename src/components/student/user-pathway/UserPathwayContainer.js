@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { groupBy, property, uniqueId, keyBy, head, last } from 'lodash';
+import { groupBy, property, uniqueId, keyBy, head, last, sortBy } from 'lodash';
+import dayjs from 'dayjs';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import { TitleDivider } from 'components/shared';
@@ -101,10 +102,41 @@ export default function (props) {
             groupKeys.length &&
             groupKeys.map((groupName, index) => {
               const group = groupsOfOffers[groupName];
-              const firstOfferPathway = head(group);
+              let groupOfOfferEnrollments = [];
+              let firstOfferPathway = head(group);
+
+              let year = null;
+
               if (!group) {
                 return null;
               }
+
+              for (let i = 0; i < group.length; i++) {
+                if (!myEnrollments[group[i].offer_id]) {
+                  break;
+                }
+                const offerEnrollments = myEnrollments[group[i].offer_id];
+                for (let j = 0; j < offerEnrollments.length; j++) {
+                  if (!offerEnrollments[j]) {
+                    break;
+                  }
+                  groupOfOfferEnrollments.push(offerEnrollments[j]);
+                }
+              }
+
+              groupOfOfferEnrollments = sortBy(groupOfOfferEnrollments, [
+                'start_date',
+                'updatedAt',
+              ]);
+
+              if (!groupOfOfferEnrollments.length) {
+                year = dayjs().year() + firstOfferPathway.year - 1;
+              }
+
+              if (last(groupOfOfferEnrollments)) {
+                year = dayjs(last(groupOfOfferEnrollments).start_date).year();
+              }
+
               return (
                 <div key={uniqueId('div_')}>
                   <div className="mb-2">
@@ -115,9 +147,9 @@ export default function (props) {
                       <span className="block capitalize px-2 bg-green-200">
                         {firstOfferPathway.semester}
                       </span>
-                      <span className="px-2 bg-gray-300">
-                        Year {firstOfferPathway.year}
-                      </span>
+                      {year ? (
+                        <span className="px-2 bg-gray-300">Year {year}</span>
+                      ) : null}
                     </div>
                   </div>
                   {group.map((g, idx) => {
