@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Modal, Form, Table, Button, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -9,6 +9,7 @@ import moment from 'moment';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import { compact, orderBy, head, groupBy, flow, mapValues } from 'lodash';
+import { useImageAndBannerImage } from 'hooks';
 import 'assets/scss/antd-overrides.scss';
 
 configure({
@@ -27,13 +28,17 @@ export default function OfferUpdateModal({
 }) {
   const formRef = useRef(null);
   const { id: userId, provider_id } = AuthService.currentSession;
-  const [file, setFile] = useState(null);
-  const [bannerFile, setBannerFile] = useState(null);
-  const [newFile, setNewFile] = useState(null);
-  const [newBannerFile, setNewBannerFile] = useState(null);
-
-  const [onFileChange, setOnFileChange] = useState(false);
-  const [onBannerFileChange, setOnBannerFileChange] = useState(false);
+  const [
+    { file, newFile, onFileChange, setFile, onChangeFileUpload },
+    {
+      bannerFile,
+      onBannerFileChange,
+      newBannerFile,
+      setBannerFile,
+      onChangeBannerUpload,
+    },
+    reset,
+  ] = useImageAndBannerImage();
 
   const {
     RelatedOffers = [],
@@ -43,29 +48,6 @@ export default function OfferUpdateModal({
   } = offer;
 
   const [form] = Form.useForm();
-
-  const _onFileChange = (
-    event,
-    stateSetter,
-    didFileChangeFunc,
-    stateSetter2
-  ) => {
-    const { file } = event;
-    const _file = file;
-    if (_file) {
-      didFileChangeFunc(true);
-      stateSetter(_file);
-      stateSetter2(_file);
-    }
-  };
-
-  const onChangeBannerUpload = (e) => {
-    _onFileChange(e, setBannerFile, setOnBannerFileChange, setNewBannerFile);
-  };
-
-  const onChangeUpload = (e) => {
-    _onFileChange(e, setFile, setOnFileChange, setNewFile);
-  };
 
   const [
     { data: updateOfferPayload, error: updateOfferError },
@@ -256,10 +238,7 @@ export default function OfferUpdateModal({
       footer={true}
       onCancel={onCancel}
       afterClose={() => {
-        setFile(null);
-        setOnFileChange(null);
-        setBannerFile(null);
-        setOnBannerFileChange(null);
+        reset();
       }}
     >
       <Form form={form} ref={formRef}>
@@ -271,7 +250,7 @@ export default function OfferUpdateModal({
             offer={offer}
             userId={userId}
             providerId={provider_id}
-            onChangeUpload={onChangeUpload}
+            onChangeUpload={onChangeFileUpload}
             file={file}
             scopedToProvider={scopedToProvider}
             role={role}

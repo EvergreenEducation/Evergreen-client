@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Button, Form, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -7,6 +7,7 @@ import useGlobalStore from 'store/GlobalStore';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import { head, reject } from 'lodash';
+import { useImageAndBannerImage } from 'hooks';
 
 configure({
   axios: axiosInstance,
@@ -15,8 +16,10 @@ configure({
 const OfferCreationContainer = ({ closeModal, role, providerId }) => {
   const { id: userId, provider_id } = AuthService.currentSession;
   const formRef = useRef(null);
-  const [file, setFile] = useState(null);
-  const [bannerFile, setBannerFile] = useState(null);
+  const [
+    { file, onChangeFileUpload },
+    { bannerFile, onChangeBannerUpload },
+  ] = useImageAndBannerImage();
   const [form] = Form.useForm();
   const [{ data: offerPayload, error: offerError }, createOffer] = useAxios(
     {
@@ -25,21 +28,6 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
     },
     { manual: true }
   );
-
-  const onFileChange = (event, setStateFunc) => {
-    const { file } = event;
-    if (file) {
-      setStateFunc(file);
-    }
-  };
-
-  const onChangeBannerUpload = (e) => {
-    onFileChange(e, setBannerFile);
-  };
-
-  const onChangeUpload = (e) => {
-    onFileChange(e, setFile);
-  };
 
   const {
     datafield: datafieldStore,
@@ -181,7 +169,7 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
             userId={userId}
             providerId={provider_id}
             file={file}
-            onChangeUpload={onChangeUpload}
+            onChangeUpload={onChangeFileUpload}
             bannerFile={bannerFile}
             onChangeBannerUpload={onChangeBannerUpload}
           />
