@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import {
   Form,
   Select,
@@ -8,6 +8,7 @@ import {
   InputNumber,
   Input,
   Row,
+  message,
 } from 'antd';
 import OfferStore from 'store/Offer';
 import {
@@ -22,8 +23,10 @@ import {
   head,
   uniqBy,
   flow,
+  flowRight,
 } from 'lodash';
 import dayjs from 'dayjs';
+import MiniOfferTable from 'components/pathway/OfferGroupTable';
 import 'assets/scss/antd-overrides.scss';
 
 const { Option } = Select;
@@ -63,59 +66,63 @@ function getExistingOffers(pathway) {
   return offers;
 }
 
-function MiniOfferTable(props) {
-  let { groupOfOffers = [] } = props;
-  const Store = OfferStore.useContainer();
+// const MiniOfferTable = memo((props) => {
+//   let { groupOfOffers = [], offerStore } = props;
 
-  groupOfOffers = flow([
-    (g) => uniqBy(g, 'offer_id'),
-    (g) => sortBy(g, (date) => new Date(date.createdAt)),
-  ])(groupOfOffers);
+//   groupOfOffers = flow([
+//     (g) => uniqBy(g, 'offer_id'),
+//     (g) => sortBy(g, (date) => new Date(date.createdAt)),
+//   ])(groupOfOffers);
 
-  return (
-    <Table
-      dataSource={groupOfOffers}
-      pagination={{ position: ['topRight'], pageSize: 4 }}
-      rowKey={(record) => {
-        return uniqueId(record.group_name + '__');
-      }}
-    >
-      <Column
-        dataIndex="group_name"
-        render={(text, record, index) => ({
-          children: index + 1,
-        })}
-      />
-      <Column
-        title="Offer"
-        dataIndex="offer_id"
-        key="offer_id"
-        render={(offerId, record, index) => {
-          const offer = Store.entities[offerId];
-          return {
-            children: offer.name || '',
-          };
-        }}
-      />
-      <Column
-        title="Created"
-        dataIndex="offer_id"
-        key="createdAt"
-        render={(offerId, record, index) => {
-          const offer = Store.entities[offerId];
-          return {
-            children: offer.createdAt
-              ? dayjs(offer.createdAt).format('MM-DD-YYYY')
-              : null,
-          };
-        }}
-      />
-    </Table>
-  );
-}
+//   return (
+//     <Table
+//       dataSource={groupOfOffers}
+//       pagination={{ position: ['topRight'], pageSize: 4 }}
+//       rowKey={(record) => {
+//         return uniqueId(record.group_name + '__');
+//       }}
+//     >
+//       <Column
+//         dataIndex="group_name"
+//         render={(text, record, index) => ({
+//           children: index + 1,
+//         })}
+//       />
+//       <Column
+//         title="Offer"
+//         dataIndex="offer_id"
+//         key="offer_id"
+//         render={(offerId, record, index) => {
+//           const offer = offerStore.entities[offerId];
+//           return {
+//             children: offer.name || '',
+//           };
+//         }}
+//       />
+//       <Column
+//         title="Created"
+//         dataIndex="offer_id"
+//         key="createdAt"
+//         render={(offerId, record, index) => {
+//           const offer = offerStore.entities[offerId];
+//           return {
+//             children: offer.createdAt
+//               ? dayjs(offer.createdAt).format('MM-DD-YYYY')
+//               : null,
+//           };
+//         }}
+//       />
+//     </Table>
+//   );
+// });
 
-export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
-  const Store = OfferStore.useContainer();
+const OfferGroupTable = ({
+  pathway,
+  groupsOfOffers,
+  setGroupsOfOffers,
+  form,
+}) => {
+  const offerStore = OfferStore.useContainer();
   const [groupNameField, setGroupNameField] = useState('');
 
   useEffect(() => {
@@ -127,7 +134,7 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
   let addGroupHandler = () => {
     const exist = find(groupsOfOffers, ['group_name', groupNameField]);
     if (exist) {
-      alert('Group already exist');
+      message.error('Group already exist');
       return;
     }
     setGroupsOfOffers([
@@ -159,15 +166,18 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
   let groupsData = groupsOfOffers.filter((item) => !item.removed);
 
   if (pathway && pathway.group_sort_order) {
-    groupsData = groupsData.map((g) => {
-      groupNames.push(g.group_name);
-      const year = indexOf(pathway.group_sort_order, g.group_name) + 1;
-      return {
-        ...g,
-        year,
-      };
-    });
-    groupsData = sortBy(groupsData, ['year']);
+    groupsData = flowRight([
+      (d) => sortBy(d, ['year']),
+      (d) =>
+        d.map((g) => {
+          groupNames.push(g.group_name);
+          const year = indexOf(pathway.group_sort_order, g.group_name) + 1;
+          return {
+            ...g,
+            year,
+          };
+        }),
+    ])(groupsData);
   }
 
   const onChangeAlsoValidate = (inputVal) => {
@@ -182,7 +192,11 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
         style={{ width: '400px', marginBottom: '3px' }}
         placeholder="Group Name"
         name="add-group"
-        onChange={(e) => setGroupNameField(e.target.value)}
+        onChange={(e) => {
+          if (e.target.value && e.target.value.length) {
+            setGroupNameField(e.target.value);
+          }
+        }}
         addonAfter={
           <Button
             className="rounded-l-none"
@@ -214,8 +228,8 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
             let totalPay = 0;
             let totalCredit = 0;
             each(offers, function (o) {
-              if (Store.entities[o.offer_id]) {
-                const offer = Store.entities[o.offer_id];
+              if (offerStore.entities[o.offer_id]) {
+                const offer = offerStore.entities[o.offer_id];
                 totalCost += offer.cost;
                 totalPay += offer.pay;
                 totalCredit += offer.credit;
@@ -296,7 +310,10 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
             return {
               children: (
                 <Form.Item className="my-auto" name={inputName}>
-                  <MiniOfferTable groupOfOffers={record.offers} />
+                  <MiniOfferTable
+                    groupOfOffers={record.offers}
+                    offerStore={offerStore}
+                  />
                   <Select
                     className="mt-1 w-full rounded custom-select-rounded-tr-none"
                     showSearch
@@ -340,4 +357,6 @@ export default function ({ pathway, groupsOfOffers, setGroupsOfOffers, form }) {
       </Table>
     </div>
   );
-}
+};
+
+export default memo(OfferGroupTable);
