@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import ProviderForm from 'components/provider/ProviderForm';
 import { Button, Form, notification } from 'antd';
 import useGlobalStore from 'store/GlobalStore';
@@ -6,6 +6,7 @@ import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
+import { useImageAndBannerImage } from 'hooks';
 
 configure({
   axios: axiosInstance,
@@ -13,24 +14,17 @@ configure({
 
 const ProviderCreationContainer = ({ closeModal, role }) => {
   const { id: userId } = AuthService.currentSession;
-  const [file, setFile] = useState(null);
-
-  const onChangeUpload = (e) => {
-    const { file } = e;
-    if (file) {
-      setFile(file);
-    }
-  };
+  const [
+    { file, onChangeFileUpload },
+    { bannerFile, onChangeBannerUpload },
+  ] = useImageAndBannerImage();
 
   const [form] = Form.useForm();
   const {
     datafield: datafieldStore,
     provider: providerStore,
   } = useGlobalStore();
-  const [
-    { data: providerPayload, error: providerCreateError },
-    createProvider,
-  ] = useAxios(
+  const [{ error: providerCreateError }, createProvider] = useAxios(
     {
       url: '/providers',
       method: 'POST',
@@ -62,43 +56,69 @@ const ProviderCreationContainer = ({ closeModal, role }) => {
         'external_url',
       ]);
 
-      const response = await createProvider({
+      const { data, status } = await createProvider({
         data: {
           ...values,
           topics: values.topics,
         },
       });
 
-      if (response.data && file && userId) {
-        const { name, type } = file;
-        const results = await UploaderService.upload({
-          name,
-          mime_type: type,
-          uploaded_by_user_id: userId,
-          fileable_type: 'provider',
-          fileable_id: response.data.id,
-          binaryFile: file.originFileObj,
-        });
-
-        response.data.Files = [{ ...results.file.data }];
-
-        providerStore.updateOne(response.data);
-
-        if (results.success) {
-          notification.success({
-            message: 'Success',
-            description: 'Image is uploaded',
-          });
-        }
+      if (data) {
+        providerStore.addOne(data);
       }
 
-      if (response && response.status === 201) {
-        form.resetFields();
-        closeModal();
+      if (data && userId) {
+        const fileable_type = 'provider';
+        let clonedResponse = Object.assign(data);
+        const filePayload = [];
+        if (file) {
+          const results = await UploaderService.uploadFile(file, {
+            uploaded_by_user_id: userId,
+            fileable_type,
+            fileable_id: data.id,
+          });
+
+          if (results && results.file.data) {
+            filePayload.push({ ...results.file.data });
+          }
+
+          if (results.success) {
+            notification.success({
+              message: 'Success',
+              description: 'Main image is uploaded',
+            });
+          }
+        }
+        if (bannerFile) {
+          const results = await UploaderService.uploadFile(bannerFile, {
+            uploaded_by_user_id: userId,
+            fileable_type,
+            fileable_id: data.id,
+            meta: 'banner-image',
+          });
+
+          if (results && results.file.data) {
+            filePayload.push({ ...results.file.data });
+          }
+
+          if (results.success) {
+            notification.success({
+              message: 'Success',
+              description: 'Banner image is uploaded',
+            });
+          }
+        }
+        clonedResponse.Files = [...filePayload];
+        providerStore.updateOne(clonedResponse);
+      }
+
+      if (status === 201) {
         notification.success({
-          message: response.status,
+          message: status,
           description: 'Successfully created provider',
         });
+        form.resetFields();
+        closeModal();
       }
     } catch (error) {
       console.error(error);
@@ -106,9 +126,6 @@ const ProviderCreationContainer = ({ closeModal, role }) => {
   };
 
   useEffect(() => {
-    if (providerPayload) {
-      providerStore.addOne(providerPayload);
-    }
     if (providerCreateError) {
       const { status, statusText } = providerCreateError.request;
       notification.error({
@@ -116,7 +133,7 @@ const ProviderCreationContainer = ({ closeModal, role }) => {
         description: statusText,
       });
     }
-  }, [providerPayload, providerCreateError]);
+  }, [providerCreateError]);
 
   return (
     <div>
@@ -126,8 +143,10 @@ const ProviderCreationContainer = ({ closeModal, role }) => {
             role={role}
             userId={userId}
             datafields={Object.values(datafieldStore.entities)}
-            onChangeUpload={onChangeUpload}
             file={file}
+            onChangeUpload={onChangeFileUpload}
+            bannerFile={bannerFile}
+            onChangeBannerUpload={onChangeBannerUpload}
           />
         </div>
         <section

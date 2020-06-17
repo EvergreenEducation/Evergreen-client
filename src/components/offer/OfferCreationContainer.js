@@ -118,7 +118,7 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
             });
           }
         }
-        clonedResponse = clonedResponse.Files = [...filePayload];
+        clonedResponse.Files = [...filePayload];
         offerStore.updateOne(clonedResponse);
       }
 

@@ -37,6 +37,8 @@ export default function PathwayForm({
   providers,
   role,
   form,
+  onChangeBannerUpload,
+  bannerFile,
 }) {
   providers = compact(providers);
   datafields = Object.values(datafields);
@@ -50,7 +52,9 @@ export default function PathwayForm({
         className="mb-2"
         userId={userId}
         onChangeUpload={onChangeUpload}
+        onChangeBannerUpload={onChangeBannerUpload}
         file={file}
+        bannerFile={bannerFile}
       >
         <Form.Item
           label="Description"

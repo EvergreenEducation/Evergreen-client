@@ -9,6 +9,7 @@ import OfferStore from 'store/Offer';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import useProviderDataFieldStore from 'components/provider/useProviderDataFieldStore';
+import { useImageAndBannerImage } from 'hooks';
 
 configure({
   axios: axiosInstance,
@@ -17,18 +18,16 @@ configure({
 const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
   const { id: userId } = AuthService.currentSession;
   const formRef = useRef(null);
-  const [file, setFile] = useState(null);
+
+  const [
+    { file, onChangeFileUpload },
+    { bannerFile, onChangeBannerUpload },
+  ] = useImageAndBannerImage();
+
   const [groupsOfOffers, setGroupsOfOffers] = useState([]);
   const [form] = Form.useForm();
   const pathwayStore = PathwayStore.useContainer();
   const offerStore = OfferStore.useContainer();
-
-  const onChangeUpload = (e) => {
-    const { file } = e;
-    if (file) {
-      setFile(file);
-    }
-  };
 
   const [{ data: getDataFields }] = useAxios('/datafields');
 
@@ -36,10 +35,7 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
 
   const [{ data: getProviders }] = useAxios('/providers');
 
-  const [
-    { data: postData, error: postError, response },
-    createPathway,
-  ] = useAxios(
+  const [{ error: postError }, createPathway] = useAxios(
     {
       url: '/pathways?scope=with_details',
       method: 'POST',
@@ -104,7 +100,7 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
         ({ group_name }) => group_name
       );
 
-      const response = await createPathway({
+      const { data, status } = await createPathway({
         data: {
           ...values,
           group_sort_order: yearSubmission,
@@ -112,30 +108,60 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
         },
       });
 
-      if (response.data && file && userId) {
-        const { name, type } = file;
-        const results = await UploaderService.upload({
-          name,
-          mime_type: type,
-          uploaded_by_user_id: userId,
-          fileable_type: 'pathway',
-          fileable_id: response.data.id,
-          binaryFile: file.originFileObj,
-        });
-
-        response.data.Files = [{ ...results.file.data }];
-
-        pathwayStore.updateOne(response.data);
-
-        if (results.success) {
-          notification.success({
-            message: 'Success',
-            description: 'Image is uploaded',
-          });
-        }
+      if (data) {
+        pathwayStore.addOne(data);
       }
 
-      if (response && response.status === 201) {
+      if (data && userId) {
+        const fileable_type = 'pathway';
+        let clonedResponse = Object.assign(data);
+        const filePayload = [];
+        if (file) {
+          const results = await UploaderService.uploadFile(file, {
+            uploaded_by_user_id: userId,
+            fileable_type,
+            fileable_id: data.id,
+          });
+
+          if (results && results.file.data) {
+            filePayload.push({ ...results.file.data });
+          }
+
+          if (results.success) {
+            notification.success({
+              message: 'Success',
+              description: 'Main image is uploaded',
+            });
+          }
+        }
+        if (bannerFile) {
+          const results = await UploaderService.uploadFile(bannerFile, {
+            uploaded_by_user_id: userId,
+            fileable_type,
+            fileable_id: data.id,
+            meta: 'banner-image',
+          });
+
+          if (results && results.file.data) {
+            filePayload.push({ ...results.file.data });
+          }
+
+          if (results.success) {
+            notification.success({
+              message: 'Success',
+              description: 'Banner image is uploaded',
+            });
+          }
+        }
+        clonedResponse.Files = [...filePayload];
+        pathwayStore.updateOne(clonedResponse);
+      }
+
+      if (data && status === 201) {
+        notification.success({
+          message: status,
+          description: 'Successfully created pathway',
+        });
         form.resetFields();
         closeModal();
       }
@@ -165,22 +191,13 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
         description: statusText,
       });
     }
-    if (postData) {
-      pathwayStore.addOne(postData);
-    }
-    if (response && response.status === 201) {
-      notification.success({
-        message: response.status,
-        description: 'Successfully created pathway',
-      });
-    }
     if (getOffers) {
       offerStore.addMany(getOffers);
     }
     if (getProviders) {
       providerStore.addMany(getProviders);
     }
-  }, [getDataFields, response, postError, getProviders, formRef]);
+  }, [getDataFields, postError, getProviders, formRef]);
 
   return (
     <div>
@@ -192,8 +209,10 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
             groupsOfOffers={groupsOfOffers}
             setGroupsOfOffers={setGroupsOfOffers}
             userId={userId}
-            onChangeUpload={onChangeUpload}
+            onChangeUpload={onChangeFileUpload}
+            onChangeBannerUpload={onChangeBannerUpload}
             file={file}
+            bannerFile={bannerFile}
             providers={providerEntities}
             role={role}
             form={form}

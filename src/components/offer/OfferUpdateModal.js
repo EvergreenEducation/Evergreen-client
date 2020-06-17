@@ -49,10 +49,7 @@ export default function OfferUpdateModal({
 
   const [form] = Form.useForm();
 
-  const [
-    { data: updateOfferPayload, error: updateOfferError },
-    updateOffer,
-  ] = useAxios(
+  const [{ error: updateOfferError }, updateOffer] = useAxios(
     {
       method: 'PUT',
     },
@@ -148,16 +145,18 @@ export default function OfferUpdateModal({
             });
           }
         }
+      }
 
-        offerStore.updateOne(offerEntity);
+      if (data) {
+        offerStore.updateOne(data);
       }
 
       if (status === 200) {
-        let clonedData = Object.assign(data);
         if (filePayload.length) {
+          let clonedData = Object.assign(data);
           clonedData.Files = filePayload;
+          offerStore.updateOne(clonedData);
         }
-        offerStore.updateOne(clonedData);
         notification.success({
           message: status,
           description: 'Successfully updated offer',
@@ -204,7 +203,7 @@ export default function OfferUpdateModal({
       populateFields(offer);
     }
     if (offer.Files) {
-      let orderedFiles = flow([
+      let groupedFiles = flow([
         (v) => v.filter((f) => f.fileable_type === 'offer'),
         (v) => groupBy(v, 'meta'),
         (v) =>
@@ -217,14 +216,14 @@ export default function OfferUpdateModal({
           ),
       ])(offer.Files);
 
-      if (!onFileChange && orderedFiles[null]) {
-        setFile(head(orderedFiles[null]));
+      if (!onFileChange && groupedFiles[null]) {
+        setFile(head(groupedFiles[null]));
       }
-      if (!onBannerFileChange && orderedFiles['banner-image']) {
-        setBannerFile(head(orderedFiles['banner-image']));
+      if (!onBannerFileChange && groupedFiles['banner-image']) {
+        setBannerFile(head(groupedFiles['banner-image']));
       }
     }
-  }, [updateOfferPayload, offer, updateOfferError, formRef, file, bannerFile]);
+  }, [offer, updateOfferError, formRef, file, bannerFile]);
 
   return (
     <Modal
