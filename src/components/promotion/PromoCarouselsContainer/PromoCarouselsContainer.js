@@ -84,7 +84,7 @@ export default function () {
         swipeScrollTolerance={1}
       >
         {mainPromos.map((promo, index) => {
-          return <PromoCard key={index} data={promo} />;
+          return <PromoCard key={index} data={promo} banner={true} />;
         })}
       </Carousel>
       <TitleDivider
