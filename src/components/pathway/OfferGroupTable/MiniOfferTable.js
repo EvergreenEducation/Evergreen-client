@@ -1,16 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { flowRight, uniqBy, sortBy, uniqueId } from 'lodash';
 import dayjs from 'dayjs';
 
 const { Column } = Table;
 
-class MiniOfferTable extends Component {
-  componentWillReceiveProps(nextProps) {}
-  shouldComponentUpdate(nextProps, nextState) {
-    return true;
-  }
-
+class MiniOfferTable extends PureComponent {
   render() {
     let { groupOfOffers = [], offerStore } = this.props;
 

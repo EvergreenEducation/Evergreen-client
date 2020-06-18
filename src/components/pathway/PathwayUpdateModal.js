@@ -87,7 +87,7 @@ export default function PathwayUpdateModal({
           offer_ids: g.removed ? [] : map(g.offers, 'offer_id'),
           year,
         };
-        const semester = form.getFieldValue(`${g.group_name}_semester`);
+        const semester = form.getFieldValue(`${g.group_name}_semester`) || null;
 
         if (semester) {
           return {
@@ -305,6 +305,7 @@ export default function PathwayUpdateModal({
             providers={providerEntities}
             role={role}
             form={form}
+            offerStore={offerStore}
           />
         </div>
         <section

@@ -13,7 +13,7 @@ import { TitleDivider } from 'components/shared';
 import { ImageUploadAndNameInputs } from 'components/shared';
 import { groupBy, property, isNil, compact } from 'lodash';
 import 'assets/scss/antd-overrides.scss';
-import OfferGroupTable from './OfferGroupTable';
+import OfferGroupTable from './OfferGroupTable/OfferGroupTable';
 
 const { Option } = Select;
 
@@ -39,6 +39,7 @@ export default function PathwayForm({
   form,
   onChangeBannerUpload,
   bannerFile,
+  offerStore,
 }) {
   providers = compact(providers);
   datafields = Object.values(datafields);
@@ -83,6 +84,7 @@ export default function PathwayForm({
       <TitleDivider title={'Add Offers Group'} />
       <Row>
         <OfferGroupTable
+          offerStore={offerStore}
           pathway={pathway}
           groupsOfOffers={groupsOfOffers}
           setGroupsOfOffers={setGroupsOfOffers}
