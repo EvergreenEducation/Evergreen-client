@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from 'antd';
-import { head, filter } from 'lodash';
+import { last, filter, orderBy } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import './promo-card.scss';
@@ -21,7 +21,9 @@ export default function ({
     files = filter(data.Files, (f) => f.meta !== 'banner-image');
   }
 
-  const imageSrc = files.length && head(files) ? head(files).file_link : null;
+  files = orderBy(files, ['createdAt', 'asc']);
+
+  const imageSrc = files.length && last(files) ? last(files).file_link : null;
 
   let link = '/';
   if (data.entity_type === 'provider') {
