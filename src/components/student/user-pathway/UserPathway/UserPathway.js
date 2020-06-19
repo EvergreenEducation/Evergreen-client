@@ -10,6 +10,8 @@ import {
   faCalendarAlt,
   faChartBar,
   faChartLine,
+  faCompress,
+  faExpand,
 } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import { Carousel } from 'react-responsive-carousel';
@@ -35,6 +37,7 @@ export default function ({
   const [pathwayChartData, setPathwayChartData] = useState({});
   const [groupChartData, setGroupChartData] = useState({});
   const [currentGroupChartData, setCurrentGroupChartData] = useState({});
+  const [toggleChartScale, setToggleChartScale] = useState(false);
 
   const [totalPay, setTotalPay] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
@@ -239,49 +242,71 @@ export default function ({
         {
           <>
             <div className={`${!switchChart ? 'block' : 'hidden'}`}>
-              <Carousel
-                className={`cursor-grab mb-4 ${
-                  toggleFilterByGroup ? 'block' : 'hidden'
-                }`}
-                centerMode
-                infiniteLoop
-                centerSlidePercentage={100}
-                showArrows={true}
-                showIndicators={false}
-                swipeable={true}
-                emulateTouch={true}
-                showStatus={true}
-                showThumbs={false}
-                swipeScrollTolerance={1}
-                statusFormatter={handleCurrentItem}
-              >
-                {groupNames.map((group_name, index) => {
-                  let data = {};
-                  if (
-                    groupChartData[group_name] &&
-                    groupChartData[group_name].data
-                  ) {
-                    data = groupChartData[group_name].data;
-                  }
-                  return (
-                    <UserPathwayChart
-                      groups={groups}
-                      groupName={group_name}
-                      key={index}
-                      student={student}
-                      pathway={pathway}
-                      data={data}
-                    />
-                  );
-                }) || 'N/A'}
-              </Carousel>
-              <UserPathwayChart
-                className={`mb-2 ${!toggleFilterByGroup ? 'block' : 'hidden'}`}
-                groups={groups}
-                student={student}
-                pathway={pathway}
-                data={pathwayChartData}
-              />
+              <div className={`${toggleFilterByGroup ? 'chartWrapper' : ''}`}>
+                <div
+                  className={`chartAreaWrapper ${
+                    !toggleChartScale
+                      ? 'chartAreaWrapper--scaleDown'
+                      : 'chartAreaWrapper--scaleUp'
+                  }`}
+                >
+                  <Carousel
+                    className={`cursor-grab mb-4 ${
+                      toggleFilterByGroup ? 'block' : 'hidden'
+                    }`}
+                    centerMode
+                    infiniteLoop
+                    centerSlidePercentage={100}
+                    showArrows={true}
+                    showIndicators={false}
+                    swipeable={true}
+                    emulateTouch={true}
+                    showStatus={true}
+                    showThumbs={false}
+                    swipeScrollTolerance={1}
+                    statusFormatter={handleCurrentItem}
+                  >
+                    {groupNames.map((group_name, index) => {
+                      let data = {};
+                      if (
+                        groupChartData[group_name] &&
+                        groupChartData[group_name].data
+                      ) {
+                        data = groupChartData[group_name].data;
+                      }
+                      return (
+                        <UserPathwayChart
+                          groups={groups}
+                          groupName={group_name}
+                          key={index}
+                          student={student}
+                          pathway={pathway}
+                          data={data}
+                        />
+                      );
+                    }) || 'N/A'}
+                  </Carousel>
+                </div>
+              </div>
+              <div className={`${toggleFilterByGroup ? '' : 'chartWrapper'}`}>
+                <div
+                  className={`chartAreaWrapper ${
+                    !toggleChartScale
+                      ? 'chartAreaWrapper--scaleDown'
+                      : 'chartAreaWrapper--scaleUp'
+                  }`}
+                >
+                  <UserPathwayChart
+                    className={`mb-2 ${
+                      !toggleFilterByGroup ? 'block' : 'hidden'
+                    }`}
+                    groups={groups}
+                    student={student}
+                    pathway={pathway}
+                    data={pathwayChartData}
+                  />
+                </div>
+              </div>
             </div>
             <ExpenseEarningChart
               className={`${!switchChart ? 'hidden' : 'block'}`}
@@ -292,6 +317,21 @@ export default function ({
           </>
         }
         <div className="flex bg-white justify-end px-2">
+          {!switchChart && (
+            <Button
+              className="flex justify-center items-center"
+              type={toggleChartScale ? 'primary' : 'default'}
+              size="small"
+              onClick={() => setToggleChartScale(!toggleChartScale)}
+              icon={
+                toggleChartScale ? (
+                  <FontAwesomeIcon icon={faCompress} />
+                ) : (
+                  <FontAwesomeIcon icon={faExpand} />
+                )
+              }
+            />
+          )}
           {!switchChart && (
             <Button
               className="flex justify-center items-center mx-2"

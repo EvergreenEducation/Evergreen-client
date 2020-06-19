@@ -1,0 +1,22 @@
+.chartWrapper {
+  border: 1px solid transparent;
+  position: relative;
+  overflow-x: auto;
+}
+
+.chartWrapper > canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+.chartAreaWrapper {
+  &--scaleUp {
+    border: 1px solid transparent;
+    width: 100vw;
+  }
+  &--scaleDown {
+    width: 100%;
+  }
+}
