@@ -1,16 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from 'antd';
-import { last } from 'lodash';
+import { last, filter } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import './promo-card.scss';
 
-export default function ({ data, size = 'default', style, className }) {
-  const imageSrc =
-    last(data.Files) && last(data.Files).file_link
-      ? last(data.Files).file_link
-      : null;
+export default function ({
+  data,
+  size = 'default',
+  style,
+  className,
+  banner = false,
+}) {
+  let files = [];
+
+  if (banner) {
+    files = filter(data.Files, ['meta', 'banner-image']);
+  } else {
+    files = filter(data.Files, (f) => f.meta !== 'banner-image');
+  }
+
+  const imageSrc = files.length && last(files) ? last(files).file_link : null;
 
   let link = '/';
   if (data.entity_type === 'provider') {

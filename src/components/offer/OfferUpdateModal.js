@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Modal, Form, Table, Button, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -8,7 +8,8 @@ import dayjs from 'dayjs';
 import moment from 'moment';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
-import { compact, orderBy, head } from 'lodash';
+import { compact, orderBy, head, groupBy, flow, mapValues } from 'lodash';
+import { useImageAndBannerImage } from 'hooks';
 import 'assets/scss/antd-overrides.scss';
 
 configure({
@@ -27,8 +28,17 @@ export default function OfferUpdateModal({
 }) {
   const formRef = useRef(null);
   const { id: userId, provider_id } = AuthService.currentSession;
-  const [file, setFile] = useState(null);
-  const [onFileChange, setOnFileChange] = useState(false);
+  const [
+    { file, newFile, onFileChange, setFile, onChangeFileUpload },
+    {
+      bannerFile,
+      onBannerFileChange,
+      newBannerFile,
+      setBannerFile,
+      onChangeBannerUpload,
+    },
+    reset,
+  ] = useImageAndBannerImage();
 
   const {
     RelatedOffers = [],
@@ -39,18 +49,7 @@ export default function OfferUpdateModal({
 
   const [form] = Form.useForm();
 
-  const onChangeUpload = (e) => {
-    const { file } = e;
-    if (file) {
-      setFile(file);
-      setOnFileChange(true);
-    }
-  };
-
-  const [
-    { data: updateOfferPayload, error: updateOfferError },
-    updateOffer,
-  ] = useAxios(
+  const [{ error: updateOfferError }, updateOffer] = useAxios(
     {
       method: 'PUT',
     },
@@ -89,7 +88,7 @@ export default function OfferUpdateModal({
         'external_url',
       ]);
 
-      const response = await updateOffer({
+      const { data, status } = await updateOffer({
         url: `/offers/${offer.id}`,
         data: {
           ...values,
@@ -97,36 +96,69 @@ export default function OfferUpdateModal({
         },
       });
 
-      if (onFileChange && response.data && file && userId) {
-        const { name, type } = file;
-        const results = await UploaderService.upload({
-          name,
-          mime_type: type,
-          uploaded_by_user_id: userId,
-          fileable_type: 'offer',
-          fileable_id: response.data.id,
-          binaryFile: file.originFileObj,
-        });
+      const fileable_type = 'offer';
+      let filePayload = [];
 
-        const offerEntity = offerStore.entities[response.data.id];
-        offerEntity.Files.push({
-          ...results.file.data,
-        });
+      if (data && userId) {
+        const offerEntity = offerStore.entities[data.id];
+        filePayload = [...offerEntity.Files];
 
-        offerStore.updateOne(offerEntity);
-
-        if (results.success) {
-          notification.success({
-            message: 'Success',
-            description: 'Image is uploaded',
+        if (onFileChange && newFile) {
+          const results = await UploaderService.uploadFile(newFile, {
+            uploaded_by_user_id: userId,
+            fileable_type,
+            fileable_id: data.id,
           });
+
+          if (results && results.file.data) {
+            filePayload.push({
+              ...results.file.data,
+            });
+          }
+
+          if (results.success) {
+            notification.success({
+              message: 'Success',
+              description: 'Main image is uploaded',
+            });
+          }
+        }
+
+        if (onBannerFileChange && newBannerFile) {
+          const results = await UploaderService.uploadFile(newBannerFile, {
+            uploaded_by_user_id: userId,
+            fileable_type,
+            fileable_id: data.id,
+            meta: 'banner-image',
+          });
+
+          if (results && results.file.data) {
+            filePayload.push({
+              ...results.file.data,
+            });
+          }
+
+          if (results.success) {
+            notification.success({
+              message: 'Success',
+              description: 'Banner image is uploaded',
+            });
+          }
         }
       }
 
-      if (response && response.status === 200) {
-        offerStore.updateOne(response.data);
+      if (data) {
+        offerStore.updateOne(data);
+      }
+
+      if (status === 200) {
+        if (filePayload.length) {
+          let clonedData = Object.assign(data);
+          clonedData.Files = filePayload;
+          offerStore.updateOne(clonedData);
+        }
         notification.success({
-          message: response.status,
+          message: status,
           description: 'Successfully updated offer',
         });
         onCancel();
@@ -171,18 +203,31 @@ export default function OfferUpdateModal({
       populateFields(offer);
     }
     if (offer.Files) {
-      let orderedFiles = orderBy(
-        offer.Files,
-        ['fileable_type', 'createdAt', 'id'],
-        ['desc', 'desc', 'asc']
-      );
-      orderedFiles = orderedFiles.filter((f) => f.fileable_type === 'offer');
-      setFile(head(orderedFiles));
+      let groupedFiles = flow([
+        (v) => v.filter((f) => f.fileable_type === 'offer'),
+        (v) => groupBy(v, 'meta'),
+        (v) =>
+          mapValues(v, (f) =>
+            orderBy(
+              f,
+              ['fileable_type', 'createdAt', 'id'],
+              ['desc', 'desc', 'asc']
+            )
+          ),
+      ])(offer.Files);
+
+      if (!onFileChange && groupedFiles[null]) {
+        setFile(head(groupedFiles[null]));
+      }
+      if (!onBannerFileChange && groupedFiles['banner-image']) {
+        setBannerFile(head(groupedFiles['banner-image']));
+      }
     }
-  }, [updateOfferPayload, offer, updateOfferError, formRef]);
+  }, [offer, updateOfferError, formRef, file, bannerFile]);
 
   return (
     <Modal
+      destroyOnClose={true}
       forceRender={true}
       className="custom-modal"
       title={'Update Offer'}
@@ -192,7 +237,7 @@ export default function OfferUpdateModal({
       footer={true}
       onCancel={onCancel}
       afterClose={() => {
-        setFile(null);
+        reset();
       }}
     >
       <Form form={form} ref={formRef}>
@@ -204,10 +249,12 @@ export default function OfferUpdateModal({
             offer={offer}
             userId={userId}
             providerId={provider_id}
-            onChangeUpload={onChangeUpload}
+            onChangeUpload={onChangeFileUpload}
             file={file}
             scopedToProvider={scopedToProvider}
             role={role}
+            bannerFile={bannerFile}
+            onChangeBannerUpload={onChangeBannerUpload}
           />
           <section className="mt-2">
             <label className="mb-2 block">Pathways - Table</label>

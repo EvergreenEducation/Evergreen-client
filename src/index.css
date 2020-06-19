@@ -75,3 +75,7 @@ code {
 .border-r-none {
   border-right: none;
 }
+
+.ant-notification-notice {
+  padding: 12px !important;
+}

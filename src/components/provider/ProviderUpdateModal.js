@@ -1,12 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Modal, Form, Table, Button, notification } from 'antd';
 import ProviderForm from 'components/provider/ProviderForm';
 import axiosInstance from 'services/AxiosInstance';
-import { isNil, groupBy, orderBy, head } from 'lodash';
+import { isNil, groupBy, orderBy, head, flowRight, mapValues } from 'lodash';
 import { configure } from 'axios-hooks';
 import useGlobalStore from 'store/GlobalStore';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
+import { useImageAndBannerImage } from 'hooks';
 import 'assets/scss/antd-overrides.scss';
 
 configure({
@@ -72,16 +73,17 @@ export default function ProviderUpdateModal(props) {
   const { Offers = [], Pathways = [] } = provider;
 
   const { provider: providerStore } = useGlobalStore();
-  const [file, setFile] = useState(null);
-  const [onFileChange, setOnFileChange] = useState(false);
-
-  const onChangeUpload = (e) => {
-    const { file } = e;
-    if (file) {
-      setFile(file);
-      setOnFileChange(true);
-    }
-  };
+  const [
+    { file, newFile, onFileChange, setFile, onChangeFileUpload },
+    {
+      bannerFile,
+      onBannerFileChange,
+      newBannerFile,
+      setBannerFile,
+      onChangeBannerUpload,
+    },
+    reset,
+  ] = useImageAndBannerImage();
 
   const groupedDataFields = groupBy(provider.DataFields, 'type') || [];
   let providerType = null;
@@ -115,17 +117,28 @@ export default function ProviderUpdateModal(props) {
     }
 
     if (provider.Files) {
-      let orderedFiles = orderBy(
-        provider.Files,
-        ['fileable_type', 'createdAt', 'id'],
-        ['desc', 'desc', 'id']
-      );
+      let groupedFiles = flowRight([
+        (v) =>
+          mapValues(v, (f) =>
+            orderBy(
+              f,
+              ['fileable_type', 'createdAt', 'id'],
+              ['desc', 'desc', 'asc']
+            )
+          ),
+        (v) => groupBy(v, 'meta'),
+        (v) => v.filter((f) => f.fileable_type === 'provider'),
+      ])(provider.Files);
 
-      orderedFiles = orderedFiles.filter((f) => f.fileable_type === 'provider');
-      setFile(head(orderedFiles));
+      if (!onFileChange && groupedFiles[null]) {
+        setFile(head(groupedFiles[null]));
+      }
+      if (!onBannerFileChange && groupedFiles['banner-image']) {
+        setBannerFile(head(groupedFiles['banner-image']));
+      }
     }
     return;
-  }, [provider, provider.Files, formRef]);
+  }, [provider, provider.Files, formRef, file, bannerFile]);
 
   const submitUpdate = async () => {
     try {
@@ -151,43 +164,75 @@ export default function ProviderUpdateModal(props) {
         'external_url',
       ]);
 
-      const response = await axiosInstance.put(`/providers/${provider.id}`, {
-        ...values,
-        topics: values.topics,
-      });
-
-      if (response && response.status === 200) {
-        if (response.data) {
-          providerStore.updateOne(response.data);
+      const { data, status } = await axiosInstance.put(
+        `/providers/${provider.id}`,
+        {
+          ...values,
+          topics: values.topics,
         }
-        if (onFileChange && response.data && file && userId) {
-          const { name, type } = file;
-          const results = await UploaderService.upload({
-            name,
-            mime_type: type,
+      );
+
+      const fileable_type = 'provider';
+      let filePayload = [];
+
+      if (data && userId) {
+        const providerEntity = providerStore.entities[data.id];
+        filePayload = [...providerEntity.Files];
+
+        if (onFileChange && newFile) {
+          const results = await UploaderService.uploadFile(newFile, {
             uploaded_by_user_id: userId,
-            fileable_type: 'provider',
-            fileable_id: response.data.id,
-            binaryFile: file.originFileObj,
+            fileable_type,
+            fileable_id: data.id,
           });
 
-          const providerEntity = providerStore.entities[response.data.id];
-          providerEntity.Files.push({
-            ...results.file.data,
-          });
-
-          providerStore.updateOne(providerEntity);
+          if (results && results.file.data) {
+            filePayload.push({
+              ...results.file.data,
+            });
+          }
 
           if (results.success) {
             notification.success({
               message: 'Success',
-              description: 'Image is uploaded',
+              description: 'Main image is uploaded',
             });
           }
         }
 
+        if (onBannerFileChange && newBannerFile) {
+          const results = await UploaderService.uploadFile(newBannerFile, {
+            uploaded_by_user_id: userId,
+            fileable_type,
+            fileable_id: data.id,
+            meta: 'banner-image',
+          });
+
+          if (results && results.file.data) {
+            filePayload.push({
+              ...results.file.data,
+            });
+          }
+
+          if (results.success) {
+            notification.success({
+              message: 'Success',
+              description: 'Banner image is uploaded',
+            });
+          }
+        }
+
+        providerStore.updateOne(data);
+      }
+
+      if (status === 200) {
+        if (filePayload.length) {
+          let clonedData = Object.assign(data);
+          clonedData.Files = filePayload;
+          providerStore.updateOne(clonedData);
+        }
         notification.success({
-          message: response.status,
+          message: status,
           description: 'Successfully updated provider',
         });
         onCancel();
@@ -208,7 +253,7 @@ export default function ProviderUpdateModal(props) {
       footer={true}
       onCancel={onCancel}
       afterClose={() => {
-        setFile(null);
+        reset();
       }}
     >
       <Form form={form} ref={formRef}>
@@ -217,8 +262,10 @@ export default function ProviderUpdateModal(props) {
             role={role}
             datafields={datafields}
             userId={userId}
-            onChangeUpload={onChangeUpload}
+            onChangeUpload={onChangeFileUpload}
             file={file}
+            bannerFile={bannerFile}
+            onChangeBannerUpload={onChangeBannerUpload}
           />
           <section className="mt-2">
             <label className="mb-2 block">Offers - Table</label>

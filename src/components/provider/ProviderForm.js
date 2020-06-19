@@ -16,7 +16,15 @@ import 'assets/scss/antd-overrides.scss';
 const { Option } = Select;
 
 const ProviderForm = (props) => {
-  const { datafields = [], userId = null, onChangeUpload, file, role } = props;
+  const {
+    datafields = [],
+    userId = null,
+    onChangeUpload,
+    file,
+    role,
+    bannerFile,
+    onChangeBannerUpload,
+  } = props;
 
   useEffect(() => {}, [props.datafields, file]);
 
@@ -51,7 +59,9 @@ const ProviderForm = (props) => {
         className="mb-2"
         userId={userId}
         onChangeUpload={onChangeUpload}
+        onChangeBannerUpload={onChangeBannerUpload}
         file={file}
+        bannerFile={bannerFile}
       >
         <Row gutter={8}>
           <Col xs={24} sm={24} md={18}>

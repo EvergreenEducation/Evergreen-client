@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Button, Form, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -7,6 +7,7 @@ import useGlobalStore from 'store/GlobalStore';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import { head, reject } from 'lodash';
+import { useImageAndBannerImage } from 'hooks';
 
 configure({
   axios: axiosInstance,
@@ -15,7 +16,10 @@ configure({
 const OfferCreationContainer = ({ closeModal, role, providerId }) => {
   const { id: userId, provider_id } = AuthService.currentSession;
   const formRef = useRef(null);
-  const [file, setFile] = useState(null);
+  const [
+    { file, onChangeFileUpload },
+    { bannerFile, onChangeBannerUpload },
+  ] = useImageAndBannerImage();
   const [form] = Form.useForm();
   const [{ data: offerPayload, error: offerError }, createOffer] = useAxios(
     {
@@ -24,13 +28,6 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
     },
     { manual: true }
   );
-
-  const onChangeUpload = (e) => {
-    const { file } = e;
-    if (file) {
-      setFile(file);
-    }
-  };
 
   const {
     datafield: datafieldStore,
@@ -80,27 +77,49 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
         offerStore.addOne(offerResponse.data);
       }
 
-      if (offerResponse.data && file && userId) {
-        const { name, type } = file;
-        const results = await UploaderService.upload({
-          name,
-          mime_type: type,
-          uploaded_by_user_id: userId,
-          fileable_type: 'offer',
-          fileable_id: offerResponse.data.id,
-          binaryFile: file.originFileObj,
-        });
-
-        offerResponse.data.Files = [{ ...results.file.data }];
-
-        offerStore.updateOne(offerResponse);
-
-        if (results.success) {
-          notification.success({
-            message: 'Success',
-            description: 'Image is uploaded',
+      if (offerResponse.data && userId) {
+        const fileable_type = 'offer';
+        let clonedResponse = Object.assign(offerResponse.data);
+        const filePayload = [];
+        if (file) {
+          const results = await UploaderService.uploadFile(file, {
+            uploaded_by_user_id: userId,
+            fileable_type,
+            fileable_id: offerResponse.data.id,
           });
+
+          if (results && results.file.data) {
+            filePayload.push({ ...results.file.data });
+          }
+
+          if (results.success) {
+            notification.success({
+              message: 'Success',
+              description: 'Main image is uploaded',
+            });
+          }
         }
+        if (bannerFile) {
+          const results = await UploaderService.uploadFile(bannerFile, {
+            uploaded_by_user_id: userId,
+            fileable_type,
+            fileable_id: offerResponse.data.id,
+            meta: 'banner-image',
+          });
+
+          if (results && results.file.data) {
+            filePayload.push({ ...results.file.data });
+          }
+
+          if (results.success) {
+            notification.success({
+              message: 'Success',
+              description: 'Banner image is uploaded',
+            });
+          }
+        }
+        clonedResponse.Files = [...filePayload];
+        offerStore.updateOne(clonedResponse);
       }
 
       if (offerResponse && offerResponse.status === 201) {
@@ -150,7 +169,9 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
             userId={userId}
             providerId={provider_id}
             file={file}
-            onChangeUpload={onChangeUpload}
+            onChangeUpload={onChangeFileUpload}
+            bannerFile={bannerFile}
+            onChangeBannerUpload={onChangeBannerUpload}
           />
         </div>
         <section

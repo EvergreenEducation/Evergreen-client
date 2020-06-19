@@ -121,9 +121,11 @@ export default function ({
   let creditEarned = 0;
 
   const earningByGroup = {};
+  const costByGroup = {};
 
   each(Object.values(groups), function (_group, index) {
     let totalPayOfGroup = 0;
+    let totalCostOfGroup = 0;
 
     each(_group, function (o) {
       const offer = offerStore.entities[o.offer_id];
@@ -141,11 +143,13 @@ export default function ({
         }
         if (offer.cost) {
           _totalCost += offer.cost;
+          totalCostOfGroup += offer.cost;
         }
       }
     });
 
     earningByGroup[groupNames[index]] = totalPayOfGroup;
+    costByGroup[groupNames[index]] = totalCostOfGroup;
   });
 
   const getChartData = async (student_id, pathway_id, group_name) => {
@@ -283,6 +287,7 @@ export default function ({
               className={`${!switchChart ? 'hidden' : 'block'}`}
               pathway={pathway}
               earningByGroup={earningByGroup}
+              costByGroup={costByGroup}
             />
           </>
         }

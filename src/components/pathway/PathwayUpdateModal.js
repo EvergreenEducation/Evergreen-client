@@ -4,11 +4,21 @@ import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import DataFieldStore from 'store/DataField';
 import PathwayForm from 'components/pathway/PathwayForm';
-import dayjs from 'dayjs';
-import { groupBy, isNil, orderBy, map, head, reject, sortBy } from 'lodash';
+import {
+  groupBy,
+  isNil,
+  orderBy,
+  map,
+  head,
+  reject,
+  sortBy,
+  mapValues,
+  flowRight,
+} from 'lodash';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import OfferStore from 'store/Offer';
+import { useImageAndBannerImage } from 'hooks';
 import 'assets/scss/antd-overrides.scss';
 
 configure({
@@ -25,8 +35,18 @@ export default function PathwayUpdateModal({
 }) {
   const formRef = useRef(null);
   const { id: userId, provider_id } = AuthService.currentSession;
-  const [file, setFile] = useState(null);
-  const [onFileChange, setOnFileChange] = useState(false);
+  const [
+    { file, newFile, onFileChange, setFile, onChangeFileUpload },
+    {
+      bannerFile,
+      onBannerFileChange,
+      newBannerFile,
+      setBannerFile,
+      onChangeBannerUpload,
+    },
+    reset,
+  ] = useImageAndBannerImage();
+
   const [groupsOfOffers, setGroupsOfOffers] = useState([]);
 
   const [form] = Form.useForm();
@@ -38,14 +58,6 @@ export default function PathwayUpdateModal({
     },
     { manual: true }
   );
-
-  const onChangeUpload = (e) => {
-    const { file } = e;
-    if (file) {
-      setFile(file);
-      setOnFileChange(true);
-    }
-  };
 
   const submitUpdate = async () => {
     try {
@@ -75,7 +87,7 @@ export default function PathwayUpdateModal({
           offer_ids: g.removed ? [] : map(g.offers, 'offer_id'),
           year,
         };
-        const semester = form.getFieldValue(`${g.group_name}_semester`);
+        const semester = form.getFieldValue(`${g.group_name}_semester`) || null;
 
         if (semester) {
           return {
@@ -101,49 +113,78 @@ export default function PathwayUpdateModal({
         ({ group_name }) => group_name
       );
 
-      const response = await updatePathway({
+      const { data, status } = await updatePathway({
         url: `/pathways/${pathway.id}`,
         data: {
           ...values,
           group_sort_order: yearSubmission,
           groups_of_offers,
-          updatedAt: new dayjs().toISOString(),
         },
       });
 
-      if (response && response.data) {
-        pathwayStore.updateOne(response.data);
-      }
+      const fileable_type = 'pathway';
+      let filePayload = [];
 
-      if (onFileChange && response.data && file && userId) {
-        const { name, type } = file;
-        const results = await UploaderService.upload({
-          name,
-          mime_type: type,
-          uploaded_by_user_id: userId,
-          fileable_type: 'pathway',
-          fileable_id: response.data.id,
-          binaryFile: file.originFileObj,
-        });
+      if (data && userId) {
+        const pathwayEntity = pathwayStore.entities[data.id];
+        filePayload = [...pathwayEntity.Files];
 
-        const pathwayEntity = pathwayStore.entities[response.data.id];
-        pathwayEntity.Files.push({
-          ...results.file.data,
-        });
-
-        pathwayStore.updateOne(pathwayEntity);
-
-        if (results.success) {
-          notification.success({
-            message: 'Success',
-            description: 'Image is uploaded',
+        if (onFileChange && newFile) {
+          const results = await UploaderService.uploadFile(newFile, {
+            uploaded_by_user_id: userId,
+            fileable_type,
+            fileable_id: data.id,
           });
+
+          if (results && results.file.data) {
+            filePayload.push({
+              ...results.file.data,
+            });
+          }
+
+          if (results.success) {
+            notification.success({
+              message: 'Success',
+              description: 'Main image is uploaded',
+            });
+          }
+        }
+
+        if (onBannerFileChange && newBannerFile) {
+          const results = await UploaderService.uploadFile(newBannerFile, {
+            uploaded_by_user_id: userId,
+            fileable_type,
+            fileable_id: data.id,
+            meta: 'banner-image',
+          });
+
+          if (results && results.file.data) {
+            filePayload.push({
+              ...results.file.data,
+            });
+          }
+
+          if (results.success) {
+            notification.success({
+              message: 'Success',
+              description: 'Banner image is uploaded',
+            });
+          }
         }
       }
 
-      if (response && response.status === 200) {
+      if (data) {
+        pathwayStore.updateOne(data);
+      }
+
+      if (status === 200) {
+        if (filePayload.length) {
+          let clonedData = Object.assign(data);
+          clonedData.Files = filePayload;
+          pathwayStore.updateOne(clonedData);
+        }
         notification.success({
-          message: response.status,
+          message: status,
           description: 'Successfully updated pathway',
         });
         onCancel();
@@ -191,6 +232,7 @@ export default function PathwayUpdateModal({
         });
       }
     }
+
     if (putError) {
       const { status, statusText } = putError.request;
       notification.error({
@@ -198,17 +240,29 @@ export default function PathwayUpdateModal({
         description: statusText,
       });
     }
-    if (pathway.Files) {
-      let orderedFiles = orderBy(
-        pathway.Files,
-        ['fileable_type', 'createdAt', 'id'],
-        ['desc', 'desc', 'asc']
-      );
 
-      orderedFiles = orderedFiles.filter((f) => f.fileable_type === 'pathway');
-      setFile(head(orderedFiles));
+    if (pathway.Files) {
+      let groupedFiles = flowRight([
+        (v) =>
+          mapValues(v, (f) =>
+            orderBy(
+              f,
+              ['fileable_type', 'createdAt', 'id'],
+              ['desc', 'desc', 'asc']
+            )
+          ),
+        (v) => groupBy(v, 'meta'),
+        (v) => v.filter((f) => f.fileable_type === 'pathway'),
+      ])(pathway.Files);
+
+      if (!onFileChange && groupedFiles[null]) {
+        setFile(head(groupedFiles[null]));
+      }
+      if (!onBannerFileChange && groupedFiles['banner-image']) {
+        setBannerFile(head(groupedFiles['banner-image']));
+      }
     }
-  }, [pathway, putError, formRef]);
+  }, [pathway, putError, formRef, file, bannerFile]);
 
   let providerEntities = providers;
 
@@ -223,7 +277,7 @@ export default function PathwayUpdateModal({
       footer={true}
       onCancel={onCancel}
       afterClose={() => {
-        setFile(null);
+        reset();
       }}
     >
       <Form
@@ -244,11 +298,14 @@ export default function PathwayUpdateModal({
             groupsOfOffers={groupsOfOffers}
             setGroupsOfOffers={setGroupsOfOffers}
             userId={userId}
-            onChangeUpload={onChangeUpload}
+            onChangeUpload={onChangeFileUpload}
             file={file}
+            bannerFile={bannerFile}
+            onChangeBannerUpload={onChangeBannerUpload}
             providers={providerEntities}
             role={role}
             form={form}
+            offerStore={offerStore}
           />
         </div>
         <section
