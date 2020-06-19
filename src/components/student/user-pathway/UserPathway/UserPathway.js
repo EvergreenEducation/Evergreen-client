@@ -238,6 +238,11 @@ export default function ({
     return null;
   };
 
+  let chartWidth = 423;
+  if (pathwayChartData && pathwayChartData.labels) {
+    chartWidth = chartWidth + pathwayChartData.labels.length * 15;
+  }
+
   return (
     <div className="infoLayout mb-3">
       <header className="mx-auto relative bg-white pt-2">
@@ -255,6 +260,9 @@ export default function ({
                       ? 'chartAreaWrapper--scaleDown'
                       : 'chartAreaWrapper--scaleUp'
                   }`}
+                  style={{
+                    width: !toggleChartScale ? '100%' : `${chartWidth}px`,
+                  }}
                 >
                   <Carousel
                     className={`cursor-grab mb-4 ${
@@ -301,6 +309,9 @@ export default function ({
                       ? 'chartAreaWrapper--scaleDown'
                       : 'chartAreaWrapper--scaleUp'
                   }`}
+                  style={{
+                    width: !toggleChartScale ? '100%' : `${chartWidth}px`,
+                  }}
                 >
                   <UserPathwayChart
                     className={`mb-2 ${

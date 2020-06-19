@@ -6,10 +6,20 @@ export default function (props) {
   const { groupName, className, data } = props;
 
   const options = {
+    responsive: true,
+    maintainAspectRatio: true,
     tooltips: {
       callbacks: {
         title: function (toolTipItem) {
           return startCase(toLower(head(toolTipItem).label));
+        },
+        label: function (tooltipItem, data) {
+          var label = data.datasets[tooltipItem.datasetIndex].label || '';
+          if (label) {
+            label += ': ';
+          }
+          label += Math.round(tooltipItem.yLabel * 100) / 100;
+          return label;
         },
       },
     },
@@ -29,6 +39,7 @@ export default function (props) {
             callback: function (value, index, values) {
               return startCase(toLower(value));
             },
+            stepSize: 1,
           },
         },
       ],
