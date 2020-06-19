@@ -191,6 +191,16 @@ export default function ({
     if (_totalCost > 0) {
       setTotalCost(_totalCost);
     }
+  }, [
+    formRef,
+    totalPay,
+    totalCost,
+    totalCredit,
+    groupChartData,
+    currentGroupChartData,
+  ]);
+
+  useEffect(() => {
     if (!fetchPathwayChartData) {
       const generateChartData = async () => {
         const { data } = await getChartData(student_id, pathwayId);
@@ -202,15 +212,7 @@ export default function ({
       };
       generateChartData();
     }
-  }, [
-    formRef,
-    totalPay,
-    totalCost,
-    totalCredit,
-    fetchPathwayChartData,
-    groupChartData,
-    currentGroupChartData,
-  ]);
+  }, [fetchPathwayChartData]);
 
   const handleCurrentItem = (current, total) => {
     const groupName = groupNames[current - 1];
@@ -241,7 +243,11 @@ export default function ({
       <header className="mx-auto relative bg-white pt-2">
         {
           <>
-            <div className={`${!switchChart ? 'block' : 'hidden'}`}>
+            <div
+              className={`overflow-x-hidden ${
+                !switchChart ? 'block' : 'hidden'
+              }`}
+            >
               <div className={`${toggleFilterByGroup ? 'chartWrapper' : ''}`}>
                 <div
                   className={`chartAreaWrapper ${
