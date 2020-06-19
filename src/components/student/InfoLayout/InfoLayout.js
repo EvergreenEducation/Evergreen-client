@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Col, Tag, Button, Input, Form, message } from 'antd';
-import { find, last, head, each, groupBy, sortBy, reject } from 'lodash';
+import {
+  find,
+  last,
+  each,
+  groupBy,
+  sortBy,
+  reject,
+  flowRight,
+  orderBy,
+} from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMapMarkerAlt,
@@ -153,8 +162,11 @@ export default function ({
   let alt = '';
 
   if (data && data.Files && data.Files.length) {
-    const banners = reject(data.Files, ['meta', 'banner-image']);
-    const { file_link, location: fileLocation } = head(banners);
+    const notBanners = flowRight([
+      (f) => orderBy(f, ['createdAt', 'asc']),
+      (f) => reject(f, ['meta', 'banner-image']),
+    ])(data.Files);
+    const { file_link, location: fileLocation } = last(notBanners);
     src = file_link;
     alt = fileLocation;
   }
