@@ -273,7 +273,9 @@ export default function ({
                     centerSlidePercentage={100}
                     showArrows={true}
                     showIndicators={false}
-                    swipeable={true}
+                    swipeable={
+                      toggleFilterByGroup && toggleChartScale ? false : true
+                    }
                     emulateTouch={true}
                     showStatus={true}
                     showThumbs={false}
