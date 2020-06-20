@@ -515,14 +515,6 @@ function HomeScreen() {
                       </Link>
                       <Button
                         type="link"
-                        disabled
-                        className="py-0 px-0 pr-6 text-gray-500"
-                        size="small"
-                      >
-                        Settings
-                      </Button>
-                      <Button
-                        type="link"
                         className="py-0 px-0 pr-6 text-gray-500"
                         size="small"
                         onClick={() => AuthService.logout()}

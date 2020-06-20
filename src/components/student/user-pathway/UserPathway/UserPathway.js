@@ -37,7 +37,7 @@ export default function ({
   const [pathwayChartData, setPathwayChartData] = useState({});
   const [groupChartData, setGroupChartData] = useState({});
   const [currentGroupChartData, setCurrentGroupChartData] = useState({});
-  const [toggleChartScale, setToggleChartScale] = useState(false);
+  const [toggleChartScale, setToggleChartScale] = useState(true);
 
   const [totalPay, setTotalPay] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
@@ -242,7 +242,6 @@ export default function ({
   if (pathwayChartData && pathwayChartData.labels) {
     chartWidth = chartWidth + pathwayChartData.labels.length * 15;
   }
-
   return (
     <div className="infoLayout mb-3">
       <header className="mx-auto relative bg-white pt-2">
@@ -298,6 +297,7 @@ export default function ({
                           student={student}
                           pathway={pathway}
                           data={data}
+                          redraw={true}
                         />
                       );
                     }) || 'N/A'}
@@ -323,6 +323,7 @@ export default function ({
                     student={student}
                     pathway={pathway}
                     data={pathwayChartData}
+                    redraw={true}
                   />
                 </div>
               </div>
