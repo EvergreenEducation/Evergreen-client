@@ -182,7 +182,7 @@ export default function (props) {
           if (offerId && myEnrollments[offerId]) {
             latestEnrollment = last(myEnrollments[offerId]);
           }
-          return (
+          return offer && offer.id ? (
             <Link to={`/home/offer/${offer.id}`} key={index}>
               <InfoCard
                 className="mb-4"
@@ -194,7 +194,7 @@ export default function (props) {
                 enableStatus={true}
               />
             </Link>
-          );
+          ) : null;
         })) || (
         <Alert
           className="mx-auto text-center rounded"

@@ -1,11 +1,19 @@
 import React from 'react';
-import { Bar } from 'react-chartjs-2';
 import { head, startCase, toLower } from 'lodash';
+import { Bar } from 'react-chartjs-2';
+import dayjs from 'dayjs';
 
 export default function (props) {
   const { groupName, className, data } = props;
+  const semesters = {
+    fa: 'fall',
+    su: 'summer',
+    sp: 'spring',
+    wi: 'winter',
+  };
 
   const options = {
+    plugins: [],
     responsive: true,
     maintainAspectRatio: true,
     tooltips: {
@@ -13,13 +21,23 @@ export default function (props) {
         title: function (toolTipItem) {
           return startCase(toLower(head(toolTipItem).label));
         },
-        label: function (tooltipItem, data) {
-          var label = data.datasets[tooltipItem.datasetIndex].label || '';
-          if (label) {
-            label += ': ';
+        footer: function (tooltipItem, data) {
+          tooltipItem = head(tooltipItem);
+          const label = tooltipItem.label;
+          let [semester, year] = label.split('-');
+          if (semesters[semester]) {
+            semester = semesters[semester];
           }
-          label += Math.round(tooltipItem.yLabel * 100) / 100;
-          return label;
+          year = dayjs().year().toString().slice(2) + Number(year);
+          var statusCountString =
+            data.datasets[tooltipItem.datasetIndex].label || '';
+          let enrollStatus = statusCountString;
+
+          return data.dataLookUp[`${label}-${enrollStatus}`]
+            ? `Offer(s):\n - ${data.dataLookUp[`${label}-${enrollStatus}`].join(
+                '\n - '
+              )}`
+            : '';
         },
       },
     },
