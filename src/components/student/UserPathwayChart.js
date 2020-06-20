@@ -1,16 +1,9 @@
 import React from 'react';
 import { head, startCase, toLower } from 'lodash';
 import { Bar } from 'react-chartjs-2';
-import dayjs from 'dayjs';
 
 export default function (props) {
   const { groupName, className, data } = props;
-  const semesters = {
-    fa: 'fall',
-    su: 'summer',
-    sp: 'spring',
-    wi: 'winter',
-  };
 
   const options = {
     plugins: [],
@@ -24,11 +17,6 @@ export default function (props) {
         footer: function (tooltipItem, data) {
           tooltipItem = head(tooltipItem);
           const label = tooltipItem.label;
-          let [semester, year] = label.split('-');
-          if (semesters[semester]) {
-            semester = semesters[semester];
-          }
-          year = dayjs().year().toString().slice(2) + Number(year);
           var statusCountString =
             data.datasets[tooltipItem.datasetIndex].label || '';
           let enrollStatus = statusCountString;
