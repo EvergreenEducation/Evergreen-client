@@ -12,6 +12,8 @@ import {
   uniqueId,
   property,
   last,
+  keyBy,
+  reject,
 } from 'lodash';
 import axiosInstance from 'services/AxiosInstance';
 import useGlobalStore from 'store/GlobalStore';
@@ -128,6 +130,29 @@ export default function (props) {
   let offerIds = filter(student.Enrollments || [], ['status', 'Activated']);
   offerIds = groupBy(offerIds, 'offer_id');
   offerIds = Object.keys(offerIds);
+
+  const rejectMatchedOffer = (ids, target) =>
+    reject(ids, (id) => id === target);
+
+  if (student.StudentPathways) {
+    for (let i = 0; i < student.StudentPathways.length; i++) {
+      if (student.StudentPathways[i].StudentPathway) {
+        const pathwayId = student.StudentPathways[i].StudentPathway.pathway_id;
+        const _pathway = pathwayStore.entities[pathwayId];
+        const keyedOffers = keyBy(_pathway.GroupsOfOffers, 'offer_id');
+
+        for (let j = 0; j < offerIds.length; j++) {
+          if (keyedOffers[Number(offerIds[j])]) {
+            offerIds = rejectMatchedOffer(offerIds, offerIds[j]);
+          }
+
+          if (keyedOffers[Number(offerIds[j - 1])]) {
+            offerIds = rejectMatchedOffer(offerIds, offerIds[j]);
+          }
+        }
+      }
+    }
+  }
 
   return (
     <main className="pb-4">
