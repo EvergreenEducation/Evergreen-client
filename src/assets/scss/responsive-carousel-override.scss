@@ -1,0 +1,14 @@
+$arrowBorder: 0.5rem solid black !important;
+.custom-carousel {
+  .slide {
+    background-color: transparent;
+  }
+}
+
+.custom-control-arrow {
+  position: absolute;
+  z-index: 2;
+  top: calc(50% - 25px);
+  width: 30;
+  height: 100%;
+}

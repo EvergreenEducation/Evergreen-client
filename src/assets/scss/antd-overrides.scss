@@ -1,0 +1,218 @@
+$firstBreak: 1060px;
+
+.ant-menu-item-selected.bg-green-800-selected {
+  background-color: #276749 !important;
+}
+
+.custom-select {
+  .ant-select-selector {
+    border-radius: 0.25rem !important;
+  }
+}
+
+.custom-datepicker {
+  .ant-picker-suffix {
+    display: flex;
+  }
+}
+
+.custom-ant-upload {
+  width: 195px;
+  height: 115px;
+  .ant-upload {
+    height: 100%;
+    width: 100%;
+    border-radius: 0.25rem !important;
+  }
+  img {
+    min-height: 100px;
+    max-height: 125px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+.custom-ant-upload-2 {
+  @media only screen and (max-width: 357px) {
+    max-width: 100%;
+  }
+  width: 300px;
+  height: 115px;
+  .ant-upload {
+    max-height: 100%;
+    width: 100%;
+    border-radius: 0.25rem !important;
+  }
+  img {
+    min-height: 100px;
+    max-height: 125px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+.custom-select-rounded {
+  .ant-select-selector {
+    border-radius: 0.25rem !important;
+  }
+}
+
+.custom-select-rounded-l-r-none {
+  .ant-select-selector {
+    border-top-left-radius: 0.25rem !important;
+    border-bottom-left-radius: 0.25rem !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+}
+
+.custom-select-rounded-tr-none {
+  .ant-select-selector {
+    border-top-right-radius: 0 !important;
+    border-top-left-radius: 0.25rem !important;
+    border-bottom-left-radius: 0.25rem !important;
+    border-bottom-right-radius: 0.25rem !important;
+  }
+}
+
+.custom-search {
+  display: flex;
+  height: 24px;
+  .ant-input-suffix {
+    display: inherit;
+  }
+  .ant-input-clear-icon {
+    display: inherit;
+    align-items: center;
+  }
+  .ant-input-search-button {
+    display: flex;
+    height: 24px;
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+  }
+  .anticon.anticon-search {
+    position: relative;
+    bottom: 1px;
+  }
+}
+
+.custom-antd-upload .ant-upload.ant-upload-select {
+  width: 16rem;
+  height: 12rem;
+}
+
+.custom-modal {
+  position: initial;
+  margin-top: 2rem;
+  .ant-modal-footer {
+    border-top: 0;
+  }
+}
+
+.ant-modal-content {
+  border-radius: 5px;
+}
+
+.ant-modal-header {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.form-item-control-input-h-full-w-full {
+  .ant-form-item-control-input {
+    height: 100%;
+    width: 100%;
+  }
+  .ant-form-item-control-input-content {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.custom-ant-input-wrapper {
+  .ant-input-group-addon {
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+  }
+  .ant-input {
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+  }
+}
+
+.ant-table-row-selectable {
+  .ant-table-row:hover {
+    cursor: pointer;
+  }
+}
+
+.ant-table-wrapper--responsive {
+  .ant-table-filter-trigger-container {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+  }
+  .ant-table-filter-trigger.ant-dropdown-trigger {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+  }
+  .ant-table-thead {
+    .antd-col {
+      @media only screen and (max-width: $firstBreak) {
+        display: none;
+      }
+    }
+  }
+  .antd-row {
+    @media only screen and (max-width: $firstBreak) {
+      display: block;
+      border-top: 1px solid rgb(221, 221, 221);
+      &:first-child {
+        border-top: 0;
+      }
+    }
+  }
+  .antd-row .antd-col {
+    @media only screen and (max-width: $firstBreak) {
+      border-bottom: 1px solid rgb(222, 222, 222);
+      display: block;
+      text-align: right;
+    }
+    &::before {
+      @media only screen and (max-width: $firstBreak) {
+        content: attr(data-title);
+        float: left;
+        font-weight: 500;
+        text-align: left;
+        color: rgba(0, 0, 0, 0.85);
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.ant-input-group-add-on-border-none-p-0 {
+  .ant-input-group-addon {
+    padding: 0;
+    border: none;
+  }
+}
+
+.custom-vertical-ant-select-selector {
+  .ant-select-selector {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.media-margin-top {
+  @media only screen and (max-width: 767px) {
+    margin-top: 2rem;
+  }
+}

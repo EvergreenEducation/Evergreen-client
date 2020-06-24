@@ -1,0 +1,77 @@
+$width: 423px;
+$firstBreakPt: 769px;
+
+.homeScreen {
+  &__homeButton {
+    @media only screen and (max-width: 320px) {
+      display: none;
+    }
+  }
+  &__contentWrapper {
+    padding-bottom: 3rem;
+    padding-top: 1rem;
+    @media only screen and (min-width: $firstBreakPt) {
+      padding-top: 3rem;
+      padding-bottom: 1rem;
+    }
+  }
+  &__navWrapper {
+    @media only screen and (max-width: 480px) {
+      padding: 0;
+    }
+    @media only screen and (min-width: $firstBreakPt) {
+      top: 0;
+    }
+  }
+  &__navbar {
+    max-width: $width;
+    @media only screen and (max-width: 480px) {
+      padding: 0 0.5rem;
+    }
+  }
+  &__carouselContent {
+    @media only screen and (min-width: $firstBreakPt) {
+      max-width: 100%;
+    }
+    max-width: $width;
+  }
+  &__carouselContentTwo {
+    max-width: $width;
+  }
+  &__brandLogo {
+    padding-right: 3px;
+    padding-left: 3px;
+    background-color: darkgreen;
+    border-radius: 50%;
+    height: 40px;
+    @media only screen and (max-width: 480px) {
+      margin: 0 auto;
+    }
+  }
+  &__brandName {
+    height: 48px;
+    @media only screen and (max-width: 480px) {
+      display: none;
+    }
+  }
+}
+
+.antd-btn-active {
+  background-color: #096dd9 !important;
+  border-color: #096dd9 !important;
+}
+
+.custom-searchbox {
+  .ant-input-suffix {
+    display: flex;
+    align-items: center;
+  }
+  .ant-input-group-addon {
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    padding: 0;
+    cursor: pointer;
+    background: #1890ff;
+    border-color: #1890ff;
+  }
+}

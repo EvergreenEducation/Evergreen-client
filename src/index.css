@@ -1,0 +1,81 @@
+@import '~antd/dist/antd.min.css';
+@import '~react-responsive-carousel/lib/styles/carousel.min.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  background-color: rgba(247, 250, 252, 1);
+}
+
+body {
+  margin: 0;
+  font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ant-modal-header .ant-modal-title {
+  font-family: inherit;
+  font-weight: 700;
+}
+
+.ant-table-thead .ant-table-cell {
+  font-family: inherit;
+  font-weight: 700;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.inherit {
+  display: inherit;
+}
+
+.w-72 {
+  width: 18rem;
+}
+
+.h-72 {
+  height: 18rem;
+}
+
+.h-80 {
+  height: 20rem;
+}
+
+.h-88 {
+  height: 28rem;
+}
+
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+
+.ant-table-filter-dropdown {
+  border-radius: 0.25rem;
+}
+
+.cursor-grab {
+  cursor: grab;
+}
+
+.anticon.anticon-left,
+.anticon.anticon-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.border-r-none {
+  border-right: none;
+}
+
+.ant-notification-notice {
+  padding: 12px !important;
+}

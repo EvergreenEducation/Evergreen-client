@@ -1,0 +1,15 @@
+.promoCard {
+  &__entityType {
+    left: -1px;
+    top: 0;
+  }
+  .ant-card-body {
+    padding: 0.5rem;
+  }
+  &:hover,
+  &:active {
+    .promoCard__link {
+      color: #1890ff;
+    }
+  }
+}

@@ -1,0 +1,10 @@
+$accent: rgb(218, 226, 236);
+
+.smallInfoCard {
+  &__footer {
+    border-top: none;
+    border-bottom: 1px solid $accent;
+    border-right: none;
+    border-left: none;
+  }
+}
