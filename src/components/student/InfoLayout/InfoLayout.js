@@ -90,7 +90,7 @@ export default function ({
       );
 
       if (response.status === 200 && typeof response.data === 'string') {
-        message.success(`You've already applied or enrolled in ${data.name}`);
+        message.info(`You've already applied or enrolled in ${data.name}`);
         return response.data;
       }
       if (response.status === 200) {
