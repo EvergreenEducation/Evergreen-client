@@ -50,7 +50,6 @@ export default function ({
     is_public,
     industry,
     financial_aid,
-    location,
     GroupsOfOffers = [],
     external_url,
   } = data;
@@ -88,6 +87,11 @@ export default function ({
           start_date: dayjs().toISOString(),
         }
       );
+
+      if (response.status === 200 && typeof response.data === 'string') {
+        message.success(`You've already applied or enrolled in ${data.name}`);
+        return response.data;
+      }
       if (response.status === 200) {
         message.success(`You've enrolled in ${data.name}`);
       }
@@ -219,6 +223,20 @@ export default function ({
     </Row>
   );
 
+  let locationText = '---';
+
+  if (type === 'provider' && data && data.location) {
+    locationText = data.location;
+  }
+
+  if (
+    (type === 'offer' || type === 'pathway') &&
+    Provider &&
+    Provider.location
+  ) {
+    locationText = Provider.location;
+  }
+
   return (
     <div className="infoLayout">
       <header className="mx-auto relative" style={{ minHeight: 52 }}>
@@ -260,8 +278,12 @@ export default function ({
           </Col>
           <Col span={12} className="flex flex-row-reverse items-center">
             <span className="block ml-1">
-              {type === 'provider' && Provider ? Provider.location : '---'}
-              {type !== 'provider' ? location || null : null}
+              {locationText}
+              {/* {type === 'provider' && data && data.location
+                ? data.location
+                : '---'}
+              {type === 'offer' && Provider ? Provider.location : '---'}
+              {type !== 'provider' ? location || null : null} */}
             </span>
             <FontAwesomeIcon icon={faMapMarkerAlt} />
           </Col>
@@ -297,24 +319,34 @@ export default function ({
             Cost :{' '}
             {type === 'pathway'
               ? totalCost
-                ? `$${totalCost}`
+                ? `$${totalCost.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })}`
                 : '---'
               : cost
-              ? `$${cost}`
+              ? `$${cost.toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                })}`
               : '---'}
           </Col>
           <Col span={8} className="flex justify-center">
             Credit :{' '}
-            {type === 'pathway' ? totalCredit || '---' : credit || '---'}
+            {type === 'pathway'
+              ? totalCredit.toLocaleString() || '---'
+              : credit.toLocaleString() || '---'}
           </Col>
           <Col span={8} className="flex flex-row-reverse">
             Pay :{' '}
             {type === 'pathway'
               ? totalPay
-                ? `$${totalPay}`
+                ? `$${totalPay.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })}`
                 : '---'
               : pay
-              ? `$${pay}`
+              ? `$${pay.toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                })}`
               : '---'}
           </Col>
         </Row>

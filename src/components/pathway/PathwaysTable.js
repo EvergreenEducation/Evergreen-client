@@ -89,7 +89,7 @@ function PathwaysTable(props) {
                       color={index % 2 ? 'cyan' : 'green'}
                       key={index.toString()}
                     >
-                      {`${group_name} ( ${count} )`}
+                      {`${group_name} ( ${count.toLocaleString()} )`}
                     </Tag>
                   );
                 }) || 'N/A'}

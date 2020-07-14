@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import { find } from 'lodash';
 import dayjs from 'dayjs';
-import { LearnAndEarnIcons } from 'components/shared';
+import { LearnAndEarnIcons, UnitTag } from 'components/shared';
 import './info-card.scss';
 
 const statuses = {
@@ -179,24 +179,29 @@ export default function ({
               </div>
             </Row>
             <Row className="mt-1">
-              {length && (
-                <div className="unit-tag mr-2 text-white rounded px-1">
-                  {Number(length) || null} {lengthUnit ? lengthUnit.name : null}
-                </div>
-              )}
-              {frequency && (
-                <div className="unit-tag text-white rounded px-1">
-                  {Number(frequency) || null}{' '}
-                  {frequencyUnit ? frequencyUnit.name : null}
-                </div>
-              )}
+              {length && <UnitTag number={length} unit={lengthUnit} />}
+              {frequency && <UnitTag number={frequency} unit={frequencyUnit} />}
             </Row>
           </Col>
           <Col span={12} className="text-right">
             <ol>
-              <li>Cost : {`$${Number(cost) || '---'}`}</li>
-              <li>Pay : {`$${Number(pay) || '---'}`}</li>
-              <li>Credit : {`${Number(credit) || '---'}`}</li>
+              <li>
+                Cost :{' '}
+                {`$${
+                  Number(cost).toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  }) || '---'
+                }`}
+              </li>
+              <li>
+                Pay :{' '}
+                {`$${
+                  Number(pay).toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  }) || '---'
+                }`}
+              </li>
+              <li>Credit : {`${Number(credit).toLocaleString() || '---'}`}</li>
             </ol>
           </Col>
         </Row>
