@@ -126,7 +126,6 @@ export default function ({
     frequency,
     provider_id,
     start_date,
-    external_url,
   } = data;
 
   if (start_date) {
@@ -145,20 +144,7 @@ export default function ({
         <Row>
           <Col span={12}>
             <Row className="mb-1 flex-col">
-              {external_url ? (
-                <a
-                  className="text-left font-bold"
-                  onClick={(e) => e.stopPropagation()}
-                  style={{ zIndex: 33 }}
-                  href={external_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {name}
-                </a>
-              ) : (
-                <span className="text-left font-bold">{name}</span>
-              )}
+              <span className="text-left font-bold">{name}</span>
               <Link
                 className={`text-xs font-normal text-left ${
                   provider_id ? '' : 'pointer-events-none'
