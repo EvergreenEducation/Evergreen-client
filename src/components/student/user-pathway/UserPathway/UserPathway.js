@@ -438,13 +438,26 @@ export default function ({
         </Row>
         <hr />
         <Row className="mt-2 mb-1">
-          <Col span={8}>Cost : {totalCost > 0 ? `$${totalCost}` : '---'}</Col>
+          <Col span={8}>
+            Cost :{' '}
+            {totalCost > 0
+              ? `$${totalCost.toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                })}`
+              : '---'}
+          </Col>
           <Col span={8} className="flex justify-center">
-            Credit : {totalCredit > 0 ? `${creditEarned}` : '---'}/
-            {totalCredit > 0 ? `${totalCredit}` : '---'}
+            Credit :{' '}
+            {totalCredit > 0 ? `${creditEarned.toLocaleString()}` : '---'}/
+            {totalCredit > 0 ? `${totalCredit.toLocaleString()}` : '---'}
           </Col>
           <Col span={8} className="flex flex-row-reverse">
-            Pay : {totalPay > 0 ? `$${totalPay}` : '---'}
+            Pay :{' '}
+            {totalPay > 0
+              ? `$${totalPay.toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                })}`
+              : '---'}
           </Col>
         </Row>
         <Row className="mt-1 mb-2">

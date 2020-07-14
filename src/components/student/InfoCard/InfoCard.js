@@ -194,9 +194,23 @@ export default function ({
           </Col>
           <Col span={12} className="text-right">
             <ol>
-              <li>Cost : {`$${Number(cost) || '---'}`}</li>
-              <li>Pay : {`$${Number(pay) || '---'}`}</li>
-              <li>Credit : {`${Number(credit) || '---'}`}</li>
+              <li>
+                Cost :{' '}
+                {`$${
+                  Number(cost).toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  }) || '---'
+                }`}
+              </li>
+              <li>
+                Pay :{' '}
+                {`$${
+                  Number(pay).toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  }) || '---'
+                }`}
+              </li>
+              <li>Credit : {`${Number(credit).toLocaleString() || '---'}`}</li>
             </ol>
           </Col>
         </Row>
