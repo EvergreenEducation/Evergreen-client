@@ -277,14 +277,7 @@ export default function ({
             ) : null}
           </Col>
           <Col span={12} className="flex flex-row-reverse items-center">
-            <span className="block ml-1">
-              {locationText}
-              {/* {type === 'provider' && data && data.location
-                ? data.location
-                : '---'}
-              {type === 'offer' && Provider ? Provider.location : '---'}
-              {type !== 'provider' ? location || null : null} */}
-            </span>
+            <span className="block ml-1">{locationText}</span>
             <FontAwesomeIcon icon={faMapMarkerAlt} />
           </Col>
         </Row>
