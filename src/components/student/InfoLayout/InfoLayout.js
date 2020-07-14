@@ -333,7 +333,7 @@ export default function ({
             Credit :{' '}
             {type === 'pathway'
               ? totalCredit.toLocaleString() || '---'
-              : credit.toLocaleString() || '---'}
+              : (credit && credit.toLocaleString()) || '---'}
           </Col>
           <Col span={8} className="flex flex-row-reverse">
             Pay :{' '}
