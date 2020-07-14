@@ -13,6 +13,8 @@ import { Button } from 'antd';
 import HomeScreen from 'screens/HomeScreen/HomeScreen';
 import PrivateRoute from 'services/PrivateRoute';
 import { GlobalProvider } from 'store/GlobalStore';
+import { Helmet } from 'react-helmet';
+import EvergreenLogo from 'assets/svgs/evergreen-optimized-logo.svg';
 
 const AuthScreen = imported(() => import('screens/AuthScreen'));
 const Result = imported(() => import('antd/lib/result'));
@@ -29,6 +31,15 @@ function App() {
 
   return (
     <GlobalProvider>
+      <Helmet>
+        <title>Evergreen</title>
+        <link
+          rel="icon"
+          href={EvergreenLogo}
+          sizes="any"
+          type="image/svg+xml"
+        ></link>
+      </Helmet>
       <Router>
         <Switch>
           <Redirect exact from="/" to="home" />
