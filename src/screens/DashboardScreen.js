@@ -46,7 +46,6 @@ function DashboardScreen(props) {
 
   const myProviderId = AuthService.currentSession.provider_id;
   const role = AuthService.currentSession.role;
-
   const [modalStates, setModalStates] = useState({
     providerUpdateModal: false,
     providerSimpleUpdateModal: false,

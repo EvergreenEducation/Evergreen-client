@@ -101,14 +101,12 @@ export default function EnrollmentTable({
       return enrollment.offer_id === offer;
     });
   }
-
   const [enrollModalOpen, setEnrollModalOpen] = useState(false);
   const [selectedEnrollment, setSelectedEnrollment] = useState(null);
   const [enrollments, setEnrollments] = useState([]);
-  const [form] = useForm();
-
+  // const [form] = useForm();
+  const [form] = Form.useForm();
   const enrollmentStore = EnrollmentStore.useContainer();
-
   const updateEnrollment = async (enrollment) => {
     return axiosInstance.put(`/enrollments/${enrollment.id}`, {
       status: 'Approved',

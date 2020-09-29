@@ -35,6 +35,7 @@ export default function (props) {
           stacked: true,
           ticks: {
             stepSize: 1,
+            max: 6
           },
         },
       ],
@@ -51,11 +52,15 @@ export default function (props) {
       ],
     },
   };
-
+  console.log("userrrrrrrrrrrrrrrrrrr",data)
   return (
     <div className={`block bg-white ${className}`}>
       <span className="text-center font-bold">{groupName}</span>
-      <Bar data={data} options={options} redraw={redraw} />
+      <Bar 
+        height={100}
+      data={data}
+       options={options}
+        redraw={redraw} />
     </div>
   );
 }

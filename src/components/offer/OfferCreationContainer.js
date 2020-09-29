@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Button, Form, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -8,12 +8,11 @@ import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import { head, reject } from 'lodash';
 import { useImageAndBannerImage } from 'hooks';
-
 configure({
   axios: axiosInstance,
 });
-
-const OfferCreationContainer = ({ closeModal, role, providerId }) => {
+// console.log("newwwwwwwww",pdf_link)
+const OfferCreationContainer = ({ closeModal, role, providerId, getOfferListData }) => {
   const { id: userId, provider_id } = AuthService.currentSession;
   const formRef = useRef(null);
   const [
@@ -34,12 +33,18 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
     provider: providerStore,
     offer: offerStore,
   } = useGlobalStore();
-
   let providerEntities = Object.values(providerStore.entities);
 
   const submit = async () => {
+    console.log("formmmmmmmmm", form)
     try {
       const values = await form.validateFields([
+        'banner_image',
+        'main_image',
+        'generic_type',
+        'is_generic',
+        'rubric_attachment',
+        'location_type',
         'category',
         'description',
         'learn_and_earn',
@@ -65,11 +70,15 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
       ]);
 
       const { provider_id } = values;
-
+      console.log("insissssssssssssss", values)
       const offerResponse = await createOffer({
         data: {
           ...values,
           provider_id,
+          'rubric_attachment': getPdfUrl,
+          'main_image': getImageData,
+          'banner_image': getBannerImage,
+          'description': descriptionValue
         },
       });
 
@@ -129,6 +138,7 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
         });
         form.resetFields();
         closeModal();
+        getOfferListData();
       }
     } catch (error) {
       console.error(error);
@@ -141,10 +151,11 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
         providerEntities = reject(providerEntities, (p) => {
           return !(p.id === providerId);
         });
-
-        form.setFieldsValue({
-          provider_id: head(providerEntities).id,
-        });
+        if (providerEntities.length) {
+          form.setFieldsValue({
+            provider_id: head(providerEntities).id,
+          });
+        }
       }
     }
 
@@ -157,6 +168,25 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
     }
   }, [offerPayload, offerError, formRef]);
 
+  const [getPdfUrl, setGetPdfUrl] = useState()
+  const handlePropData = (getPdfUrl) => {
+    setGetPdfUrl(getPdfUrl)
+  }
+  const [getImageData, setGetImageData] = useState()
+  const handleImageData = (getImageData) => {
+    setGetImageData(getImageData)
+  }
+  const [getBannerImage, setGetBannerImage] = useState()
+  const handleBannerImage = (getBannerImage) => {
+    setGetBannerImage(getBannerImage)
+  }
+
+  const [descriptionValue, setDescriptionValue] = useState('');
+
+  const handleDescriptionValue = (value) => {
+    setDescriptionValue(value)
+  }
+  console.log("form", getPdfUrl)
   return (
     <div>
       <Form form={form} name="offerForm" ref={formRef}>
@@ -172,6 +202,11 @@ const OfferCreationContainer = ({ closeModal, role, providerId }) => {
             onChangeUpload={onChangeFileUpload}
             bannerFile={bannerFile}
             onChangeBannerUpload={onChangeBannerUpload}
+            handlePropData={handlePropData}
+            handleImageData={handleImageData}
+            handleBannerImage={handleBannerImage}
+            descriptionValue={descriptionValue}
+            handleDescriptionValue={handleDescriptionValue}
           />
         </div>
         <section

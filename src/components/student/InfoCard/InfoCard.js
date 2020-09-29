@@ -64,7 +64,7 @@ function InfoCardFooter(props) {
               ? statuses[enrollment.status].textColor
               : null
             : 'text-gray'
-        } font-bold info-card__statusText`}
+          } font-bold info-card__statusText`}
         style={{ minWidth: 68 }}
       >
         {enrollment.status === 'Completed' || enrollment.status === 'Failed' ? (
@@ -109,12 +109,22 @@ export default function ({
   actions = [],
   enableStatus = false,
   latestEnrollment,
+  outlook,
+  earnings,
+  outEarvValue,
+  bannerImage,
+  mainImage,
 }) {
   if (!data) {
     return null;
   }
+  //  let parseMainImage = (mainImage)
+  //  let parseBannerImage = JSON.parse(bannerImage)
+
+  // console.log("ooooooooo", mainImage)
 
   let {
+    banner_image,
     name,
     learn_and_earn,
     cost,
@@ -137,7 +147,6 @@ export default function ({
   const frequencyUnit = find(groupedDataFields.frequency_unit, ({ id }) => {
     return id === Number(frequency_unit);
   });
-
   return (
     <div className={`flex flex-row shadow ${className}`}>
       <Card className={`info-card`} style={style}>
@@ -148,7 +157,7 @@ export default function ({
               <Link
                 className={`text-xs font-normal text-left ${
                   provider_id ? '' : 'pointer-events-none'
-                }`}
+                  }`}
                 to={`/home/provider/${provider_id}`}
                 onClick={(e) => e.stopPropagation()}
               >
@@ -177,7 +186,7 @@ export default function ({
                   Number(cost).toLocaleString(undefined, {
                     maximumFractionDigits: 2,
                   }) || '---'
-                }`}
+                  }`}
               </li>
               <li>
                 Pay :{' '}
@@ -185,11 +194,26 @@ export default function ({
                   Number(pay).toLocaleString(undefined, {
                     maximumFractionDigits: 2,
                   }) || '---'
-                }`}
+                  }`}
               </li>
-              <li>Credit : {`${Number(credit).toLocaleString() || '---'}`}</li>
+              {outEarvValue ? <li>Credit : {`${Number(credit).toLocaleString() || '---'}`}</li> : null}
+              {outEarvValue ? <li>
+                Outlook : {outlook && outlook ? outlook : '-'}</li> : null}
+              {outEarvValue ? <li>
+                Earnings : {earnings && earnings ? earnings : '-'}
+              </li> : null}
             </ol>
           </Col>
+          {/* <Col>
+          <div className="outlook_img">
+          {mainImage && mainImage.length && mainImage.map(item => {
+            let newItem = JSON.parse(item)
+            return (
+              <img src={newItem.original} alt={newItem.name} />
+            )
+          })}
+          </div>
+          </Col> */}
         </Row>
       </Card>
       {(enableStatus && <InfoCardFooter enrollment={latestEnrollment} />) ||

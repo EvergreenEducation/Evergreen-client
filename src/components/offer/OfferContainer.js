@@ -5,6 +5,7 @@ import { Card, Drawer, Button, message, Layout, Col } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import OfferTable from 'components/offer/OfferTable';
 import useGlobalStore from 'store/GlobalStore';
+import OfferPdfTable from 'components/offer/OfferPdfTable'
 import axiosInstance from 'services/AxiosInstance';
 import {
   SearchHeader,
@@ -12,6 +13,8 @@ import {
   FaPlusCircleButton,
 } from 'components/shared';
 import matchSorter from 'match-sorter';
+import { responsiveArray } from 'antd/lib/_util/responsiveObserve';
+const axios = require('axios').default;
 
 const { Content } = Layout;
 
@@ -47,6 +50,7 @@ export default function OfferContainer(props) {
   const { datafield, provider, offer: offerStore } = useGlobalStore();
   const { entities = [] } = offerStore;
 
+
   const [{ data: getProviderData = [], error: providerError }] = useAxios(
     '/providers?scope=with_datafields'
   );
@@ -62,12 +66,39 @@ export default function OfferContainer(props) {
 
   const [{ data: offersData, error: offerError }] = useAxios(getOffersUrl);
 
+
+  const getPdfData = async (offer) => {
+    let user_id = offer.id
+    let pdfData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/files/delete_offer`, {
+      user_id
+    })
+    return pdfData
+  }
+
   const openAndPopulateUpdateModal = (offer) => {
     setSelectedOffer(offer);
     setOpenable({
       ...openable,
       updateModal: true,
     });
+  };
+  let Deletedata = false
+  const handleDeleteModal = (offer) => {
+    setSelectedOffer(offer);
+    Deletedata = true
+    if (Deletedata) {
+      offerStore.removeOne(offer)
+      getPdfData(offer).then(resp => {
+        console.log("resp", resp)
+        getOfferListData();
+      }).catch(error => {
+        console.log(error, "error")
+      })
+    }
+    // setOpenable({
+    //   ...openable,
+    //   updateModal: true,
+    // });
   };
 
   const handleRowSelection = (record, rowIndex) => {
@@ -130,6 +161,63 @@ export default function OfferContainer(props) {
     }
   }, [getProviderData, datafieldsData, offersData]);
 
+  const [getOffersList, setOffersList] = useState();
+
+  // Calling of offerlist api
+  function getOfferListData() {
+    getOfferList().then(res => {
+      if (role === "provider") {
+        if (providerId) {
+          showProviderOfferList(res.data);
+        }
+      } else {
+        setOffersList(res.data)
+      }
+    }).catch(err => {
+      console.log('errr', err)
+    })
+  }
+
+  // show provider list incase role is admin
+  function showProviderOfferList(data) {
+    if (data.length) {
+      let arr = [];
+      for (let i = 0; i < data.length; i++) {
+        if (providerId === data[i].provider_id) {
+          arr.push(data[i])
+        } else {
+        }
+      }
+      setOffersList(arr)
+    } else {
+    }
+  }
+
+  // Api of get offer list
+  const getOfferList = async () => {
+    let Data = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/offers?scope=with_details`)
+    return Data
+  }
+
+  const getProviderOfferList = () => {
+    getProviderOfferApi().then(res => {
+      if (providerId) {
+        showProviderOfferList(res.data);
+      }
+    }).catch(err => {
+      console.log('err', err)
+    })
+  }
+
+  const getProviderOfferApi = async () => {
+    let Data = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/offers?scope=with_details&provider_id=${providerId}`)
+    return Data
+  }
+
+  useEffect(() => {
+    getOfferListData()
+  }, [])
+  console.log('showData :: ', showData, '\n\t getOffersList::', getOffersList)
   return (
     <Layout className="bg-transparent">
       <ProviderLogOutTopbar role={role} onClick={openProviderUpdateModal}>
@@ -154,16 +242,27 @@ export default function OfferContainer(props) {
           <OfferTable
             datafields={datafield.entities}
             providers={provider.entities}
-            data={showData}
+            // data={showData}
+            data={getOffersList}
             handleUpdateModal={openAndPopulateUpdateModal}
+            handleDeleteModal={handleDeleteModal}
             handleRowSelection={handleRowSelection}
             viewEnrollments={viewEnrollments}
             role={role}
           />
+          {/* <OfferPdfTable
+            datafields={datafield.entities}
+            providers={provider.entities}
+            data={showData}
+            handleUpdateModal={openAndPopulateUpdateModal}
+            handleRowSelection={handleRowSelection}
+            viewEnrollments={viewEnrollments}
+            role={role} /> */}
           <FormModal
             title="New Offer / Opportunity"
             visible={openable.formModal}
             FormComponent={OfferCreationContainer}
+            getOfferListData={getOfferListData}
             role={role}
             providerId={providerId}
             onCancel={() => setOpenable({ ...openable, formModal: false })}
@@ -171,6 +270,7 @@ export default function OfferContainer(props) {
           <OfferUpdateModal
             offer={selectedOffer}
             visible={openable.updateModal}
+            getOfferListData={getOfferListData}
             onCancel={() => setOpenable({ ...openable, updateModal: false })}
             offerStore={offerStore}
             scopedToProvider={false}

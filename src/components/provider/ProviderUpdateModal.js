@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Modal, Form, Table, Button, notification } from 'antd';
 import ProviderForm from 'components/provider/ProviderForm';
 import axiosInstance from 'services/AxiosInstance';
@@ -13,6 +13,8 @@ import 'assets/scss/antd-overrides.scss';
 configure({
   axios: axiosInstance,
 });
+var parse = require('html-react-parser');
+
 
 const { Column } = Table;
 
@@ -51,7 +53,7 @@ const renderColumns = (nameTitle, descriptionTitle) => {
         render={(text, record) => {
           let children = 'N/A';
           if (text.length) {
-            children = text;
+            children = parse(text);
           }
           return {
             children: children,
@@ -109,6 +111,9 @@ export default function ProviderUpdateModal(props) {
       type: providerType,
       topics: topics,
     });
+    if (p && p.description) {
+      setDescriptionValue(p.description)
+    }
   }
 
   useEffect(() => {
@@ -143,6 +148,10 @@ export default function ProviderUpdateModal(props) {
   const submitUpdate = async () => {
     try {
       const values = await form.validateFields([
+        'banner_image',
+        'main_image',
+        'accreditation',
+        'location_type',
         'name',
         'location',
         'type',
@@ -163,35 +172,43 @@ export default function ProviderUpdateModal(props) {
         'is_main_promo',
         'external_url',
       ]);
-
+      let tokenData = JSON.parse(localStorage.getItem("currentSession"));
+      
       const { data, status } = await axiosInstance.put(
-        `/providers/${provider.id}`,
+        `/providers/${tokenData.role==="provider"?tokenData.provider_id :provider.id}`,
         {
           ...values,
           topics: values.topics,
+          'banner_image': getBannerImage,
+          'main_image': getMainImage,
+          'description': descriptionValue
         }
       );
+      // const[handleData,setHandleData] = useState()
+      // setHandleData(data)
 
       const fileable_type = 'provider';
       let filePayload = [];
-
+      console.log("filePayload", filePayload)
       if (data && userId) {
         const providerEntity = providerStore.entities[data.id];
-        filePayload = [...providerEntity.Files];
-
+        if(providerEntity.Files){
+          if(providerEntity.Files.length){
+            filePayload = [...providerEntity.Files];
+          }
+        }
         if (onFileChange && newFile) {
           const results = await UploaderService.uploadFile(newFile, {
             uploaded_by_user_id: userId,
             fileable_type,
             fileable_id: data.id,
           });
-
           if (results && results.file.data) {
             filePayload.push({
               ...results.file.data,
+
             });
           }
-
           if (results.success) {
             notification.success({
               message: 'Success',
@@ -199,7 +216,6 @@ export default function ProviderUpdateModal(props) {
             });
           }
         }
-
         if (onBannerFileChange && newBannerFile) {
           const results = await UploaderService.uploadFile(newBannerFile, {
             uploaded_by_user_id: userId,
@@ -207,14 +223,12 @@ export default function ProviderUpdateModal(props) {
             fileable_id: data.id,
             meta: 'banner-image',
           });
-
           if (results && results.file.data) {
             filePayload.push({
               ...results.file.data,
             });
           }
-
-          if (results.success) {
+            if (results.success) {
             notification.success({
               message: 'Success',
               description: 'Banner image is uploaded',
@@ -224,6 +238,9 @@ export default function ProviderUpdateModal(props) {
 
         providerStore.updateOne(data);
       }
+
+      let token = JSON.parse(localStorage.getItem("currentSession"));
+      let user_role = token.role;
 
       if (status === 200) {
         if (filePayload.length) {
@@ -235,13 +252,37 @@ export default function ProviderUpdateModal(props) {
           message: status,
           description: 'Successfully updated provider',
         });
-        onCancel();
+        if(user_role==="provider"){
+          onCancel();
+        }else{
+          props.getProviderApi();
+          onCancel();
+        }
       }
     } catch (err) {
       console.error(err);
     }
   };
 
+  const [getMainImage, setGetMainImage] = useState()
+  const [getBannerImage, setGetBannerImage] = useState()
+
+  const handleUpadteMain = (getMainImage) => {
+    setGetMainImage(getMainImage)
+    // setDeleteValue(getDeleteValue)
+  }
+  const handleUpadteBanner = (getBannerImage) => {
+    setGetBannerImage(getBannerImage)
+    // setDeleteValue(getDeleteValue)
+  }
+
+  const [descriptionValue, setDescriptionValue] = useState('');
+
+  const handleDescriptionValue = (value) => {
+    setDescriptionValue(value)
+  }
+
+  console.log("00000000000000", getMainImage, getBannerImage)
   return (
     <Modal
       forceRender={true}
@@ -266,6 +307,11 @@ export default function ProviderUpdateModal(props) {
             file={file}
             bannerFile={bannerFile}
             onChangeBannerUpload={onChangeBannerUpload}
+            handleUpadteMain={handleUpadteMain}
+            handleUpadteBanner={handleUpadteBanner}
+            handleData={provider}
+            descriptionValue={descriptionValue}
+            handleDescriptionValue={handleDescriptionValue}
           />
           <section className="mt-2">
             <label className="mb-2 block">Offers - Table</label>

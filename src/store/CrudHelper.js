@@ -21,14 +21,13 @@ export default (currentState, setState) => {
   };
 
   const removeOne = (payload) => {
+    console.log("payyyyyyyy",payload)
     setState((currentState) => {
       let idKey = currentState.idKey;
       let newEntities = {
         ...currentState.entities,
       };
-
       delete newEntities[payload[idKey]];
-
       return {
         ...currentState,
         entities: newEntities,

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Row, Col, Input, Form, Upload, message } from 'antd';
+import { Layout, Row, Col, Input, Form, Upload, message, Button } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 import 'assets/scss/antd-overrides.scss';
+const axios = require('axios').default;
 
 function getBase64(image, callback) {
   const reader = new FileReader();
@@ -21,7 +22,7 @@ function ImageUploadAndNameInputs(props) {
 
   const [imageUrl, setImageUrl] = useState(null);
   const [bannerImageUrl, setBannerImageUrl] = useState(null);
-
+  console.log("imageUrl",imageUrl)
   const displayImageFile = (file, imageUrlCall) => {
     if (file) {
       if (file.file_link) {
@@ -129,3 +130,4 @@ function ImageUploadAndNameInputs(props) {
 }
 
 export default ImageUploadAndNameInputs;
+

@@ -15,7 +15,7 @@ import PrivateRoute from 'services/PrivateRoute';
 import { GlobalProvider } from 'store/GlobalStore';
 import { Helmet } from 'react-helmet';
 import EvergreenLogo from 'assets/svgs/evergreen-optimized-logo.svg';
-
+import CustomHomePage from 'components/CustomHomePage/CustomHomePage'
 const AuthScreen = imported(() => import('screens/AuthScreen'));
 const Result = imported(() => import('antd/lib/result'));
 const DashboardScreen = imported(() => import('screens/DashboardScreen'));
@@ -28,7 +28,8 @@ function App() {
   } else {
     return window.location.replace(`/`);
   }
-
+  let isUrlCustomPage = window.location.href.indexOf("custom") > -1 ? true : false,
+    pageUrl = isUrlCustomPage ? window.location.pathname.replace('/custom/', '') : '';
   return (
     <GlobalProvider>
       <Helmet>
@@ -45,6 +46,9 @@ function App() {
           <Redirect exact from="/" to="home" />
           <Route path="/home" component={HomeScreen} />
           <Route path="/auth/:action" component={AuthScreen} />
+          {/* <Route path="/custom/:id" component={CustomHomePage} /> */}
+          <Route path={`/custom/:${pageUrl}`} component={HomeScreen} />
+          {/* <Route path="/custom/:id/:id" component={HomeScreen} /> */}
           <PrivateRoute path="/dashboard" component={DashboardScreen} />
           <Route
             exact
