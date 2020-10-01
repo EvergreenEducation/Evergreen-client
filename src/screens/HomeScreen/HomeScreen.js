@@ -41,8 +41,6 @@ import Logo from 'assets/svgs/evergreen-optimized-logo.svg';
 import './home-screen.scss';
 const axios = require('axios').default;
 
-
-
 configure({
   axios: axiosInstance,
 });

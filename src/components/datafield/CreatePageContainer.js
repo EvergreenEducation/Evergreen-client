@@ -54,26 +54,61 @@ export default function CreatePageContainer(props) {
     }
 
 
+    const [similarRoute,setSimilarRoute]=useState(false);
+
+
+
     const handleName = (input) => {
         let inputValues = { ...pageValue, page_route: input.target.value }
         console.log("----------", inputValues)
-        setPageValue(inputValues)
+        setPageValue(inputValues);
+        // let status=matchDataFromUrl(inputValues);
+        // debugger
+        // if(status){
+        //     setSimilarRoute(true);
+        // }else{
+        //     setSimilarRoute(false);
+        // }
+        
+    }
+
+
+    function matchDataFromUrl(pageValue){
+        if(getData){
+            for(let i=0;i<getdata.length;i++){
+                let lastUrl=getdata[i].page_route.split('/');
+                if(lastUrl[lastUrl.length-1] ===pageValue.page_route.trim()){
+                    return false
+                }
+            }
+            return true
+        }else{
+            return true
+        }
     }
 
     const handleButton = () => {
-        postData(pageValue).then(resp => {
-            console.log(resp, "response")
-            if (resp.status == 200) {
-                setAddData(resp.data.data)
-                getData().then(resp => {
-                    setGetData(resp.data.data)
-                })
-                setPageValue({ page_route: "" })
-                notify("success")
-            }
-        }).catch(error => {
-            console.log(error, "error")
-        })
+        let status=matchDataFromUrl(pageValue);
+        if(status){
+            pageValue.page_route=pageValue.page_route.trim();
+            postData(pageValue).then(resp => {
+                console.log(resp, "response")
+                if (resp.status == 200) {
+                    setAddData(resp.data.data)
+                    getData().then(resp => {
+                        setGetData(resp.data.data)
+                    })
+                    setPageValue({ page_route: "" })
+                    notify("success")
+                }
+            }).catch(error => {
+                console.log(error, "error")
+            })
+        }else{
+            toast.error("Custom route is already selected");
+        }
+
+
     }
 
     const notify = msg => {
@@ -97,10 +132,10 @@ export default function CreatePageContainer(props) {
         })
     }, []);
 
-    // const handleLink = (text) => {
-    //     window.open(`${text.page_route}`,"_self")
-    // }
-    // console.log("accedrationValues", pageValue)
+    const handleLink = (text) => {
+        window.open(`${text.page_route}`,"_blank")
+    }
+    console.log("accedrationValues", pageValue)
     return (
         <>
             <Card title="Add Page" className="shadow-md rounded-md">
@@ -131,7 +166,7 @@ export default function CreatePageContainer(props) {
                         },
                     })}
                 />
-                {/* <Column
+                <Column
                     className="antd-col style-right"
                     // title="pdf_link"
                     key="page_route"
@@ -154,7 +189,7 @@ export default function CreatePageContainer(props) {
                             'page_route': 'page_route',
                         },
                     })}
-                /> */}
+                />
             </Table>
         </>
     );
