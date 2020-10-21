@@ -92,7 +92,7 @@ export default function OfferTable({
   viewEnrollments,
   role,
 }) {
-  console.log("daaaaaaaaaaaaaa",data)
+  // console.log("daaaaaaaaaaaaaa",data)
   const doHandleRowSelection =
     role === 'student'
       ? null

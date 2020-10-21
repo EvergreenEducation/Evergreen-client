@@ -10,7 +10,7 @@ import {
   LogOutTopbar,
   FaPlusCircleButton,
 } from 'components/shared';
-import matchSorter from 'match-sorter';
+// import matchSorter from 'match-sorter';
 const axios = require('axios').default;
 
 const ProviderUpdateModal = imported(() =>
@@ -90,7 +90,6 @@ export default function ProviderContainer(props) {
     return Data
   }
 
-
   if (providerError || datafieldError) {
     history.push('/error/500');
   }
@@ -104,18 +103,18 @@ export default function ProviderContainer(props) {
     }
   }, [data, datafieldsData]);
 
-  const entities = Object.values(provider.entities);
+  // const entities = Object.values(provider.entities);
   const dataFieldEntities = Object.values(datafield.entities);
 
-  const handleDataAfterSearch = (data, keys = ['name', 'keywords']) => {
-    return matchSorter(data, searchString, { keys });
-  };
+  // const handleDataAfterSearch = (data, keys = ['name', 'keywords']) => {
+  //   return matchSorter(data, searchString, { keys });
+  // };
 
   const handleDataSearch = (searchVal) => {
     return setSearchString(searchVal);
   };
 
-  const showData = handleDataAfterSearch(entities);
+  // const showData = handleDataAfterSearch(entities);
 
   useEffect(() => {
     getProviderApi()

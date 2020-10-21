@@ -16,7 +16,7 @@ export  const getindustryData = async () => {
   let token = JSON.parse(localStorage.getItem("currentSession"))
   let user_id = token.id
   let user_role = token.role
-  console.log("insssssss",user_role,user_id)
+  // console.log("insssssss",user_role,user_id)
   let Data = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/files/get_industry`)
   return Data
 }
@@ -36,7 +36,7 @@ export default function IndustryContainer(props) {
     let name  = industryValues.name
     let user_id = token.id
     let user_role = token.role
-    console.log("insssssss",name,user_role,user_id)
+    // console.log("insssssss",name,user_role,user_id)
     let pdfData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/files/add_industry`,{
       name,
       user_id,
@@ -48,13 +48,13 @@ export default function IndustryContainer(props) {
 
   const handleName = (input) => {
     let inputValues = {...industryValues, name : input.target.value}
-    console.log("----------",inputValues)
+    // console.log("----------",inputValues)
     setIndustryValues(inputValues)
   }
 
   const handleButton =() => {
     postData(industryValues).then(resp => {
-      console.log(resp,"response")
+      // console.log(resp,"response")
       if(resp.status == 200){
         setAddData(resp.data.data)
         getindustryData().then(resp => {
@@ -80,7 +80,7 @@ export default function IndustryContainer(props) {
 
   useEffect(() => {
     getindustryData().then(resp => {
-      console.log(resp,"reeeeeeeeeeeee")
+      // console.log(resp,"reeeeeeeeeeeee")
       if(resp.status == 200){
         setGetData(resp.data.data)
       }
@@ -88,7 +88,7 @@ export default function IndustryContainer(props) {
       console.log(error,"errrrrrrrrrrrr")
     })
   }, []);
- console.log("accedrationValues",industryValues)
+//  console.log("accedrationValues",industryValues)
   return (
     <>
     <Card title="Industry" className="shadow-md rounded-md">

@@ -68,7 +68,7 @@ const PathwayCreationContainer = ({ closeModal, role, providerId, getPathwayList
         'is_main_promo',
         'external_url',
       ]);
-      console.log("formmmmmmmmmmmmm", form)
+      // console.log("formmmmmmmmmmmmm", form)
       let groupOrderByYearNum = [];
       let groups_of_offers = map(groupsOfOffers, (g) => {
         const year = form.getFieldValue(g.group_name);
@@ -231,7 +231,7 @@ const PathwayCreationContainer = ({ closeModal, role, providerId, getPathwayList
     setDescriptionValue(value)
   }
 
-  console.log("111111111", getImageData, getBannerImage)
+  // console.log("111111111", getImageData, getBannerImage)
   return (
     <div>
       <Form form={form} ref={formRef}>

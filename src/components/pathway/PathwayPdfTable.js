@@ -11,7 +11,7 @@ const { Column } = Table;
 
 function PathwaysPdfTable(props) {
     const { data} = props;
-    console.log("000000000", data)
+    // console.log("000000000", data)
     const handleLink =(text) => {
         window.open( 
           `${text.rubric_attachment}`, "_blank");

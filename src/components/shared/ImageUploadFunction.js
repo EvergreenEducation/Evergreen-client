@@ -24,10 +24,10 @@ function ImageUploadFunction({ handleImageUrl }) {
     }
   }
   const handleButton = async (files) => {
-    console.log(files)
+    // console.log(files)
     await pdfFileData(files).then(async resp => {
       if (resp.status === 200) {
-        console.log(resp.data.data, "responssssssssssss")
+        // console.log(resp.data.data, "responssssssssssss")
         let pdfItem = resp.data.data
         handleImageUrl(pdfItem)
         setImageValue(pdfItem)
@@ -40,7 +40,7 @@ function ImageUploadFunction({ handleImageUrl }) {
   }
   const pdfFileData = async (inputFile) => {
     let fileData = inputFile
-    console.log("filesdataaaa", fileData)
+    // console.log("filesdataaaa", fileData)
     const data = new FormData();
     for (const File of fileData) {
       data.append('files', File);
@@ -60,7 +60,7 @@ function ImageUploadFunction({ handleImageUrl }) {
       toast.success("File upload successfully")
     }
   }
-  console.log("pdfData", imageValue)
+  // console.log("pdfData", imageValue)
   return (
     <Layout className="h-auto mb-6 opportunity_choose">
       <Col span={7} className="flex justify-end items-center">
@@ -77,7 +77,7 @@ function ImageUploadFunction({ handleImageUrl }) {
         /> : null}
         <div className="image_block_opportunity">
           {imageValue && imageValue.length > 0 ? imageValue.map((item, i) => {
-            console.log("oo", item)
+            // console.log("oo", item)
             if (item.name.match(/(\.jpg|\.jpeg|\.bmp|\.gif|\.png)$/i)) {
               return (
                 <img src={item.original} alt={item.name} />)

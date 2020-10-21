@@ -49,7 +49,7 @@ export default function ({
         `${data.image_url}`); 
     }
   }
-  console.log('promocard render',data)
+  // console.log('promocard render',data)
   return (
     <Link to={link} key={`Link-Card-${data.id}`} className="text-base font-bold promoCard__link" onClick={() => handleCheckButton(data)} key={data.id}>
       <Card

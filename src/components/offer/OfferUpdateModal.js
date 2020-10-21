@@ -106,7 +106,6 @@ export default function OfferUpdateModal({
           'banner_image': getBannerImage,
           'main_image': getMainImage,
           'description': descriptionValue
-
         },
       });
 

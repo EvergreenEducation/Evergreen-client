@@ -15,7 +15,6 @@ configure({
 });
 var parse = require('html-react-parser');
 
-
 const { Column } = Table;
 
 const renderColumns = (nameTitle, descriptionTitle) => {
@@ -189,7 +188,7 @@ export default function ProviderUpdateModal(props) {
 
       const fileable_type = 'provider';
       let filePayload = [];
-      console.log("filePayload", filePayload)
+      // console.log("filePayload", filePayload)
       if (data && userId) {
         const providerEntity = providerStore.entities[data.id];
         if(providerEntity.Files){
@@ -282,7 +281,7 @@ export default function ProviderUpdateModal(props) {
     setDescriptionValue(value)
   }
 
-  console.log("00000000000000", getMainImage, getBannerImage)
+  // console.log("00000000000000", getMainImage, getBannerImage)
   return (
     <Modal
       forceRender={true}
@@ -293,10 +292,7 @@ export default function ProviderUpdateModal(props) {
       bodyStyle={{ backgroundColor: '#f0f2f5', padding: 0 }}
       footer={true}
       onCancel={onCancel}
-      afterClose={() => {
-        reset();
-      }}
-    >
+      afterClose={() => {reset();}}>
       <Form form={form} ref={formRef}>
         <div className="p-6 overflow-y-auto" style={{ maxHeight: '32rem' }}>
           <ProviderForm
@@ -311,8 +307,7 @@ export default function ProviderUpdateModal(props) {
             handleUpadteBanner={handleUpadteBanner}
             handleData={provider}
             descriptionValue={descriptionValue}
-            handleDescriptionValue={handleDescriptionValue}
-          />
+            handleDescriptionValue={handleDescriptionValue}/>
           <section className="mt-2">
             <label className="mb-2 block">Offers - Table</label>
             <Table
@@ -320,8 +315,7 @@ export default function ProviderUpdateModal(props) {
               rowClassName={() => 'antd-row'}
               className="ant-table-wrapper--responsive"
               rowKey="id"
-              pagination={{ pageSize: 5 }}
-            >
+              pagination={{ pageSize: 5 }}>
               {renderColumns('Offer Name', 'Offer Description')}
             </Table>
           </section>
@@ -332,8 +326,7 @@ export default function ProviderUpdateModal(props) {
               rowKey="id"
               pagination={{ pageSize: 5 }}
               className="ant-table-wrapper--responsive w-full"
-              rowClassName={() => 'antd-row'}
-            >
+              rowClassName={() => 'antd-row'}>
               {renderColumns('Name', 'Description')}
             </Table>
           </section>
@@ -342,23 +335,20 @@ export default function ProviderUpdateModal(props) {
           className="bg-white px-6 pt-5 pb-1 flex justify-center"
           style={{
             borderTop: '1px solid #f0f0f0',
-          }}
-        >
+          }}>
           <Button
             className="mr-3 px-10 rounded"
             size="small"
             type="primary"
             htmlType="submit"
-            onClick={() => submitUpdate()}
-          >
+            onClick={() => submitUpdate()}>
             Update
           </Button>
           <Button
             className="px-10 rounded"
             size="small"
             type="dashed"
-            onClick={() => onCancel()}
-          >
+            onClick={() => onCancel()}>
             Cancel
           </Button>
         </section>

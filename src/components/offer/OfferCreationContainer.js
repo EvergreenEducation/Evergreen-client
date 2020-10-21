@@ -36,7 +36,7 @@ const OfferCreationContainer = ({ closeModal, role, providerId, getOfferListData
   let providerEntities = Object.values(providerStore.entities);
 
   const submit = async () => {
-    console.log("formmmmmmmmm", form)
+    // console.log("formmmmmmmmm", form)
     try {
       const values = await form.validateFields([
         'banner_image',
@@ -68,9 +68,8 @@ const OfferCreationContainer = ({ closeModal, role, providerId, getOfferListData
         'is_main_promo',
         'external_url',
       ]);
-
       const { provider_id } = values;
-      console.log("insissssssssssssss", values)
+      // console.log("insissssssssssssss", values)
       const offerResponse = await createOffer({
         data: {
           ...values,
@@ -186,7 +185,7 @@ const OfferCreationContainer = ({ closeModal, role, providerId, getOfferListData
   const handleDescriptionValue = (value) => {
     setDescriptionValue(value)
   }
-  console.log("form", getPdfUrl)
+  // console.log("form", getPdfUrl)
   return (
     <div>
       <Form form={form} name="offerForm" ref={formRef}>

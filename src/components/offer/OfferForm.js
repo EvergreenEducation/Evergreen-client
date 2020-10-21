@@ -10,18 +10,23 @@ import {
   Checkbox,
   Avatar
 } from 'antd';
-import { ImageUploadAndNameInputs, ImageUploadFunction, BannerUploadFunction } from 'components/shared';
+import {  ImageUploadFunction } from 'components/shared';
 import { PdfUploadFunction } from 'components/shared'
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { groupBy, property, isNil, remove, compact } from 'lodash';
 import 'assets/scss/antd-overrides.scss';
+import { formatCountdown } from 'antd/lib/statistic/utils';
+// import { AliwangwangOutlined } from 'antd';
+
 const axios = require('axios').default;
 
 const { Option } = Select;
 
 const preloadOptions = (data = []) =>
   data.map((item, index) => {
+    console.log("=================",item)
+    console.log("preloadOptionsOffer", item.id, item.name)
     return (
       <Option value={item.id} key={index.toString()}>
         {item.name}
@@ -31,9 +36,10 @@ const preloadOptions = (data = []) =>
 
 const preloadOptionsOffer = (data = []) =>
   data.map((item, index) => {
-    console.log("dataa", item && item)
+    console.log("preloadOptionsOffer", item.id, item.name)
     return (
-      <Option value={item.id} key={index.toString()}>
+      <Option value={`${item.id}`} key={index.toString()}
+       >
         {item.name}
       </Option>
     );
@@ -44,11 +50,6 @@ export default function OfferForm({
   providers = {},
   offers = [],
   offer = {},
-  onChangeUpload,
-  onChangeBannerUpload,
-  bannerFile,
-  file,
-  userId = null,
   role,
   handlePropData,
   handleImageData,
@@ -58,15 +59,15 @@ export default function OfferForm({
   handleDescriptionValue,
   descriptionValue,
 }) {
-  const [getvalues, setGetValues] = useState()
+  const [getvalues, setGetValues] = useState([])
   const getData = async () => {
     let pdfData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/files/get_generic`)
     return pdfData
   }
-  console.log('providerStore.entities',providers)
+  // console.log('providerStore.entities', providers)
 
   const deleteData = async (item1, offer) => {
-    console.log(offer, item1, "=============")
+    // console.log(offer, item1, "=============")
     let image = item1.original
     let user_id = offer.id
     let pdfData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/files/offer_delete_pdf`, {
@@ -77,14 +78,13 @@ export default function OfferForm({
   }
   useEffect(() => {
     getData().then(resp => {
-      console.log(resp)
+      // console.log(resp)
       if (resp.status == 200) {
         setGetValues(resp.data.data)
       }
     })
   }, [])
-  console.log("getvalues", getvalues, offer)
-
+  // console.log("getvalues", getvalues, offer)
   const [getPdfUrl, setGetPdfUrl] = useState()
   const [hideFied, setHideFied] = useState(true)
   const [isCheckLearn, setIsCheckLearn] = useState(true)
@@ -119,13 +119,13 @@ export default function OfferForm({
       setGetPdfUrl(getPdfUrl)
       handlePropData(getPdfUrl, resArr)
     } else {
-      console.log("inssssssssss")
+      // console.log("inssssssssss")
       setGetPdfUrl(getPdfUrl)
       handlePropData(getPdfUrl)
     }
   }
   const handleImageUrl = (getPdfUrl) => {
-    console.log("getPdfUrl", getPdfUrl)
+    // console.log("getPdfUrl", getPdfUrl)
     if (Object.keys(offer).length !== 0) {
       var result = offer.main_image.reduce(function (prev, value) {
         var isDuplicate = false;
@@ -161,7 +161,7 @@ export default function OfferForm({
     }
   }
   const BannerUploadFunction = (getPdfUrl) => {
-    console.log("aaaaaaaaaaaaaaaaaaaaaa", getPdfUrl)
+    // console.log("aaaaaaaaaaaaaaaaaaaaaa", getPdfUrl)
     if (Object.keys(offer).length !== 0) {
       var result = offer.banner_image.reduce(function (prev, value) {
         var isDuplicate = false;
@@ -196,7 +196,7 @@ export default function OfferForm({
       handleBannerImage(getPdfUrl)
     }
   }
-  console.log("offreeee", offer)
+  // console.log("offreeee", offer)
   providers = compact(Object.values(providers));
   datafields = Object.values(datafields);
 
@@ -211,12 +211,19 @@ export default function OfferForm({
     cost_unit = [],
   } = grouped;
   let offerOptions = null;
-  let offerOptiondata = null
+  // let offerOptiondata = null
   if (!isNil(offers) && offers.length) {
     const updatedOffers = remove(offers, (o) => {
-      return !(o.id === offer.id);
+      return !(o.name === offer.name);
     });
     offerOptions = preloadOptions(updatedOffers);
+  }
+
+  if (!isNil(offers) && offers.length) {
+    const updatedOffers = remove(offers, (o) => {
+      return !(o.name === offer.name);
+    });
+    offerOptions = preloadOptionsOffer(updatedOffers);
   }
 
   const handleType = (event) => {
@@ -229,13 +236,13 @@ export default function OfferForm({
 
   const handlePdfDelete = (item1, offer) => {
     deleteData(item1, offer).then(resp => {
-      console.log("sucessssssss", resp)
+      // console.log("sucessssssss", resp)
     }).catch(error => {
       console.log("errro", error)
     })
   }
   const handleSelect = (e) => {
-    console.log(e.target.textContent, "eeeeeeeeeeeeeee")
+    // console.log(e.target.textContent, "eeeeeeeeeeeeeee")
     if (e.target.textContent == "Learn") {
       setIsCheckEarn(false)
       setIsCheckLearn(true)
@@ -249,7 +256,7 @@ export default function OfferForm({
   }
   useEffect(() => {
     if (offer && offer !== null && offer.learn_and_earn === "learn") {
-      console.log("eeeeeeeeeeeeeee")
+      // console.log("eeeeeeeeeeeeeee")
       setIsCheckEarn(false)
       setIsCheckLearn(true)
     } if (offer && offer !== null && offer.learn_and_earn === "earn") {
@@ -260,12 +267,14 @@ export default function OfferForm({
       setIsCheckLearn(true)
     }
   }, [])
-  console.log("ofeeeeeeeee", offer_category)
+  // console.log("\n offer_category", offer_category)
 
   const handleChange = (e, editor) => {
     const data = editor.getData();
     handleDescriptionValue(data)
   }
+
+  console.log('\n offers', offer,offers)
   return (
     <Layout>
       {/* <ImageUploadAndNameInputs
@@ -370,7 +379,9 @@ export default function OfferForm({
         </p> : null}
       </div> : null}
       {/* <ImageUploadFunction /> */}
-      <Col xs={24} sm={24} md={18}>
+     
+      <Row gutter={8}>
+      <Col xs={24} sm={24} md={8}>
         <Form.Item
           label="Name"
           name="name"
@@ -382,12 +393,11 @@ export default function OfferForm({
           <Input name="name" className="rounded" />
         </Form.Item>
       </Col>
-      <Row gutter={8}>
         <Col
           className={role === 'provider' ? 'hidden' : ''}
           xs={24}
           sm={24}
-          md={15}
+          md={8}
         >
           <div className="flex flex-row">
             <Form.Item
@@ -413,8 +423,8 @@ export default function OfferForm({
         <Col
           span={9}
           xs={24}
-          sm={24}
-          md={role === 'provider' ? 10 : 9}
+          sm={8}
+          md={role === 'provider' ? 10 : 8}
           className="media-margin-top"
         >
           <Form.Item
@@ -434,6 +444,7 @@ export default function OfferForm({
             </Select>
           </Form.Item>
         </Col>
+
         {role === "admin" ? <Col xs={9} sm={24} md={8}>
           <Form.Item
             label="Add as Generic Offer"
@@ -461,11 +472,11 @@ export default function OfferForm({
             colon={false}
             className="mb-0 inherit"
           >
-            {role == "admin" ? <Select className="rounded custom-select" name="name">
+            {role == "admin" ? <Select className="rounded custom-select" name="generic_type" defaultValue={offer.generic_type}>
               {!isNil(getvalues) && getvalues.length
                 ? preloadOptionsOffer(getvalues)
                 : null}
-            </Select> : <Select className="rounded custom-select" name="name">
+            </Select> : <Select className="rounded custom-select" name="generic_type" defaultValue={offer.generic_type}>
                 {!isNil(getvalues) && getvalues.length
                   ? preloadOptionsOffer(getvalues)
                   : null}
@@ -550,10 +561,11 @@ export default function OfferForm({
             rules={[{ required: true, message: 'Please select an option' }]}
           >
             <Select name="location_type" className="custom-select">
-              <Option value="online">Online</Option>
-              <Option value="hybrid">Hybrid</Option>
-              <Option value="in-person">In person</Option>
-              <Option value="self-learning'">Self Learning</Option>
+            <Option value="Online"><img className="social_distancing" src="/icons/online.png" /> Online</Option>
+              <Option value="Hybrid"><img className="social_distancing" src="/icons/hybrid.png" /> Hybrid</Option>
+              <Option value="In-person"><img className="social_distancing" src="/icons/in-person.png" /> In person</Option>
+              <Option value="Self-learning"><img className="social_distancing" src="/icons/self-learning.png" /> Self Learning</Option>
+              <Option value="Social Distancing Confirmed"><img className="social_distancing" src="/icons/social-distancing.png" />Social Distancing Confirmed</Option>
             </Select>
           </Form.Item>
         </Col>
@@ -683,7 +695,7 @@ export default function OfferForm({
             className="mb-0 inherit"
             rules={[{ required: true, message: 'Please select an option' }]}
           >
-            <Select className="rounded custom-select">
+          <Select className="rounded custom-select">
               {!isNil(payment_unit) && payment_unit.length
                 ? preloadOptions(payment_unit)
                 : null}

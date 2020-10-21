@@ -23,7 +23,7 @@ export default function ({ data = {}, session, activePageId, type, allApiCall })
     if (!id || !endpoint || !value) {
       return;
     }
-    console.log('daaaaaata', value);
+    // console.log('daaaaaata', value);
     // let type = endpoint === "offers" ? "offer" : endpoint === "providers" ? "provider" : endpoint === "pathways" ? "pathway" : null,
     //   user_id = id,
     //   custom_page_promo_ids = value.is_main_promo === undefined ? null : value.is_main_promo === true || value.is_main_promo === false ? value.custom_page_promo_ids.length ? value.custom_page_promo_ids[0] : null : null,
@@ -50,7 +50,7 @@ export default function ({ data = {}, session, activePageId, type, allApiCall })
       promo.push(promo_ids)
       local.push(local_ids)
       route.push(custom_page_promo_routes)
-      console.log(promo,local,route,'promo_ids,local_ids,custom_page_promo_routes')
+      // console.log(promo,local,route,'promo_ids,local_ids,custom_page_promo_routes')
       deletePromotionSetting(type, user_id, promo,local,route);
       return response;
     } else if (updateType === 'local') {
@@ -69,7 +69,7 @@ export default function ({ data = {}, session, activePageId, type, allApiCall })
           promo.push(promo_ids)
           local.push(local_ids)
           route.push(custom_page_promo_routes)
-          console.log(promo,local,route,'promo_ids,local_ids,custom_page_promo_routes')
+          // console.log(promo,local,route,'promo_ids,local_ids,custom_page_promo_routes')
           deletePromotionSetting(type, user_id, promo,local,route);
           // deletePromotionSetting(type, user_id, promo_ids, local_ids, custom_page_promo_routes);
         } else {
@@ -93,7 +93,7 @@ export default function ({ data = {}, session, activePageId, type, allApiCall })
           promo.push(promo_ids)
           local.push(local_ids)
           route.push(custom_page_promo_routes)
-          console.log(promo,local,route,'promo_ids,local_ids,custom_page_promo_routes')
+          // console.log(promo,local,route,'promo_ids,local_ids,custom_page_promo_routes')
           deletePromotionSetting(type, user_id, promo,local,route);
           // deletePromotionSetting(type, user_id, promo_ids, local_ids, custom_page_promo_routes);
         } else {
@@ -360,7 +360,7 @@ export default function ({ data = {}, session, activePageId, type, allApiCall })
   // calling update promotion setting
   const updatePromotionSetting = (type, user_id, custom_page_promo_ids, custom_page_local_ids, custom_page_promo_routes) => {
     updatePromoRoute(type, user_id, custom_page_promo_ids, custom_page_local_ids, custom_page_promo_routes).then(res => {
-      console.log('updatePromotionSetting res', res.data)
+      // console.log('updatePromotionSetting res', res.data)
       allApiCall();
     }).catch(err => {
       console.log('updatePromoRoute err', err)
@@ -369,7 +369,7 @@ export default function ({ data = {}, session, activePageId, type, allApiCall })
   // calling delete promotion setting
   const deletePromotionSetting = (type, user_id, custom_page_promo_ids, custom_page_local_ids, custom_page_promo_routes) => {
     deletePromoRoute(type, user_id, custom_page_promo_ids, custom_page_local_ids, custom_page_promo_routes).then(res => {
-      console.log('deletePromoRoute res', res.data)
+      // console.log('deletePromoRoute res', res.data)
       allApiCall();
     }).catch(err => {
       console.log('updatePromoRoute err', err)
@@ -389,7 +389,7 @@ export default function ({ data = {}, session, activePageId, type, allApiCall })
     localArray = custom_page_local_ids === undefined || custom_page_local_ids === null ? [] : uniqueArray(custom_page_local_ids),
     isLocalSelected = localArray.includes(activePageId.id),
     isMainSelected = mainArray.includes(activePageId.id);
-  console.log('type', type, '\n activePageId', activePageId)
+  // console.log('type', type, '\n activePageId', activePageId)
   return (
     <React.Fragment>
       <div className={`promote-card h-auto w-48 mr-3 mb-3 rounded border border-solid ${themeBorder} shadow`}>

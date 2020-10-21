@@ -16,8 +16,7 @@ const ProviderSimpleForm = (props) => {
     handleUpadteBanner, role,
   } = props;
   const [getPdfUrl, setGetPdfUrl] = useState()
-console.log(' handleUpadteMain handleUpadteBanner', handleUpadteMain,
-handleUpadteBanner)
+// console.log(' handleUpadteMain handleUpadteBanner', handleUpadteMain,handleUpadteBanner)
 
   const handleChange = (e, editor) => {
     const data = editor.getData();
@@ -25,9 +24,9 @@ handleUpadteBanner)
   }
 
   const handleImageUrl = (getPdfUrl) => {
-    console.log("getPdfUrl", getPdfUrl)
+    // console.log("getPdfUrl", getPdfUrl)
     if (Object.keys(handleData).length !== 0) {
-      console.log("inssssssssssssssssssssss")
+      // console.log("inssssssssssssssssssssss")
       var result = handleData.main_image.reduce(function (prev, value) {
         var isDuplicate = false;
         for (var i = 0; i < getPdfUrl.length; i++) {
@@ -39,9 +38,7 @@ handleUpadteBanner)
         if (!isDuplicate) {
           prev.push(value);
         }
-
         return prev;
-
       }, []);
       let finaldata = result.map(item => JSON.parse(item))
       let testData = (finaldata.concat(getPdfUrl))
@@ -56,14 +53,14 @@ handleUpadteBanner)
       setGetPdfUrl(getPdfUrl)
       handleUpadteMain(getPdfUrl, resArr)
     } else {
-      console.log("elseeeeeeeeeeee")
+      // console.log("elseeeeeeeeeeee")
       setGetPdfUrl(getPdfUrl)
       // handleImageData(getPdfUrl)
       // handleBannerImage(getPdfUrl)
     }
   }
   const BannerUploadFunction = (getPdfUrl) => {
-    console.log("getPdfUrl", getPdfUrl)
+    // console.log("getPdfUrl", getPdfUrl)
     if (Object.keys(handleData).length !== 0) {
       var result = handleData.banner_image.reduce(function (prev, value) {
         var isDuplicate = false;
@@ -76,14 +73,13 @@ handleUpadteBanner)
         if (!isDuplicate) {
           prev.push(value);
         }
-
         return prev;
-
       }, []);
+
       let finaldata = result.map(item => JSON.parse(item))
       let testData = (finaldata.concat(getPdfUrl))
-
       var resArr = [];
+
       testData.forEach(function (item) {
         var i = resArr.findIndex(x => x.name == item.name);
         if (i <= -1) {
@@ -93,14 +89,13 @@ handleUpadteBanner)
       setGetPdfUrl(getPdfUrl)
       handleUpadteBanner(getPdfUrl, resArr)
     } else {
-      console.log("elseeeeeeeeeeee")
+      // console.log("elseeeeeeeeeeee")
       setGetPdfUrl(getPdfUrl)
       // handleImageData(getPdfUrl)
       // handleBannerImage(getPdfUrl)
     }
   }
   const [indusData, setIndusData] = useState()
-
 
   let industryOptions = null;
 
@@ -134,7 +129,6 @@ handleUpadteBanner)
         onChangeBannerUpload={onChangeBannerUpload}
         // bannerFile={getBannerImage}
       > */}
-
       <Col
         span={9}
         xs={24}

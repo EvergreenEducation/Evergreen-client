@@ -24,10 +24,10 @@ function PdfUploadFunction({ handlePdfData }) {
     }
   }
   const handleButton = async (files) => {
-    console.log(files)
+    // console.log(files)
     await pdfFileData(files).then(async resp => {
       if (resp.status === 200) {
-        console.log(resp.data.data,"responssssssssssss")
+        // console.log(resp.data.data,"responssssssssssss")
         let pdfItem = resp.data.data
         handlePdfData(pdfItem)
         setValue(pdfItem)
@@ -40,7 +40,7 @@ function PdfUploadFunction({ handlePdfData }) {
   }
   const pdfFileData = async (inputFile) => {
     let fileData = inputFile
-    console.log("filesdataaaa",fileData)
+    // console.log("filesdataaaa",fileData)
     const data = new FormData();
     for (const File of fileData) {
       data.append('files', File);
@@ -60,7 +60,7 @@ function PdfUploadFunction({ handlePdfData }) {
       toast.success("Pdf file upload successfully")
     }
   }
-  console.log("pdfData", getValue)
+  // console.log("pdfData", getValue)
   return (
     <Layout className="h-auto mb-6">
       <Col span={7} className="flex justify-end items-center">
@@ -76,9 +76,9 @@ function PdfUploadFunction({ handlePdfData }) {
           width={100}
         /> : null}
         <div className="image_block_opportunity">
-          {console.log("ooooooooo",inputFile.files[1])}
+          {/* {console.log("ooooooooo",inputFile.files[1])} */}
          {getValue && getValue.length ? getValue.map((item,i) => {
-          console.log("iteeeeee",item)
+          // console.log("iteeeeee",item)
           return (
             <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg" alt={item.name}></img>
              )}):null}

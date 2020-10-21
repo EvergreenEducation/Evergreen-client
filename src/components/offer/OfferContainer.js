@@ -89,7 +89,7 @@ export default function OfferContainer(props) {
     if (Deletedata) {
       offerStore.removeOne(offer)
       getPdfData(offer).then(resp => {
-        console.log("resp", resp)
+        // console.log("resp", resp)
         getOfferListData();
       }).catch(error => {
         console.log(error, "error")
@@ -217,7 +217,7 @@ export default function OfferContainer(props) {
   useEffect(() => {
     getOfferListData()
   }, [])
-  console.log('showData :: ', showData, '\n\t getOffersList::', getOffersList)
+  // console.log('showData :: ', showData, '\n\t getOffersList::', getOffersList)
   return (
     <Layout className="bg-transparent">
       <ProviderLogOutTopbar role={role} onClick={openProviderUpdateModal}>
@@ -232,8 +232,7 @@ export default function OfferContainer(props) {
                 OfferCreationContainer.preload();
               }}
               onClick={() => setOpenable({ ...openable, formModal: true })}
-              text="OFFER"
-            />
+              text="OFFER" />
           </SearchHeader>
         </Col>
       </ProviderLogOutTopbar>

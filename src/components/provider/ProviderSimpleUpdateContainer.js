@@ -9,7 +9,8 @@ configure({
     axios: axiosInstance,
 })
 
-export default function ProviderSimpleUpdateContainer({ provider_id, visible, onCancel }) {
+export default function ProviderSimpleUpdateContainer({ provider_id, visible, onCancel,getProviderInfo }) {
+    
     const datafieldStore = DataFieldStore.useContainer();
     const providerStore = ProviderStore.useContainer();
     const [{ data }] = useAxios(`/providers/${provider_id}?scope=with_details`);
@@ -20,13 +21,13 @@ export default function ProviderSimpleUpdateContainer({ provider_id, visible, on
         }
     }, [data, provider_id, providerStore.entities[provider_id]]);
 
-
     return (
         <ProviderSimpleUpdateModal
             datafields={Object.values(datafieldStore.entities)}
             provider={providerStore.entities[provider_id]}
             visible={visible}
             onCancel={onCancel}
+            getProviderInfo={getProviderInfo}
         />
     );
 };

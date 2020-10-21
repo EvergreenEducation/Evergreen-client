@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Modal, Form, Button, notification } from 'antd';
 import ProviderSimpleForm from 'components/provider/ProviderSimpleForm';
 import useAxios, { configure } from 'axios-hooks';
-
 import axiosInstance from 'services/AxiosInstance';
 import { orderBy } from 'lodash';
 import ProviderStore from 'store/Provider';
@@ -25,10 +24,9 @@ export default function ProviderSimpleUpdateModal(props) {
 
   const [file, setFile] = useState(null);
 
-  const [descriptionValue,setDescriptionValue]=useState('')
+  const [descriptionValue, setDescriptionValue] = useState('')
   let token = JSON.parse(localStorage.getItem("currentSession"))
-let role=token.role;
-
+  let role = token.role;
 
   const onChangeUpload = (e) => {
     const { file } = e;
@@ -61,20 +59,19 @@ let role=token.role;
     //       break;
     //     }
     //   }
-    }
-  , [props, provider, provider.Files, formRef]);
+  }
+    , [props, provider, provider.Files, formRef]);
 
   const [{ error: providerCreateError }, createSimpleProvider] = useAxios(
     {
-      url:  `/providers/${provider.id}`,
+      url: `/providers/${provider.id}`,
       method: 'PUT',
     },
     { manual: true }
   );
 
-
   const submitUpdate = async () => {
-    const values=await form.validateFields([
+    const values = await form.validateFields([
       'name',
       'location',
       'industry',
@@ -138,8 +135,8 @@ let role=token.role;
       console.error(e);
     }
   };
-// hold description value in simple provider update modal
-  const handleChange=(value)=>{
+  // hold description value in simple provider update modal
+  const handleChange = (value) => {
     setDescriptionValue(value);
   }
 
@@ -154,24 +151,25 @@ let role=token.role;
     setGetBannerImage(getBannerImage)
     // setDeleteValue(getDeleteValue)
   }
-// getting fresh data from provider api
-  const getProviderData=()=>{
-    getProviderApiData().then(res=>{
+  // getting fresh data from provider api
+  const getProviderData = () => {
+    getProviderApiData().then(res => {
       if (res.data) {
         providerStore.updateOne(res.data);
-    }
-    }).catch(err=>{
-      console.log('getProviderApiData error',err)
+        props.getProviderInfo();
+      }
+    }).catch(err => {
+      console.log('getProviderApiData error', err)
     })
 
   }
-// calling provider data api
-   const getProviderApiData = async () => {
+  // calling provider data api
+  const getProviderApiData = async () => {
     let Data = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/providers/${provider.id}?scope=with_details`)
     return Data
   }
 
-  console.log("qqq", getMainImage, getBannerImage)
+  // console.log("qqq", getMainImage, getBannerImage)
 
   return (
     <Modal

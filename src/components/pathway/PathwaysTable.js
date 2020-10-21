@@ -7,7 +7,7 @@ const { Column } = Table;
 
 function PathwaysTable(props) {
   const { data, handleUpdateModal, providers,handleDeleteModal } = props;
-  console.log("000000000",data)
+  // console.log("000000000",data)
   let token = JSON.parse(localStorage.getItem("currentSession"))
 
   return (

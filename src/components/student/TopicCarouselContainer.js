@@ -110,7 +110,7 @@ export default function (props) {
   }
 
     
-console.log("getDataFields",getDataFields)
+// console.log("getDataFields",getDataFields)
 
 // saving active Topic List
   function getSelectedTopicList(){
@@ -207,7 +207,7 @@ console.log("getDataFields",getDataFields)
       currentOffers = Object.values(offerStore.entities).filter(hasNoTopics);
     }
     return selectedOfferData.length? selectedOfferData.map((offer, index) => {
-      console.log('selectedOfferData', selectedOfferData)
+      // console.log('selectedOfferData', selectedOfferData)
 
       let p = null;
       if (offer && offer.provider_id && offer.Provider) {
@@ -215,6 +215,7 @@ console.log("getDataFields",getDataFields)
       }
       return offer.DataFields.length ? offer.DataFields.map((value, id) => {
         if (value.is_check_topic === true && value.id === activeTopicId) {
+          // console.log('offer.DataFields',value)
           return (
             <Link to={`/home/offer/${offer.id}`} key={index}>
               <InfoCard
@@ -263,10 +264,10 @@ console.log("getDataFields",getDataFields)
         outlook = offer.outlook
         earnings = offer.earnings
       }
-      console.log('selectedOutlookData', selectedOutlookData)
+      // console.log('selectedOutlookData', selectedOutlookData)
       if (offer && offer.DataFields) {
         return offer.DataFields.length ? offer.DataFields.map((value, id) => {
-          console.log('offer.DataFields', value.is_check_topic)
+          // console.log('offer.DataFields', value.is_check_topic)
           if (value.is_check_topic === true && value.id === activeTopicId) {
             return (
               <Link to={`/home/pathway/${offer.id}`} key={index} >
@@ -309,7 +310,7 @@ console.log("getDataFields",getDataFields)
     // currentOffers.sort((a, b) => parseFloat(b.earnings) - parseFloat(a.earnings));
     selectedEarningData.sort((a, b) => parseFloat(b.earnings) - parseFloat(a.earnings));
     return selectedEarningData.map((offer, index) => {
-      console.log('selectedEarningData', selectedEarningData)
+      // console.log('selectedEarningData', selectedEarningData)
 
       let p = null;
       let outlook = null
@@ -423,7 +424,7 @@ console.log("getDataFields",getDataFields)
           swipeScrollTolerance={1}
         >
           {selectedTopicId.length? selectedTopicId.map((topic, index) => {
-            if (topic.is_check_topic) {
+            if (topic.page_id.includes(activePageId.id)) {
               return (
                 <Card
                   className="mx-auto text-white text-lg w-auto flex justify-center items-center"

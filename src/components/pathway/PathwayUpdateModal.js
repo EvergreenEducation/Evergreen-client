@@ -89,7 +89,7 @@ export default function PathwayUpdateModal({
       let groupOrderByYearNum = [];
       let groups_of_offers = map(groupsOfOffers, (g) => {
         const linkData = form.getFieldValue(g)
-        console.log("insideeeeeeeeee",linkData)
+        // console.log("insideeeeeeeeee",linkData)
         const year = form.getFieldValue(g.group_name);
         groupOrderByYearNum.push(g.group_name);
         const results = {

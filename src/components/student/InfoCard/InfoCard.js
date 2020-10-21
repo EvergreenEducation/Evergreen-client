@@ -124,7 +124,6 @@ export default function ({
   // console.log("ooooooooo", mainImage)
 
   let {
-    banner_image,
     name,
     learn_and_earn,
     cost,
@@ -136,6 +135,7 @@ export default function ({
     frequency,
     provider_id,
     start_date,
+    Provider
   } = data;
 
   if (start_date) {
@@ -147,6 +147,7 @@ export default function ({
   const frequencyUnit = find(groupedDataFields.frequency_unit, ({ id }) => {
     return id === Number(frequency_unit);
   });
+  console.log('\n provider,,,',provider)
   return (
     <div className={`flex flex-row shadow ${className}`}>
       <Card className={`info-card`} style={style}>
@@ -170,7 +171,7 @@ export default function ({
             <Row className="my-1">
               <div>
                 <FontAwesomeIcon icon={faMapMarkerAlt} />{' '}
-                {provider && provider.location ? provider.location : '-'}
+                {Provider && Provider.location ? Provider.location : '-'}
               </div>
             </Row>
             <Row className="mt-1">

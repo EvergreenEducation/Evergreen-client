@@ -555,6 +555,33 @@ main.ant-layout-content.p-6 .ant-card.ant-card-bordered.shadow-md.rounded-md td.
 .width-95 main{
   width: 95%;
 }
+.social_distancing{
+  width: 20px;
+  display: inline-block;
+  margin-right: 10px;
+}
+.ant-select-item-option-content .anticon svg ,
+.ant-select-selection-item span.anticon svg{
+  margin-right: 10px;
+}
+.location_block{
+  text-align: center;
+  margin-top: 10px;
+}
+.location_block img {
+  width: 20px;
+  margin: 0 auto;
+}
+.location_name {
+  display: inline-block;
+  line-height: 15px;
+  margin-top: 5px;
+  width: 100%;
+  text-align: center;
+}
+.slide .info-card .ant-card-body {
+  min-height: 230px;
+}
 @media all and (min-width: 280px) and (max-width: 767px) {
   .homepage_boxes {
       width: 100% !important;

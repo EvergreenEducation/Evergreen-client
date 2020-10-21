@@ -45,7 +45,6 @@ configure({
   axios: axiosInstance,
 });
 
-
 const { Header, Content } = Layout;
 const { Search } = Input;
 const { Option } = Select;
@@ -156,21 +155,20 @@ function HomeScreen() {
 
   // check if page is custom or home page
   function checkUrlIsCustom(){
-    let isUrlCustomPage=window.location.href.indexOf("custom")> -1?true:false,
+    let isUrlCustomPage=window.location.href.indexOf("evg")> -1?true:false,
     pageUrl=window.location.href;
     if(isUrlCustomPage){
       customPageInfoData(pageUrl);
     }
   }
 
-
   useEffect(()=>{
-    if(window.location.href.indexOf("custom")> -1){
+    if(window.location.href.indexOf("evg")> -1){
       checkUrlIsCustom()
     }
   },[])
 
-  console.log('Home page',activePageId)
+  // console.log('Home page',activePageId)
 
   const handleSearch = (e) => {
     if (!e) {
@@ -311,7 +309,7 @@ function HomeScreen() {
                 <Route
                   path={`${match.url}/offer/:id`}
                   component={(props) => (
-                    <OfferInfoContainer {...props} session={session} />
+                    <OfferInfoContainer {...props} session={session} getOffers={getOffers}/>
                   )}
                 />
                 <Route
@@ -322,7 +320,7 @@ function HomeScreen() {
                 />
                 <Route
                   path={`${match.url}/provider/:id`}
-                  component={ProviderInfoContainer}
+                  component={(props)=>(<ProviderInfoContainer {...props} getOffers={getOffers}/>)}
                 />
                 <Route
                   exact

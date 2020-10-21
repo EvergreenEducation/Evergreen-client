@@ -37,7 +37,7 @@ export default function PathwayContainer({
   providerId,
   openProviderUpdateModal,
 }) {
-  console.log("shubham",providerId)
+  // console.log("shubham",providerId)
   const [searchString, setSearchString] = useState('');
   const history = useHistory();
   const [modalStates, setModalStates] = useState({
@@ -96,7 +96,7 @@ export default function PathwayContainer({
     if (pathwayDelete) {
       pathwayStore.removeOne(pathway)
       getPdfData(pathway).then(resp => {
-        console.log(resp, "resposssssssssss")
+        // console.log(resp, "resposssssssssss")
         getPathwayListData();
       }).catch(error => {
         console.log(error, "errorr")
@@ -190,7 +190,7 @@ export default function PathwayContainer({
  }
 
 
-  console.log('getPathwayList',getPathwayList)
+  // console.log('getPathwayList',getPathwayList)
 
   return (
     <Layout className="bg-transparent">

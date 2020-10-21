@@ -21,7 +21,7 @@ export default (currentState, setState) => {
   };
 
   const removeOne = (payload) => {
-    console.log("payyyyyyyy",payload)
+    // console.log("payyyyyyyy",payload)
     setState((currentState) => {
       let idKey = currentState.idKey;
       let newEntities = {

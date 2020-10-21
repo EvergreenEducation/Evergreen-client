@@ -14,7 +14,7 @@ const { Header } = Layout;
 configure({
   axios: axiosInstance,
 });
-console.log("axiosInstance", axios)
+// console.log("axiosInstance", axios)
 export default function LogOutTopbar({ children, renderNextToLogOut }) {
   const { datafield } = useGlobalStore();
   const { entities, typeEqualsProvider } = datafield;

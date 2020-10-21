@@ -20,10 +20,10 @@ function BannerUploadFunction({handleImageUrl}) {
     }
   }
   const handleButton = async (files) => {
-    console.log(files)
+    // console.log(files)
     await pdfFileData(files).then(async resp => {
       if (resp.status === 200) {
-        console.log(resp.data.data,"responssssssssssss")
+        // console.log(resp.data.data,"responssssssssssss")
         let pdfItem = resp.data.data
         handleImageUrl(pdfItem)
         setImageValue(pdfItem)
@@ -35,7 +35,7 @@ function BannerUploadFunction({handleImageUrl}) {
   }
   const pdfFileData = async (inputFile) => {
     let fileData = inputFile
-    console.log("filesdataaaa",fileData)
+    // console.log("filesdataaaa",fileData)
     const data = new FormData();
     for (const File of fileData) {
       data.append('files', File);
@@ -55,7 +55,7 @@ function BannerUploadFunction({handleImageUrl}) {
       toast.success("File upload successfully")
     }
   }
-  console.log("pdfData", imageValue)
+  // console.log("pdfData", imageValue)
   return (
     <Layout className="h-auto mb-6 opportunity_choose">
       <Col span={7} className="flex justify-end items-center">

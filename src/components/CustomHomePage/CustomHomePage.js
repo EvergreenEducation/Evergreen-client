@@ -127,7 +127,7 @@ function CustomHomePage() {
     return item.custom_page_promo_routes.includes(referenceRoute)
   })
 
-  console.log(filterOffer,"fiter")
+  // console.log(filterOffer,"fiter")
 
   const offers = Object.values(offerStore.entities).map((o) => {
     return { ...o, entity_type: 'offer' };

@@ -52,7 +52,7 @@ export default function (props) {
       ],
     },
   };
-  console.log("userrrrrrrrrrrrrrrrrrr",data)
+  // console.log("userrrrrrrrrrrrrrrrrrr",data)
   return (
     <div className={`block bg-white ${className}`}>
       <span className="text-center font-bold">{groupName}</span>

@@ -93,7 +93,7 @@ export default function (props) {
   const concat = (...arrays) => [].concat(...arrays.filter(Array.isArray));
   // console.log(concat(bannerImage, mainPromos),"zzzzzzzzzzzzzzzzz");
   const FinalImageData = concat(bannerImage, mainPromos)
-  console.log('localPromos', localPromos)
+  // console.log('localPromos', localPromos)
 
     const finalPromoData = localPromos.filter(function (item, index, inputArray) {
       if (item === null || item === undefined) {
@@ -103,7 +103,7 @@ export default function (props) {
       }
     });
 
-     console.log("sadasdasdasd",finalPromoData)
+    //  console.log("sadasdasdasd",finalPromoData)
   return (
     <div className="h-auto w-full">
       <Carousel

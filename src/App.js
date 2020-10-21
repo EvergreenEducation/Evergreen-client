@@ -28,8 +28,8 @@ function App() {
   } else {
     return window.location.replace(`/`);
   }
-  let isUrlCustomPage = window.location.href.indexOf("custom") > -1 ? true : false,
-    pageUrl = isUrlCustomPage ? window.location.pathname.replace('/custom/', '') : '';
+  let isUrlCustomPage = window.location.href.indexOf("evg") > -1 ? true : false,
+    pageUrl = isUrlCustomPage ? window.location.pathname.replace('/evg/', '') : '';
   return (
     <GlobalProvider>
       <Helmet>
@@ -47,7 +47,7 @@ function App() {
           <Route path="/home" component={HomeScreen} />
           <Route path="/auth/:action" component={AuthScreen} />
           {/* <Route path="/custom/:id" component={CustomHomePage} /> */}
-          <Route path={`/custom/:${pageUrl}`} component={HomeScreen} />
+          <Route path={`/evg/:${pageUrl}`} component={HomeScreen} />
           {/* <Route path="/custom/:id/:id" component={HomeScreen} /> */}
           <PrivateRoute path="/dashboard" component={DashboardScreen} />
           <Route

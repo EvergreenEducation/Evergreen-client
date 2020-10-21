@@ -149,7 +149,7 @@ const ProviderCreationContainer = ({ closeModal, role, getProviderApi }) => {
   const handleDescriptionValue = (value) => {
     setDescriptionValue(value)
   }
-  console.log("finalllllllllll", getBannerImage, getImageData)
+  // console.log("finalllllllllll", getBannerImage, getImageData)
   return (
     <div>
       <Form form={form} name="providerForm">

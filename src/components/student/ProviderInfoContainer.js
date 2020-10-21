@@ -10,15 +10,16 @@ import 'assets/scss/responsive-carousel-override.scss';
 export default function (props) {
   const {
     match: { params },
+    // getOffers
   } = props;
   const {
     provider: providerStore,
     datafield,
     pathway: pathwayStore,
   } = useGlobalStore();
+  // console.log('ProviderInfoC',getOffers)
 
   const providerId = Number(params.id);
-
   const provider = providerStore.entities[providerId];
 
   const getPathway = async (_pathwayId) => {
@@ -54,6 +55,7 @@ export default function (props) {
     Pathways = provider.Pathways;
   }
 
+
   return (
     <div className="flex flex-col items-center">
       <InfoLayout
@@ -61,7 +63,8 @@ export default function (props) {
         data={provider}
         groupedDataFields={groupedDataFields}
         type="provider"
-      >
+        
+        >
         <section style={{ maxWidth: 896 }}>
           {Offers.length ? (
             <TitleDivider

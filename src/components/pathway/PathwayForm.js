@@ -19,9 +19,9 @@ import 'assets/scss/antd-overrides.scss';
 import OfferGroupTable from './OfferGroupTable/OfferGroupTable';
 import { data } from 'autoprefixer';
 import { getGenericData } from 'components/datafield/GenericContainer';
-
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { AliwangwangOutlined, AppstoreAddOutlined, UserAddOutlined, ReadOutlined, ApartmentOutlined } from '@ant-design/icons';
 
 const axios = require('axios').default;
 
@@ -77,7 +77,7 @@ export default function PathwayForm({
   const [getDeleteValue, setDeleteValue] = useState()
   const [listingData, setListingData] = useState()
 
-  console.log("pdflin------------------", getPdfUrl, pathway)
+  // console.log("pdflin------------------", getPdfUrl, pathway)
 
   useEffect(() => {
     getGenericData().then(resp => {
@@ -127,7 +127,7 @@ export default function PathwayForm({
     }
   }
   const handleImageUrl = (getPdfUrl) => {
-    console.log("getPdfUrl", getPdfUrl)
+    // console.log("getPdfUrl", getPdfUrl)
     if (pathway && pathway.main_image.length) {
       var result = pathway.main_image.reduce(function (prev, value) {
         var isDuplicate = false;
@@ -164,7 +164,7 @@ export default function PathwayForm({
   }
 
   const BannerUploadFunction = (getPdfUrl) => {
-    console.log("getPdfUrl", getPdfUrl)
+    // console.log("getPdfUrl", getPdfUrl)
     if (pathway && pathway.banner_image.length) {
       var result = pathway.banner_image.reduce(function (prev, value) {
         var isDuplicate = false;
@@ -202,7 +202,7 @@ export default function PathwayForm({
 
   const handlePdfDelete = (item1, pathway) => {
     deleteData(item1, pathway).then(resp => {
-      console.log("sucessssssss", resp)
+      // console.log("sucessssssss", resp)
       if (resp.status == 200) {
         // notify("success")
         setDeleteValue(resp.data.data)
@@ -307,17 +307,22 @@ export default function PathwayForm({
           </p> : null}
         </div> : null}
       </Col>
+      <Col
+       span={9}
+       xs={24}
+       sm={24}>
       <Form.Item
         label="Description"
         name="description"
         labelAlign={'left'}
         colon={false}
-        className="mb-0 inherit"
+        className="mb-0 inherit descrption_block"
         rules={[{ required: true, message: 'Please fill in this field' }]}
       >
         <CKEditor editor={ClassicEditor} data={descriptionValue} onChange={handleChange} />
         {/* <Input.TextArea className="rounded" rows={2} /> */}
       </Form.Item>
+      </Col>
       {pathway && pathway !== null ? <div className="rubric_block">
         <Form.Item
           label="Rubric/Attachment"
@@ -364,7 +369,7 @@ export default function PathwayForm({
       {/* </ImageUploadAndNameInputs> */}
       <TitleDivider className="add_offers" title={'Add Offers Group'} />
       <Row>
-        <Col xs={24} sm={24} md={18}>
+        <Col xs={24} sm={24} md={12}>
           <Form.Item
             label="Name"
             name="name"
@@ -378,6 +383,7 @@ export default function PathwayForm({
         </Col>
       </Row>
       <Row className="offsers_Table">
+      <Col xs={24} sm={24} md={24}>
         <OfferGroupTable
           offerStore={offerStore}
           pathway={pathway}
@@ -392,6 +398,7 @@ export default function PathwayForm({
             height: '1px',
           }}
         />
+        </Col>
       </Row>
       <Row className="items-center mb-0">
         <span className="text-gray-700 relative" style={{ bottom: 2 }}>
@@ -404,7 +411,7 @@ export default function PathwayForm({
         </Form.Item>
       </Row>
       <Row className="items-center mb-0 mt-2">
-        <Col xs={24} sm={24} md={8}>
+        <Col xs={24} sm={24} md={24}>
           <Form.Item
             label="Location Type"
             name="location_type"
@@ -414,16 +421,17 @@ export default function PathwayForm({
             rules={[{ required: true, message: 'Please select an option' }]}
           >
             <Select name="location_type" className="custom-select">
-              <Option value="online">Online</Option>
-              <Option value="hybrid">Hybrid</Option>
-              <Option value="in-person">In person</Option>
-              <Option value="self-learning'">Self Learning</Option>
+              <Option value="Online"><img className="social_distancing" src="/icons/online.png" /> Online</Option>
+              <Option value="Hybrid"><img className="social_distancing" src="/icons/hybrid.png" /> Hybrid</Option>
+              <Option value="In-person"><img className="social_distancing" src="/icons/in-person.png" /> In person</Option>
+              <Option value="Self-learning"><img className="social_distancing" src="/icons/self-learning.png" /> Self Learning</Option>
+              <Option value="Social Distancing Confirmed"><img className="social_distancing" src="/icons/social-distancing.png" />Social Distancing Confirmed</Option>
             </Select>
           </Form.Item>
         </Col>
       </Row>
       <Row gutter={8}>
-        <Col xs={24} sm={24} md={6}>
+        <Col xs={24} sm={24} md={8}>
           <Form.Item
             label="Learn/Earn"
             name="learn_and_earn"
@@ -451,17 +459,19 @@ export default function PathwayForm({
             <Input className="rounded" />
           </Form.Item>
         </Col> */}
-        <Row className="items-center mb-0 mt-2">
-          <span className="text-gray-700 relative" style={{ bottom: 2 }}>
-            Generic Type
+        <Col xs={24} sm={24} md={8}>
+          <Row className="items-center mb-0 mt-2">
+            <span className="text-gray-700 relative" style={{ bottom: 2 }}>
+              Generic Type
         </span>
-          <Form.Item name="type" className="w-full">
-            <Select showSearch className="w-full custom-select" mode="">
-              {listingOptions}
-            </Select>
-          </Form.Item>
-        </Row>
-        <Col xs={24} sm={24} md={12}>
+            <Form.Item name="type" className="w-full">
+              <Select showSearch className="w-full custom-select" mode="">
+                {listingOptions}
+              </Select>
+            </Form.Item>
+          </Row>
+        </Col>
+        <Col xs={24} sm={24} md={8}>
           <Form.Item
             label="Earnings"
             name="earnings"
@@ -474,7 +484,7 @@ export default function PathwayForm({
         </Col>
       </Row>
       <Row gutter={8}>
-        <Col xs={24} sm={24} md={6}>
+        <Col xs={24} sm={24} md={8}>
           <Form.Item
             label="Frequency"
             name="frequency"
@@ -485,7 +495,7 @@ export default function PathwayForm({
             <InputNumber className="rounded w-full" />
           </Form.Item>
         </Col>
-        <Col xs={24} sm={24} md={6}>
+        <Col xs={24} sm={24} md={8}>
           <Form.Item
             label="Frequency Unit"
             name="frequency_unit"
@@ -500,7 +510,7 @@ export default function PathwayForm({
             </Select>
           </Form.Item>
         </Col>
-        <Col xs={24} sm={24} md={12}>
+        <Col xs={24} sm={24} md={8}>
           <Form.Item
             label="Outlook"
             name="outlook"
@@ -513,7 +523,7 @@ export default function PathwayForm({
         </Col>
       </Row>
       <Row gutter={8}>
-        <Col span={12} className={role === 'provider' ? 'hidden' : ''}>
+        <Col xs={24} sm={24} md={24} span={12} className={role === 'provider' ? 'hidden' : ''}>
           <Form.Item
             label="Provider"
             name="provider_id"

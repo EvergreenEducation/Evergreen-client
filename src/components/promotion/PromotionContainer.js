@@ -116,14 +116,14 @@ export default function (props) {
   const [selectedTopicValue, setSelectedTopicValue] = useState([]);
 
   const getTopicsList = async () => {
-    console.log('getTopicsList', data)
+    // console.log('getTopicsList', data)
     getAllTopicData().then(res => {
       let idArray = [], getDataField = res.data.length ? res.data : [];
       if (getDataField) {
         for (let i = 0; i < getDataField.length; i++) {
           if (getDataField[i].page_id.length) {
             for (let x = 0; x < getDataField[i].page_id.length; x++) {
-              console.log('getDataField[i].page_id', getDataField[i].page_id)
+              // console.log('getDataField[i].page_id', getDataField[i].page_id)
               if (getDataField[i].page_id[x] === activePageId.id) {
                 idArray.push(getDataField[i].id);
               }
@@ -155,7 +155,7 @@ export default function (props) {
 
   // update topic data in topic list when user submit
   const updateData = async (selectedTopicValue, page_url_check) => {
-    console.log("-----------", selectedTopicValue)
+    // console.log("-----------", selectedTopicValue)
     let user_id = selectedTopicValue
     let Data = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/files/update_topic`, {
       user_id, page_url_check
@@ -165,7 +165,7 @@ export default function (props) {
 
   // update topic data in topic list when user submit
   const updateTopicRoute = async (selectedTopicValue, page_url_check, page_id) => {
-    console.log("-----------", selectedTopicValue)
+    // console.log("-----------", selectedTopicValue)
     let user_id = selectedTopicValue
     let Data = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/files/update_topic_route`, {
       user_id, page_url_check, page_id
@@ -175,7 +175,7 @@ export default function (props) {
 
   // delete topic data in topic list when user submit
   const deleteTopicRoute = async (selectedTopicValue, page_url_check, page_id) => {
-    console.log("-----------", selectedTopicValue)
+    // console.log("-----------", selectedTopicValue)
     let user_id = selectedTopicValue
     let Data = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/files/delete_topic_route`, {
       user_id, page_url_check, page_id
@@ -184,7 +184,7 @@ export default function (props) {
   }
   // remove selected topic when user click on remove button
   const deleteTopicData = async (selectedTopicValue, page_url_check) => {
-    console.log("-----------", selectedTopicValue)
+    // console.log("-----------", selectedTopicValue)
     let user_id = selectedTopicValue
     let Data = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/files/delete_topic`, {
       user_id, page_url_check
@@ -237,7 +237,7 @@ export default function (props) {
   const handleOnChange = (event) => {
     // getting value from event object
     let { value } = event.target;
-    console.log('handleOnChange', value)
+    // console.log('handleOnChange', value)
     if (showPromoted) {
       setShowPromoted(false);
     }
@@ -250,7 +250,7 @@ export default function (props) {
   const handleDataAfterSearch = (data, keys = ['name', 'keywords']) => {
     return data && data.length ? data.filter(x => {
       if (x.type) {
-        console.log('handleDataAfterSearch', x.type)
+        // console.log('handleDataAfterSearch', x.type)
         return false
       } else {
         return true
@@ -386,8 +386,8 @@ export default function (props) {
     //   }
     // }
     // let page_url_check =urlAfterSlash.slice(0, -1);
-    console.log('page_url_check', page_id)
-    console.log("filesdataaaa", user_id, user_role)
+    // console.log('page_url_check', page_id)
+    // console.log("filesdataaaa", user_id, user_role)
     let Data = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/files/get_banner_list/${page_id}`)
     return Data
   }
@@ -531,7 +531,7 @@ export default function (props) {
 
   // hold the selected value of topics in dropdown
   const handleMultipleDropdown = (value) => {
-    console.log('valeue', value)
+    // console.log('valeue', value)
     setSelectedTopicValue(value);
     setPreCheckedTopic(value);
     if (value.length === 0) {
@@ -548,7 +548,7 @@ export default function (props) {
     page_id.push(activePageId.id);
     let page_url_check = customUrlArray;
     updateData(selectedTopicValue, page_url_check).then(resp => {
-      console.log(resp, "reeeeeeeee")
+      // console.log(resp, "reeeeeeeee")
       getUpdateTopicList(selectedTopicValue, page_url_check, page_id)
     }).catch(error => {
       console.log(error, "errroor")
@@ -561,7 +561,7 @@ export default function (props) {
     let page_id = [];
     page_id.push(activePageId.id);
     deleteTopicData(selectedTopicValue, page_url_check).then(resp => {
-      console.log(resp, "reeeeeeeee")
+      // console.log(resp, "reeeeeeeee")
       getUpdateRemovedTopicList(selectedTopicValue, page_url_check, page_id)
       // getTopicsList();
     }).catch(error => {
@@ -571,7 +571,7 @@ export default function (props) {
 
   const getUpdateTopicList = (selectedTopicValue, page_url_check, page_id) => {
     updateTopicRoute(selectedTopicValue, page_url_check, page_id).then(resp => {
-      console.log(resp, "reeeeeeeee")
+      // console.log(resp, "reeeeeeeee")
       topicToastMessage('success','Topics Saved Successfully')
       getTopicsList();
     }).catch(error => {
@@ -582,7 +582,7 @@ export default function (props) {
 
   const getUpdateRemovedTopicList = (selectedTopicValue, page_url_check, page_id) => {
     deleteTopicRoute(selectedTopicValue, page_url_check, page_id).then(resp => {
-      console.log(resp, "reeeeeeeee")
+      // console.log(resp, "reeeeeeeee")
       topicToastMessage('success','Topics Removed Successfully')
       getTopicsList();
     }).catch(error => {
@@ -619,7 +619,7 @@ export default function (props) {
           if (getDataField[i].page_id.length) {
             debugger
             for (let x = 0; x < getDataField[i].page_id.length; x++) {
-              console.log('getDataField[i].page_id', getDataField[i].page_id)
+              // console.log('getDataField[i].page_id', getDataField[i].page_id)
               if (getDataField[i].page_id[x] === activePageId.id) {
                 idArray.push(getDataField[i].id);
               }
@@ -653,7 +653,7 @@ export default function (props) {
 
   useEffect(() => {
     getData().then(resp => {
-      console.log(resp, "reeeeeeeeeeeee")
+      // console.log(resp, "reeeeeeeeeeeee")
       if (resp.status == 200) {
         setGetValue(resp.data.data)
       }
@@ -695,7 +695,7 @@ export default function (props) {
     })
   }
 
-  console.log('\nshowData', showData)
+  // console.log('\nshowData', showData)
   return (
     <Layout className="bg-transparent h-auto">
       <div className="default_home">

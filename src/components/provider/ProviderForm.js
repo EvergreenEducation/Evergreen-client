@@ -17,12 +17,12 @@ import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 // import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import { getData } from 'components/datafield/AccedrationContainer';
-import {getindustryData} from 'components/datafield/IndustryContainer'
+import { getindustryData } from 'components/datafield/IndustryContainer'
+import { AliwangwangOutlined, AppstoreAddOutlined, UserAddOutlined, ReadOutlined, ApartmentOutlined } from '@ant-design/icons';
 
 const axios = require('axios').default;
 
 const { Option } = Select;
-
 
 const ProviderForm = (props) => {
   const {
@@ -70,7 +70,7 @@ const ProviderForm = (props) => {
   }, []);
 
 
-  console.log("handleData", handleData)
+  // console.log("handleData", handleData)
   const groupedDataFields = groupBy(datafields, 'type') || [];
   let { topic = [], provider = [] } = groupedDataFields;
   let providerTypeOptions = null;
@@ -114,9 +114,9 @@ const ProviderForm = (props) => {
     ));
   }
   const handleImageUrl = (getPdfUrl) => {
-    console.log("getPdfUrl", getPdfUrl)
+    // console.log("getPdfUrl", getPdfUrl)
     if (Object.keys(handleData).length !== 0) {
-      console.log("inssssssssssssssssssssss")
+      // console.log("inssssssssssssssssssssss")
       var result = handleData.main_image.reduce(function (prev, value) {
         var isDuplicate = false;
         for (var i = 0; i < getPdfUrl.length; i++) {
@@ -128,14 +128,13 @@ const ProviderForm = (props) => {
         if (!isDuplicate) {
           prev.push(value);
         }
-
         return prev;
-
       }, []);
+
       let finaldata = result.map(item => JSON.parse(item))
       let testData = (finaldata.concat(getPdfUrl))
-
       var resArr = [];
+
       testData.forEach(function (item) {
         var i = resArr.findIndex(x => x.name == item.name);
         if (i <= -1) {
@@ -145,14 +144,14 @@ const ProviderForm = (props) => {
       setGetPdfUrl(getPdfUrl)
       handleUpadteMain(getPdfUrl, resArr)
     } else {
-      console.log("elseeeeeeeeeeee")
+      // console.log("elseeeeeeeeeeee")
       setGetPdfUrl(getPdfUrl)
       handleImageData(getPdfUrl)
       // handleBannerImage(getPdfUrl)
     }
   }
   const BannerUploadFunction = (getPdfUrl) => {
-    console.log("getPdfUrl", getPdfUrl)
+    // console.log("getPdfUrl", getPdfUrl)
     if (Object.keys(handleData).length !== 0) {
       var result = handleData.banner_image.reduce(function (prev, value) {
         var isDuplicate = false;
@@ -165,14 +164,13 @@ const ProviderForm = (props) => {
         if (!isDuplicate) {
           prev.push(value);
         }
-
         return prev;
-
       }, []);
+
       let finaldata = result.map(item => JSON.parse(item))
       let testData = (finaldata.concat(getPdfUrl))
-
       var resArr = [];
+
       testData.forEach(function (item) {
         var i = resArr.findIndex(x => x.name == item.name);
         if (i <= -1) {
@@ -182,7 +180,7 @@ const ProviderForm = (props) => {
       setGetPdfUrl(getPdfUrl)
       handleUpadteBanner(getPdfUrl, resArr)
     } else {
-      console.log("elseeeeeeeeeeee")
+      // console.log("elseeeeeeeeeeee")
       setGetPdfUrl(getPdfUrl)
       // handleImageData(getPdfUrl)
       handleBannerImage(getPdfUrl)
@@ -191,7 +189,7 @@ const ProviderForm = (props) => {
 
   const handleChange = (e, editor) => {
     const data = editor.getData();
-    console.log('handleChange data',data, Array.from( editor.ui.componentFactory.names()))
+    // console.log('handleChange data',data, Array.from( editor.ui.componentFactory.names()))
     handleDescriptionValue(data)
   }
 
@@ -241,15 +239,13 @@ const ProviderForm = (props) => {
         xs={24}
         sm={24}
         md={role === 'provider' ? 10 : 9}
-        className="media-margin-top main_img"
-      >
+        className="media-margin-top main_img">
         <Form.Item
           label="Banner Image"
           name="banner_image"
           labelAlign={'left'}
           colon={false}
-          className="mb-0 inherit"
-        >
+          className="mb-0 inherit">
           <ImageUploadFunction
             handleImageUrl={BannerUploadFunction} />
         </Form.Item>
@@ -268,44 +264,40 @@ const ProviderForm = (props) => {
         </div> : null}
       </Col>
       <Row gutter={8}>
-      <Col xs={24} sm={24} md={18}>
+      <Col xs={24} sm={24} md={8}>
           <Form.Item
             label="Name"
             name="name"
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please enter a name' }]}
-          >
+            rules={[{ required: true, message: 'Please enter a name' }]}>
             <Input name="name" className="rounded" />
           </Form.Item>
         </Col>
-        <Col xs={24} sm={24} md={18}>
+        <Col xs={24} sm={24} md={8}>
           <Form.Item
             label="Location"
             name="location"
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please enter a location' }]}
-          >
+            rules={[{ required: true, message: 'Please enter a location' }]}>
             <Input name="location" className="rounded" />
           </Form.Item>
         </Col>
-        <Col xs={24} sm={24} md={6}>
+        <Col xs={24} sm={24} md={8}>
           <Form.Item
             label="Type"
             name="type"
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select a type' }]}
-          >
+            rules={[{ required: true, message: 'Please select a type' }]}>
             <Select
               name="type"
               className="rounded custom-select"
-              notFoundContent="No options available. Please create a provider type in settings."
-            >
+              notFoundContent="No options available. Please create a provider type in settings.">
               {providerTypeOptions}
             </Select>
           </Form.Item>
@@ -319,8 +311,7 @@ const ProviderForm = (props) => {
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select an option' }]}
-          >
+            rules={[{ required: true, message: 'Please select an option' }]}>
             <Select name="learn_and_earn" className="custom-select">
               <Option value="learn">Learn</Option>
               <Option value="earn">Earn</Option>
@@ -335,13 +326,22 @@ const ProviderForm = (props) => {
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select an option' }]}
-          >
+            rules={[{ required: true, message: 'Please select an option' }]}>
             <Select name="is_public" className="custom-select">
               <Option value={true}>Public</Option>
               <Option value={false}>Private</Option>
             </Select>
           </Form.Item>
+        </Col>
+        <Col xs={24} sm={24} md={8}>
+        <Form.Item name="industry" className="w-full" label="Industry"   labelAlign={'left'}
+            colon={false}
+            className="mb-0 inherit">
+          
+          <Select showSearch className="w-full custom-select" mode="">
+            {industryOptions}
+          </Select>
+        </Form.Item>
         </Col>
         {/* <Col xs={24} sm={24} md={8}>
           <Form.Item
@@ -367,16 +367,7 @@ const ProviderForm = (props) => {
           <Input className="rounded" />
         </Form.Item>
       </Col> */}
-      <Row className="items-center mb-0 mt-2">
-        <span className="text-gray-700 relative" style={{ bottom: 2 }}>
-        Industry
-        </span>
-        <Form.Item name="industry" className="w-full">
-          <Select showSearch className="w-full custom-select" mode="">
-            {industryOptions}
-          </Select>
-        </Form.Item>
-      </Row>
+     
       <Col span={24}>
         <Form.Item
           label="Description"
@@ -384,13 +375,11 @@ const ProviderForm = (props) => {
           labelAlign={'left'}
           colon={false}
           className="mb-0 inherit">
-          <CKEditor 
-          editor={ClassicEditor} 
-          data={descriptionValue} 
-          onChange={handleChange}
-           />
-          {/* {/ <Input className="rounded" / > /} */}
-          </Form.Item>
+          <CKEditor
+            editor={ClassicEditor}
+            data={descriptionValue}
+            onChange={handleChange} />
+        </Form.Item>
       </Col>
       <Col span={24}>
         <Form.Item
@@ -398,8 +387,7 @@ const ProviderForm = (props) => {
           name="keywords"
           labelAlign={'left'}
           colon={false}
-          className="mb-0 inherit"
-        >
+          className="mb-0 inherit">
           <Input className="rounded" />
         </Form.Item>
       </Col>
@@ -424,20 +412,20 @@ const ProviderForm = (props) => {
         </Form.Item>
       </Row>
       <Row className="items-center mb-0 mt-2">
-        <Col xs={24} sm={24} md={8}>
+        <Col xs={24} sm={24} md={24}>
           <Form.Item
             label="Location Type"
             name="location_type"
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select an option' }]}
-          >
+            rules={[{ required: true, message: 'Please select an option' }]}>
             <Select name="location_type" className="custom-select">
-              <Option value="online">Online</Option>
-              <Option value="hybrid">Hybrid</Option>
-              <Option value="in-person">In person</Option>
-              <Option value="self-learning'">Self Learning</Option>
+            <Option value="Online"><img className="social_distancing" src="/icons/online.png" /> Online</Option>
+            <Option value="Hybrid"><img className="social_distancing" src="/icons/hybrid.png" /> Hybrid</Option>
+              <Option value="In-person"><img className="social_distancing" src="/icons/in-person.png" /> In person</Option>
+              <Option value="Self-learning"><img className="social_distancing" src="/icons/self-learning.png" /> Self Learning</Option>
+              <Option value="Social Distancing Confirmed"><img className="social_distancing" src="/icons/social-distancing.png" />Social Distancing Confirmed</Option>
             </Select>
           </Form.Item>
         </Col>
@@ -449,8 +437,7 @@ const ProviderForm = (props) => {
             name="financial_aid"
             labelAlign={'left'}
             colon={false}
-            className="mb-0 inherit"
-          >
+            className="mb-0 inherit">
             <Input className="rounded" />
           </Form.Item>
         </Col>
@@ -460,8 +447,7 @@ const ProviderForm = (props) => {
             name="cost"
             labelAlign={'left'}
             colon={false}
-            className="mb-0 inherit"
-          >
+            className="mb-0 inherit">
             <InputNumber className="rounded w-full" />
           </Form.Item>
         </Col>
@@ -480,8 +466,7 @@ const ProviderForm = (props) => {
             name="pay"
             labelAlign={'left'}
             colon={false}
-            className="mb-0 inherit"
-          >
+            className="mb-0 inherit">
             <Select name="pay" className="custom-select">
               <Option value="yes">Yes</Option>
               <Option value="no">No</Option>
@@ -503,8 +488,7 @@ const ProviderForm = (props) => {
             name="credit"
             labelAlign={'left'}
             colon={false}
-            className="mb-0 inherit"
-          >
+            className="mb-0 inherit">
             <Select name="credit" className="custom-select">
               <Option value="yes">Yes</Option>
               <Option value="no">No</Option>
@@ -518,8 +502,7 @@ const ProviderForm = (props) => {
           name="news"
           labelAlign={'left'}
           colon={false}
-          className="mb-0 inherit"
-        >
+          className="mb-0 inherit">
           <Input className="rounded" />
         </Form.Item>
       </Col>
@@ -529,8 +512,7 @@ const ProviderForm = (props) => {
           name="contact"
           labelAlign={'left'}
           colon={false}
-          className="mb-0 inherit"
-        >
+          className="mb-0 inherit">
           <Input className="rounded" />
         </Form.Item>
       </Col>
@@ -542,8 +524,7 @@ const ProviderForm = (props) => {
           name="external_url"
           labelAlign={'left'}
           colon={false}
-          className="inherit mb-0"
-        >
+          className="inherit mb-0">
           <Input className="rounded" />
         </Form.Item>
       </Col>
@@ -556,8 +537,7 @@ const ProviderForm = (props) => {
                 labelAlign={'left'}
                 colon={false}
                 className="mt-2 mb-0 inherit"
-                valuePropName="checked"
-              >
+                valuePropName="checked">
                 <Checkbox defaultChecked={false}>Local Promo</Checkbox>
               </Form.Item>
             </Col>
@@ -567,8 +547,7 @@ const ProviderForm = (props) => {
                 labelAlign={'left'}
                 colon={false}
                 className="mt-2 mb-0 inherit"
-                valuePropName="checked"
-              >
+                valuePropName="checked">
                 <Checkbox defaultChecked={false}>Main Promo</Checkbox>
               </Form.Item>
             </Col>

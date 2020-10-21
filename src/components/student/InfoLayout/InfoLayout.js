@@ -33,15 +33,17 @@ import {
   CollapsibleHead,
   CollapsibleContent
 } from "react-collapsible-component";
+import { AliwangwangOutlined,AppstoreAddOutlined,UserAddOutlined,ReadOutlined,ApartmentOutlined } from '@ant-design/icons';
 
 // CONSTANTS
 const ALL_VIDEO_FORMAT_REGEX = (/\.(wmv|flv|mkv|mp4|webm|m4v|m4a|m4v|f4v|f4a|m4b|m4r|f4b|mov|3gp|3gp2|3g2|3gpp|3gpp2|ogg|oga|ogv|ogx|wmv|wma|mpg|mpeg)$/i);
 const axios = require('axios').default;
 var parse = require('html-react-parser');
+
 // const location_type='';
 export default function ({
   children,
-  type = 'offer',
+  type ,
   data = {},
   groupedDataFields,
   session = {},
@@ -74,7 +76,8 @@ export default function ({
     accreditation,
     location_type,
     location,
-    outlook
+    outlook,
+    isOfferGeneric
   } = data;
   const [offerEnrollments, setOfferEnrollments] = useState([]);
   const [fetchEnrollments, setFetchEnrollments] = useState(false);
@@ -130,7 +133,7 @@ export default function ({
   useEffect(() => {
     getData(data).then(response => {
       if (response.status === 200) {
-        console.log('getData accrediation', response)
+        // console.log('getData accrediation', response)
         setImageData(response.data.data)
         setIsCheck(true)
       }
@@ -267,14 +270,15 @@ export default function ({
         external_url ? 'justify-between' : 'justify-center'
         }`}
     >
-      <Button
+      {/* {console.log("resp",data)} */}
+     {!data.is_generic && <Button
         type="primary"
         className="rounded"
         style={{ width: '49%' }}
         onClick={() => onEnroll()}
       >
         Enroll
-      </Button>
+      </Button>}
       {external_url ? (
           <Button type="primary" className="rounded" style={{ width: '49%' }} onClick={()=>{
             isValidURL(external_url)
@@ -291,7 +295,7 @@ export default function ({
     </Row>
   );
 
-  let locationText = '---';
+  let locationText = data && data.location? data.location :'---';
 
   if (type === 'provider' && data && data.location) {
     locationText = data.location;
@@ -304,6 +308,7 @@ export default function ({
   ) {
     locationText = Provider.location;
   }
+  // console.log('locationText',locationText)
 
   const handleHtml = (prop) => {
     if (prop === "bold") {
@@ -357,7 +362,7 @@ export default function ({
     redirectToExternalLink(fullUrl)
   };
 
-  console.log('Info Layout', data,'external_url',external_url)
+  console.log('type',type)
   // let Arr = JSON.parse(main_image)
   return (
     <div className="infoLayout">
@@ -515,7 +520,7 @@ export default function ({
                 {type === "offer" || type === "provider" ? "Pay : " : null}
                 {type === "provider" && credit >= 0 || credit === "yes" ? "yes" : null}
                 {/* {type === 'pathway' && totalCredit.toLocaleString() || null} */}
-                {type === 'offer' && (credit && credit.toLocaleString()) || null}
+                {type === 'offer' && (pay && pay.toLocaleString()) || null}
               </Col>
             </>
           }
@@ -560,10 +565,13 @@ export default function ({
             )}
           </Col>
           {location_type ? <Col span={8} className="flex justify-center">
-            <p>{location_type} </p>
+            {location_type === "Online" && <p className="location_block"><img className="social_distancing" src="/icons/online.png" /> <span className="location_name">{location_type}</span> </p>}
+            {location_type === "Hybrid" && <p className="location_block"><img className="social_distancing" src="/icons/hybrid.png" /> <span className="location_name">{location_type}</span> </p>}
+            {location_type === "In-person" && <p className="location_block"><img className="social_distancing" src="/icons/in-person.png" /> <span className="location_name">{location_type}</span> </p>}
+            {location_type === "Self-learning" && <p className="location_block"><img className="social_distancing" src="/icons/self-learning.png" /> <span className="location_name">{location_type}</span> </p>}
+            {location_type === "Social Distancing Confirmed" && <p className="location_block"><img className="social_distancing" src="/icons/social-distancing.png" /><span className="location_name">{location_type}</span> </p>}
           </Col> : null}
-
-          {type === 'provider' ||type === 'offer' &&
+          {type === 'provider' &&
               myOfferEnrollments &&
               myOfferEnrollments.length?
               <Col span={8} className="flex flex-row-reverse items-center">
@@ -599,12 +607,7 @@ export default function ({
         </Row>
         <hr />
         <section className="font_type">
-
-          <div className="font_block"> {description ? description !== null ? (<p>Description :</p>) : null : ''}</div>
-          <div className="buttons_font">
-            {/* {description !== null ? <button className="font_Style" onClick={(prop) => handleHtml(prop = "bold")}>BOLD</button> : null}
-            {description !== null ? <button className="font_Style" onClick={(prop) => handleHtml(prop = "italic")}>ITALIC</button> : null} */}
-          </div>
+        
           {/* <p className="text-center break-words">{htmValue === "bold" ? <b>{data.description}</b> : <i>{data.description}</i>}</p> */}
           <p>
             {description ? description !== null ? parse(data.description) : null : ''}</p>
@@ -681,7 +684,7 @@ export default function ({
                     </Col>
                   </Row>
                 )}
-                {!openCodeInput && (
+                {!openCodeInput && !data.is_generic && (
                   <Button
                     className={external_url ? 'pl-0' : ''}
                     type="link"
@@ -706,7 +709,7 @@ export default function ({
               <div>
                 {/* <p>Pdf list</p> */}
                 {rubric_attachment === null ? '' : rubric_attachment.length ? rubric_attachment.map(item => {
-                  console.log("------", JSON.parse(item))
+                  // console.log("------", JSON.parse(item))
                   let itemnew = JSON.parse(item)
                   return (
                     // <p>{itemnew.original}</p>
@@ -719,7 +722,7 @@ export default function ({
         </div> : ''}
       </section>
       <section>{children}</section>
-      {console.log(",,,,,,,,,", children)}
+      {/* {console.log(",,,,,,,,,", children)} */}
 
     </div>
   );
