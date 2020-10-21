@@ -446,7 +446,7 @@ export default function (props) {
             height: 50,
           }}
         >
-        No Data Availble
+        No Data Available
         </Card>}
         </Carousel>
         <main>{currentTopic && renderOffers()}</main>
