@@ -32,6 +32,7 @@ export default function PathwayUpdateModal({
   pathwayStore,
   providers,
   role,
+  getPathwayListData
 }) {
   const formRef = useRef(null);
   const { id: userId, provider_id } = AuthService.currentSession;
@@ -62,6 +63,10 @@ export default function PathwayUpdateModal({
   const submitUpdate = async () => {
     try {
       const values = await form.validateFields([
+        'banner_image',
+        'main_image',
+        'rubric_attachment',
+        'location_type',
         'description',
         'learn_and_earn',
         'frequency',
@@ -78,8 +83,12 @@ export default function PathwayUpdateModal({
         'external_url',
       ]);
 
+      // console.log("valuesssssss",values)
+
       let groupOrderByYearNum = [];
       let groups_of_offers = map(groupsOfOffers, (g) => {
+        // const linkData = form.getFieldValue(g)
+        // console.log("insideeeeeeeeee",linkData)
         const year = form.getFieldValue(g.group_name);
         groupOrderByYearNum.push(g.group_name);
         const results = {
@@ -119,6 +128,10 @@ export default function PathwayUpdateModal({
           ...values,
           group_sort_order: yearSubmission,
           groups_of_offers,
+          'rubric_attachment': getUpdateValue,
+          'banner_image' : getBannerImage,
+          'main_image' : getMainImage,
+          'description': descriptionValue
         },
       });
 
@@ -127,8 +140,11 @@ export default function PathwayUpdateModal({
 
       if (data && userId) {
         const pathwayEntity = pathwayStore.entities[data.id];
-        filePayload = [...pathwayEntity.Files];
-
+        if(pathwayEntity.Files){
+          if(pathwayEntity.Files.length){
+            filePayload = [...pathwayEntity.Files];
+          }
+        }
         if (onFileChange && newFile) {
           const results = await UploaderService.uploadFile(newFile, {
             uploaded_by_user_id: userId,
@@ -188,6 +204,7 @@ export default function PathwayUpdateModal({
           description: 'Successfully updated pathway',
         });
         onCancel();
+        getPathwayListData();
       }
     } catch (err) {
       console.error(err);
@@ -214,6 +231,9 @@ export default function PathwayUpdateModal({
       frequency_unit: Number(p.frequency_unit),
       topics: myTopics,
     });
+    if (p && p.description) {
+      setDescriptionValue(p.description)
+    }
   }
 
   useEffect(() => {
@@ -265,7 +285,31 @@ export default function PathwayUpdateModal({
   }, [pathway, putError, formRef, file, bannerFile]);
 
   let providerEntities = providers;
+  // const [getPdfUrl, setGetPdfUrl] = useState()
+  const [getUpdateValue,setGetUpdatedValue]= useState()
+  const [getMainImage,setGetMainImage]=useState()
+  const [getBannerImage,setGetBannerImage]=useState()
 
+  const handlePropData = (getPdfUrl,getUpdateValue) => {
+    // setGetPdfUrl(getPdfUrl)
+    setGetUpdatedValue(getUpdateValue)
+    // setDeleteValue(getDeleteValue)
+  }
+  const handleUpadteMain = (getMainImage) => {
+    setGetMainImage(getMainImage)
+    // setDeleteValue(getDeleteValue)
+  }
+  const handleUpadteBanner = (getBannerImage) => {
+    setGetBannerImage(getBannerImage)
+    // setDeleteValue(getDeleteValue)
+  }
+
+  const [descriptionValue, setDescriptionValue] = useState('');
+
+  const handleDescriptionValue = (value) => {
+    setDescriptionValue(value)
+  }
+  // console.log("ouuuuuuuu",getUpdateValue)
   return (
     <Modal
       forceRender={true}
@@ -306,6 +350,11 @@ export default function PathwayUpdateModal({
             role={role}
             form={form}
             offerStore={offerStore}
+            handlePropData={handlePropData}
+            handleUpadteMain={handleUpadteMain}
+            handleUpadteBanner={handleUpadteBanner}
+            descriptionValue={descriptionValue}
+            handleDescriptionValue={handleDescriptionValue}
           />
         </div>
         <section

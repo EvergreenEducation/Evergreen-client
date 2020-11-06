@@ -4,7 +4,8 @@ import 'assets/scss/antd-overrides.scss';
 
 const { Column } = Table;
 
-const ProviderButtons = ({ record, handleUpdateModal, viewEnrollments }) => {
+const ProviderButtons = ({ record, handleUpdateModal, viewEnrollments,handleDeleteModal }) => {
+
   return (
     <>
       <Button
@@ -24,6 +25,16 @@ const ProviderButtons = ({ record, handleUpdateModal, viewEnrollments }) => {
       >
         View enrollments
       </Button>
+      <Button
+        type="default"
+        className="mr-2 rounded"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleDeleteModal(record);
+        }}
+      >
+        Delete
+      </Button>
     </>
   );
 };
@@ -39,6 +50,7 @@ const StudentButtons = ({ record }) => {
 const ActionColumn = ({
   role,
   handleUpdateModal,
+  handleDeleteModal,
   viewEnrollments,
   handleEnrollOffer,
 }) => {
@@ -56,6 +68,7 @@ const ActionColumn = ({
               <ProviderButtons
                 record={record}
                 handleUpdateModal={handleUpdateModal}
+                handleDeleteModal={handleDeleteModal}
                 viewEnrollments={viewEnrollments}
               />
             ),
@@ -73,10 +86,12 @@ export default function OfferTable({
   providers,
   datafields,
   handleUpdateModal,
+  handleDeleteModal,
   handleRowSelection,
   viewEnrollments,
   role,
 }) {
+  // console.log("daaaaaaaaaaaaaa",data)
   const doHandleRowSelection =
     role === 'student'
       ? null
@@ -90,7 +105,6 @@ export default function OfferTable({
             },
           };
         };
-
   return (
     <Table
       pagination={{ pageSize: 8 }}
@@ -101,7 +115,7 @@ export default function OfferTable({
       rowKey="id"
       onRow={doHandleRowSelection}
     >
-      <Column
+       <Column
         className="antd-col"
         title="ID"
         dataIndex="id"
@@ -122,6 +136,18 @@ export default function OfferTable({
           children: text,
           props: {
             'data-title': 'Name',
+          },
+        })}
+      />
+       <Column
+        className="antd-col"
+        title="Location Type"
+        dataIndex="location_type"
+        key="location_type"
+        render={(text, record) => ({
+          children: text,
+          props: {
+            'data-title': 'location_type',
           },
         })}
       />
@@ -196,6 +222,7 @@ export default function OfferTable({
       />
       {ActionColumn({
         handleUpdateModal,
+        handleDeleteModal,
         viewEnrollments,
         role,
       })}

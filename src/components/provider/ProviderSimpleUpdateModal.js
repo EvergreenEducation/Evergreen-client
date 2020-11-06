@@ -1,12 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Modal, Form, Button, notification } from 'antd';
 import ProviderSimpleForm from 'components/provider/ProviderSimpleForm';
+import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
-import { orderBy } from 'lodash';
 import ProviderStore from 'store/Provider';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
 import 'assets/scss/antd-overrides.scss';
+const axios = require('axios').default;
+
+configure({
+  axios: axiosInstance,
+});
+
 
 export default function ProviderSimpleUpdateModal(props) {
   const formRef = useRef(null);
@@ -16,6 +22,10 @@ export default function ProviderSimpleUpdateModal(props) {
   const { provider = {}, onCancel, visible } = props;
 
   const [file, setFile] = useState(null);
+
+  const [descriptionValue, setDescriptionValue] = useState('')
+  let token = JSON.parse(localStorage.getItem("currentSession"))
+  let role = token.role;
 
   const onChangeUpload = (e) => {
     const { file } = e;
@@ -37,70 +47,128 @@ export default function ProviderSimpleUpdateModal(props) {
       populateFields(provider);
     }
 
-    if (provider.Files) {
-      const orderedFiles = orderBy(
-        provider.Files,
-        ['fileable_type', 'createdAt'],
-        ['desc', 'desc']
-      );
-      for (let i = 0; i < orderedFiles.length; i++) {
-        if (!orderedFiles[i]) {
-          break;
-        }
+    // if (provider.Files) {
+    //   const orderedFiles = orderBy(
+    //     provider.Files,
+    //     ['fileable_type', 'createdAt'],
+    //     ['desc', 'desc']
+    //   );
+    //     if (orderedFiles[i].fileable_type === 'provider') {
+    //       setFile(orderedFiles[i]);
+    //       break;
+    //     }
+    //   }
+  }
+    , [props, provider, provider.Files, formRef]);
 
-        if (orderedFiles[i].fileable_type === 'provider') {
-          setFile(orderedFiles[i]);
-          break;
-        }
-      }
-    }
-  }, [props, provider, provider.Files, formRef]);
+  const [createSimpleProvider] = useAxios(
+    {
+      url: `/providers/${provider.id}`,
+      method: 'PUT',
+    },
+    { manual: true }
+  );
 
   const submitUpdate = async () => {
-    const values = form.getFieldsValue([
+    const values = await form.validateFields([
       'name',
       'location',
       'industry',
-      'description',
-    ]);
+      'main_image',
+      'banner_image',
+      'description'
+    ])
+    // const values = form.getFieldsValue([
+    //   'name',
+    //   'location',
+    //   'industry',
+    //   'main_image',
+    //   'banner_image',
+    //   'description'
+    // ]);
 
     try {
-      const response = await axiosInstance.put(
-        `/providers/${provider.id}`,
-        values
-      );
-
-      if (response && response.status === 200) {
-        providerStore.updateOne(response.data);
-        if (response.data && file && userId) {
+      const { data, status } = await createSimpleProvider({
+        data: {
+          ...values,
+          'main_image': getMainImage,
+          'banner_image': getBannerImage,
+          'description': descriptionValue
+        },
+      });
+      // const response = await axiosInstance.put(
+      //   `/providers/${provider.id}`,
+      //   data:{
+      //     ...values,
+      //     'main_image': getImageData,
+      //     'banner_image': getBannerImage,
+      //     'description': descriptionValue
+      //   }
+      // );
+      if (status && status === 200) {
+        providerStore.updateOne(data);
+        if (data && file && userId) {
           const { name, type } = file;
           const results = await UploaderService.upload({
             name,
             mime_type: type,
             uploaded_by_user_id: userId,
             fileable_type: 'provider',
-            fileable_id: response.data.id,
+            fileable_id: data.id,
             binaryFile: file.originFileObj,
           });
-
-          const providerEntity = providerStore.entities[response.data.id];
+          const providerEntity = providerStore.entities[data.id];
           providerEntity.Files.push({
             ...results.file.data,
           });
-
           providerStore.updateOne(providerEntity);
         }
-
         notification.success({
-          message: response.status,
+          message: status,
           description: 'Successfully updated provider',
         });
+        getProviderData();
         onCancel();
       }
     } catch (e) {
       console.error(e);
     }
   };
+  // hold description value in simple provider update modal
+  const handleChange = (value) => {
+    setDescriptionValue(value);
+  }
+
+  const [getMainImage, setGetMainImage] = useState()
+  const [getBannerImage, setGetBannerImage] = useState()
+
+  const handleUpadteMain = (getMainImage) => {
+    setGetMainImage(getMainImage)
+    // setDeleteValue(getDeleteValue)
+  }
+  const handleUpadteBanner = (getBannerImage) => {
+    setGetBannerImage(getBannerImage)
+    // setDeleteValue(getDeleteValue)
+  }
+  // getting fresh data from provider api
+  const getProviderData = () => {
+    getProviderApiData().then(res => {
+      if (res.data) {
+        providerStore.updateOne(res.data);
+        props.getProviderInfo();
+      }
+    }).catch(err => {
+      console.log('getProviderApiData error', err)
+    })
+
+  }
+  // calling provider data api
+  const getProviderApiData = async () => {
+    let Data = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/providers/${provider.id}?scope=with_details`)
+    return Data
+  }
+
+  // console.log("qqq", getMainImage, getBannerImage)
 
   return (
     <Modal
@@ -122,6 +190,12 @@ export default function ProviderSimpleUpdateModal(props) {
             userId={userId}
             onChangeUpload={onChangeUpload}
             file={file}
+            descriptionValue={descriptionValue}
+            handleChange={handleChange}
+            handleData={provider}
+            handleUpadteMain={handleUpadteMain}
+            handleUpadteBanner={handleUpadteBanner}
+            role={role}
           />
         </div>
         <section

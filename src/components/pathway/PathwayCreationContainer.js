@@ -15,7 +15,7 @@ configure({
   axios: axiosInstance,
 });
 
-const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
+const PathwayCreationContainer = ({ closeModal, role, providerId, getPathwayListData }) => {
   const { id: userId } = AuthService.currentSession;
   const formRef = useRef(null);
 
@@ -49,6 +49,10 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
   const submit = async () => {
     try {
       const values = await form.validateFields([
+        'banner_image',
+        'main_image',
+        'rubric_attachment',
+        'location_type',
         'description',
         'learn_and_earn',
         'frequency',
@@ -64,7 +68,7 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
         'is_main_promo',
         'external_url',
       ]);
-
+      // console.log("formmmmmmmmmmmmm", form)
       let groupOrderByYearNum = [];
       let groups_of_offers = map(groupsOfOffers, (g) => {
         const year = form.getFieldValue(g.group_name);
@@ -105,6 +109,11 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
           ...values,
           group_sort_order: yearSubmission,
           groups_of_offers,
+          'rubric_attachment': getPdfUrl,
+          'main_image': getImageData,
+          'banner_image': getBannerImage,
+          'description': descriptionValue
+
         },
       });
 
@@ -164,6 +173,7 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
         });
         form.resetFields();
         closeModal();
+        getPathwayListData();
       }
     } catch (err) {
       console.error(err);
@@ -177,9 +187,12 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
         return !(p.id === providerId);
       });
 
-      form.setFieldsValue({
-        provider_id: head(providerEntities).id,
-      });
+      if (providerEntities.length) {
+        form.setFieldsValue({
+          provider_id: head(providerEntities).id,
+        });
+      }
+
     }
     if (getDataFields) {
       datafieldStore.addMany(getDataFields);
@@ -198,7 +211,27 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
       providerStore.addMany(getProviders);
     }
   }, [getDataFields, postError, getProviders, formRef]);
+  const [getPdfUrl, setGetPdfUrl] = useState()
+  // pdf_link = getPdfUrl
+  const handlePropData = (getPdfUrl) => {
+    setGetPdfUrl(getPdfUrl)
+  }
+  const [getImageData, setGetImageData] = useState()
+  const handleImageData = (getImageData) => {
+    setGetImageData(getImageData)
+  }
+  const [getBannerImage, setGetBannerImage] = useState()
+  const handleBannerImage = (getBannerImage) => {
+    setGetBannerImage(getBannerImage)
+  }
 
+  const [descriptionValue, setDescriptionValue] = useState('');
+
+  const handleDescriptionValue = (value) => {
+    setDescriptionValue(value)
+  }
+
+  // console.log("111111111", getImageData, getBannerImage)
   return (
     <div>
       <Form form={form} ref={formRef}>
@@ -216,6 +249,11 @@ const PathwayCreationContainer = ({ closeModal, role, providerId }) => {
             providers={providerEntities}
             role={role}
             form={form}
+            handlePropData={handlePropData}
+            handleImageData={handleImageData}
+            handleBannerImage={handleBannerImage}
+            descriptionValue={descriptionValue}
+            handleDescriptionValue={handleDescriptionValue}
           />
         </div>
         <section

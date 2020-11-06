@@ -54,7 +54,6 @@ export default function (props) {
     groupsOfOffers = groupBy(pathway.GroupsOfOffers, 'group_name');
     groupKeys = Object.keys(groupsOfOffers);
   }
-
   return (
     <div className="flex flex-col items-center">
       <InfoLayout

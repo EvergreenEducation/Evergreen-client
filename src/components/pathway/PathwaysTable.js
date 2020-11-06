@@ -2,12 +2,14 @@ import React from 'react';
 import { Table, Tag, Button } from 'antd';
 import { groupBy } from 'lodash';
 import 'assets/scss/antd-overrides.scss';
-
 const { Column } = Table;
 
 function PathwaysTable(props) {
   const { data, handleUpdateModal, providers } = props;
+  // console.log("000000000",data)
+
   return (
+    <>
     <Table
       dataSource={data}
       bordered
@@ -65,6 +67,18 @@ function PathwaysTable(props) {
           children: text,
           props: {
             'data-title': 'Generic Type',
+          },
+        })}
+      />
+       <Column
+        className="antd-col"
+        title="Location Type"
+        dataIndex="location_type"
+        key="location_type"
+        render={(text, record) => ({
+          children: text,
+          props: {
+            'data-title': 'location_type',
           },
         })}
       />
@@ -143,7 +157,7 @@ function PathwaysTable(props) {
       />
       <Column
         className="antd-col"
-        title=""
+        title="Action"
         key="update"
         render={(text, record) => ({
           children: (
@@ -156,7 +170,23 @@ function PathwaysTable(props) {
           },
         })}
       />
+     <Column
+        className="antd-col"
+        title="Action"
+        key="delete"
+        render={(text, record) => ({
+          children: (
+            <Button type="link" onClick={() => {props.handleDeleteModal(record)}}>
+              Delete
+            </Button>
+          ),
+          props: {
+            'data-title': '',
+          },
+        })}
+      />
     </Table>
+    </>
   );
 }
 

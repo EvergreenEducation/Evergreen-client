@@ -8,6 +8,9 @@ export default function FormModal({
   FormComponent,
   role,
   providerId = null,
+  getProviderApi,
+  getOfferListData,
+  getPathwayListData
 }) {
   return (
     <Modal
@@ -26,6 +29,9 @@ export default function FormModal({
           closeModal={onCancel}
           role={role}
           providerId={providerId}
+          getProviderApi={getProviderApi}
+          getOfferListData={getOfferListData}
+          getPathwayListData={getPathwayListData}
         />
       )}
     </Modal>

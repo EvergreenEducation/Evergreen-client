@@ -39,6 +39,7 @@ import AuthService from 'services/AuthService';
 import useGlobalStore from 'store/GlobalStore';
 import Logo from 'assets/svgs/evergreen-optimized-logo.svg';
 import './home-screen.scss';
+const axios = require('axios').default;
 
 configure({
   axios: axiosInstance,
@@ -100,7 +101,7 @@ function HomeScreen() {
   const history = useHistory();
 
   const session = AuthService.currentSession;
-
+  
   const [{ data: getDataFields }] = useAxios('/datafields?scope=with_offers');
 
   const [{ data: getPathways }] = useAxios('/pathways?scope=with_details');
@@ -122,6 +123,52 @@ function HomeScreen() {
   });
 
   const data = [...offers, ...pathways, ...providers];
+  
+  const [activePageId, setActivePageId] = useState({
+    id: 0,
+    page_route: "default"
+  });
+// custom api calling
+  const customPageInfoApi = async (page_route) => {
+    let response = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/files/get_custom_route_page`, {
+      page_route
+    })
+    return response.data
+  }
+
+  // getting custom page id and url
+  function customPageInfoData(pageUrl){
+    customPageInfoApi(pageUrl).then(res=>{
+      if(res.data.length){
+        let response=res.data[0];
+        setActivePageId({
+          id:response.id,
+          page_route:response.page_route
+        })
+      }else{
+        history.push('/error/404');
+      }
+    }).catch(err=>{
+      console.log('customPageInfoApi err',err)
+    })
+  }
+
+  // check if page is custom or home page
+  function checkUrlIsCustom(){
+    let isUrlCustomPage=window.location.href.indexOf("evg")> -1?true:false,
+    pageUrl=window.location.href;
+    if(isUrlCustomPage){
+      customPageInfoData(pageUrl);
+    }
+  }
+
+  useEffect(()=>{
+    if(window.location.href.indexOf("evg")> -1){
+      checkUrlIsCustom()
+    }
+  },[])
+
+  // console.log('Home page',activePageId)
 
   const handleSearch = (e) => {
     if (!e) {
@@ -236,7 +283,7 @@ function HomeScreen() {
     if (getProviders) {
       providerStore.addMany(getProviders);
     }
-  }, [getPathways, getOffers, getProviders]);
+  }, [getDataFields,getPathways, getOffers, getProviders]);
 
   const { search, popover } = toggeables;
 
@@ -247,16 +294,22 @@ function HomeScreen() {
           {(!search && (
             <>
               <Route exact path={`${match.url}`}>
-                <PromoCarouselsContainer />
-                <div className="homeScreen__carouselContentTwo mx-auto">
-                  <TopicCarouselContainer />
+                <PromoCarouselsContainer activePageId={activePageId}/>
+                <div className="homeScreen__carouselContentTwo mx-auto homepage_outlook">
+                  <TopicCarouselContainer 
+                  getDataFields={getDataFields}
+                  getPathways={getPathways}
+                  getOffers={getOffers}
+                  getProviders={getProviders}
+                  activePageId={activePageId}
+                  />
                 </div>
               </Route>
               <div className="homeScreen__carouselContentTwo mx-auto">
                 <Route
                   path={`${match.url}/offer/:id`}
                   component={(props) => (
-                    <OfferInfoContainer {...props} session={session} />
+                    <OfferInfoContainer {...props} session={session} getOffers={getOffers}/>
                   )}
                 />
                 <Route
@@ -267,7 +320,7 @@ function HomeScreen() {
                 />
                 <Route
                   path={`${match.url}/provider/:id`}
-                  component={ProviderInfoContainer}
+                  component={(props)=>(<ProviderInfoContainer {...props} getOffers={getOffers}/>)}
                 />
                 <Route
                   exact
@@ -341,10 +394,7 @@ function HomeScreen() {
               </Button>
             </div>
           </Col>
-          <Col
-            span={!search ? 8 : 18}
-            className="flex justify-center items-center h-full"
-          >
+          <Col span={!search ? 8 : 18} className="flex justify-center items-center h-full" >
             {(!search && (
               <Row className="flex justify-center items-center select-none">
                 <img
