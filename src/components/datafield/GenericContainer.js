@@ -1,10 +1,9 @@
 import React, { useEffect ,useState} from 'react';
-import { useHistory } from 'react-router-dom';
-import useGlobalStore from 'store/GlobalStore';
+// import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import DataFieldTable from 'components/shared/DataFieldTable';
-import useAxios, { configure } from 'axios-hooks';
-import { ToastContainer, toast } from 'react-toastify';
+import  { configure } from 'axios-hooks';
+import {  toast } from 'react-toastify';
 import { Card } from 'antd';
 const axios = require('axios').default;
 
@@ -14,8 +13,6 @@ configure({
 toast.configure()
 export  const getGenericData = async () => {
   let token = JSON.parse(localStorage.getItem("currentSession"))
-  let user_id = token.id
-  let user_role = token.role
   // console.log("insssssss",user_role,user_id)
   let Data = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/files/get_generic_types`)
   return Data
@@ -23,13 +20,12 @@ export  const getGenericData = async () => {
 
 
 export default function GenericContainer(props) {
-  const history = useHistory();
  
 
   const [genericValues, setGenericValues] = useState({
     name :""
   })
-  const [adddata,setAddData]= useState()
+  // const [adddata,setAddData]= useState()
   const [getdata,setGetData] = useState()
   const postData = async (genericValues) => {
     let token = JSON.parse(localStorage.getItem("currentSession"))
@@ -56,7 +52,7 @@ export default function GenericContainer(props) {
     postData(genericValues).then(resp => {
       // console.log(resp,"response")
       if(resp.status == 200){
-        setAddData(resp.data.data)
+        // setAddData(resp.data.data)
         getGenericData().then(resp => {
           setGetData(resp.data.data)
         })
@@ -94,7 +90,7 @@ export default function GenericContainer(props) {
     <Card title="Pathway Generic Type" className="shadow-md rounded-md">
     <input className="acc_input" onChange={(e) => handleName(e, "name")} value={genericValues?.name}></input>
     <button className="plus-icon ant-btn flex justify-center items-center ant-btn-primary ant-btn-circle ant-btn-sm" onClick={() => handleButton()}>
-    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" class="svg-inline--fa fa-plus fa-w-14 text-xs" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path></svg>
+    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" className="svg-inline--fa fa-plus fa-w-14 text-xs" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path></svg>
     </button>
     <DataFieldTable
         data={getdata}

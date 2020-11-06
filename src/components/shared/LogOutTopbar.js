@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, {} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { Button, Layout, Tooltip, Col } from 'antd';
 import AuthService from 'services/AuthService';
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
-import useAxios, { configure } from 'axios-hooks';
-import { ToastContainer, toast } from 'react-toastify';
-const axios = require('axios').default;
+import  { configure } from 'axios-hooks';
+import {  toast } from 'react-toastify';
+// const axios = require('axios').default;
 toast.configure()
 const { Header } = Layout;
 
@@ -17,8 +17,8 @@ configure({
 // console.log("axiosInstance", axios)
 export default function LogOutTopbar({ children, renderNextToLogOut }) {
   const { datafield } = useGlobalStore();
-  const { entities, typeEqualsProvider } = datafield;
-  const pdfData = Object.values(entities).filter(typeEqualsProvider);
+  // const { entities, typeEqualsProvider } = datafield;
+  // const pdfData = Object.values(entities).filter(typeEqualsProvider);
 
 var inputs = document.querySelectorAll('.file-input')
 

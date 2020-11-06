@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Button } from 'antd';
 import {
-  compact, groupBy, property, sortBy, orderBy
+  compact, groupBy, property
 } from 'lodash';
 import useGlobalStore from 'store/GlobalStore';
 import { Carousel } from 'react-responsive-carousel';
@@ -12,21 +12,17 @@ import { InfoCard } from 'components/student';
 import { TitleDivider } from 'components/shared';
 import 'assets/scss/responsive-carousel-override.scss';
 import * as _ from 'underscore';
-import { filter } from 'underscore';
 
 
 export default function (props) {
   const { getDataFields, getPathways, getOffers, getProviders,activePageId } = props;
   const [currentTopic, setCurrentTopic] = useState(null);
-  const [onCurrentChange, setOnCurrentChange] = useState(null);
-  const [outlookdata, setOutlookData] = useState(null)
   const { datafield, offer: offerStore, pathway: PathwayStore } = useGlobalStore();
 
   const [selectedOfferData, setSelectedOfferData] = useState([]);
   const [selectedOutlookData, setSelectedOutlookData] = useState([]);
   const [selectedEarningData, setSelectedEarningData] = useState([]);
   const [selectedTopicId,setSelectedTopicId]=useState([]);
-  const [isTopicSelected,setIsTopicSelected]=useState(false);
   const [activeTopicId,setActiveTopicId]=useState('')
 
   const topics = compact(
@@ -116,7 +112,7 @@ export default function (props) {
   function getSelectedTopicList(){
     let filterData;
     if(getDataFields){
-      filterData=getDataFields && getDataFields.filter(item =>item.is_check_topic === true && item.page_id.includes(activePageId.id));
+      filterData=getDataFields && getDataFields.filter(item => item.is_check_topic === true && item.page_id.includes(activePageId.id));
       if(filterData.length){
         getUpdatedOfferData(filterData[0].id)
         setSelectedTopicId(filterData)
@@ -126,7 +122,7 @@ export default function (props) {
   }
 
   const handleCurrentItem = (current, total) => {
-    const index = current - 1;
+    // const index = current - 1;
     // setTimeout(() => {
     //   if (onCurrentChange !== current) {
     //     setOnCurrentChange(current);
@@ -139,7 +135,7 @@ export default function (props) {
   };
 
   const handleCurrentItemOutlook = (current, total) => {
-    const index = current - 1;
+    // const index = current - 1;
     // setTimeout(() => {
     //   if (onCurrentChange !== current) {
     //     setOnCurrentChange(current);
@@ -150,12 +146,11 @@ export default function (props) {
     // }, 50);
     // return null;
   };
-  let filterData = topics && topics.filter(item => item.is_check_topic === true);
+  // let filterData = topics && topics.filter(item => item.is_check_topic === true);
 
   const renderArrowBtns = (
     onClickHandler,
     hasPrevOrNext,
-    label,
     icon,
     style = { right: 15 }
   ) => {
@@ -355,7 +350,7 @@ export default function (props) {
   useEffect(()=>{
     getSelectedTopicList()
   },[getDataFields,getPathways, getOffers, getProviders])
-
+  // isUrlCustomPage
   return (
     <div className="width-95">
       <div className="h-auto w-full homepage_boxes">

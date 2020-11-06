@@ -112,7 +112,7 @@ export default function (props) {
     getGenericOfferData()
   }, []);
 
-  const [checkEnroll,setCheckEnroll]=useState({})
+  // const [checkEnroll,setCheckEnroll]=useState({})
 
   return (
     <div className="flex flex-col items-center">

@@ -2,15 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Button, Empty, Popover, Switch, Row, Col, Select, Table } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
-import matchSorter from 'match-sorter';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 import { LogOutTopbar, SearchHeader, TitleDivider } from 'components/shared';
 import useGlobalStore from 'store/GlobalStore';
 import PromoteCard from 'components/promotion/PromoteCard/PromoteCard';
-import { getGenericData } from 'components/datafield/GenericContainer';
-import { ToastContainer, toast } from 'react-toastify';
-import Avatar from 'antd/lib/avatar/avatar';
+import { toast } from 'react-toastify';
 
 const axios = require('axios').default;
 const { Column } = Table;
@@ -34,8 +31,8 @@ const preloadOptions = (data = []) =>
 
 export default function (props) {
   const { session } = props;
-  const adminId = session.id;
-  const [searchString, setSearchString] = useState('');
+  // const adminId = session.id;
+  // const [searchString, setSearchString] = useState('');
   const [showPromoted, setShowPromoted] = useState(true);
   const [fileData, setFileData] = useState()
   const [inputFile, setInputFile] = useState({
@@ -134,7 +131,7 @@ export default function (props) {
         idArray = idArray.filter(function (item, index, inputArray) {
           return inputArray.indexOf(item) == index;
         });
-        setPreCheckedTopic(idArray);
+        // setPreCheckedTopic(idArray);
         setSelectedTopicValue(idArray);
         if (idArray.length) {
           setIsPrefilledTopic(true)
@@ -230,7 +227,7 @@ export default function (props) {
   }
 
   const handleDataSearch = (searchVal) => {
-    setSearchString(searchVal);
+    // setSearchString(searchVal);
     // return setSearchString(searchVal);
   };
 
@@ -244,7 +241,7 @@ export default function (props) {
     if (value.length === 0) {
       setShowPromoted(true);
     }
-    setSearchString(value);
+    // setSearchString(value);
   };
 
   const handleDataAfterSearch = (data, keys = ['name', 'keywords']) => {
@@ -258,19 +255,20 @@ export default function (props) {
     }) : []
     // return matchSorter(data, searchString, { keys });
   };
-  const [cardButtonStatus, setcardButtonStatus] = useState({
-    mainButtonStatus: false,
-    localButtonStatus: false
-  });
+  // const [cardButtonStatus, setcardButtonStatus] = useState({
+  //   mainButtonStatus: false,
+  //   localButtonStatus: false
+  // });
   let showData = handleDataAfterSearch(data);
   if (showPromoted) {
     showData = showData.filter((d) => {
       // check if local and main are true
-      let isBothTrue = d.is_local_promo && d.is_main_promo,
+      let 
+      // isBothTrue = d.is_local_promo && d.is_main_promo,
         // check if local and main are true then we set local false
-        isLocalPromoTrue = isBothTrue ? false : d.is_local_promo,
+        // isLocalPromoTrue = isBothTrue ? false : d.is_local_promo,
         // check if local and main are true then we set main false
-        isMainPromo = isBothTrue ? false : d.is_main_promo,
+        // isMainPromo = isBothTrue ? false : d.is_main_promo,
 
         { custom_page_promo_ids, custom_page_local_ids } = d,
         localPromotionArray = [], mainPromotionArray = [];
@@ -313,7 +311,7 @@ export default function (props) {
           localPromotionArray = uniqueArray(custom_page_local_ids);
         }
       }
-      let mainInclude = mainPromotionArray.indexOf(activePageId.id), localInclude = localPromotionArray.indexOf(activePageId.id);
+      // let mainInclude = mainPromotionArray.indexOf(activePageId.id), localInclude = localPromotionArray.indexOf(activePageId.id);
 
       if (filters.offer && d.entity_type === 'offer') {
         return true;
@@ -372,9 +370,8 @@ export default function (props) {
   }, [getPathways, getOffers, getProviders, getDataField]);
 
   const getBannerApi = async () => {
-    let token = JSON.parse(localStorage.getItem("currentSession"))
-    let user_id = token.id
-    let user_role = token.role
+    // let user_id = token.id
+    // let user_role = token.role
     let page_id = activePageId.id;
     // let urlAfterSlash='',pageUrl=activePageId.page_route==="default"? activePageId.page_route:activePageId.page_route.split('/');
     // if(pageUrl === "default"){
@@ -533,7 +530,7 @@ export default function (props) {
   const handleMultipleDropdown = (value) => {
     // console.log('valeue', value)
     setSelectedTopicValue(value);
-    setPreCheckedTopic(value);
+    // setPreCheckedTopic(value);
     if (value.length === 0) {
       setIsPrefilledTopic(false)
     } else {
@@ -601,45 +598,45 @@ export default function (props) {
     }
   }
 
-  const [preCheckedTopics, setPreCheckedTopic] = useState([]);
+  // const [preCheckedTopics, setPreCheckedTopic] = useState([]);
 
-  function setPrecheckedValue() {
-    let idArray = [];
-    if (getDataField) {
-      // for (let i = 0; i < getDataField.length; i++) {
-      //   if (getDataField[i].is_check_topic) {
-      //     idArray.push(getDataField[i].id);
-      //   } else {
-      //   }
-      // }
-      // console.log('setPrecheckedValue',getDataField)
-      for (let i = 0; i < getDataField.length; i++) {
-        if (getDataField[i].is_check_topic) {
-          debugger
-          if (getDataField[i].page_id.length) {
-            debugger
-            for (let x = 0; x < getDataField[i].page_id.length; x++) {
-              // console.log('getDataField[i].page_id', getDataField[i].page_id)
-              if (getDataField[i].page_id[x] === activePageId.id) {
-                idArray.push(getDataField[i].id);
-              }
-            }
-          }
-        } else {
-        }
-      }
-      idArray = idArray.filter(function (item, index, inputArray) {
-        return inputArray.indexOf(item) == index;
-      });
-      setPreCheckedTopic(idArray);
-      setSelectedTopicValue(idArray);
-      if (idArray.length) {
-        setIsPrefilledTopic(true)
-      } else {
-        setIsPrefilledTopic(false)
-      }
-    }
-  }
+  // function setPrecheckedValue() {
+  //   let idArray = [];
+  //   if (getDataField) {
+  //     // for (let i = 0; i < getDataField.length; i++) {
+  //     //   if (getDataField[i].is_check_topic) {
+  //     //     idArray.push(getDataField[i].id);
+  //     //   } else {
+  //     //   }
+  //     // }
+  //     // console.log('setPrecheckedValue',getDataField)
+  //     for (let i = 0; i < getDataField.length; i++) {
+  //       if (getDataField[i].is_check_topic) {
+  //         debugger
+  //         if (getDataField[i].page_id.length) {
+  //           debugger
+  //           for (let x = 0; x < getDataField[i].page_id.length; x++) {
+  //             // console.log('getDataField[i].page_id', getDataField[i].page_id)
+  //             if (getDataField[i].page_id[x] === activePageId.id) {
+  //               idArray.push(getDataField[i].id);
+  //             }
+  //           }
+  //         }
+  //       } else {
+  //       }
+  //     }
+  //     idArray = idArray.filter(function (item, index, inputArray) {
+  //       return inputArray.indexOf(item) == index;
+  //     });
+  //     setPreCheckedTopic(idArray);
+  //     setSelectedTopicValue(idArray);
+  //     if (idArray.length) {
+  //       setIsPrefilledTopic(true)
+  //     } else {
+  //       setIsPrefilledTopic(false)
+  //     }
+  //   }
+  // }
 
   useEffect(() => {
     // setPrecheckedValue()
@@ -671,7 +668,7 @@ export default function (props) {
     } else {
       setActivePageId({ id: 0, page_route: "default" })
     }
-    setSearchString('');
+    // setSearchString('');
     setShowPromoted(true);
     setInputFile({ files: [], name: "" });
     setIsHide(false);
@@ -824,8 +821,8 @@ export default function (props) {
             <p>Landing Page Image</p>
             <div className='file-input'>
               <input multiple type='file' name="file" onChange={(e) => onChangeUpload(e, "files")} accept="image/*,video/*" />
-              <span class='button'>Choose</span>
-              <span class='label' data-js-label style={{ display: "none" }}></span>
+              <span className='button'>Choose</span>
+              <span className='label' data-js-label style={{ display: "none" }}></span>
             </div>
             <input className="landing_browse" placeholder={isHide ? inputFile.name : "Please Enter URL"} onChange={(e) => handleInput(e)} value={inputFile?.name}></input>
             <div className="image_block_opportunity">

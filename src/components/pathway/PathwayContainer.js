@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { Card, Layout, Col } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import PathwaysTable from 'components/pathway/PathwaysTable';
-import PathwaysPdfTable from 'components/pathway/PathwayPdfTable'
 import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
 import matchSorter from 'match-sorter';
@@ -13,7 +12,6 @@ import {
   ProviderLogOutTopbar,
   FaPlusCircleButton,
 } from 'components/shared';
-import Provider from 'store/Provider';
 const axios = require('axios').default;
 
 const FormModal = imported(() => import('components/shared/FormModal'));

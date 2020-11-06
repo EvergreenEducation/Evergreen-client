@@ -5,7 +5,6 @@ import { Card, Drawer, Button, message, Layout, Col } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import OfferTable from 'components/offer/OfferTable';
 import useGlobalStore from 'store/GlobalStore';
-import OfferPdfTable from 'components/offer/OfferPdfTable'
 import axiosInstance from 'services/AxiosInstance';
 import {
   SearchHeader,
@@ -13,7 +12,6 @@ import {
   FaPlusCircleButton,
 } from 'components/shared';
 import matchSorter from 'match-sorter';
-import { responsiveArray } from 'antd/lib/_util/responsiveObserve';
 const axios = require('axios').default;
 
 const { Content } = Layout;
@@ -199,15 +197,15 @@ export default function OfferContainer(props) {
     return Data
   }
 
-  const getProviderOfferList = () => {
-    getProviderOfferApi().then(res => {
-      if (providerId) {
-        showProviderOfferList(res.data);
-      }
-    }).catch(err => {
-      console.log('err', err)
-    })
-  }
+  // const getProviderOfferList = () => {
+  //   getProviderOfferApi().then(res => {
+  //     if (providerId) {
+  //       showProviderOfferList(res.data);
+  //     }
+  //   }).catch(err => {
+  //     console.log('err', err)
+  //   })
+  // }
 
   const getProviderOfferApi = async () => {
     let Data = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/offers?scope=with_details&provider_id=${providerId}`)

@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { } from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from 'antd';
-import { last, filter, orderBy } from 'lodash';
+import {  filter, orderBy } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImage } from '@fortawesome/free-solid-svg-icons';
 import './promo-card.scss';
 
 export default function ({
   data,
   size = 'default',
-  style,
   className,
   banner = false,
   bannerImage,
@@ -30,7 +28,7 @@ export default function ({
 
   files = orderBy(files, ['createdAt', 'asc']);
 
-  const imageSrc = files.length && last(files) ? last(files).file_link : null;
+  // const imageSrc = files.length && last(files) ? last(files).file_link : null;
 
   let link = '/';
   if (data.entity_type === 'provider') {

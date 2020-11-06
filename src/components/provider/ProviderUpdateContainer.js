@@ -5,7 +5,6 @@ import ProviderStore from 'store/Provider';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
 
-const axios = require('axios').default;
 
 configure({
     axios: axiosInstance,

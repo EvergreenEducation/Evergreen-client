@@ -3,7 +3,6 @@ import { Modal, Form, Button, notification } from 'antd';
 import ProviderSimpleForm from 'components/provider/ProviderSimpleForm';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
-import { orderBy } from 'lodash';
 import ProviderStore from 'store/Provider';
 import AuthService from 'services/AuthService';
 import UploaderService from 'services/Uploader';
@@ -62,7 +61,7 @@ export default function ProviderSimpleUpdateModal(props) {
   }
     , [props, provider, provider.Files, formRef]);
 
-  const [{ error: providerCreateError }, createSimpleProvider] = useAxios(
+  const [createSimpleProvider] = useAxios(
     {
       url: `/providers/${provider.id}`,
       method: 'PUT',

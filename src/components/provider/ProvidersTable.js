@@ -1,21 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import {
-  CollapsibleComponent,
-  CollapsibleHead,
-  CollapsibleContent
-} from "react-collapsible-component";
+import React, {} from 'react';
 import { Table, Tag, Button } from 'antd';
 import { find, matchesProperty, isNil } from 'lodash';
-import Pdf from "react-to-pdf";
 import 'assets/scss/antd-overrides.scss';
-import PdfListing from '../pdfList/PdfListing'
-const axios = require('axios').default;
-const ref = React.createRef();
 const { Column } = Table;
 
 function ProvidersTable({ data = [], loading, handleUpdateModal,handleDeleteModal }) {
-  console.log("============",data)
-  let token = JSON.parse(localStorage.getItem("currentSession"))
+  // console.log("============",data)
   return (
     <>
       <div>
@@ -33,7 +23,7 @@ function ProvidersTable({ data = [], loading, handleUpdateModal,handleDeleteModa
             title="ID"
             dataIndex="id"
             key="id"
-            render={(text, record) => ({
+            render={(text) => ({
               children: text,
               props: {
                 'data-title': 'ID',
@@ -45,7 +35,7 @@ function ProvidersTable({ data = [], loading, handleUpdateModal,handleDeleteModa
             title="Name"
             dataIndex="name"
             key="name"
-            render={(text, record) => {
+            render={(text) => {
               let children = 'N/A';
               if (text && text.length) {
                 children = text;
@@ -63,7 +53,7 @@ function ProvidersTable({ data = [], loading, handleUpdateModal,handleDeleteModa
             title="Location"
             dataIndex="location"
             key="location"
-            render={(text, record) => {
+            render={(text) => {
               let children = 'N/A';
               if (text && text.length) {
                 children = text;
@@ -81,7 +71,7 @@ function ProvidersTable({ data = [], loading, handleUpdateModal,handleDeleteModa
             title="Industry"
             dataIndex="industry"
             key="industry"
-            render={(text, record) => {
+            render={(text) => {
               let children = 'N/A';
               if (text && text.length) {
                 children = text;
@@ -99,7 +89,7 @@ function ProvidersTable({ data = [], loading, handleUpdateModal,handleDeleteModa
             title="Location Type"
             dataIndex="location_type"
             key="location_type"
-            render={(text, record) => {
+            render={(text) => {
               let children = 'N/A';
               if (text && text.length) {
                 children = text;
@@ -117,7 +107,7 @@ function ProvidersTable({ data = [], loading, handleUpdateModal,handleDeleteModa
             title="Topics"
             dataIndex="DataFields"
             key="DataFields"
-            render={(datafields = [], record) => {
+            render={(datafields = [],) => {
               datafields = datafields.filter((d) => d.type === 'topic');
               let children = 'N/A';
 
@@ -154,7 +144,7 @@ function ProvidersTable({ data = [], loading, handleUpdateModal,handleDeleteModa
             title="Type"
             dataIndex="DataFields"
             key="DataFields"
-            render={(datafields = [], record) => {
+            render={(datafields = []) => {
               const datafield = find(
                 datafields,
                 matchesProperty('type', 'provider')

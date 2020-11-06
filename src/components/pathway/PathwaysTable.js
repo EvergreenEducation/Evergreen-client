@@ -2,13 +2,11 @@ import React from 'react';
 import { Table, Tag, Button } from 'antd';
 import { groupBy } from 'lodash';
 import 'assets/scss/antd-overrides.scss';
-import PdfListing from '../pdfList/PdfListing'
 const { Column } = Table;
 
 function PathwaysTable(props) {
-  const { data, handleUpdateModal, providers,handleDeleteModal } = props;
+  const { data, handleUpdateModal, providers } = props;
   // console.log("000000000",data)
-  let token = JSON.parse(localStorage.getItem("currentSession"))
 
   return (
     <>

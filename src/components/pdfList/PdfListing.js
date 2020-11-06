@@ -4,10 +4,9 @@ import {
   CollapsibleHead,
   CollapsibleContent
 } from "react-collapsible-component";
-import { Table, Tag, Button } from 'antd';
+import { Table,  Button } from 'antd';
 import 'assets/scss/antd-overrides.scss';
 const axios = require('axios').default;
-const ref = React.createRef();
 const { Column } = Table;
 
 export const PdfListing = ({ data = [], loading, handleUpdateModal }) => {
@@ -24,7 +23,7 @@ export const PdfListing = ({ data = [], loading, handleUpdateModal }) => {
   useEffect(() => {
     getPdfData().then(resp => {
       console.log("resp", resp)
-      if (resp.status == 200) {
+      if (resp.status === 200) {
         console.log("resp",resp)
         setPdfValues(resp.data.data)
       }

@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import useGlobalStore from 'store/GlobalStore';
 import axiosInstance from 'services/AxiosInstance';
-import DataFieldTable from 'components/shared/DataFieldTable';
-import useAxios, { configure } from 'axios-hooks';
-import { ToastContainer, toast } from 'react-toastify';
+import  { configure } from 'axios-hooks';
+import {  toast } from 'react-toastify';
 import { Card, Button, Table } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
 const axios = require('axios').default;
 const { Column } = Table;
@@ -27,12 +22,10 @@ export const getData = async () => {
 
 
 export default function CreatePageContainer(props) {
-    const history = useHistory();
 
     const [pageValue, setPageValue] = useState({
         page_route: ""
     })
-    const [adddata, setAddData] = useState()
     const [getdata, setGetData] = useState()
 
     const postData = async (pageValue) => {
@@ -78,7 +71,6 @@ export default function CreatePageContainer(props) {
             postData(pageValue).then(resp => {
                 // console.log(resp, "response")
                 if (resp.status == 200) {
-                    setAddData(resp.data.data)
                     getData().then(resp => {
                         setGetData(resp.data.data)
                     })
@@ -123,7 +115,7 @@ export default function CreatePageContainer(props) {
             <Card title="Add Page" className="shadow-md rounded-md">
                 <input className="acc_input_listing" id="create-course-form" onChange={(e) => handleName(e, "page_route")} value={pageValue?.page_route} placeholder="Please enter route name"></input>
                 <button disabled={pageValue.page_route === ""} className="plus-icon listing_aad_page ant-btn flex justify-center items-center ant-btn-primary ant-btn-circle ant-btn-sm" onClick={() => handleButton()}>
-                    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" class="svg-inline--fa fa-plus fa-w-14 text-xs" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path></svg>
+                    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" className="svg-inline--fa fa-plus fa-w-14 text-xs" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path></svg>
                 </button>
             </Card>
             <Table

@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Layout, Row, Col, Input, Form, Upload, message, Button } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
+import React, {  useState } from 'react';
+import { Layout,  Col, } from 'antd';
 import 'assets/scss/antd-overrides.scss';
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 import Loader from 'react-loader-spinner'
 const axios = require('axios').default;
 toast.configure()
@@ -53,21 +51,21 @@ function PdfUploadFunction({ handlePdfData }) {
       )
     return pdfData
   }
-  const notify = msg => {
-    if (msg == "error") {
-      toast.error("Please select the pdf format")
-    } else if (msg == "success") {
-      toast.success("Pdf file upload successfully")
-    }
-  }
+  // const notify = msg => {
+  //   if (msg == "error") {
+  //     toast.error("Please select the pdf format")
+  //   } else if (msg == "success") {
+  //     toast.success("Pdf file upload successfully")
+  //   }
+  // }
   // console.log("pdfData", getValue)
   return (
     <Layout className="h-auto mb-6">
       <Col span={7} className="flex justify-end items-center">
-        <div class='file-input'>
+        <div className='file-input'>
           <input multiple type='file' name="file" onChange={(e) => onChangeUpload(e, "files")} accept="application/pdf" />
-          <span class='button'>Choose</span>
-          <span class='label' data-js-label><label>{inputFile !== null ? inputFile.files.name : "Choose File"}</label></span>
+          <span className='button'>Choose</span>
+          <span className='label' data-js-label><label>{inputFile !== null ? inputFile.files.name : "Choose File"}</label></span>
         </div>
         {loader ?<Loader
           type="Circles"

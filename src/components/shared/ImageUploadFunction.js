@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Layout, Row, Col, Input, Form, Upload, message, Button } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
+import React, {  useState } from 'react';
+import { Layout,  Col } from 'antd';
 import 'assets/scss/antd-overrides.scss';
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 import Loader from 'react-loader-spinner'
-import Avatar from 'antd/lib/avatar/avatar';
+// import Avatar from 'antd/lib/avatar/avatar';
 const axios = require('axios').default;
 toast.configure()
 
@@ -53,21 +51,21 @@ function ImageUploadFunction({ handleImageUrl }) {
     })
     return pdfData
   }
-  const notify = msg => {
-    if (msg == "error") {
-      toast.error("Please select the valid format")
-    } else if (msg == "success") {
-      toast.success("File upload successfully")
-    }
-  }
+  // const notify = msg => {
+  //   if (msg == "error") {
+  //     toast.error("Please select the valid format")
+  //   } else if (msg == "success") {
+  //     toast.success("File upload successfully")
+  //   }
+  // }
   // console.log("pdfData", imageValue)
   return (
     <Layout className="h-auto mb-6 opportunity_choose">
       <Col span={7} className="flex justify-end items-center">
-        <div class='file-input'>
+        <div className='file-input'>
           <input multiple type='file' name="file" onChange={(e) => onChangeUpload(e, "files")} accept="image/*,video/*" />
-          <span class='button'>Choose</span>
-          <span class='label' data-js-label><label>{inputFile !== null ? inputFile.files.name : "Choose File"}</label></span>
+          <span className='button'>Choose</span>
+          <span className='label' data-js-label><label>{inputFile !== null ? inputFile.files.name : "Choose File"}</label></span>
         </div>
         {loader ? <Loader
           type="Circles"

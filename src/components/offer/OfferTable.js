@@ -5,7 +5,6 @@ import 'assets/scss/antd-overrides.scss';
 const { Column } = Table;
 
 const ProviderButtons = ({ record, handleUpdateModal, viewEnrollments,handleDeleteModal }) => {
-  let token = JSON.parse(localStorage.getItem("currentSession"))
 
   return (
     <>

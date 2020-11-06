@@ -79,7 +79,7 @@ export default function (props) {
 
   useEffect(() => {
     getBannerApi().then(resp => {
-      if (resp.status == 200) {
+      if (resp.status === 200) {
         var output = resp.data.data.map(s => ({ banner_image: s.landing_image, id: s.id, image_url: s.image_url }));
         setBannerImage(output)
       }
@@ -95,13 +95,13 @@ export default function (props) {
   const FinalImageData = concat(bannerImage, mainPromos)
   // console.log('localPromos', localPromos)
 
-    const finalPromoData = localPromos.filter(function (item, index, inputArray) {
-      if (item === null || item === undefined) {
-        return false
-      } else {
-        return inputArray.indexOf(item) == index;
-      }
-    });
+    // const finalPromoData = localPromos.filter(function (item, index, inputArray) {
+    //   if (item === null || item === undefined) {
+    //     return false
+    //   } else {
+    //     return inputArray.indexOf(item) == index;
+    //   }
+    // });
 
     //  console.log("sadasdasdasd",finalPromoData)
   return (

@@ -147,7 +147,7 @@ export default function ({
   const frequencyUnit = find(groupedDataFields.frequency_unit, ({ id }) => {
     return id === Number(frequency_unit);
   });
-  console.log('\n provider,,,',provider)
+  // console.log('\n provider,,,',provider)
   return (
     <div className={`flex flex-row shadow ${className}`}>
       <Card className={`info-card`} style={style}>

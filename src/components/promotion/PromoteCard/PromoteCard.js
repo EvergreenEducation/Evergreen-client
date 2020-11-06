@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { } from 'react';
 import { Button, Popconfirm } from 'antd';
 import { last, findIndex } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 import axiosInstance from 'services/AxiosInstance';
 import useGlobalStore from 'store/GlobalStore';
-import useAxios, { configure } from 'axios-hooks';
+import  { configure } from 'axios-hooks';
 import './promote-card.scss';
 
 const axios = require('axios').default;
@@ -156,7 +156,8 @@ export default function ({ data = {}, session, activePageId, type, allApiCall })
       is_local_promo: false,
       local_promoted_by_user_ids: [],
       main_promoted_by_user_ids: [],
-    }, idLocalArray = [], routeArray = [], promoIdArray = [];
+    }, 
+    idLocalArray = [], routeArray = [], promoIdArray = [];
 
     if (entity_type === 'offer') {
       if (promoType === 'local') {

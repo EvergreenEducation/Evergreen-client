@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Row, Col, Tag, Button, Input, Form, message, Table } from 'antd';
+import { Row, Col, Tag, Button, Input, Form, message } from 'antd';
 import {
   find,
   last,
@@ -33,7 +33,6 @@ import {
   CollapsibleHead,
   CollapsibleContent
 } from "react-collapsible-component";
-import { AliwangwangOutlined,AppstoreAddOutlined,UserAddOutlined,ReadOutlined,ApartmentOutlined } from '@ant-design/icons';
 
 // CONSTANTS
 const ALL_VIDEO_FORMAT_REGEX = (/\.(wmv|flv|mkv|mp4|webm|m4v|m4a|m4v|f4v|f4a|m4b|m4r|f4b|mov|3gp|3gp2|3g2|3gpp|3gpp2|ogg|oga|ogv|ogx|wmv|wma|mpg|mpeg)$/i);
@@ -43,7 +42,7 @@ var parse = require('html-react-parser');
 // const location_type='';
 export default function ({
   children,
-  type ,
+  type,
   data = {},
   groupedDataFields,
   session = {},
@@ -68,29 +67,25 @@ export default function ({
     GroupsOfOffers = [],
     external_url,
     Pathways,
-    Offers,
     learn_and_earn,
     description,
     rubric_attachment,
     main_image,
     accreditation,
     location_type,
-    location,
     outlook,
-    isOfferGeneric
   } = data;
   const [offerEnrollments, setOfferEnrollments] = useState([]);
   const [fetchEnrollments, setFetchEnrollments] = useState(false);
   const { offer: offerStore } = useGlobalStore();
   const [form] = Form.useForm();
   const myOfferEnrollments = sortBy(offerEnrollments, ['start_date']);
-  const [learnEarn, setLearnEarn] = useState({})
-  const [htmValue, setHtmlValue] = useState()
+  // const [htmValue, setHtmlValue] = useState()
   const [outllokData, setOutLookData] = useState()
   const [imageData, setImageData] = useState({})
   const [isCheck, setIsCheck] = useState(false)
   // const [imagedata, setImageData] = useState()
-  const { Column } = Table;
+  // const { Column } = Table;
   const getData = async (data) => {
     let id = data.id
     let Data = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/files/get_accedration/${id}`)
@@ -271,7 +266,7 @@ export default function ({
         }`}
     >
       {/* {console.log("resp",data)} */}
-     {!data.is_generic && <Button
+      {!data.is_generic && <Button
         type="primary"
         className="rounded"
         style={{ width: '49%' }}
@@ -280,22 +275,22 @@ export default function ({
         Enroll
       </Button>}
       {external_url ? (
-          <Button type="primary" className="rounded" style={{ width: '49%' }} onClick={()=>{
-            isValidURL(external_url)
-          }}>
-            View Website
-        </Button> 
+        <Button type="primary" className="rounded" style={{ width: '49%' }} onClick={() => {
+          isValidURL(external_url)
+        }}>
+          View Website
+        </Button>
         // <Button type="primary" className="rounded" style={{ width: '49%' }}>
         //   <a href={external_url} target="_blank" rel="noopener noreferrer external">
         //     View Website
         //   </a>
         // </Button>
       ) : null}
-     
+
     </Row>
   );
 
-  let locationText = data && data.location? data.location :'---';
+  let locationText = data && data.location ? data.location : '---';
 
   if (type === 'provider' && data && data.location) {
     locationText = data.location;
@@ -310,19 +305,19 @@ export default function ({
   }
   // console.log('locationText',locationText)
 
-  const handleHtml = (prop) => {
-    if (prop === "bold") {
-      setHtmlValue("bold")
-    } else if (prop === "italic") {
-      setHtmlValue("italic")
-    }
-  }
+  // const handleHtml = (prop) => {
+  //   if (prop === "bold") {
+  //     setHtmlValue("bold")
+  //   } else if (prop === "italic") {
+  //     setHtmlValue("italic")
+  //   }
+  // }
 
 
   var modal = document.getElementById("myModal");
 
   // Get the button that opens the modal
-  var btn = document.getElementById("myBtn");
+  // var btn = document.getElementById("myBtn");
 
   // Get the <span> element that closes the modal
   var span = document.getElementsByClassName("close")[0];
@@ -350,19 +345,38 @@ export default function ({
   }
 
 
-  const redirectToExternalLink=(url)=>{
+  const redirectToExternalLink = (url) => {
     window.open(
       `${url}`);
   }
 
   function isValidURL(string) {
     var regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
-    let isUrlValid=regex.test(string)
-    let fullUrl= isUrlValid?'':'https://' + string;
+    let isUrlValid = regex.test(string)
+    let fullUrl = isUrlValid ? '' : 'https://' + string;
     redirectToExternalLink(fullUrl)
   };
 
-  console.log('type',type)
+  let Arr = []
+  let newArr = location_type.map(item => {
+    if(item === "Online"){
+     Arr.push({name:"Self-learning",img:"/icons/online.png" })
+
+    } if(item === "Hybrid"){
+      Arr.push({name:"Self-learning",img:"/icons/hybrid.png" })
+ 
+     }
+    else if(item === "Self-learning"){
+      Arr.push({name:"Self-learning",img:"/icons/self-learning.png" })
+
+    }else if(item === "In-person"){
+      Arr.push({name:"In-person",img:"/icons/in-person.png" })
+
+    }else if(item === "Social Distancing Confirmed"){
+      Arr.push({name:"In-person",img:"/icons/social-distancing.png" })
+    }
+    console.log("aaaaaaaaaaa",Arr)
+  })
   // let Arr = JSON.parse(main_image)
   return (
     <div className="infoLayout">
@@ -412,22 +426,22 @@ export default function ({
               } else {
                 return (
                   <div className="modal_block" id="myBtn" onClick={() => handleDivmain(newItem)}>
-                    <img src={newItem.original} onClick={() => handleImgmain(newItem)} />
+                    <img src={newItem.original} onClick={() => handleImgmain(newItem)} alt="" />
                   </div>)
               }
             })}
           </Carousel>
         </Col>
 
-        <div id="myModal" class="modal" >
-          <div class="modal-content">
-            <span class="close" onClick={() => handleSpanmain()}>&times;</span>
+        <div id="myModal" className="modal" >
+          <div className="modal-content">
+            <span className="close" onClick={() => handleSpanmain()}>&times;</span>
             {/*  demo.name.toString().endsWith("mp4") ? */}
             {demo && ALL_VIDEO_FORMAT_REGEX.test('.' + demo.name.slice((Math.max(0, demo.name.lastIndexOf(".")) || Infinity) + 1)) ?
               <video controls>
                 {/*  accept="video/mp4,video/wmv,video/flv,video/mkv,video/mp4,video/webm,video/ogg"  */}
                 <source src={demo.original} accept={`video/${demo.name.slice((Math.max(0, demo.name.lastIndexOf(".")) || Infinity) + 1)}`} />
-              </video> : <img src={demo ? demo.original : null} />}
+              </video> : <img src={demo ? demo.original : null} alt="" />}
           </div>
         </div>
         <Row className="py-2">
@@ -564,42 +578,42 @@ export default function ({
               </>
             )}
           </Col>
-          {location_type ? <Col span={8} className="flex justify-center">
-            {location_type === "Online" && <p className="location_block"><img className="social_distancing" src="/icons/online.png" /> <span className="location_name">{location_type}</span> </p>}
-            {location_type === "Hybrid" && <p className="location_block"><img className="social_distancing" src="/icons/hybrid.png" /> <span className="location_name">{location_type}</span> </p>}
-            {location_type === "In-person" && <p className="location_block"><img className="social_distancing" src="/icons/in-person.png" /> <span className="location_name">{location_type}</span> </p>}
-            {location_type === "Self-learning" && <p className="location_block"><img className="social_distancing" src="/icons/self-learning.png" /> <span className="location_name">{location_type}</span> </p>}
-            {location_type === "Social Distancing Confirmed" && <p className="location_block"><img className="social_distancing" src="/icons/social-distancing.png" /><span className="location_name">{location_type}</span> </p>}
-          </Col> : null}
+          {Arr && Arr.length && Arr.map(item => {
+            console.log("item",item)
+            return (
+            <p><img className="social_distancing" src={item.img} alt="" /><span className="location_name">{item.name}</span></p>
+            )
+          })}
+         
           {type === 'provider' &&
-              myOfferEnrollments &&
-              myOfferEnrollments.length?
-              <Col span={8} className="flex flex-row-reverse items-center">
-            {type === 'provider' ? (
-              <Tag className="mr-0" color="purple">
-                {is_public ? 'Public' : 'Private'}
-              </Tag>
-            ) : null}
-            {(type === 'offer' &&
-              myOfferEnrollments &&
-              myOfferEnrollments.length && (
-                <>
-                  <span className="ml-1">
-                    {dayjs(last(myOfferEnrollments).start_date).format(
-                      'MMM D, YYYY'
-                    ) || null}
-                  </span>
-                  <FontAwesomeIcon icon={faCalendarAlt} />
-                </>
-              )) ||
-              null}
-          </Col>:''}
+            myOfferEnrollments &&
+            myOfferEnrollments.length ?
+            <Col span={8} className="flex flex-row-reverse items-center">
+              {type === 'provider' ? (
+                <Tag className="mr-0" color="purple">
+                  {is_public ? 'Public' : 'Private'}
+                </Tag>
+              ) : null}
+              {(type === 'offer' &&
+                myOfferEnrollments &&
+                myOfferEnrollments.length && (
+                  <>
+                    <span className="ml-1">
+                      {dayjs(last(myOfferEnrollments).start_date).format(
+                        'MMM D, YYYY'
+                      ) || null}
+                    </span>
+                    <FontAwesomeIcon icon={faCalendarAlt} />
+                  </>
+                )) ||
+                null}
+            </Col> : ''}
           {outlook === undefined || outlook === null || outlook === '' ?
             <Col span={8} className={`${outlook === undefined || outlook === null || outlook === '' ? '' : 'flex-row-reverse'} flex  items-center`}>
-              <p>10yr job outlook: {outllokData} </p>
+              {type == "pathway" && <p>10yr job outlook: {outllokData} </p>}
             </Col> :
             <Col span={8} className={`${outlook === undefined || outlook === null || outlook === '' ? '' : 'flex-row-reverse'} flex  items-center`}>
-              <p>10yr job outlook: {imageData.outlook} </p>
+              {type == "pathway" && <p>10yr job outlook: {imageData.outlook} </p>}
             </Col>}
           {/* {
             location ? <p>Location: {location}</p> : ''
@@ -607,7 +621,7 @@ export default function ({
         </Row>
         <hr />
         <section className="font_type">
-        
+
           {/* <p className="text-center break-words">{htmValue === "bold" ? <b>{data.description}</b> : <i>{data.description}</i>}</p> */}
           <p>
             {description ? description !== null ? parse(data.description) : null : ''}</p>
@@ -699,7 +713,7 @@ export default function ({
         </div>
       </section>
       <section>
-        {rubric_attachment === undefined || rubric_attachment === null ? '' : rubric_attachment.length ? <div class="pdf-listings">
+        {rubric_attachment === undefined || rubric_attachment === null ? '' : rubric_attachment.length ? <div className="pdf-listings">
           <Button ref={imageData} />
           <CollapsibleComponent>
             <CollapsibleHead className="additionalClassForHead">
@@ -713,7 +727,7 @@ export default function ({
                   let itemnew = JSON.parse(item)
                   return (
                     // <p>{itemnew.original}</p>
-                    <button class="pdf-listing-btn" onClick={() => handleLink(itemnew)}>{itemnew.name}</button>
+                    <button className="pdf-listing-btn" onClick={() => handleLink(itemnew)}>{itemnew.name}</button>
                   )
                 }) : ''}
               </div>

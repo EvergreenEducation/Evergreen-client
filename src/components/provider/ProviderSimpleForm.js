@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Form, Input, Row, Col, Avatar, Select } from 'antd';
-import { ImageUploadAndNameInputs, ImageUploadFunction } from 'components/shared';
+import {  ImageUploadFunction } from 'components/shared';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import 'assets/scss/antd-overrides.scss';
-import { groupBy, isNil } from 'lodash';
+import {  isNil } from 'lodash';
 
 import { getindustryData } from 'components/datafield/IndustryContainer'
 
 const { Option } = Select;
 
 const ProviderSimpleForm = (props) => {
-  const { userId = null, onChangeUpload, file, onChangeBannerUpload,
+  const {
     handleData = {}, handleUpadteMain,
     handleUpadteBanner, role,
   } = props;
-  const [getPdfUrl, setGetPdfUrl] = useState()
+  // const [getPdfUrl, setGetPdfUrl] = useState()
 // console.log(' handleUpadteMain handleUpadteBanner', handleUpadteMain,handleUpadteBanner)
 
   const handleChange = (e, editor) => {
@@ -50,11 +50,11 @@ const ProviderSimpleForm = (props) => {
           resArr.push({ name: item.name, original: item.original });
         }
       });
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       handleUpadteMain(getPdfUrl, resArr)
     } else {
       // console.log("elseeeeeeeeeeee")
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       // handleImageData(getPdfUrl)
       // handleBannerImage(getPdfUrl)
     }
@@ -86,11 +86,11 @@ const ProviderSimpleForm = (props) => {
           resArr.push({ name: item.name, original: item.original });
         }
       });
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       handleUpadteBanner(getPdfUrl, resArr)
     } else {
       // console.log("elseeeeeeeeeeee")
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       // handleImageData(getPdfUrl)
       // handleBannerImage(getPdfUrl)
     }
@@ -151,8 +151,8 @@ const ProviderSimpleForm = (props) => {
             {handleData.main_image && handleData.main_image.map(item => {
               let item1 = JSON.parse(item)
               return (
-                <div class="delete-pathway">
-                  <p class=""></p>
+                <div className="delete-pathway">
+                  <p className=""></p>
                   <Avatar src={item1.original} alt={item1.name} />
                   <p>{item1.name}</p>
                 </div>)
@@ -182,8 +182,8 @@ const ProviderSimpleForm = (props) => {
             {handleData.banner_image && handleData.banner_image.map(item => {
               let item1 = JSON.parse(item)
               return (
-                <div class="delete-pathway">
-                  <p class=""></p>
+                <div className="delete-pathway">
+                  <p className=""></p>
                   <Avatar src={item1.original} alt={item1.name} />
                   <p>{item1.name}</p>
                 </div>)

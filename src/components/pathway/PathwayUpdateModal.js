@@ -20,7 +20,6 @@ import UploaderService from 'services/Uploader';
 import OfferStore from 'store/Offer';
 import { useImageAndBannerImage } from 'hooks';
 import 'assets/scss/antd-overrides.scss';
-import Item from 'antd/lib/list/Item';
 
 configure({
   axios: axiosInstance,
@@ -88,7 +87,7 @@ export default function PathwayUpdateModal({
 
       let groupOrderByYearNum = [];
       let groups_of_offers = map(groupsOfOffers, (g) => {
-        const linkData = form.getFieldValue(g)
+        // const linkData = form.getFieldValue(g)
         // console.log("insideeeeeeeeee",linkData)
         const year = form.getFieldValue(g.group_name);
         groupOrderByYearNum.push(g.group_name);
@@ -286,13 +285,13 @@ export default function PathwayUpdateModal({
   }, [pathway, putError, formRef, file, bannerFile]);
 
   let providerEntities = providers;
-  const [getPdfUrl, setGetPdfUrl] = useState()
+  // const [getPdfUrl, setGetPdfUrl] = useState()
   const [getUpdateValue,setGetUpdatedValue]= useState()
   const [getMainImage,setGetMainImage]=useState()
   const [getBannerImage,setGetBannerImage]=useState()
 
   const handlePropData = (getPdfUrl,getUpdateValue) => {
-    setGetPdfUrl(getPdfUrl)
+    // setGetPdfUrl(getPdfUrl)
     setGetUpdatedValue(getUpdateValue)
     // setDeleteValue(getDeleteValue)
   }

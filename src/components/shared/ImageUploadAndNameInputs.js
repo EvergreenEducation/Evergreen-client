@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Row, Col, Input, Form, Upload, message, Button } from 'antd';
+import { Layout, Row, Col, Input, Form, Upload, message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 import 'assets/scss/antd-overrides.scss';
-const axios = require('axios').default;
 
 function getBase64(image, callback) {
   const reader = new FileReader();

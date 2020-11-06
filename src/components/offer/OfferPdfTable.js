@@ -1,6 +1,5 @@
 import React from 'react';
-import { Table, Tag, Button } from 'antd';
-import { groupBy } from 'lodash';
+import { Table, Button } from 'antd';
 import 'assets/scss/antd-overrides.scss';
 import {
     CollapsibleComponent,

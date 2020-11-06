@@ -15,7 +15,6 @@ import PrivateRoute from 'services/PrivateRoute';
 import { GlobalProvider } from 'store/GlobalStore';
 import { Helmet } from 'react-helmet';
 import EvergreenLogo from 'assets/svgs/evergreen-optimized-logo.svg';
-import CustomHomePage from 'components/CustomHomePage/CustomHomePage'
 const AuthScreen = imported(() => import('screens/AuthScreen'));
 const Result = imported(() => import('antd/lib/result'));
 const DashboardScreen = imported(() => import('screens/DashboardScreen'));

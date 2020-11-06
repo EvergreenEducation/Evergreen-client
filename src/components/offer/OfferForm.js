@@ -10,13 +10,12 @@ import {
   Checkbox,
   Avatar
 } from 'antd';
-import {  ImageUploadFunction } from 'components/shared';
+import { ImageUploadFunction } from 'components/shared';
 import { PdfUploadFunction } from 'components/shared'
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { groupBy, property, isNil, remove, compact } from 'lodash';
 import 'assets/scss/antd-overrides.scss';
-import { formatCountdown } from 'antd/lib/statistic/utils';
 // import { AliwangwangOutlined } from 'antd';
 
 const axios = require('axios').default;
@@ -25,7 +24,7 @@ const { Option } = Select;
 
 const preloadOptions = (data = []) =>
   data.map((item, index) => {
-    console.log("=================",item)
+    console.log("=================", item)
     console.log("preloadOptionsOffer", item.id, item.name)
     return (
       <Option value={item.id} key={index.toString()}>
@@ -39,7 +38,7 @@ const preloadOptionsOffer = (data = []) =>
     console.log("preloadOptionsOffer", item.id, item.name)
     return (
       <Option value={`${item.id}`} key={index.toString()}
-       >
+      >
         {item.name}
       </Option>
     );
@@ -85,7 +84,7 @@ export default function OfferForm({
     })
   }, [])
   // console.log("getvalues", getvalues, offer)
-  const [getPdfUrl, setGetPdfUrl] = useState()
+  // const [getPdfUrl, setGetPdfUrl] = useState()
   const [hideFied, setHideFied] = useState(true)
   const [isCheckLearn, setIsCheckLearn] = useState(true)
   const [isCheckEarn, setIsCheckEarn] = useState(true)
@@ -116,11 +115,11 @@ export default function OfferForm({
           resArr.push({ name: item.name, original: item.original });
         }
       });
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       handlePropData(getPdfUrl, resArr)
     } else {
       // console.log("inssssssssss")
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       handlePropData(getPdfUrl)
     }
   }
@@ -152,10 +151,10 @@ export default function OfferForm({
           resArr.push({ name: item.name, original: item.original });
         }
       });
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       handleUpadteMain(getPdfUrl, resArr)
     } else {
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       handleImageData(getPdfUrl)
       // handleBannerImage(getPdfUrl)
     }
@@ -188,10 +187,10 @@ export default function OfferForm({
           resArr.push({ name: item.name, original: item.original });
         }
       });
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       handleUpadteBanner(getPdfUrl, resArr)
     } else {
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       // handleImageData(getPdfUrl)
       handleBannerImage(getPdfUrl)
     }
@@ -274,7 +273,7 @@ export default function OfferForm({
     handleDescriptionValue(data)
   }
 
-  console.log('\n offers', offer,offers)
+  console.log('\n offers', offer, offers)
   return (
     <Layout>
       {/* <ImageUploadAndNameInputs
@@ -308,8 +307,8 @@ export default function OfferForm({
             {offer.main_image && offer.main_image.map(item => {
               let item1 = JSON.parse(item)
               return (
-                <div class="delete-pathway">
-                  <p class=""></p>
+                <div className="delete-pathway">
+                  <p className=""></p>
                   <Avatar src={item1.original} alt={item1.name} />
                   <p>{item1.name}</p>
                 </div>)
@@ -339,8 +338,8 @@ export default function OfferForm({
             {offer.banner_image && offer.banner_image.map(item => {
               let item1 = JSON.parse(item)
               return (
-                <div class="delete-pathway">
-                  <p class=""></p>
+                <div className="delete-pathway">
+                  <p className=""></p>
                   <Avatar src={item1.original} alt={item1.name} />
                   <p>{item1.name}</p>
                 </div>)
@@ -370,8 +369,8 @@ export default function OfferForm({
           {offer.rubric_attachment && offer.rubric_attachment.map(item => {
             let item1 = JSON.parse(item)
             return (
-              <div class="delete-pathway">
-                <p class="delete-avatar" onClick={() => handlePdfDelete(item1, offer)}>X</p>
+              <div className="delete-pathway">
+                <p className="delete-avatar" onClick={() => handlePdfDelete(item1, offer)}>X</p>
                 <Avatar src="https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg" />
                 <p>{item1.name}</p>
               </div>)
@@ -379,20 +378,20 @@ export default function OfferForm({
         </p> : null}
       </div> : null}
       {/* <ImageUploadFunction /> */}
-     
+
       <Row gutter={8}>
-      <Col xs={24} sm={24} md={8}>
-        <Form.Item
-          label="Name"
-          name="name"
-          labelAlign={'left'}
-          colon={false}
-          className="mb-0 inherit"
-          rules={[{ required: true, message: 'Please enter a name' }]}
-        >
-          <Input name="name" className="rounded" />
-        </Form.Item>
-      </Col>
+        <Col xs={24} sm={24} md={8}>
+          <Form.Item
+            label="Name"
+            name="name"
+            labelAlign={'left'}
+            colon={false}
+            className="mb-0 inherit"
+            rules={[{ required: true, message: 'Please enter a name' }]}
+          >
+            <Input name="name" className="rounded" />
+          </Form.Item>
+        </Col>
         <Col
           className={role === 'provider' ? 'hidden' : ''}
           xs={24}
@@ -560,12 +559,12 @@ export default function OfferForm({
             className="mb-0 inherit"
             rules={[{ required: true, message: 'Please select an option' }]}
           >
-            <Select name="location_type" className="custom-select">
-            <Option value="Online"><img className="social_distancing" src="/icons/online.png" /> Online</Option>
-              <Option value="Hybrid"><img className="social_distancing" src="/icons/hybrid.png" /> Hybrid</Option>
-              <Option value="In-person"><img className="social_distancing" src="/icons/in-person.png" /> In person</Option>
-              <Option value="Self-learning"><img className="social_distancing" src="/icons/self-learning.png" /> Self Learning</Option>
-              <Option value="Social Distancing Confirmed"><img className="social_distancing" src="/icons/social-distancing.png" />Social Distancing Confirmed</Option>
+            <Select name="location_type" className="custom-select" mode="multiple">
+              <Option value="Online"><img className="social_distancing" src="/icons/online.png" alt="" /> Online</Option>
+              <Option value="Hybrid"><img className="social_distancing" src="/icons/hybrid.png" alt="" /> Hybrid</Option>
+              <Option value="In-person"><img className="social_distancing" src="/icons/in-person.png" alt="" /> In person</Option>
+              <Option value="Self-learning"><img className="social_distancing" src="/icons/self-learning.png" alt="" /> Self Learning</Option>
+              <Option value="Social Distancing Confirmed"><img className="social_distancing" src="/icons/social-distancing.png" alt="" />Social Distancing Confirmed</Option>
             </Select>
           </Form.Item>
         </Col>
@@ -695,7 +694,7 @@ export default function OfferForm({
             className="mb-0 inherit"
             rules={[{ required: true, message: 'Please select an option' }]}
           >
-          <Select className="rounded custom-select">
+            <Select className="rounded custom-select">
               {!isNil(payment_unit) && payment_unit.length
                 ? preloadOptions(payment_unit)
                 : null}

@@ -10,7 +10,7 @@ import {
   Checkbox,
   Avatar
 } from 'antd';
-import { ImageUploadAndNameInputs, ImageUploadFunction } from 'components/shared';
+import { ImageUploadFunction } from 'components/shared';
 import { groupBy, isNil } from 'lodash';
 import 'assets/scss/antd-overrides.scss';
 import CKEditor from '@ckeditor/ckeditor5-react';
@@ -18,21 +18,14 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 // import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import { getData } from 'components/datafield/AccedrationContainer';
 import { getindustryData } from 'components/datafield/IndustryContainer'
-import { AliwangwangOutlined, AppstoreAddOutlined, UserAddOutlined, ReadOutlined, ApartmentOutlined } from '@ant-design/icons';
-
-const axios = require('axios').default;
 
 const { Option } = Select;
 
 const ProviderForm = (props) => {
   const {
     datafields = [],
-    userId = null,
-    onChangeUpload,
     file,
     role,
-    bannerFile,
-    onChangeBannerUpload,
     descriptionValue,
     handleImageData,
     handleBannerImage,
@@ -43,14 +36,14 @@ const ProviderForm = (props) => {
   } = props;
   const [listingData, setListingData] = useState()
   const [indusData, setIndusData] = useState()
-  const [getPdfUrl, setGetPdfUrl] = useState()
+  // const [getPdfUrl, setGetPdfUrl] = useState()
 
   useEffect(() => { }, [props.datafields, file]);
 
   useEffect(() => {
     getData().then(resp => {
       // console.log(resp, "111111111111111111")
-      if (resp.status == 200) {
+      if (resp.status === 200) {
         setListingData(resp.data.data)
       }
     }).catch(error => {
@@ -61,7 +54,7 @@ const ProviderForm = (props) => {
   useEffect(() => {
     getindustryData().then(resp => {
       // console.log(resp, "111111111111111111")
-      if (resp.status == 200) {
+      if (resp.status === 200) {
         setIndusData(resp.data.data)
       }
     }).catch(error => {
@@ -141,11 +134,11 @@ const ProviderForm = (props) => {
           resArr.push({ name: item.name, original: item.original });
         }
       });
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       handleUpadteMain(getPdfUrl, resArr)
     } else {
       // console.log("elseeeeeeeeeeee")
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       handleImageData(getPdfUrl)
       // handleBannerImage(getPdfUrl)
     }
@@ -177,11 +170,11 @@ const ProviderForm = (props) => {
           resArr.push({ name: item.name, original: item.original });
         }
       });
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       handleUpadteBanner(getPdfUrl, resArr)
     } else {
       // console.log("elseeeeeeeeeeee")
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       // handleImageData(getPdfUrl)
       handleBannerImage(getPdfUrl)
     }
@@ -225,8 +218,8 @@ const ProviderForm = (props) => {
             {handleData.main_image && handleData.main_image.map(item => {
               let item1 = JSON.parse(item)
               return (
-                <div class="delete-pathway">
-                  <p class=""></p>
+                <div className="delete-pathway">
+                  <p className=""></p>
                   <Avatar src={item1.original} alt={item1.name} />
                   <p>{item1.name}</p>
                 </div>)
@@ -254,8 +247,8 @@ const ProviderForm = (props) => {
             {handleData.banner_image && handleData.banner_image.map(item => {
               let item1 = JSON.parse(item)
               return (
-                <div class="delete-pathway">
-                  <p class=""></p>
+                <div className="delete-pathway">
+                  <p className=""></p>
                   <Avatar src={item1.original} alt={item1.name} />
                   <p>{item1.name}</p>
                 </div>)
@@ -420,12 +413,12 @@ const ProviderForm = (props) => {
             colon={false}
             className="mb-0 inherit"
             rules={[{ required: true, message: 'Please select an option' }]}>
-            <Select name="location_type" className="custom-select">
-            <Option value="Online"><img className="social_distancing" src="/icons/online.png" /> Online</Option>
-            <Option value="Hybrid"><img className="social_distancing" src="/icons/hybrid.png" /> Hybrid</Option>
-              <Option value="In-person"><img className="social_distancing" src="/icons/in-person.png" /> In person</Option>
-              <Option value="Self-learning"><img className="social_distancing" src="/icons/self-learning.png" /> Self Learning</Option>
-              <Option value="Social Distancing Confirmed"><img className="social_distancing" src="/icons/social-distancing.png" />Social Distancing Confirmed</Option>
+            <Select name="location_type" className="custom-select" mode="multiple">
+            <Option value="Online"><img className="social_distancing" src="/icons/online.png" alt="" /> Online</Option>
+            <Option value="Hybrid"><img className="social_distancing" src="/icons/hybrid.png" alt="" /> Hybrid</Option>
+              <Option value="In-person"><img className="social_distancing" src="/icons/in-person.png" alt="" /> In person</Option>
+              <Option value="Self-learning"><img className="social_distancing" src="/icons/self-learning.png" alt="" /> Self Learning</Option>
+              <Option value="Social Distancing Confirmed"><img className="social_distancing" src="/icons/social-distancing.png" alt="" />Social Distancing Confirmed</Option>
             </Select>
           </Form.Item>
         </Col>

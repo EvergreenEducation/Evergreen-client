@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import { head, startCase, toLower } from 'lodash';
 import { Bar } from 'react-chartjs-2';
 
@@ -23,8 +23,8 @@ export default function (props) {
 
           return data.dataLookUp[`${label}-${enrollStatus}`]
             ? `Offer(s):\n - ${data.dataLookUp[`${label}-${enrollStatus}`].join(
-                '\n - '
-              )}`
+              '\n - '
+            )}`
             : '';
         },
       },
@@ -35,7 +35,9 @@ export default function (props) {
           stacked: true,
           ticks: {
             stepSize: 1,
-            max: 6
+            callback: function (value, index, values) {
+              return startCase(toLower(value));
+            },
           },
         },
       ],
@@ -56,10 +58,10 @@ export default function (props) {
   return (
     <div className={`block bg-white ${className}`}>
       <span className="text-center font-bold">{groupName}</span>
-      <Bar 
+      <Bar
         height={100}
-      data={data}
-       options={options}
+        data={data}
+        options={options}
         redraw={redraw} />
     </div>
   );

@@ -10,19 +10,16 @@ import {
   Checkbox,
   Avatar
 } from 'antd';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { TitleDivider } from 'components/shared';
-import { ImageUploadAndNameInputs, ImageUploadFunction, BannerUploadFunction } from 'components/shared';
+import {  ImageUploadFunction } from 'components/shared';
 import { PdfUploadFunction } from 'components/shared'
 import { groupBy, property, isNil, compact } from 'lodash';
 import 'assets/scss/antd-overrides.scss';
 import OfferGroupTable from './OfferGroupTable/OfferGroupTable';
-import { data } from 'autoprefixer';
 import { getGenericData } from 'components/datafield/GenericContainer';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { AliwangwangOutlined, AppstoreAddOutlined, UserAddOutlined, ReadOutlined, ApartmentOutlined } from '@ant-design/icons';
-
 const axios = require('axios').default;
 
 const { Option } = Select;
@@ -42,14 +39,10 @@ export default function PathwayForm({
   groupsOfOffers = [],
   setGroupsOfOffers,
   userId = null,
-  file,
-  onChangeUpload,
   pathway,
   providers,
   role,
   form,
-  onChangeBannerUpload,
-  bannerFile,
   offerStore,
   handlePropData,
   handleImageData,
@@ -73,8 +66,8 @@ export default function PathwayForm({
   }
   const grouped = groupBy(datafields, property('type'));
   const { topic = [], frequency_unit = [] } = grouped;
-  const [getPdfUrl, setGetPdfUrl] = useState()
-  const [getDeleteValue, setDeleteValue] = useState()
+  // const [getPdfUrl, setGetPdfUrl] = useState()
+  // const [getDeleteValue, setDeleteValue] = useState()
   const [listingData, setListingData] = useState()
 
   // console.log("pdflin------------------", getPdfUrl, pathway)
@@ -91,7 +84,7 @@ export default function PathwayForm({
   }, []);
 
   const handlePdfData = (getPdfUrl) => {
-    setGetPdfUrl(getPdfUrl)
+    // setGetPdfUrl(getPdfUrl)
     if (pathway && pathway.rubric_attachment.length) {
       var result = pathway.rubric_attachment.reduce(function (prev, value) {
 
@@ -154,10 +147,10 @@ export default function PathwayForm({
           resArr.push({ name: item.name, original: item.original });
         }
       });
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       handleUpadteMain(getPdfUrl, resArr)
     } else {
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       handleImageData(getPdfUrl)
       // handleBannerImage(getPdfUrl)
     }
@@ -191,10 +184,10 @@ export default function PathwayForm({
           resArr.push({ name: item.name, original: item.original });
         }
       });
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       handleUpadteBanner(getPdfUrl, resArr)
     } else {
-      setGetPdfUrl(getPdfUrl)
+      // setGetPdfUrl(getPdfUrl)
       // handleImageData(getPdfUrl)
       handleBannerImage(getPdfUrl)
     }
@@ -205,7 +198,7 @@ export default function PathwayForm({
       // console.log("sucessssssss", resp)
       if (resp.status == 200) {
         // notify("success")
-        setDeleteValue(resp.data.data)
+        // setDeleteValue(resp.data.data)
       }
     }).catch(error => {
       console.log("errro", error)
@@ -267,8 +260,8 @@ export default function PathwayForm({
             {pathway.main_image && pathway.main_image.map(item => {
               let item1 = JSON.parse(item)
               return (
-                <div class="delete-pathway">
-                  <p class=""></p>
+                <div className="delete-pathway">
+                  <p className=""></p>
                   <Avatar src={item1.original} alt={item1.name} />
                   <p>{item1.name}</p>
                 </div>)
@@ -298,8 +291,8 @@ export default function PathwayForm({
             {pathway.banner_image && pathway.banner_image.map(item => {
               let item1 = JSON.parse(item)
               return (
-                <div class="delete-pathway">
-                  <p class=""></p>
+                <div className="delete-pathway">
+                  <p className=""></p>
                   <Avatar src={item1.original} alt={item1.name} />
                   <p>{item1.name}</p>
                 </div>)
@@ -345,8 +338,8 @@ export default function PathwayForm({
           {pathway.rubric_attachment && pathway.rubric_attachment.map(item => {
             let item1 = JSON.parse(item)
             return (
-              <div class="delete-pathway">
-                <p class="delete-avatar" onClick={() => handlePdfDelete(item1, pathway)}>X</p>
+              <div className="delete-pathway">
+                <p className="delete-avatar" onClick={() => handlePdfDelete(item1, pathway)}>X</p>
                 <Avatar src="https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg" />
                 <p>{item1.name}</p>
               </div>)
@@ -420,12 +413,12 @@ export default function PathwayForm({
             className="mb-0 inherit"
             rules={[{ required: true, message: 'Please select an option' }]}
           >
-            <Select name="location_type" className="custom-select">
-              <Option value="Online"><img className="social_distancing" src="/icons/online.png" /> Online</Option>
-              <Option value="Hybrid"><img className="social_distancing" src="/icons/hybrid.png" /> Hybrid</Option>
-              <Option value="In-person"><img className="social_distancing" src="/icons/in-person.png" /> In person</Option>
-              <Option value="Self-learning"><img className="social_distancing" src="/icons/self-learning.png" /> Self Learning</Option>
-              <Option value="Social Distancing Confirmed"><img className="social_distancing" src="/icons/social-distancing.png" />Social Distancing Confirmed</Option>
+            <Select name="location_type" className="custom-select" mode="multiple">
+              <Option value={"Online"}><img className="social_distancing" src="/icons/online.png" alt="" /> Online</Option>
+              <Option value="Hybrid"><img className="social_distancing" src="/icons/hybrid.png" alt="" /> Hybrid</Option>
+              <Option value="In-person"><img className="social_distancing" src="/icons/in-person.png" alt="" /> In person</Option>
+              <Option value="Self-learning"><img className="social_distancing" src="/icons/self-learning.png" alt="" /> Self Learning</Option>
+              <Option value="Social Distancing Confirmed"><img className="social_distancing" src="/icons/social-distancing.png" alt="" />Social Distancing Confirmed</Option>
             </Select>
           </Form.Item>
         </Col>

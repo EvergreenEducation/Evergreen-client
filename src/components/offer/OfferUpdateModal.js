@@ -243,13 +243,13 @@ export default function OfferUpdateModal({
       }
     }
   }, [offer, updateOfferError, formRef, file, bannerFile]);
-  const [getPdfUrl, setGetPdfUrl] = useState()
+  // const [getPdfUrl, setGetPdfUrl] = useState()
   const [getUpdateValue, setGetUpdatedValue] = useState()
   const [getMainImage, setGetMainImage] = useState()
   const [getBannerImage, setGetBannerImage] = useState()
 
   const handlePropData = (getPdfUrl, getUpdateValue) => {
-    setGetPdfUrl(getPdfUrl)
+    // setGetPdfUrl(getPdfUrl)
     setGetUpdatedValue(getUpdateValue)
     // setDeleteValue(getDeleteValue)
   }

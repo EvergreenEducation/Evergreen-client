@@ -31,7 +31,7 @@ const { Content } = Layout;
 export default function ProviderContainer(props) {
   const { history, role } = props;
   // console.log("sdsds",props)
-  const [searchString, setSearchString] = useState('');
+  // const [searchString, setSearchString] = useState('');
   const [modalStates, setModalStates] = useState({
     providerCreation: false,
     providerUpdate: false,
@@ -111,7 +111,7 @@ export default function ProviderContainer(props) {
   // };
 
   const handleDataSearch = (searchVal) => {
-    return setSearchString(searchVal);
+    // return setSearchString(searchVal);
   };
 
   // const showData = handleDataAfterSearch(entities);
