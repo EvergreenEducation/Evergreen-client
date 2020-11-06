@@ -1,11 +1,11 @@
 import React,{useEffect,useState} from 'react';
-import { head, startCase, toLower } from 'lodash';
+import { head, startCase, toLower,isEmpty } from 'lodash';
 import { Bar } from 'react-chartjs-2';
 
 export default function (props) {
   const { groupName, className, data, redraw = false } = props;
-
   const options = {
+    offset:true,
     plugins: [],
     responsive: true,
     maintainAspectRatio: true,
@@ -33,13 +33,13 @@ export default function (props) {
       yAxes: [
         {
           stacked: true,
-          ticks: {
+          ticks:{
             stepSize: 1,
-            callback: function (value, index, values) {
-              return startCase(toLower(value));
-            },
-          },
+            min:0,
+            suggestedMax:6,
+          }
         },
+        
       ],
       xAxes: [
         {
