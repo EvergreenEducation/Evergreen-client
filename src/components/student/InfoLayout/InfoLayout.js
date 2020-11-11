@@ -581,7 +581,7 @@ export default function ({
           {Arr && Arr.length && Arr.map(item => {
             console.log("item",item)
             return (
-            <p><img className="social_distancing" src={item.img} alt="" /><span className="location_name">{item.name}</span></p>
+            <p className="new-data-icons"><img className="social_distancing" src={item.img} alt="" /><span className="location_name">{item.name}</span></p>
             )
           })}
          

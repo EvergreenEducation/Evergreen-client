@@ -582,6 +582,9 @@ main.ant-layout-content.p-6 .ant-card.ant-card-bordered.shadow-md.rounded-md td.
 .slide .info-card .ant-card-body {
   min-height: 230px;
 }
+.unitTags p {
+  display: flex;
+}
 @media all and (min-width: 280px) and (max-width: 767px) {
   .homepage_boxes {
       width: 100% !important;
