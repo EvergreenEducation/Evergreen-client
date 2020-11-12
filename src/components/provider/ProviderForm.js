@@ -211,7 +211,8 @@ const ProviderForm = (props) => {
           className="mb-0 inherit"
         >
           <ImageUploadFunction
-            handleImageUrl={handleImageUrl} />
+            handleImageUrl={handleImageUrl}
+            type="multiple" />
         </Form.Item>
         <div>
           {handleData && handleData.main_image && handleData.main_image.length ? <p>
@@ -240,7 +241,8 @@ const ProviderForm = (props) => {
           colon={false}
           className="mb-0 inherit">
           <ImageUploadFunction
-            handleImageUrl={BannerUploadFunction} />
+            handleImageUrl={BannerUploadFunction}
+            type="single" />
         </Form.Item>
         {handleData && handleData !== null ? <div>
           {handleData && handleData.banner_image && handleData.banner_image.length ? <p>

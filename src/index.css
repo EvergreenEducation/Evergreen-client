@@ -559,6 +559,7 @@ main.ant-layout-content.p-6 .ant-card.ant-card-bordered.shadow-md.rounded-md td.
   width: 20px;
   display: inline-block;
   margin-right: 10px;
+  height: 20px;
 }
 .ant-select-item-option-content .anticon svg ,
 .ant-select-selection-item span.anticon svg{

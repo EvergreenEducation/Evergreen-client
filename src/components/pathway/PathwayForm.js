@@ -253,7 +253,8 @@ export default function PathwayForm({
           className="mb-0 inherit"
         >
           <ImageUploadFunction
-            handleImageUrl={handleImageUrl} />
+            handleImageUrl={handleImageUrl}
+            type="multiple" />
         </Form.Item>
         {pathway && pathway !== null ? <div>
           {pathway && pathway.main_image && pathway.main_image.length ? <p>
@@ -284,7 +285,8 @@ export default function PathwayForm({
           className="mb-0 inherit"
         >
           <ImageUploadFunction
-            handleImageUrl={BannerUploadFunction} />
+            handleImageUrl={BannerUploadFunction}
+            type="single" />
         </Form.Item>
         {pathway && pathway !== null ? <div>
           {pathway && pathway.banner_image && pathway.banner_image.length ? <p>
