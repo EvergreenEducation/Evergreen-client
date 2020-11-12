@@ -248,13 +248,15 @@ const ProviderSimpleForm = (props) => {
             className="mb-0 inherit"
           >
             <CKEditor editor={ClassicEditor} data={props.descriptionValue} onChange={handleChange} />
-            {/* <Input className="rounded" /> */}
+            {/* {/ <Input className="rounded" /> /} */}
           </Form.Item>
         </Col>
       </Row>
-      {/* </ImageUploadAndNameInputs> */}
+      {/* {/ </ImageUploadAndNameInputs> /} */}
     </Layout>
   );
 };
 
 export default ProviderSimpleForm;
+
+
