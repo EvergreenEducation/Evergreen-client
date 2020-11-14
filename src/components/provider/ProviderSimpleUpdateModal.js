@@ -69,6 +69,19 @@ export default function ProviderSimpleUpdateModal(props) {
     { manual: true }
   );
 
+
+  function updateFormAPI(url,data){
+    let headers={};
+    return new Promise((resolve, reject) => {
+      axios.put(url, data, { headers }).then(res => {
+          resolve(res)
+      }).catch(err => {
+          reject(err.response)
+      })
+  })
+  }
+
+
   const submitUpdate = async () => {
     const values = await form.validateFields([
       'name',
@@ -88,14 +101,65 @@ export default function ProviderSimpleUpdateModal(props) {
     // ]);
 
     try {
-      const { data, status } = await createSimpleProvider({
-        data: {
-          ...values,
-          'main_image': getMainImage,
-          'banner_image': getBannerImage,
-          'description': descriptionValue
-        },
-      });
+      debugger
+
+      let url=`${process.env.REACT_APP_API_URL}/api/v1/providers/${provider.id}`,
+      data= {
+        ...values,
+        'main_image': getMainImage,
+        'banner_image': getBannerImage,
+        'description': descriptionValue
+      };
+
+      updateFormAPI(url,data).then(res=>{
+        let {status,data}=res;
+
+        if (status && status === 200) {
+          providerStore.updateOne(data);
+          debugger
+          if (data && file && userId) {
+            debugger
+            const { name, type } = file;
+            const results =  UploaderService.upload({
+              name,
+              mime_type: type,
+              uploaded_by_user_id: userId,
+              fileable_type: 'provider',
+              fileable_id: data.id,
+              binaryFile: file.originFileObj,
+            });
+            const providerEntity = providerStore.entities[data.id];
+            providerEntity.Files.push({
+              ...results.file.data,
+            });
+            providerStore.updateOne(providerEntity);
+          }
+          debugger
+          notification.success({
+            message: status,
+            description: 'Successfully updated provider',
+          });
+          getProviderData();
+          onCancel();
+        }
+      }).catch(err=>{
+        console.error(err);
+
+      })
+
+
+
+
+
+      // const [{ data, loading, error,status }] = await createSimpleProvider({
+      //   data: {
+      //     ...values,
+      //     'main_image': getMainImage,
+      //     'banner_image': getBannerImage,
+      //     'description': descriptionValue
+      //   },
+      // });
+      // debugger
       // const response = await axiosInstance.put(
       //   `/providers/${provider.id}`,
       //   data:{
@@ -105,31 +169,7 @@ export default function ProviderSimpleUpdateModal(props) {
       //     'description': descriptionValue
       //   }
       // );
-      if (status && status === 200) {
-        providerStore.updateOne(data);
-        if (data && file && userId) {
-          const { name, type } = file;
-          const results = await UploaderService.upload({
-            name,
-            mime_type: type,
-            uploaded_by_user_id: userId,
-            fileable_type: 'provider',
-            fileable_id: data.id,
-            binaryFile: file.originFileObj,
-          });
-          const providerEntity = providerStore.entities[data.id];
-          providerEntity.Files.push({
-            ...results.file.data,
-          });
-          providerStore.updateOne(providerEntity);
-        }
-        notification.success({
-          message: status,
-          description: 'Successfully updated provider',
-        });
-        getProviderData();
-        onCancel();
-      }
+      
     } catch (e) {
       console.error(e);
     }

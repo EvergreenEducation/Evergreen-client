@@ -230,7 +230,7 @@ export default function OfferContainer(props) {
                 OfferCreationContainer.preload();
               }}
               onClick={() => setOpenable({ ...openable, formModal: true })}
-              text="OFFER" />
+              text="OFFER" className="offer-btn" />
           </SearchHeader>
         </Col>
       </ProviderLogOutTopbar>

@@ -300,7 +300,8 @@ export default function OfferForm({
           className="mb-0 inherit"
         >
           <ImageUploadFunction
-            handleImageUrl={handleImageUrl} />
+            handleImageUrl={handleImageUrl}
+            type="multiple" />
         </Form.Item>
         {offer && offer !== null ? <div>
           {offer && offer.main_image && offer.main_image.length ? <p>
@@ -331,7 +332,8 @@ export default function OfferForm({
           className="mb-0 inherit"
         >
           <ImageUploadFunction
-            handleImageUrl={BannerUploadFunction} />
+            handleImageUrl={BannerUploadFunction}
+            type="single" />
         </Form.Item>
         {offer && offer !== null ? <div>
           {offer && offer.banner_image && offer.banner_image.length ? <p>

@@ -7,7 +7,7 @@ import Loader from 'react-loader-spinner'
 const axios = require('axios').default;
 toast.configure()
 
-function ImageUploadFunction({ handleImageUrl }) {
+function ImageUploadFunction({ handleImageUrl,type }) {
   const [inputFile, setInputFile] = useState({
     files: []
   })
@@ -63,7 +63,7 @@ function ImageUploadFunction({ handleImageUrl }) {
     <Layout className="h-auto mb-6 opportunity_choose">
       <Col span={7} className="flex justify-end items-center">
         <div className='file-input'>
-          <input multiple type='file' name="file" onChange={(e) => onChangeUpload(e, "files")} accept="image/*,video/*" />
+          <input multiple={type==="multiple" ? true : false} type='file' name="file" onChange={(e) => onChangeUpload(e, "files")} accept="image/*,video/*" />
           <span className='button'>Choose</span>
           <span className='label' data-js-label><label>{inputFile !== null ? inputFile.files.name : "Choose File"}</label></span>
         </div>

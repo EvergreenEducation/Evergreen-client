@@ -10,5 +10,8 @@ $width: 100%;
 }
 .new-data-icons {
   display: flex;
-  margin-left: 5px;
+  margin-right: 10px;
+  img {
+    height: 20px;
+  }
 }

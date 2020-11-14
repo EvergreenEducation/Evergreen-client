@@ -79,7 +79,10 @@ code {
 .ant-notification-notice {
   padding: 12px !important;
 }
-
+.custom-search {
+  flex-direction: row-reverse;
+  margin-left: 65px;
+}
 .ant-message-notice-content .ant-message-custom-content {
   display: flex;
   align-items: center;
@@ -559,6 +562,7 @@ main.ant-layout-content.p-6 .ant-card.ant-card-bordered.shadow-md.rounded-md td.
   width: 20px;
   display: inline-block;
   margin-right: 10px;
+  height: 20px;
 }
 .ant-select-item-option-content .anticon svg ,
 .ant-select-selection-item span.anticon svg{
@@ -584,6 +588,12 @@ main.ant-layout-content.p-6 .ant-card.ant-card-bordered.shadow-md.rounded-md td.
 }
 .unitTags p {
   display: flex;
+}
+.offer-searchbar {
+  width: 120px;
+}
+.offer-btn {
+  margin-left: 50px;
 }
 @media all and (min-width: 280px) and (max-width: 767px) {
   .homepage_boxes {
