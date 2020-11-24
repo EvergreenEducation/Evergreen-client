@@ -61,6 +61,7 @@ export default function ({
   return (
     <Link to={link} key={`Link-Card-${data.id}`} className="text-base font-bold promoCard__link" onClick={() => handleCheckButton(data)} key={data.id}>
       <Card
+      
       key={`Card-${data.id}`}
         className={`promoCard ${className}`}
         cover={
@@ -68,7 +69,7 @@ export default function ({
             return (
               <img
                 className="object-cover bg-gray-200"
-                src={getLastData[0].original}
+                src={getLastData && getLastData.length ? getLastData[0].original : ""}
                 alt={`${slideType}-${data.id}`}
                 style={{ height: size !== 'small' ? 325 : 220 }}
                 key={`getLastData-${data.id}`}
