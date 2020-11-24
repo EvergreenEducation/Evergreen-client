@@ -149,7 +149,7 @@ export default function ({
   });
   // console.log('\n provider,,,',provider)
   return (
-    <div className={`flex flex-row shadow ${className}`}>
+    <div className={`flex flex-row shadow margin_bt_20 ${className}`}>
       <Card className={`info-card`} style={style}>
         <Row>
           <Col span={12}>

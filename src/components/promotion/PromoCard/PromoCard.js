@@ -11,13 +11,22 @@ export default function ({
   className,
   banner = false,
   bannerImage,
-  slideType
+  slideType,
+  type
 }) {
-
-  let getLastData = data && data.banner_image.map(item => {
-    let parseData = JSON.parse(item)
-    return parseData
-  })
+  let getLastData 
+  if(type === "main"){
+    getLastData = data && data.banner_image.map(item => {
+      let parseData = JSON.parse(item)
+      return parseData
+    })
+  }if(type === "local"){
+    getLastData = data && data.main_image.map(item => {
+      let parseData = JSON.parse(item)
+      return parseData
+    })
+  }
+  
 
   let files = [];
   if (banner) {
@@ -48,18 +57,18 @@ export default function ({
     }
   }
   // console.log('promocard render',data)
+  console.log("getLastData", getLastData)
   return (
     <Link to={link} key={`Link-Card-${data.id}`} className="text-base font-bold promoCard__link" onClick={() => handleCheckButton(data)} key={data.id}>
       <Card
       key={`Card-${data.id}`}
         className={`promoCard ${className}`}
         cover={
-          getLastData !== null ? getLastData.map(item => {
-            // console.log("getLastData", item)
+          getLastData !== null ? [0].map((item,i) => {
             return (
               <img
                 className="object-cover bg-gray-200"
-                src={item.original}
+                src={getLastData[0].original}
                 alt={`${slideType}-${data.id}`}
                 style={{ height: size !== 'small' ? 325 : 220 }}
                 key={`getLastData-${data.id}`}

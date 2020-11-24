@@ -122,8 +122,8 @@ export default function (props) {
         swipeScrollTolerance={1}
       >
         {FinalImageData.map((promo, index) => {
-          // console.log("pro", promo)
-          return <PromoCard key={`FinalImageData-slide-${promo.id}`} index={index} data={promo} banner={true} bannerImage={bannerImage} slideType='FinalImageData' />;
+          console.log("pro", promo)
+          return <PromoCard key={`FinalImageData-slide-${promo.id}`} index={index} data={promo} banner={true} bannerImage={bannerImage} slideType='FinalImageData' type="main" />;
         })}
       </Carousel>
       <TitleDivider
@@ -149,9 +149,9 @@ export default function (props) {
         key={`localPromos-slide-local`}
       >
         {localPromos.map((promo, index) => {
-          console.log('localdata map running', promo)
+          // console.log('localdata map running', promo)
           return (
-            <PromoCard key={`localPromos-slide-${promo.id}`} index={index} data={promo} size="small" className="mx-1" slideType='localPromos' />
+            <PromoCard key={`localPromos-slide-${promo.id}`} index={index} data={promo} size="small" className="mx-1" slideType='localPromos' type="local" />
           );
         })}
       </Carousel>

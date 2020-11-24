@@ -169,7 +169,20 @@ export default function (props) {
                 title={ activeGenericOffer && activeGenericOffer.length && activeGenericOffer[0].is_generic ? 'GENERIC OFFERS' : 'OFFERS'}
                 align="center"
                 classNames={{ middleSpan: 'text-base' }} />
-              <Carousel
+               {activeGenericOffer.map((o, index) => {
+                  // console.log('activeGenericOffer..', o)
+                  return (
+                    <Link
+                      key={uniqueId('related_card_')}
+                      to={o && o.id ? `/home/offer/${o.id}` : null}>
+                      <InfoCard
+                        data={o}
+                        provider={provider}
+                        groupedDataFields={groupedDataFields} />
+                    </Link>
+                  );
+                })}
+              {/* <Carousel
                 className="custom-carousel mb-2 cursor-grab"
                 centerMode
                 infiniteLoop
@@ -194,7 +207,7 @@ export default function (props) {
                     </Link>
                   );
                 })}
-              </Carousel>
+              </Carousel> */}
             </>
           )) ||
             null}
