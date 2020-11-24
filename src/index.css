@@ -448,9 +448,16 @@ button.font_Style:focus ,button.font_Style:hover {
     margin-top: 4px;
 }
 .carousel .slide img, .carousel .slide video {
-    height: 350px !important;
+    /* height: 350px !important; */
     width: 100%;
-    object-fit: fill !important;
+    object-fit: cover !important;
+}
+.margin_bt_20{
+  margin-bottom: 20px;
+}
+.custom-search.offer-searchbar span.ant-input-affix-wrapper {
+  width: 130px;
+  height: 24px;
 }
 .add_offers {
     margin-top: 15px;
