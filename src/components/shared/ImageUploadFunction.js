@@ -63,7 +63,7 @@ function ImageUploadFunction({ handleImageUrl,type }) {
     <Layout className="h-auto mb-6 opportunity_choose">
       <Col span={7} className="flex justify-end items-center">
         <div className='file-input'>
-          <input multiple={type==="multiple" ? true : false} type='file' name="file" onChange={(e) => onChangeUpload(e, "files")} accept="image/*,video/*" />
+          <input multiple={type==="multiple" ? true : false} type='file' name="file" onChange={(e) => onChangeUpload(e, "files")} accept={type=="multiple" ? "image/*,video/*" : "image/*"} />
           <span className='button'>Choose</span>
           <span className='label' data-js-label><label>{inputFile !== null ? inputFile.files.name : "Choose File"}</label></span>
         </div>

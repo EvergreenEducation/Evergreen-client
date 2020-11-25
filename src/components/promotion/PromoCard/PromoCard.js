@@ -61,7 +61,6 @@ export default function ({
   return (
     <Link to={link} key={`Link-Card-${data.id}`} className="text-base font-bold promoCard__link" onClick={() => handleCheckButton(data)} key={data.id}>
       <Card
-      
       key={`Card-${data.id}`}
         className={`promoCard ${className}`}
         cover={
