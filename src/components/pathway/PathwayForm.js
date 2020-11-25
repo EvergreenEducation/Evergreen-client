@@ -119,9 +119,10 @@ export default function PathwayForm({
       handlePropData(getPdfUrl)
     }
   }
+  // console.log("getPdfUrl", getPdfUrl)
   const handleImageUrl = (getPdfUrl) => {
-    // console.log("getPdfUrl", getPdfUrl)
     if (pathway && pathway.main_image.length) {
+      console.log("inssssssssssssss")
       var result = pathway.main_image.reduce(function (prev, value) {
         var isDuplicate = false;
         for (var i = 0; i < getPdfUrl.length; i++) {
@@ -149,7 +150,38 @@ export default function PathwayForm({
       });
       // setGetPdfUrl(getPdfUrl)
       handleUpadteMain(getPdfUrl, resArr)
-    } else {
+    }if (pathway && Object.keys(pathway).length !== 0) {
+      console.log("inssssssssssssss")
+      var result = pathway.main_image.reduce(function (prev, value) {
+        var isDuplicate = false;
+        for (var i = 0; i < getPdfUrl.length; i++) {
+          if (value == getPdfUrl[i]) {
+            isDuplicate = true;
+            break;
+          }
+        }
+        if (!isDuplicate) {
+          prev.push(value);
+        }
+
+        return prev;
+
+      }, []);
+      let finaldata = result.map(item => JSON.parse(item))
+      let testData = (finaldata.concat(getPdfUrl))
+
+      var resArr = [];
+      testData.forEach(function (item) {
+        var i = resArr.findIndex(x => x.name == item.name);
+        if (i <= -1) {
+          resArr.push({ name: item.name, original: item.original });
+        }
+      });
+      // setGetPdfUrl(getPdfUrl)
+      handleUpadteMain(getPdfUrl, resArr)
+    }
+     else {
+      console.log("getqqqqqqqqqq",getPdfUrl)
       // setGetPdfUrl(getPdfUrl)
       handleImageData(getPdfUrl)
       // handleBannerImage(getPdfUrl)
@@ -186,7 +218,37 @@ export default function PathwayForm({
       });
       // setGetPdfUrl(getPdfUrl)
       handleUpadteBanner(getPdfUrl, resArr)
-    } else {
+    }
+    if (pathway && Object.keys(pathway).length !== 0) {
+      var result = pathway.banner_image.reduce(function (prev, value) {
+        var isDuplicate = false;
+        for (var i = 0; i < getPdfUrl.length; i++) {
+          if (value == getPdfUrl[i]) {
+            isDuplicate = true;
+            break;
+          }
+        }
+        if (!isDuplicate) {
+          prev.push(value);
+        }
+
+        return prev;
+
+      }, []);
+      let finaldata = result.map(item => JSON.parse(item))
+      let testData = (finaldata.concat(getPdfUrl))
+
+      var resArr = [];
+      testData.forEach(function (item) {
+        var i = resArr.findIndex(x => x.name == item.name);
+        if (i <= -1) {
+          resArr.push({ name: item.name, original: item.original });
+        }
+      });
+      // setGetPdfUrl(getPdfUrl)
+      handleUpadteBanner(getPdfUrl, resArr)
+    } 
+    else {
       // setGetPdfUrl(getPdfUrl)
       // handleImageData(getPdfUrl)
       handleBannerImage(getPdfUrl)

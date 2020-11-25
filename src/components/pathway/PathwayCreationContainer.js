@@ -218,6 +218,7 @@ const PathwayCreationContainer = ({ closeModal, role, providerId, getPathwayList
   }
   const [getImageData, setGetImageData] = useState()
   const handleImageData = (getImageData) => {
+    console.log("getwwwwwwwwww",getImageData)
     setGetImageData(getImageData)
   }
   const [getBannerImage, setGetBannerImage] = useState()

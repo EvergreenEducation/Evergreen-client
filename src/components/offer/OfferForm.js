@@ -126,6 +126,7 @@ export default function OfferForm({
   const handleImageUrl = (getPdfUrl) => {
     // console.log("getPdfUrl", getPdfUrl)
     if (Object.keys(offer).length !== 0) {
+      console.log("inssssssssssssss")
       var result = offer.main_image.reduce(function (prev, value) {
         var isDuplicate = false;
         for (var i = 0; i < getPdfUrl.length; i++) {
@@ -154,6 +155,7 @@ export default function OfferForm({
       // setGetPdfUrl(getPdfUrl)
       handleUpadteMain(getPdfUrl, resArr)
     } else {
+      console.log("getqqqqqqqqqq",getPdfUrl)
       // setGetPdfUrl(getPdfUrl)
       handleImageData(getPdfUrl)
       // handleBannerImage(getPdfUrl)
