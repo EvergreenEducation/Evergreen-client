@@ -25,10 +25,11 @@ function ImageUploadFunction({ handleImageUrl,type }) {
     // console.log(files)
     await pdfFileData(files).then(async resp => {
       if (resp.status === 200) {
-        // console.log(resp.data.data, "responssssssssssss")
         let pdfItem = resp.data.data
-        handleImageUrl(pdfItem)
-        setImageValue(pdfItem)
+        console.log(pdfItem, "responssssssssssss")
+         handleImageUrl(pdfItem)
+         setImageValue(pdfItem)
+        console.log(imageValue, "imageValue")
         setLoader(false)
         // notify("success")
       }
@@ -58,7 +59,7 @@ function ImageUploadFunction({ handleImageUrl,type }) {
   //     toast.success("File upload successfully")
   //   }
   // }
-  // console.log("pdfData", imageValue)
+  console.log("imageValue", imageValue)
   return (
     <Layout className="h-auto mb-6 opportunity_choose">
       <Col span={7} className="flex justify-end items-center">
