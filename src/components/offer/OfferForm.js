@@ -256,14 +256,15 @@ export default function OfferForm({
     }
   }
   useEffect(() => {
-    if (offer && offer.learn_and_earn === "learn") {
+    console.log("offer=============",offer)
+    if (offer && offer.learn_and_earn == "learn") {
       // console.log("eeeeeeeeeeeeeee")
       setIsCheckEarn(false)
       setIsCheckLearn(true)
-    } if (offer && offer.learn_and_earn === "earn") {
+    } if (offer && offer.learn_and_earn == "earn") {
       setIsCheckLearn(false)
       setIsCheckEarn(true)
-    } if (offer  && offer.learn_and_earn === "both") {
+    } if (offer  && offer.learn_and_earn == "both") {
       setIsCheckEarn(true)
       setIsCheckLearn(true)
     }
@@ -647,19 +648,20 @@ export default function OfferForm({
             </Select>
           </Form.Item>
         </Col>
-        {isCheckLearn ? <Col xs={24} sm={24} md={6}>
+        {isCheckLearn && <Col xs={24} sm={24} md={6}>
           <Form.Item
             label="Credit"
             name="credit"
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
+            
             // rules={[{ required: true, message: 'Please fill in this field' }]}
           >
             <InputNumber className="rounded w-full" />
           </Form.Item>
-        </Col> : null}
-        {isCheckLearn ? <Col xs={24} sm={24} md={6}>
+        </Col>}
+        {isCheckLearn && <Col xs={24} sm={24} md={6}>
           <Form.Item
             label="Credit Unit"
             name="credit_unit"
@@ -674,10 +676,10 @@ export default function OfferForm({
                 : null}
             </Select>
           </Form.Item>
-        </Col> : null}
+        </Col>}
       </Row>
       <Row gutter={8}>
-        {isCheckEarn ? <Col xs={24} sm={24} md={6}>
+        {isCheckEarn && <Col xs={24} sm={24} md={6}>
           <Form.Item
             label="Pay"
             name="pay"
@@ -688,8 +690,8 @@ export default function OfferForm({
           >
             <InputNumber className="rounded w-full" />
           </Form.Item>
-        </Col> : null}
-        {isCheckEarn ? <Col xs={24} sm={24} md={6}>
+        </Col>}
+        {isCheckEarn && <Col xs={24} sm={24} md={6}>
           <Form.Item
             label="Pay Unit"
             name="pay_unit"
@@ -704,7 +706,7 @@ export default function OfferForm({
                 : null}
             </Select>
           </Form.Item>
-        </Col> : null}
+        </Col>}
         <Col xs={24} sm={24} md={6}>
           <Form.Item
             label="Length"
