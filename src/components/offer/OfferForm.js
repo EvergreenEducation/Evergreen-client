@@ -243,7 +243,7 @@ export default function OfferForm({
     })
   }
   const handleSelect = (e) => {
-    // console.log(e.target.textContent, "eeeeeeeeeeeeeee")
+    console.log(e.target.textContent, "eeeeeeeeeeeeeee")
     if (e.target.textContent == "Learn") {
       setIsCheckEarn(false)
       setIsCheckLearn(true)
@@ -256,14 +256,14 @@ export default function OfferForm({
     }
   }
   useEffect(() => {
-    if (offer && offer !== null && offer.learn_and_earn === "learn") {
+    if (offer && offer.learn_and_earn === "learn") {
       // console.log("eeeeeeeeeeeeeee")
       setIsCheckEarn(false)
       setIsCheckLearn(true)
-    } if (offer && offer !== null && offer.learn_and_earn === "earn") {
+    } if (offer && offer.learn_and_earn === "earn") {
       setIsCheckLearn(false)
       setIsCheckEarn(true)
-    } if (offer && offer !== null && offer.learn_and_earn === "both") {
+    } if (offer  && offer.learn_and_earn === "both") {
       setIsCheckEarn(true)
       setIsCheckLearn(true)
     }
@@ -509,7 +509,7 @@ export default function OfferForm({
           labelAlign={'left'}
           colon={false}
           className="inherit"
-          rules={[{ required: true, message: 'Please provide a description' }]}
+          // rules={[{ required: true, message: 'Please provide a description' }]}
         >
           {/* <Input.TextArea rows={4} className="rounded" /> */}
           <CKEditor editor={ClassicEditor} data={descriptionValue} onChange={handleChange} />
@@ -561,7 +561,7 @@ export default function OfferForm({
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select an option' }]}
+            // rules={[{ required: true, message: 'Please select an option' }]}
           >
             <Select name="location_type" className="custom-select" mode="multiple">
               <Option value="Online"><img className="social_distancing" src="/icons/online.png" alt="" /> Online</Option>
@@ -581,7 +581,7 @@ export default function OfferForm({
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select an option' }]}
+            // rules={[{ required: true, message: 'Please select an option' }]}
           >
             <Select className="rounded custom-select" onClick={(e) => handleSelect(e)}>
               <Option className="learn" value="learn">Learn</Option>
@@ -597,7 +597,7 @@ export default function OfferForm({
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please fill in this field' }]}
+            // rules={[{ required: true, message: 'Please fill in this field' }]}
           >
             <InputNumber className="rounded w-full" />
           </Form.Item>
@@ -609,7 +609,7 @@ export default function OfferForm({
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select an option' }]}
+            // rules={[{ required: true, message: 'Please select an option' }]}
           >
             <Select className="rounded custom-select">
               {!isNil(frequency_unit) && frequency_unit.length
@@ -627,7 +627,7 @@ export default function OfferForm({
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please fill in this field' }]}
+            // rules={[{ required: true, message: 'Please fill in this field' }]}
           >
             <InputNumber className="rounded w-full" />
           </Form.Item>
@@ -654,7 +654,7 @@ export default function OfferForm({
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please fill in this field' }]}
+            // rules={[{ required: true, message: 'Please fill in this field' }]}
           >
             <InputNumber className="rounded w-full" />
           </Form.Item>
@@ -666,7 +666,7 @@ export default function OfferForm({
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select an option' }]}
+            // rules={[{ required: true, message: 'Please select an option' }]}
           >
             <Select className="rounded custom-select">
               {!isNil(credit_unit) && credit_unit.length
@@ -684,7 +684,7 @@ export default function OfferForm({
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please fill in this field' }]}
+            // rules={[{ required: true, message: 'Please fill in this field' }]}
           >
             <InputNumber className="rounded w-full" />
           </Form.Item>
@@ -696,7 +696,7 @@ export default function OfferForm({
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            rules={[{ required: true, message: 'Please select an option' }]}
+            // rules={[{ required: true, message: 'Please select an option' }]}
           >
             <Select className="rounded custom-select">
               {!isNil(payment_unit) && payment_unit.length
