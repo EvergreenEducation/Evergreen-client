@@ -469,7 +469,7 @@ export default function (props) {
     let user_role = token.role
     let landing_image = fileData
     // let page_url_check = activePageId.page_route;
-    let page_url_check = activePageId.page_route === "default" ? activePageId.page_route : activePageId.page_route.split('/')[3];
+    let page_url_check = activePageId.page_route === "default" ? activePageId.page_route : activePageId.page_route.split('/').pop();
     let page_id = activePageId.id;
 
     function addhttp(url) {
@@ -492,6 +492,8 @@ export default function (props) {
     })
     return pdfData
   }
+
+  // console.log("qqqqqqqqqqqq",pdfData)
   const handleSubmit = () => {
     addFileData({ fileData, inputFile }).then(resp => {
       // console.log(resp, "resssssssssssssss")

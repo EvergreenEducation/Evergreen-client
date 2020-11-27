@@ -55,6 +55,7 @@ export default function (props) {
   const mainPromos = data.filter((d) => {
     return d.custom_page_promo_ids.includes(activePageId.id);
   });
+  console.log("mainPromos",activePageId)
 
   useEffect(() => {
     const handleSliderPercentOnResize = () => {
@@ -76,19 +77,33 @@ export default function (props) {
     return () =>
       window.removeEventListener('resize', handleSliderPercentOnResize);
   }, [localSliderPercentage]);
+ let newA = []
+ let windowUrl = window.location.pathname
+ windowUrl = windowUrl.split('/').pop()
+ console.log("inssssssssss",windowUrl)
 
   useEffect(() => {
-    getBannerApi().then(resp => {
+    getBannerApi().then(async resp => {
       if (resp.status === 200) {
-        var output = resp.data.data.map(s => ({ banner_image: s.landing_image, id: s.id, image_url: s.image_url }));
-        setBannerImage(output)
+        var output = await resp.data.data.map(s => ({ banner_image: s.landing_image, id: s.id, image_url: s.image_url,page_url_check: s.page_url_check }));
+        var defaultFilterData = await output && output.length && output.map(newItem => {
+          if(newItem.page_url_check === windowUrl){
+            console.log("inside",newItem)
+            newA.push(newItem)
+            setBannerImage(newA)
+          }else if(windowUrl == "home" && newItem.page_url_check == "default"){
+            console.log("outside",newItem)
+            newA.push(newItem)
+            setBannerImage(newA)
+          }
+        })
       }
     }).catch(error => {
       console.log("errror", error)
     })
   }, [])
 
-  // console.log("bannerImage",bannerImage)
+  console.log("bannerImage",windowUrl)
   // console.log('mainPromos',mainPromos)
   const concat = (...arrays) => [].concat(...arrays.filter(Array.isArray));
   // console.log(concat(bannerImage, mainPromos),"zzzzzzzzzzzzzzzzz");
@@ -103,7 +118,7 @@ export default function (props) {
     //   }
     // });
 
-    //  console.log("sadasdasdasd",finalPromoData)
+     console.log("FinalImageData",FinalImageData)
   return (
     <div className="h-auto w-full">
       <Carousel
