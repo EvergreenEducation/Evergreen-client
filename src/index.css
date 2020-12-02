@@ -602,6 +602,20 @@ main.ant-layout-content.p-6 .ant-card.ant-card-bordered.shadow-md.rounded-md td.
 .offer-btn {
   margin-left: 50px;
 }
+.play_btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-block;
+  width: 100%;
+  z-index: 99;
+  cursor: pointer;
+}
+.play_btn img {
+  width: 60px !important;
+  height: 60px !important;
+}
 @media all and (min-width: 280px) and (max-width: 767px) {
   .homepage_boxes {
       width: 100% !important;
