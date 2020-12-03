@@ -184,17 +184,17 @@ export default function ({
               <li>
                 Cost :{' '}
                 {`$${
-                  Number(cost).toLocaleString(undefined, {
+                  cost ? Number(cost).toLocaleString(undefined, {
                     maximumFractionDigits: 2,
                   }) || '---'
-                  }`}
+                  : 0}`}
               </li>
               <li>
                 Pay :{' '}
                 {`$${
-                  Number(pay).toLocaleString(undefined, {
+                  pay ? Number(pay).toLocaleString(undefined, {
                     maximumFractionDigits: 2,
-                  }) || '---'
+                  }) || '---' : 0
                   }`}
               </li>
               {outEarvValue ? <li>Credit : {`${Number(credit).toLocaleString() || '---'}`}</li> : null}

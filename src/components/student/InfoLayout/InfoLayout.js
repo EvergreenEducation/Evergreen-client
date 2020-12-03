@@ -33,6 +33,8 @@ import {
   CollapsibleHead,
   CollapsibleContent
 } from "react-collapsible-component";
+// IMAGE
+import PlayIcon from '../../../assets/img/play.png';
 
 // CONSTANTS
 const ALL_VIDEO_FORMAT_REGEX = (/\.(wmv|flv|mkv|mp4|webm|m4v|m4a|m4v|f4v|f4a|m4b|m4r|f4b|mov|3gp|3gp2|3g2|3gpp|3gpp2|ogg|oga|ogv|ogx|wmv|wma|mpg|mpeg)$/i);
@@ -418,6 +420,10 @@ export default function ({
               if (checkType) {
                 return (
                   <div className="modal_block" id="myBtn" onClick={() => handleDivmain(newItem)}>
+                    
+                    <div className="play_btn">
+                        <img src={PlayIcon} alt="PlayIcon"/>
+                      </div>
                     <video>
                       {/*accept="video/mp4,video/wmv,video/flv,video/mkv,video/mp4,video/webm,video/ogg"*/}
                       <source src={newItem.original} accept={`video/${fileExtension}`} onClick={() => handleImgmain(newItem)} />
@@ -578,12 +584,12 @@ export default function ({
               </>
             )}
           </Col>
-          {Arr && Arr.length && Arr.map(item => {
+          {Arr && Arr.length ? Arr.map(item => {
             console.log("item",item)
             return (
             <p className="new-data-icons"><img className="social_distancing" src={item.img} alt="" /><span className="location_name">{item.name}</span></p>
             )
-          })}
+          }): null}
          
           {type === 'provider' &&
             myOfferEnrollments &&
