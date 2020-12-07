@@ -113,7 +113,7 @@ export default function (props) {
   }, []);
 
   // const [checkEnroll,setCheckEnroll]=useState({})
-
+ console.log("offer",offer)
   return (
     <div className="flex flex-col items-center">
       <InfoLayout

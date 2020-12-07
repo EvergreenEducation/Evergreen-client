@@ -12,7 +12,7 @@ configure({
   axios: axiosInstance,
 });
 // console.log("newwwwwwwww",pdf_link)
-const OfferCreationContainer = ({ closeModal, role, providerId, getOfferListData }) => {
+const OfferCreationContainer = ({ closeModal, role, providerId, getOfferListData,getOffersList }) => {
   const { id: userId, provider_id } = AuthService.currentSession;
   const formRef = useRef(null);
   const [
@@ -186,6 +186,7 @@ const OfferCreationContainer = ({ closeModal, role, providerId, getOfferListData
     setDescriptionValue(value)
   }
   // console.log("form", getPdfUrl)
+  console.log('offerForm create form ',Object.values(offerStore.entities))
   return (
     <div>
       <Form form={form} name="offerForm" ref={formRef}>
@@ -206,6 +207,7 @@ const OfferCreationContainer = ({ closeModal, role, providerId, getOfferListData
             handleBannerImage={handleBannerImage}
             descriptionValue={descriptionValue}
             handleDescriptionValue={handleDescriptionValue}
+            getOffersList={getOffersList}
           />
         </div>
         <section

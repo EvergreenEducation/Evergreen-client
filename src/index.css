@@ -608,7 +608,7 @@ main.ant-layout-content.p-6 .ant-card.ant-card-bordered.shadow-md.rounded-md td.
   left: 50%;
   transform: translate(-50%, -50%);
   display: inline-block;
-  width: 100%;
+  /* width: 100%; */
   z-index: 99;
   cursor: pointer;
 }

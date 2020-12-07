@@ -23,9 +23,7 @@ const axios = require('axios').default;
 const { Option } = Select;
 
 const preloadOptions = (data = []) =>
-  data.map((item, index) => {
-    console.log("=================", item)
-    console.log("preloadOptionsOffer", item.id, item.name)
+data && data.length && data.map((item, index) => {
     return (
       <Option value={item.id} key={index.toString()}>
         {item.name}
@@ -34,15 +32,15 @@ const preloadOptions = (data = []) =>
   });
 
 const preloadOptionsOffer = (data = []) =>
-  data.map((item, index) => {
-    console.log("preloadOptionsOffer", item.id, item.name)
-    return (
-      <Option value={`${item.id}`} key={index.toString()}
-      >
-        {item.name}
-      </Option>
-    );
-  });
+data.map((item, index) => {
+  return (
+    <Option value={item.id} key={index.toString()}>
+      {item.name}
+    </Option>
+  );
+});
+
+    // <Option value={`${item.id}`} key={index.toString()}
 
 export default function OfferForm({
   datafields = [],
@@ -57,7 +55,35 @@ export default function OfferForm({
   handleUpadteBanner,
   handleDescriptionValue,
   descriptionValue,
+  getOffersList
 }) {
+
+  providers = compact(Object.values(providers));
+  datafields = Object.values(datafields);
+
+  const grouped = groupBy(datafields, property('type'));
+  // const grouped = groupBy(datafields, property('type'));
+  const {
+    offer_category = [],
+    payment_unit = [],
+    length_unit = [],
+    credit_unit = [],
+    topic = [],
+    frequency_unit = [],
+    cost_unit = [],
+  } = grouped;
+
+  let offerOptions = null;
+  console.log('offer updated modal',offer)
+
+  if (!isNil(offers) && offers.length) {
+    const updatedOffers = remove(offers, (o) => {
+      return !(o.id === offer.id);
+    });
+    console.log('updatedOffers...',updatedOffers)
+    offerOptions = preloadOptions(updatedOffers);
+  }
+  
   const [getvalues, setGetValues] = useState([])
   const getData = async () => {
     let pdfData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/files/get_generic`)
@@ -155,7 +181,6 @@ export default function OfferForm({
       // setGetPdfUrl(getPdfUrl)
       handleUpadteMain(getPdfUrl, resArr)
     } else {
-      console.log("getqqqqqqqqqq",getPdfUrl)
       // setGetPdfUrl(getPdfUrl)
       handleImageData(getPdfUrl)
       // handleBannerImage(getPdfUrl)
@@ -198,34 +223,35 @@ export default function OfferForm({
     }
   }
   // console.log("offreeee", offer)
-  providers = compact(Object.values(providers));
-  datafields = Object.values(datafields);
+ 
 
-  const grouped = groupBy(datafields, property('type'));
-  const {
-    offer_category = [],
-    payment_unit = [],
-    length_unit = [],
-    credit_unit = [],
-    topic = [],
-    frequency_unit = [],
-    cost_unit = [],
-  } = grouped;
-  let offerOptions = null;
-  // let offerOptiondata = null
+  let offerOptiondata = null
   if (!isNil(offers) && offers.length) {
     const updatedOffers = remove(offers, (o) => {
       return !(o.name === offer.name);
     });
-    offerOptions = preloadOptions(updatedOffers);
+    console.log('preloadOptionsOffer...',updatedOffers)
+    offerOptiondata = preloadOptionsOffer(updatedOffers);
   }
 
-  if (!isNil(offers) && offers.length) {
-    const updatedOffers = remove(offers, (o) => {
-      return !(o.name === offer.name);
-    });
-    offerOptions = preloadOptionsOffer(updatedOffers);
+let preRequestOffers=null;
+  if(getOffersList && getOffersList.length){
+    console.log('getOffersList...',getOffersList)
+    // const updatedOffers = remove(getOffersList, (o) => {
+    //   console.log('!(o.name === offer.name)',!(o.name === getOffersList.name))
+    //   console.log('o.name',o.name,getOffersList.name)
+    //   return !(o.name === getOffersList.name);
+    // });
+    // console.log('preRequestOffers updatedOffers...',updatedOffers)
+    preRequestOffers = preloadOptionsOffer(getOffersList);
   }
+
+  // if (!isNil(offers) && offers.length) {
+  //   const updatedOffers = remove(offers, (o) => {
+  //     return !(o.name === offer.name);
+  //   });
+  //   offerOptions = preloadOptionsOffer(updatedOffers);
+  // }
 
   const handleType = (event) => {
     if (event.target.checked == true) {
@@ -276,7 +302,7 @@ export default function OfferForm({
     handleDescriptionValue(data)
   }
 
-  console.log('\n offers', offer, offers)
+  console.log('preRequestOffers', preRequestOffers)
   return (
     <Layout>
       {/* <ImageUploadAndNameInputs
@@ -478,11 +504,11 @@ export default function OfferForm({
           >
             {role == "admin" ? <Select className="rounded custom-select" name="generic_type" defaultValue={offer.generic_type}>
               {!isNil(getvalues) && getvalues.length
-                ? preloadOptionsOffer(getvalues)
+                ? preloadOptions(getvalues)
                 : null}
             </Select> : <Select className="rounded custom-select" name="generic_type" defaultValue={offer.generic_type}>
                 {!isNil(getvalues) && getvalues.length
-                  ? preloadOptionsOffer(getvalues)
+                  ? preloadOptions(getvalues)
                   : null}
               </Select>}
           </Form.Item>
@@ -526,7 +552,8 @@ export default function OfferForm({
             showSearch
             mode="multiple"
           >
-            {offerOptions}
+            {preRequestOffers &&preRequestOffers.length? preRequestOffers:   offerOptions && offerOptions.length && offerOptions}
+            {/* {preRequestOffers && preRequestOffers.length && preRequestOffers} */}
           </Select>
         </Form.Item>
       </Row>
@@ -540,7 +567,7 @@ export default function OfferForm({
             showSearch
             mode="multiple"
           >
-            {offerOptions}
+            {preRequestOffers &&preRequestOffers.length? preRequestOffers:   offerOptions && offerOptions.length && offerOptions}
           </Select>
         </Form.Item>
       </Row>

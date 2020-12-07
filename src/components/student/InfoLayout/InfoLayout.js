@@ -12,6 +12,7 @@ import {
   orderBy,
 } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { DefaultPlayer as Video } from 'react-html5video';
 import {
   faMapMarkerAlt,
   faCalendarAlt,
@@ -35,6 +36,7 @@ import {
 } from "react-collapsible-component";
 // IMAGE
 import PlayIcon from '../../../assets/img/play.png';
+import 'react-html5video/dist/styles.css';
 
 // CONSTANTS
 const ALL_VIDEO_FORMAT_REGEX = (/\.(wmv|flv|mkv|mp4|webm|m4v|m4a|m4v|f4v|f4a|m4b|m4r|f4b|mov|3gp|3gp2|3g2|3gpp|3gpp2|ogg|oga|ogv|ogx|wmv|wma|mpg|mpeg)$/i);
@@ -361,23 +363,23 @@ export default function ({
 
   let Arr = []
   let newArr = location_type.map(item => {
-    if(item === "Online"){
-     Arr.push({name:"Self-learning",img:"/icons/online.png" })
+    if (item === "Online") {
+      Arr.push({ name: "Self-learning", img: "/icons/online.png" })
 
-    } if(item === "Hybrid"){
-      Arr.push({name:"Self-learning",img:"/icons/hybrid.png" })
- 
-     }
-    else if(item === "Self-learning"){
-      Arr.push({name:"Self-learning",img:"/icons/self-learning.png" })
+    } if (item === "Hybrid") {
+      Arr.push({ name: "Self-learning", img: "/icons/hybrid.png" })
 
-    }else if(item === "In-person"){
-      Arr.push({name:"In-person",img:"/icons/in-person.png" })
-
-    }else if(item === "Social Distancing Confirmed"){
-      Arr.push({name:"In-person",img:"/icons/social-distancing.png" })
     }
-    console.log("aaaaaaaaaaa",Arr)
+    else if (item === "Self-learning") {
+      Arr.push({ name: "Self-learning", img: "/icons/self-learning.png" })
+
+    } else if (item === "In-person") {
+      Arr.push({ name: "In-person", img: "/icons/in-person.png" })
+
+    } else if (item === "Social Distancing Confirmed") {
+      Arr.push({ name: "In-person", img: "/icons/social-distancing.png" })
+    }
+    console.log("aaaaaaaaaaa", Arr)
   })
   // let Arr = JSON.parse(main_image)
   return (
@@ -410,20 +412,13 @@ export default function ({
           <Carousel showArrows={true} >
             {main_image && main_image.length && main_image.map(item => {
               let newItem = JSON.parse(item),
-                // getting file sxtension like abc.mp4 here mp4 is retreived
                 fileExtension = newItem.name.slice((Math.max(0, newItem.name.lastIndexOf(".")) || Infinity) + 1),
-                // adding . in front of mp4
                 finalExtension = '.' + fileExtension,
-                // checking if format match with our all video format
                 checkType = ALL_VIDEO_FORMAT_REGEX.test(finalExtension);
               // let checkType = newItem.name.toString().endsWith("mp4");
               if (checkType) {
                 return (
                   <div className="modal_block" id="myBtn" onClick={() => handleDivmain(newItem)}>
-                    
-                    <div className="play_btn">
-                        <img src={PlayIcon} alt="PlayIcon"/>
-                      </div>
                     <video>
                       {/*accept="video/mp4,video/wmv,video/flv,video/mkv,video/mp4,video/webm,video/ogg"*/}
                       <source src={newItem.original} accept={`video/${fileExtension}`} onClick={() => handleImgmain(newItem)} />
@@ -441,13 +436,26 @@ export default function ({
 
         <div id="myModal" className="modal" >
           <div className="modal-content">
+            {/* <div className="play_btn">
+              <img src={PlayIcon} alt="PlayIcon" onClick={ () => handleSpanmain()}/>
+          </div> */}
             <span className="close" onClick={() => handleSpanmain()}>&times;</span>
             {/*  demo.name.toString().endsWith("mp4") ? */}
             {demo && ALL_VIDEO_FORMAT_REGEX.test('.' + demo.name.slice((Math.max(0, demo.name.lastIndexOf(".")) || Infinity) + 1)) ?
-              <video controls>
-                {/*  accept="video/mp4,video/wmv,video/flv,video/mkv,video/mp4,video/webm,video/ogg"  */}
-                <source src={demo.original} accept={`video/${demo.name.slice((Math.max(0, demo.name.lastIndexOf(".")) || Infinity) + 1)}`} />
-              </video> : <img src={demo ? demo.original : null} alt="" />}
+              // <video controls className="video">
+              //   <source src={demo.original} accept={`video/${demo.name.slice((Math.max(0, demo.name.lastIndexOf(".")) || Infinity) + 1)}`} />
+              // </video>
+              <Video autoPlay loop muted
+                controls={['PlayPause', 'Seek', 'Time', 'Volume', 'Fullscreen']}
+                // poster="http://sourceposter.jpg"
+                onCanPlayThrough={() => {
+                  // Do stuff
+                }}>
+                <source  src={demo.original} />
+                {/* <track label="English" kind="subtitles" srcLang="en" src="http://source.vtt" default /> */}
+              </Video>
+              :
+              <img src={demo ? demo.original : null} alt="" />}
           </div>
         </div>
         <Row className="py-2">
@@ -585,12 +593,12 @@ export default function ({
             )}
           </Col>
           {Arr && Arr.length ? Arr.map(item => {
-            console.log("item",item)
+            console.log("item", item)
             return (
-            <p className="new-data-icons"><img className="social_distancing" src={item.img} alt="" /><span className="location_name">{item.name}</span></p>
+              <p className="new-data-icons"><img className="social_distancing" src={item.img} alt="" /><span className="location_name">{item.name}</span></p>
             )
-          }): null}
-         
+          }) : null}
+
           {type === 'provider' &&
             myOfferEnrollments &&
             myOfferEnrollments.length ?

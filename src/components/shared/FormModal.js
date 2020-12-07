@@ -10,7 +10,8 @@ export default function FormModal({
   providerId = null,
   getProviderApi,
   getOfferListData,
-  getPathwayListData
+  getPathwayListData,
+  getOffersList
 }) {
   return (
     <Modal
@@ -32,6 +33,7 @@ export default function FormModal({
           getProviderApi={getProviderApi}
           getOfferListData={getOfferListData}
           getPathwayListData={getPathwayListData}
+          getOffersList={getOffersList}
         />
       )}
     </Modal>
