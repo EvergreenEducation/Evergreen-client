@@ -119,26 +119,30 @@ export default function (props) {
     // });
 
      console.log("FinalImageData",FinalImageData)
+     
   return (
     <div className="h-auto w-full">
       <Carousel
-        className="custom-carousel promoCarousel mb-2 cursor-grab"
-        centerMode
-        infiniteLoop
-        centerSlidePercentage={100}
-        showArrows={true}
-        showIndicators={false}
-        swipeable={true}
-        emulateTouch={true}
-        showStatus={false}
-        showThumbs={false}
-        interval={7000}
-        autoPlay={true}
-        swipeScrollTolerance={1}
-      >
+         className="custom-carousel promoCarousel mb-2 cursor-grab"
+         centerMode
+         infiniteLoop
+         centerSlidePercentage={100}
+         showArrows={true}
+         showIndicators={false}
+         swipeable={true}
+         emulateTouch={false}
+         showStatus={false}
+         showThumbs={false}
+         interval={3000}
+         autoPlay={true}
+         swipeScrollTolerance={FinalImageData.length}
+         showThumbs={true}
+         key={`mainPromos-slide-local`}
+        //  onClickItem={false}
+         >
         {FinalImageData.map((promo, index) => {
-          console.log("pro", promo)
-          return <PromoCard key={`FinalImageData-slide-${promo.id}`} index={index} data={promo} banner={true} bannerImage={bannerImage} slideType='FinalImageData' type="main" />;
+          // console.log("pro", promo)
+          return <PromoCard key={`mainPromos-slide-${promo.id}`} index={index} data={promo} banner={true} bannerImage={bannerImage} slideType='mainPromos' type="main" />;
         })}
       </Carousel>
       <TitleDivider
@@ -158,7 +162,7 @@ export default function (props) {
         emulateTouch={true}
         showStatus={false}
         showThumbs={false}
-        interval={7000}
+        interval={3000}
         autoPlay={true}
         swipeScrollTolerance={localPromos.length}
         key={`localPromos-slide-local`}

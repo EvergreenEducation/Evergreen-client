@@ -616,6 +616,22 @@ main.ant-layout-content.p-6 .ant-card.ant-card-bordered.shadow-md.rounded-md td.
   width: 60px !important;
   height: 60px !important;
 }
+/* .custom-class .slider {
+  transform: translate3d(-100%, 0px, 0px) !important;
+} */
+/* .custom-class .slider-wrapper .slide {
+  min-width: 100% !important;
+  margin-right: 30px;
+} */
+/* .custom-class {
+  padding: 0 20px;
+} */
+.custom-class .ant-card-body {
+  min-height: 130px !important;
+}
+.custom-class  .ant-card-body ol li {
+  width: 140px;
+}
 @media all and (min-width: 280px) and (max-width: 767px) {
   .homepage_boxes {
       width: 100% !important;
