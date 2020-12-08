@@ -216,6 +216,7 @@ export default function OfferContainer(props) {
     getOfferListData()
   }, [])
   // console.log('showData :: ', showData, '\n\t getOffersList::', getOffersList)
+  console.log('getOfferListData',getOfferListData)
   return (
     <Layout className="bg-transparent">
       <ProviderLogOutTopbar role={role} onClick={openProviderUpdateModal}>
@@ -262,6 +263,7 @@ export default function OfferContainer(props) {
             getOfferListData={getOfferListData}
             role={role}
             providerId={providerId}
+            getOffersList={getOffersList}
             onCancel={() => setOpenable({ ...openable, formModal: false })}
           />
           <OfferUpdateModal
@@ -270,6 +272,7 @@ export default function OfferContainer(props) {
             getOfferListData={getOfferListData}
             onCancel={() => setOpenable({ ...openable, updateModal: false })}
             offerStore={offerStore}
+            getOffersList={getOffersList}
             scopedToProvider={false}
             role={role}
           />

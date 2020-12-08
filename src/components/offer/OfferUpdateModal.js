@@ -27,7 +27,7 @@ export default function OfferUpdateModal({
   visible,
   offerStore,
   scopedToProvider = false,
-  role, getOfferListData
+  role, getOfferListData,getOffersList
 }) {
   const formRef = useRef(null);
   const { id: userId, provider_id } = AuthService.currentSession;
@@ -278,6 +278,7 @@ export default function OfferUpdateModal({
   const handleDescriptionValue = (value) => {
     setDescriptionValue(value)
   }
+  console.log('update model',offer)
   return (
     <Modal
       destroyOnClose={true}
@@ -313,6 +314,7 @@ export default function OfferUpdateModal({
             handleUpadteBanner={handleUpadteBanner}
             descriptionValue={descriptionValue}
             handleDescriptionValue={handleDescriptionValue}
+            getOffersList={getOffersList}
           />
           <section className="mt-2">
             <label className="mb-2 block">Pathways - Table</label>
