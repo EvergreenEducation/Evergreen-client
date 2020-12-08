@@ -12,7 +12,7 @@ import {
   orderBy,
 } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { DefaultPlayer as Video } from 'react-html5video';
+import { DefaultPlayer as Video } from 'react-html5video';                       
 import {
   faMapMarkerAlt,
   faCalendarAlt,

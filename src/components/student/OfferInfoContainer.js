@@ -222,7 +222,7 @@ export default function (props) {
                   align="center"
                   classNames={{ middleSpan: 'text-base' }} />
                 <Carousel
-                  className="custom-carousel mb-4 cursor-grab"
+                  className="custom-carousel mb-4 cursor-grab custom-class"
                   centerMode
                   infiniteLoop
                   centerSlidePercentage={offer.PrerequisiteOffers.length === 1 ? 100 : centerSlidePercentage}
