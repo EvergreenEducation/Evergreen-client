@@ -55,7 +55,7 @@ export default function (props) {
   const mainPromos = data.filter((d) => {
     return d.custom_page_promo_ids.includes(activePageId.id);
   });
-  console.log("mainPromos",activePageId)
+  // console.log("mainPromos",activePageId)
 
   useEffect(() => {
     const handleSliderPercentOnResize = () => {
@@ -80,7 +80,7 @@ export default function (props) {
  let newA = []
  let windowUrl = window.location.pathname
  windowUrl = windowUrl.split('/').pop()
- console.log("inssssssssss",windowUrl)
+//  console.log("inssssssssss",windowUrl)
 
   useEffect(() => {
     getBannerApi().then(async resp => {
@@ -92,7 +92,7 @@ export default function (props) {
             newA.push(newItem)
             setBannerImage(newA)
           }else if(windowUrl == "home" && newItem.page_url_check == "default"){
-            console.log("outside",newItem)
+            // console.log("outside",newItem)
             newA.push(newItem)
             setBannerImage(newA)
           }
@@ -103,7 +103,7 @@ export default function (props) {
     })
   }, [])
 
-  console.log("bannerImage",windowUrl)
+  // console.log("bannerImage",windowUrl)
   // console.log('mainPromos',mainPromos)
   const concat = (...arrays) => [].concat(...arrays.filter(Array.isArray));
   // console.log(concat(bannerImage, mainPromos),"zzzzzzzzzzzzzzzzz");
@@ -118,7 +118,7 @@ export default function (props) {
     //   }
     // });
 
-     console.log("FinalImageData",FinalImageData)
+    //  console.log("FinalImageData",FinalImageData)
      
   return (
     <div className="h-auto w-full">

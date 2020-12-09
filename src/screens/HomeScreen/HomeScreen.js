@@ -286,7 +286,7 @@ function HomeScreen() {
   }, [getDataFields,getPathways, getOffers, getProviders]);
 
   const { search, popover } = toggeables;
-   console.log("activePageId",activePageId)
+  //  console.log("activePageId",activePageId)
   return (
     <Layout className="homeScreen h-full bg-gray-100">
       <div className="homeScreen__contentWrapper w-full bg-gray-100 pb-6">

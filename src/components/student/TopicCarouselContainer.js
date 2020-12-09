@@ -80,6 +80,7 @@ export default function (props) {
       for (let i = 0; i < getPathways.length; i++) {
         for (let j = 0; j < getPathways[i].DataFields.length; j++) {
           if (getPathways[i].DataFields[j].id === id && getPathways[i].DataFields[j].is_check_topic === true&& getPathways[i].DataFields[j].page_id.includes(activePageId.id)) {
+            console.log(' getPathways[i]', getPathways[i])
             let offerObj = getPathways[i]
             earningArray.push(offerObj)
           }
@@ -148,6 +149,10 @@ export default function (props) {
   };
   // let filterData = topics && topics.filter(item => item.is_check_topic === true);
 
+
+
+  
+
   const renderArrowBtns = (
     onClickHandler,
     hasPrevOrNext,
@@ -208,9 +213,10 @@ export default function (props) {
       if (offer && offer.provider_id && offer.Provider) {
         p = offer.Provider;
       }
+      console.log('offer.DataFields',offer.DataFields)
       return offer.DataFields.length ? offer.DataFields.map((value, id) => {
         if (value.is_check_topic === true && value.id === activeTopicId) {
-          // console.log('offer.DataFields',value)
+          console.log('offer.cost',offer)
           return (
             <Link to={`/home/offer/${offer.id}`} key={index}>
               <InfoCard
@@ -234,6 +240,109 @@ export default function (props) {
     }):false;
   };
 
+  function getOutlookCost(arr){
+    if(arr.length){
+      let cost ='',obj=[];
+      for(let i=0;i<arr.length;i++){
+         cost=calculateCost(arr[i].offer_id);
+         obj.push(cost)
+      }
+      cost=obj.reduce(function(a, b) { return a + b; }, 0);
+      return cost
+    }else{
+      return ''
+    }
+
+  }
+
+  function getOutlookPay(arr){
+    if(arr.length){
+      let cost ='',obj=[];
+      for(let i=0;i<arr.length;i++){
+         cost=calculatePay(arr[i].offer_id);
+         obj.push(cost)
+
+      }
+      cost=obj.reduce(function(a, b) { return a + b; }, 0);
+
+      return cost
+    }else{
+      return ''
+    }
+  }
+
+  function getOutlookCredit(arr){
+    if(arr.length){
+      let cost ='',obj=[];
+      for(let i=0;i<arr.length;i++){
+         cost=calculateCredit(arr[i].offer_id);
+         obj.push(cost)
+
+      }
+      cost=obj.reduce(function(a, b) { return a + b; }, 0);
+
+      return cost
+    }else{
+      return ''
+    }
+  }
+
+  function calculatePay(id){
+    // getting and saving offerdata when next topic is choose
+    var cost = 0;
+    if (getOffers && getOffers.length) {
+      for (let i = 0; i < getOffers.length; i++) {
+        if (getOffers[i].id === id){
+          console.log('getOffers[i].cost',getOffers[i].cost,'getOffers[i].id',id,getOffers[i].id)
+          let data=getOffers[i].pay?getOffers[i].pay:0;
+          cost= data;
+          console.log(' cost=cost + getOffers[i]',cost)
+        }
+      }
+    }
+    return cost
+  }
+
+  function calculateCredit(id){
+    // getting and saving offerdata when next topic is choose
+    var cost = 0;
+    if (getOffers && getOffers.length) {
+      for (let i = 0; i < getOffers.length; i++) {
+        if (getOffers[i].id === id){
+          console.log('getOffers[i].cost',getOffers[i].cost,'getOffers[i].id',id,getOffers[i].id)
+          let data=getOffers[i].credit?getOffers[i].credit:0;
+          cost= data;
+          console.log(' cost=cost + getOffers[i]',cost)
+        }
+      }
+    }
+    return cost
+  }
+
+
+
+  function calculateCost(id){
+    // getting and saving offerdata when next topic is choose
+    var cost = 0,obj=[];
+    if (getOffers && getOffers.length) {
+      for (let i = 0; i < getOffers.length; i++) {
+        if (getOffers[i].id === id){
+          console.log('getOffers[i].cost',getOffers[i].cost,'getOffers[i].id',id,getOffers[i].id)
+          let data=getOffers[i].cost?getOffers[i].cost:0;
+          // cost+=getOffers[i].cost?getOffers[i].cost:0;
+          // obj=getOffers[i].cost?getOffers[i].cost:0;
+          // obj.push(data)
+          cost=data
+          // console.log(' cost=cost + getOffers[i]',obj)
+        }
+      }
+    }
+
+
+    return cost
+  
+  }
+
   const renderOffersOutlook = () => {
     let currentOf = [];
     let offerId = null;
@@ -245,10 +354,16 @@ export default function (props) {
     if (currentTopic.name === 'Others') {
       currentOf = Object.values(PathwayStore.entities)
     }
+    console.log('Object.values(PathwayStore.entities)',Object.values(PathwayStore.entities))
     // currentOf = sortBy(currentOf, [{'outlook' : 'desc'}]);
     // currentOf.sort((a, b) => parseFloat(b.outlook) - parseFloat(a.outlook));
     selectedOutlookData.sort((a, b) => parseFloat(b.outlook) - parseFloat(a.outlook));
     return selectedOutlookData.map((offer, index) => {
+      let OutlookCost=getOutlookCost(offer.GroupsOfOffers);
+      let OutlookPay=getOutlookPay(offer.GroupsOfOffers);
+      let OutlookCredit=getOutlookCredit(offer.GroupsOfOffers);
+
+
       let p = null;
       let outlook
       let earnings
@@ -263,6 +378,8 @@ export default function (props) {
       if (offer && offer.DataFields) {
         return offer.DataFields.length ? offer.DataFields.map((value, id) => {
           // console.log('offer.DataFields', value.is_check_topic)
+          console.log('groupedDataFields',groupedDataFields ,'\n\nvalue',value)
+
           if (value.is_check_topic === true && value.id === activeTopicId) {
             return (
               <Link to={`/home/pathway/${offer.id}`} key={index} >
@@ -278,6 +395,10 @@ export default function (props) {
                   outEarvValue={true}
                   bannerImage={offer.banner_image}
                   mainImage={offer.main_image}
+                  GroupsOfOffers ={offer.GroupsOfOffers}
+                  OutlookCost={OutlookCost}
+                  OutlookPay={OutlookPay}
+                  OutlookCredit={OutlookCredit}
                 />
               </Link>
             );
@@ -292,8 +413,10 @@ export default function (props) {
 
   const renderOffersEarning = () => {
     let currentOffers = [];
+    let curOffers = []
     let offerId = null;
     let _offers = compact(currentTopic.Offers);
+
     for (let i = 0; i < _offers.length; i++) {
       offerId = _offers[i].id;
       currentOffers.push(PathwayStore.entities);
@@ -304,8 +427,21 @@ export default function (props) {
     // currentOffers = sortBy(currentOffers, [{'earnings' : 'desc'}]);
     // currentOffers.sort((a, b) => parseFloat(b.earnings) - parseFloat(a.earnings));
     selectedEarningData.sort((a, b) => parseFloat(b.earnings) - parseFloat(a.earnings));
+
     return selectedEarningData.map((offer, index) => {
-      // console.log('selectedEarningData', selectedEarningData)
+      console.log('currentOffers', offerStore.entities)
+    let OutlookPay=getOutlookPay(offer.GroupsOfOffers);
+      let testArr = []
+      // let test = [offerStore.entities]
+      let newData = offer.GroupsOfOffers.map(newDta => {
+        curOffers.push(PathwayStore.entities);
+        console.log("new",curOffers)
+        // if(newDta.offer_id == test.id){
+        // }
+
+      })
+      let OutlookCost=getOutlookCost(offer.GroupsOfOffers);
+      let OutlookCredit=getOutlookCredit(offer.GroupsOfOffers);
 
       let p = null;
       let outlook = null
@@ -336,6 +472,10 @@ export default function (props) {
                   outEarvValue={true}
                   bannerImage={offer.banner_image}
                   mainImage={offer.main_image}
+                  GroupsOfOffers ={offer.GroupsOfOffers}
+                  OutlookCost={OutlookCost}
+                  OutlookPay={OutlookPay}
+                  OutlookCredit={OutlookCredit}
                 />
               </Link>
             );
