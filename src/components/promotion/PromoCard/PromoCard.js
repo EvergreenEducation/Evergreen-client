@@ -57,7 +57,7 @@ export default function ({
     }
   }
   // console.log('promocard render',data)
-  console.log("getLastData", getLastData)
+  // console.log("getLastData", getLastData)
   return (
     <Link to={link} key={`Link-Card-${data.id}`} className="text-base font-bold promoCard__link" onClick={() => handleCheckButton(data)} key={data.id}>
       <Card

@@ -7,7 +7,16 @@ import { find } from 'lodash';
 import dayjs from 'dayjs';
 import { LearnAndEarnIcons, UnitTag } from 'components/shared';
 import './info-card.scss';
-
+import useGlobalStore from 'store/GlobalStore';
+import {
+  last,
+  each,
+  groupBy,
+  sortBy,
+  reject,
+  flowRight,
+  orderBy,
+} from 'lodash';
 const statuses = {
   Inactivate: {
     substituteStatus: 'Applied',
@@ -114,14 +123,44 @@ export default function ({
   outEarvValue,
   bannerImage,
   mainImage,
+  GroupsOfOffers=[],
+  OutlookCost,
+  OutlookPay,
+  OutlookCredit
 }) {
   if (!data) {
     return null;
   }
+  const { offer: offerStore } = useGlobalStore();
+  let totalPay = 0;
+  let totalCredit = 0;
+  let totalCost = 0;
   //  let parseMainImage = (mainImage)
   //  let parseBannerImage = JSON.parse(bannerImage)
+  console.log("ooooooooo", offerStore)
+  const groups = groupBy(GroupsOfOffers, 'group_name');
+  
+  if(data){
+    
+    each(Object.values(groups), function (_group) {
+      each(_group, function (o) {
+        const offer = offerStore.entities[o];
+        debugger
+        if (offer) {
+          if (offer.pay) {
+            totalPay += offer.pay;
+          }
+          if (offer.credit) {
+            totalCredit += offer.credit;
+          }
+          if (offer.cost) {
+            totalCost += offer.cost;
+          }
+        }
+      });
+    });
+  }
 
-  // console.log("ooooooooo", mainImage)
 
   let {
     name,
@@ -135,8 +174,9 @@ export default function ({
     frequency,
     provider_id,
     start_date,
-    Provider
+    Provider,
   } = data;
+  console.log('daata cost',cost )
 
   if (start_date) {
     start_date = dayjs(start_date).format('MMM DD, YYYY');
@@ -184,7 +224,7 @@ export default function ({
               <li>
                 Cost :{' '}
                 {`$${
-                  cost ? Number(cost).toLocaleString(undefined, {
+                 OutlookCost?OutlookCost: cost ? Number(cost).toLocaleString(undefined, {
                     maximumFractionDigits: 2,
                   }) || '---'
                   : 0}`}
@@ -192,12 +232,12 @@ export default function ({
               <li>
                 Pay :{' '}
                 {`$${
-                  pay ? Number(pay).toLocaleString(undefined, {
+                OutlookPay?OutlookPay:  pay ? Number(pay).toLocaleString(undefined, {
                     maximumFractionDigits: 2,
                   }) || '---' : 0
                   }`}
               </li>
-              {outEarvValue ? <li>Credit : {`${Number(credit).toLocaleString() || '---'}`}</li> : null}
+              {outEarvValue ? <li>Credit : {`${OutlookCredit?  OutlookCredit : Number(credit).toLocaleString() || '---'}`}</li> : null}
               {outEarvValue ? <li>
                 Outlook : {outlook && outlook ? outlook : '-'}</li> : null}
               {outEarvValue ? <li>

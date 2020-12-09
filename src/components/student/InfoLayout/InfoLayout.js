@@ -244,7 +244,7 @@ export default function ({
 
   if (type === 'pathway') {
     const groups = groupBy(GroupsOfOffers, 'group_name');
-
+    console.log("GroupsOfOffers",GroupsOfOffers)
     each(Object.values(groups), function (_group) {
       each(_group, function (o) {
         const offer = offerStore.entities[o.offer_id];
