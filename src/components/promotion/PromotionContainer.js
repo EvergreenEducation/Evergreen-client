@@ -248,7 +248,7 @@ export default function (props) {
     return data && data.length ? data.filter(x => {
       if (x.type) {
         // console.log('handleDataAfterSearch', x.type)
-        return false
+        return true
       } else {
         return true
       }
