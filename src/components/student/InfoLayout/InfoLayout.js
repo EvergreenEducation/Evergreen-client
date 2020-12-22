@@ -35,7 +35,7 @@ import {
   CollapsibleContent
 } from "react-collapsible-component";
 // IMAGE
-import PlayIcon from '../../../assets/img/play.png';
+import PlayIcon from '../../../assets/img/viedo.png';
 import 'react-html5video/dist/styles.css';
 
 // CONSTANTS
@@ -362,7 +362,7 @@ export default function ({
   };
 
   let Arr = []
-  let newArr = location_type.map(item => {
+  let newArr = location_type && location_type.map(item => {
     if (item === "Online") {
       Arr.push({ name: "Self-learning", img: "/icons/online.png" })
 
@@ -423,6 +423,9 @@ export default function ({
                       {/*accept="video/mp4,video/wmv,video/flv,video/mkv,video/mp4,video/webm,video/ogg"*/}
                       <source src={newItem.original} accept={`video/${fileExtension}`} onClick={() => handleImgmain(newItem)} />
                     </video>
+                    <div className="play_btn">
+                      <img className="video_block" src={PlayIcon}></img>
+                    </div>
                   </div>)
               } else {
                 return (
