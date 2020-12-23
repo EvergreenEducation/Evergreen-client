@@ -15,7 +15,7 @@ export default function SearchHeader({
     <Row className="items-center flex-no-wrap search-header">
       <h2 className="mr-2 whitespace-pre search-header__title">{title}</h2>
       <Search
-        className="w-auto rounded custom-search"
+        className="w-auto rounded custom-search offer-searchbar"
         enterButton={enterButton}
         allowClear
         onSearch={onSearch}

@@ -12,11 +12,15 @@ import {
   orderBy,
 } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { DefaultPlayer as Video } from 'react-html5video';                       
 import {
   faMapMarkerAlt,
   faCalendarAlt,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from 'react-responsive-carousel';
+// import SimpleReactLightbox from "simple-react-lightbox";
 import { faHandshake } from '@fortawesome/free-regular-svg-icons';
 import { reactLocalStorage } from 'reactjs-localstorage';
 import dayjs from 'dayjs';
@@ -25,10 +29,24 @@ import { LearnAndEarnIcons, UnitTag } from 'components/shared';
 import useGlobalStore from 'store/GlobalStore';
 import './info-layout.scss';
 import 'assets/scss/antd-overrides.scss';
+import {
+  CollapsibleComponent,
+  CollapsibleHead,
+  CollapsibleContent
+} from "react-collapsible-component";
+// IMAGE
+import PlayIcon from '../../../assets/img/viedo.png';
+import 'react-html5video/dist/styles.css';
 
+// CONSTANTS
+const ALL_VIDEO_FORMAT_REGEX = (/\.(wmv|flv|mkv|mp4|webm|m4v|m4a|m4v|f4v|f4a|m4b|m4r|f4b|mov|3gp|3gp2|3g2|3gpp|3gpp2|ogg|oga|ogv|ogx|wmv|wma|mpg|mpeg)$/i);
+const axios = require('axios').default;
+var parse = require('html-react-parser');
+
+// const location_type='';
 export default function ({
   children,
-  type = 'offer',
+  type,
   data = {},
   groupedDataFields,
   session = {},
@@ -52,12 +70,31 @@ export default function ({
     financial_aid,
     GroupsOfOffers = [],
     external_url,
+    Pathways,
+    learn_and_earn,
+    description,
+    rubric_attachment,
+    main_image,
+    accreditation,
+    location_type,
+    outlook,
   } = data;
   const [offerEnrollments, setOfferEnrollments] = useState([]);
   const [fetchEnrollments, setFetchEnrollments] = useState(false);
   const { offer: offerStore } = useGlobalStore();
   const [form] = Form.useForm();
   const myOfferEnrollments = sortBy(offerEnrollments, ['start_date']);
+  // const [htmValue, setHtmlValue] = useState()
+  const [outllokData, setOutLookData] = useState()
+  const [imageData, setImageData] = useState({})
+  const [isCheck, setIsCheck] = useState(false)
+  // const [imagedata, setImageData] = useState()
+  // const { Column } = Table;
+  const getData = async (data) => {
+    let id = data.id
+    let Data = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/files/get_accedration/${id}`)
+    return Data
+  }
 
   useEffect(() => {
     const getAvailableEnrollmentByOffer = async (offerId) => {
@@ -75,6 +112,33 @@ export default function ({
     if (type === 'offer' && !fetchEnrollments && !myOfferEnrollments.length) {
       getAvailableEnrollmentByOffer(id);
     }
+  }, []);
+  useEffect(() => {
+    Pathways && Pathways.length && Pathways.map(item => {
+      setOutLookData(item.outlook)
+    })
+  }, []);
+  // useEffect(() => {
+  //   main_image && main_image.length && main_image.map(item => {
+  //     let newItem = JSON.parse(item)
+  //     setImageData(newItem)
+  //   })
+  // }, []);
+  const handleLink = (itemnew) => {
+    // console.log("texttttttt", itemnew)
+    window.open(
+      `${itemnew.original}`, "_blank");
+  }
+  useEffect(() => {
+    getData(data).then(response => {
+      if (response.status === 200) {
+        // console.log('getData accrediation', response)
+        setImageData(response.data.data)
+        setIsCheck(true)
+      }
+    }).catch(error => {
+      console.log(error, "errrrrrr")
+    })
   }, []);
 
   const enrollOffer = async () => {
@@ -180,7 +244,7 @@ export default function ({
 
   if (type === 'pathway') {
     const groups = groupBy(GroupsOfOffers, 'group_name');
-
+    console.log("GroupsOfOffers",GroupsOfOffers)
     each(Object.values(groups), function (_group) {
       each(_group, function (o) {
         const offer = offerStore.entities[o.offer_id];
@@ -203,27 +267,34 @@ export default function ({
     <Row
       className={`w-full mx-auto ${
         external_url ? 'justify-between' : 'justify-center'
-      }`}
+        }`}
     >
-      <Button
+      {/* {console.log("resp",data)} */}
+      {!data.is_generic && <Button
         type="primary"
         className="rounded"
         style={{ width: '49%' }}
         onClick={() => onEnroll()}
       >
         Enroll
-      </Button>
+      </Button>}
       {external_url ? (
-        <Button type="primary" className="rounded" style={{ width: '49%' }}>
-          <a href={external_url} target="_blank" rel="noopener noreferrer">
-            View Website
-          </a>
+        <Button type="primary" className="rounded" style={{ width: '49%' }} onClick={() => {
+          isValidURL(external_url)
+        }}>
+          View Website
         </Button>
+        // <Button type="primary" className="rounded" style={{ width: '49%' }}>
+        //   <a href={external_url} target="_blank" rel="noopener noreferrer external">
+        //     View Website
+        //   </a>
+        // </Button>
       ) : null}
+
     </Row>
   );
 
-  let locationText = '---';
+  let locationText = data && data.location ? data.location : '---';
 
   if (type === 'provider' && data && data.location) {
     locationText = data.location;
@@ -236,7 +307,81 @@ export default function ({
   ) {
     locationText = Provider.location;
   }
+  // console.log('locationText',locationText)
 
+  // const handleHtml = (prop) => {
+  //   if (prop === "bold") {
+  //     setHtmlValue("bold")
+  //   } else if (prop === "italic") {
+  //     setHtmlValue("italic")
+  //   }
+  // }
+
+
+  var modal = document.getElementById("myModal");
+
+  // Get the button that opens the modal
+  // var btn = document.getElementById("myBtn");
+
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+
+  // When the user clicks the button, open the modal 
+  let [demo, setDemo] = useState()
+  function handleDivmain(newItem) {
+    setDemo(newItem)
+    modal.style.display = "block";
+  }
+  function handleImgmain() {
+    modal.style.display = "block";
+  }
+
+  // When the user clicks on <span> (x), close the modal
+  function handleSpanmain() {
+    modal.style.display = "none";
+  }
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+
+
+  const redirectToExternalLink = (url) => {
+    window.open(
+      `${url}`);
+  }
+
+  function isValidURL(string) {
+    var regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
+    let isUrlValid = regex.test(string)
+    let fullUrl = isUrlValid ? '' : 'https://' + string;
+    redirectToExternalLink(fullUrl)
+  };
+
+  let Arr = []
+  let newArr = location_type && location_type.map(item => {
+    if (item === "Online") {
+      Arr.push({ name: "Self-learning", img: "/icons/online.png" })
+
+    } if (item === "Hybrid") {
+      Arr.push({ name: "Self-learning", img: "/icons/hybrid.png" })
+
+    }
+    else if (item === "Self-learning") {
+      Arr.push({ name: "Self-learning", img: "/icons/self-learning.png" })
+
+    } else if (item === "In-person") {
+      Arr.push({ name: "In-person", img: "/icons/in-person.png" })
+
+    } else if (item === "Social Distancing Confirmed") {
+      Arr.push({ name: "In-person", img: "/icons/social-distancing.png" })
+    }
+    console.log("aaaaaaaaaaa", Arr)
+  })
+  // let Arr = JSON.parse(main_image)
   return (
     <div className="infoLayout">
       <header className="mx-auto relative" style={{ minHeight: 52 }}>
@@ -263,6 +408,59 @@ export default function ({
           borderBottomRightRadius: '1rem',
         }}
       >
+        <Col>
+          <Carousel showArrows={true} >
+            {main_image && main_image.length && main_image.map(item => {
+              let newItem = JSON.parse(item),
+                fileExtension = newItem.name.slice((Math.max(0, newItem.name.lastIndexOf(".")) || Infinity) + 1),
+                finalExtension = '.' + fileExtension,
+                checkType = ALL_VIDEO_FORMAT_REGEX.test(finalExtension);
+              // let checkType = newItem.name.toString().endsWith("mp4");
+              if (checkType) {
+                return (
+                  <div className="modal_block" id="myBtn" onClick={() => handleDivmain(newItem)}>
+                    <video>
+                      {/*accept="video/mp4,video/wmv,video/flv,video/mkv,video/mp4,video/webm,video/ogg"*/}
+                      <source src={newItem.original} accept={`video/${fileExtension}`} onClick={() => handleImgmain(newItem)} />
+                    </video>
+                    <div className="play_btn">
+                      <img className="video_block" src={PlayIcon}></img>
+                    </div>
+                  </div>)
+              } else {
+                return (
+                  <div className="modal_block" id="myBtn" onClick={() => handleDivmain(newItem)}>
+                    <img src={newItem.original} onClick={() => handleImgmain(newItem)} alt="" />
+                  </div>)
+              }
+            })}
+          </Carousel>
+        </Col>
+
+        <div id="myModal" className="modal" >
+          <div className="modal-content">
+            {/* <div className="play_btn">
+              <img src={PlayIcon} alt="PlayIcon" onClick={ () => handleSpanmain()}/>
+          </div> */}
+            <span className="close" onClick={() => handleSpanmain()}>&times;</span>
+            {/*  demo.name.toString().endsWith("mp4") ? */}
+            {demo && ALL_VIDEO_FORMAT_REGEX.test('.' + demo.name.slice((Math.max(0, demo.name.lastIndexOf(".")) || Infinity) + 1)) ?
+              // <video controls className="video">
+              //   <source src={demo.original} accept={`video/${demo.name.slice((Math.max(0, demo.name.lastIndexOf(".")) || Infinity) + 1)}`} />
+              // </video>
+              <Video autoPlay loop muted
+                controls={['PlayPause', 'Seek', 'Time', 'Volume', 'Fullscreen']}
+                // poster="http://sourceposter.jpg"
+                onCanPlayThrough={() => {
+                  // Do stuff
+                }}>
+                <source  src={demo.original} />
+                {/* <track label="English" kind="subtitles" srcLang="en" src="http://source.vtt" default /> */}
+              </Video>
+              :
+              <img src={demo ? demo.original : null} alt="" />}
+          </div>
+        </div>
         <Row className="py-2">
           <Col span={12}>
             {type === 'provider' ? (
@@ -272,7 +470,7 @@ export default function ({
                 className={provider_id ? '' : 'pointer-events-none'}
                 to={`/home/provider/${provider_id}`}
               >
-                {Provider.name}
+                {Provider.name ? Provider.name : ''}
               </Link>
             ) : null}
           </Col>
@@ -283,8 +481,11 @@ export default function ({
         </Row>
         <hr />
         <Row className="py-2">
-          <Col span={12} className="flex items-center">
+          <Col span={12} className="flex items-center earn_btn">
             <LearnAndEarnIcons learnAndEarn={data.learn_and_earn} />
+            <div className="accreditation_block">{accreditation ?
+              <p>Accreditation: {accreditation} </p>
+              : null}</div>
           </Col>
           <Col span={12} className="flex flex-col items-right text-right">
             <span className="text-gray-600">TOPICS</span>
@@ -313,38 +514,75 @@ export default function ({
             {type === 'pathway'
               ? totalCost
                 ? `$${totalCost.toLocaleString(undefined, {
-                    maximumFractionDigits: 2,
-                  })}`
+                  maximumFractionDigits: 2,
+                })}`
                 : '---'
               : cost
-              ? `$${cost.toLocaleString(undefined, {
+                ? `$${cost.toLocaleString(undefined, {
                   maximumFractionDigits: 2,
                 })}`
-              : '---'}
+                : '---'}
           </Col>
-          <Col span={8} className="flex justify-center">
-            Credit :{' '}
-            {type === 'pathway'
-              ? totalCredit.toLocaleString() || '---'
-              : (credit && credit.toLocaleString()) || '---'}
-          </Col>
-          <Col span={8} className="flex flex-row-reverse">
-            Pay :{' '}
-            {type === 'pathway'
-              ? totalPay
-                ? `$${totalPay.toLocaleString(undefined, {
-                    maximumFractionDigits: 2,
-                  })}`
-                : '---'
-              : pay
-              ? `$${pay.toLocaleString(undefined, {
-                  maximumFractionDigits: 2,
-                })}`
-              : '---'}
-          </Col>
+          {/* {console.log("cccccccccc", credit, pay, learn_and_earn)} */}
+          {learn_and_earn === "learn" &&
+            <Col span={8} className="flex justify-center">
+              {type === "offer" || type === "provider" ? "Credit : " : null}
+              {type === "provider" && credit >= 0 || credit === "yes" ? "yes" : null}
+              {/* {type === 'pathway' && totalCredit.toLocaleString() || null} */}
+              {type === 'offer' && (credit && credit.toLocaleString()) || null}
+            </Col>}
+          {learn_and_earn === "earn" &&
+            <Col span={8} className="flex flex-row-reverse justify-center">
+              {type === "offer" || type === "provider" ? "Pay : " : null}
+              {type === "provider" && pay >= 0 || pay === "yes" ? "yes" : null}
+              {/* {type === 'pathway' && totalCredit.toLocaleString() || null} */}
+              {type === 'offer' && (pay && pay.toLocaleString()) || null}
+            </Col>
+          }
+          {learn_and_earn === "both" &&
+            <>
+              <Col span={8} className="flex justify-center">
+                {type === "offer" || type === "provider" ? "Credit : " : null}
+                {type === "provider" && credit >= 0 || credit === "yes" ? "yes" : null}
+                {/* {type === 'pathway' && totalCredit.toLocaleString() || null} */}
+                {type === 'offer' && (credit && credit.toLocaleString()) || null}
+              </Col>
+              <Col span={8} className="flex flex-row-reverse">
+                {type === "offer" || type === "provider" ? "Pay : " : null}
+                {type === "provider" && credit >= 0 || credit === "yes" ? "yes" : null}
+                {/* {type === 'pathway' && totalCredit.toLocaleString() || null} */}
+                {type === 'offer' && (pay && pay.toLocaleString()) || null}
+              </Col>
+            </>
+          }
+          {/* {learn_and_earn === "both" &&
+            <div>
+              <Col span={8} className="flex justify-center">
+                Credit :{' '}
+                {type === 'pathway'
+                  ? totalCredit.toLocaleString() || '---'
+                  : (credit && credit.toLocaleString()) || '---'}
+              </Col>
+              <Col span={8} className="flex flex-row-reverse">
+                Pay :{' '}
+                {type === 'pathway'
+                  ? totalPay
+                    ? `$${totalPay.toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    })}`
+                    : '---'
+                  : pay
+                    ? `$${pay.toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    })}`
+                    : '---'}
+              </Col>
+            </div>
+          } */}
         </Row>
-        <Row className="mt-1 mb-2">
-          <Col span={12} className="flex flex-row items-center">
+
+        <Row className="mt-1 mb-2  outlook offer_info">
+          <Col span={8} className="flex flex-row items-center unitTags">
             {type !== 'provider' && length && (
               <UnitTag number={length} unit={lengthUnit} />
             )}
@@ -353,35 +591,57 @@ export default function ({
             )}
             {type === 'provider' && (
               <>
-                <FontAwesomeIcon icon={faHandshake} className="mr-1" />
-                <span>{financial_aid}</span>
+                <span><FontAwesomeIcon icon={faHandshake} className="mr-1" /> {financial_aid}</span>
               </>
             )}
           </Col>
-          <Col span={12} className="flex flex-row-reverse items-center">
-            {type === 'provider' ? (
-              <Tag className="mr-0" color="purple">
-                {is_public ? 'Public' : 'Private'}
-              </Tag>
-            ) : null}
-            {(type === 'offer' &&
-              myOfferEnrollments &&
-              myOfferEnrollments.length && (
-                <>
-                  <span className="ml-1">
-                    {dayjs(last(myOfferEnrollments).start_date).format(
-                      'MMM D, YYYY'
-                    ) || null}
-                  </span>
-                  <FontAwesomeIcon icon={faCalendarAlt} />
-                </>
-              )) ||
-              null}
-          </Col>
+          {Arr && Arr.length ? Arr.map(item => {
+            console.log("item", item)
+            return (
+              <p className="new-data-icons"><img className="social_distancing" src={item.img} alt="" /><span className="location_name">{item.name}</span></p>
+            )
+          }) : null}
+
+          {type === 'provider' &&
+            myOfferEnrollments &&
+            myOfferEnrollments.length ?
+            <Col span={8} className="flex flex-row-reverse items-center">
+              {type === 'provider' ? (
+                <Tag className="mr-0" color="purple">
+                  {is_public ? 'Public' : 'Private'}
+                </Tag>
+              ) : null}
+              {(type === 'offer' &&
+                myOfferEnrollments &&
+                myOfferEnrollments.length && (
+                  <>
+                    <span className="ml-1">
+                      {dayjs(last(myOfferEnrollments).start_date).format(
+                        'MMM D, YYYY'
+                      ) || null}
+                    </span>
+                    <FontAwesomeIcon icon={faCalendarAlt} />
+                  </>
+                )) ||
+                null}
+            </Col> : ''}
+          {outlook === undefined || outlook === null || outlook === '' ?
+            <Col span={8} className={`${outlook === undefined || outlook === null || outlook === '' ? '' : 'flex-row-reverse'} flex  items-center`}>
+              {type == "pathway" && <p>10yr job outlook: {outllokData} </p>}
+            </Col> :
+            <Col span={8} className={`${outlook === undefined || outlook === null || outlook === '' ? '' : 'flex-row-reverse'} flex  items-center`}>
+              {type == "pathway" && <p>10yr job outlook: {imageData.outlook} </p>}
+            </Col>}
+          {/* {
+            location ? <p>Location: {location}</p> : ''
+          } */}
         </Row>
         <hr />
-        <section className="flex flex-col justify-center">
-          <p className="text-center break-words">{data.description}</p>
+        <section className="font_type">
+
+          {/* <p className="text-center break-words">{htmValue === "bold" ? <b>{data.description}</b> : <i>{data.description}</i>}</p> */}
+          <p>
+            {description ? description !== null ? parse(data.description) : null : ''}</p>
           {type === 'offer' && (
             <Tag className="mx-auto">
               {offerCategory ? offerCategory.name : null}
@@ -408,7 +668,7 @@ export default function ({
                 external_url
                   ? 'items-start justify-left'
                   : 'justify-center items-center'
-              }`}
+                }`}
             >
               {EnrollAndExternalUrlRow}
             </Row>
@@ -420,14 +680,14 @@ export default function ({
                   external_url
                     ? 'items-start justify-left'
                     : 'justify-center items-center'
-                }`}
+                  }`}
               >
                 {EnrollAndExternalUrlRow}
                 {openCodeInput && (
                   <Row
                     className={`${external_url ? 'w-full' : 'w-1/2'} ${
                       openCodeInput ? 'mt-2' : ''
-                    }`}
+                      }`}
                   >
                     <Col span={external_url ? 22 : 20}>
                       <Form.Item
@@ -455,7 +715,7 @@ export default function ({
                     </Col>
                   </Row>
                 )}
-                {!openCodeInput && (
+                {!openCodeInput && !data.is_generic && (
                   <Button
                     className={external_url ? 'pl-0' : ''}
                     type="link"
@@ -469,7 +729,32 @@ export default function ({
           )}
         </div>
       </section>
+      <section>
+        {rubric_attachment === undefined || rubric_attachment === null ? '' : rubric_attachment.length ? <div className="pdf-listings">
+          <Button ref={imageData} />
+          <CollapsibleComponent>
+            <CollapsibleHead className="additionalClassForHead">
+              Rubric/Attachments
+            </CollapsibleHead>
+            {isCheck ? <CollapsibleContent className="additionalClassForContent">
+              <div>
+                {/* <p>Pdf list</p> */}
+                {rubric_attachment === null ? '' : rubric_attachment.length ? rubric_attachment.map(item => {
+                  // console.log("------", JSON.parse(item))
+                  let itemnew = JSON.parse(item)
+                  return (
+                    // <p>{itemnew.original}</p>
+                    <button className="pdf-listing-btn" onClick={() => handleLink(itemnew)}>{itemnew.name}</button>
+                  )
+                }) : ''}
+              </div>
+            </CollapsibleContent> : null}
+          </CollapsibleComponent>
+        </div> : ''}
+      </section>
       <section>{children}</section>
+      {/* {console.log(",,,,,,,,,", children)} */}
+
     </div>
   );
 }

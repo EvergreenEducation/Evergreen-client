@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProviderForm from 'components/provider/ProviderForm';
 import { Button, Form, notification } from 'antd';
 import useGlobalStore from 'store/GlobalStore';
@@ -12,7 +12,7 @@ configure({
   axios: axiosInstance,
 });
 
-const ProviderCreationContainer = ({ closeModal, role }) => {
+const ProviderCreationContainer = ({ closeModal, role, getProviderApi }) => {
   const { id: userId } = AuthService.currentSession;
   const [
     { file, onChangeFileUpload },
@@ -35,6 +35,10 @@ const ProviderCreationContainer = ({ closeModal, role }) => {
   const submit = async () => {
     try {
       const values = await form.validateFields([
+        'banner_image',
+        'main_image',
+        'accreditation',
+        'location_type',
         'name',
         'location',
         'type',
@@ -55,11 +59,13 @@ const ProviderCreationContainer = ({ closeModal, role }) => {
         'is_main_promo',
         'external_url',
       ]);
-
       const { data, status } = await createProvider({
         data: {
           ...values,
           topics: values.topics,
+          'main_image': getImageData,
+          'banner_image': getBannerImage,
+          'description': descriptionValue
         },
       });
 
@@ -77,11 +83,9 @@ const ProviderCreationContainer = ({ closeModal, role }) => {
             fileable_type,
             fileable_id: data.id,
           });
-
           if (results && results.file.data) {
             filePayload.push({ ...results.file.data });
           }
-
           if (results.success) {
             notification.success({
               message: 'Success',
@@ -96,11 +100,9 @@ const ProviderCreationContainer = ({ closeModal, role }) => {
             fileable_id: data.id,
             meta: 'banner-image',
           });
-
           if (results && results.file.data) {
             filePayload.push({ ...results.file.data });
           }
-
           if (results.success) {
             notification.success({
               message: 'Success',
@@ -111,7 +113,6 @@ const ProviderCreationContainer = ({ closeModal, role }) => {
         clonedResponse.Files = [...filePayload];
         providerStore.updateOne(clonedResponse);
       }
-
       if (status === 201) {
         notification.success({
           message: status,
@@ -119,6 +120,7 @@ const ProviderCreationContainer = ({ closeModal, role }) => {
         });
         form.resetFields();
         closeModal();
+        getProviderApi();
       }
     } catch (error) {
       console.error(error);
@@ -134,7 +136,20 @@ const ProviderCreationContainer = ({ closeModal, role }) => {
       });
     }
   }, [providerCreateError]);
+  const [getImageData, setGetImageData] = useState()
+  const handleImageData = (getImageData) => {
+    setGetImageData(getImageData)
+  }
+  const [getBannerImage, setGetBannerImage] = useState()
+  const handleBannerImage = (getBannerImage) => {
+    setGetBannerImage(getBannerImage)
+  }
+  const [descriptionValue, setDescriptionValue] = useState('');
 
+  const handleDescriptionValue = (value) => {
+    setDescriptionValue(value)
+  }
+  // console.log("finalllllllllll", getBannerImage, getImageData)
   return (
     <div>
       <Form form={form} name="providerForm">
@@ -143,10 +158,15 @@ const ProviderCreationContainer = ({ closeModal, role }) => {
             role={role}
             userId={userId}
             datafields={Object.values(datafieldStore.entities)}
+            providers={Object.values(providerStore.entities)}
             file={file}
             onChangeUpload={onChangeFileUpload}
             bannerFile={bannerFile}
             onChangeBannerUpload={onChangeBannerUpload}
+            handleImageData={handleImageData}
+            handleBannerImage={handleBannerImage}
+            descriptionValue={descriptionValue}
+            handleDescriptionValue={handleDescriptionValue}
           />
         </div>
         <section

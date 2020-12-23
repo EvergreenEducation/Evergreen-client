@@ -11,38 +11,34 @@ import { LogOutTopbar, SearchHeader } from 'components/shared';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import matchSorter from 'match-sorter';
-import { useForm } from 'antd/lib/form/util';
+// import { useForm } from 'antd/lib/form/util';
 
 const ProviderUpdateContainer = imported(() =>
   import('components/provider/ProviderUpdateContainer')
 );
+const { Content } = Layout;
 
 configure({
   axios: axiosInstance,
 });
 
-const { Content } = Layout;
-
-export default function EnrollmentContainer({
-  role,
-  openProviderUpdateModal,
-  providerId,
-}) {
+// {role,openProviderUpdateModal,providerId}
+export default function EnrollmentContainer(props) {
+  const { role, openProviderUpdateModal, providerId } = props;
+  // console.log("inyial", role);
   const [searchString, setSearchString] = useState('');
   const [activateCreditAssignment, setActivateCreditAssignment] = useState(
     false
   );
   const history = useHistory();
   const location = useLocation();
-  const [form] = useForm();
   const {
     enrollment: enrollmentStore,
     student: studentStore,
   } = useGlobalStore();
-
   const query = new URLSearchParams(location.search);
   const offer = Number(query.get('offer'));
-
+  const [form] = Form.useForm();
   const getEnrollmentsUrl = () => {
     const url = '/enrollments';
 
@@ -70,6 +66,7 @@ export default function EnrollmentContainer({
   }
 
   useEffect(() => {
+
     if (enrollmentBody) {
       enrollmentStore.addMany(enrollmentBody);
     }

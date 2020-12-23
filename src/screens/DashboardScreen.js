@@ -46,7 +46,6 @@ function DashboardScreen(props) {
 
   const myProviderId = AuthService.currentSession.provider_id;
   const role = AuthService.currentSession.role;
-
   const [modalStates, setModalStates] = useState({
     providerUpdateModal: false,
     providerSimpleUpdateModal: false,
@@ -64,6 +63,11 @@ function DashboardScreen(props) {
       providerUpdateModal: true,
       providerSimpleUpdateModal: false,
     });
+    if (role === 'provider') {
+      // only check if login user is a provider
+      getProviderInfo(myProviderId);
+    }
+
   };
 
   async function getProviderInfo(providerId) {
@@ -83,8 +87,7 @@ function DashboardScreen(props) {
         <div className="h-min-full w-full">
           <PrivateRoute
             exact
-            path={role === 'admin' ? basePath : `${basePath}/:id`}
-          >
+            path={role === 'admin' ? basePath : `${basePath}/:id`}>
             {role === 'admin' ? (
               <Redirect to={`${basePath}/providers`} />
             ) : (
@@ -166,6 +169,7 @@ function DashboardScreen(props) {
           <ProviderSimpleUpdateContainer
             provider_id={myProviderId}
             visible={modalStates.providerSimpleUpdateModal}
+            getProviderInfo={()=>getProviderInfo(myProviderId)}
             onCancel={() =>
               setModalStates({
                 ...modalStates,

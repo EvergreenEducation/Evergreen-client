@@ -49,10 +49,12 @@ $dark: rgb(8, 106, 114);
   }
 }
 
+
 .learn-earn-icon {
-  width: 23px;
-  padding: 1px 8px;
-  border-radius: 50%;
+  width: 70px;
+  padding: 3px 8px;
+  border-radius: 55px;
+  text-align: center;
   color: white;
   &--purple {
     background: linear-gradient(135deg, rgb(142, 45, 226), rgb(74, 0, 224));

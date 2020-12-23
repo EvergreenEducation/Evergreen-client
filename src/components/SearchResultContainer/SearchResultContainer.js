@@ -9,7 +9,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { groupBy } from 'lodash';
 import { LearnAndEarnIcons, TitleDivider } from 'components/shared';
-
 export default function ({ data = [], toggeables, setToggeables }) {
   const group = groupBy(data, 'entity_type');
   const groupKeys = Object.keys(group);

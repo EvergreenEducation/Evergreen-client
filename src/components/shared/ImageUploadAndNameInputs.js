@@ -21,7 +21,7 @@ function ImageUploadAndNameInputs(props) {
 
   const [imageUrl, setImageUrl] = useState(null);
   const [bannerImageUrl, setBannerImageUrl] = useState(null);
-
+  // console.log("imageUrl",imageUrl)
   const displayImageFile = (file, imageUrlCall) => {
     if (file) {
       if (file.file_link) {
@@ -129,3 +129,4 @@ function ImageUploadAndNameInputs(props) {
 }
 
 export default ImageUploadAndNameInputs;
+

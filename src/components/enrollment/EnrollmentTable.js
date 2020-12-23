@@ -6,7 +6,6 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import EnrollmentStore from 'store/Enrollment';
 import { EnrollModal } from 'components/enrollment';
 import matchSorter from 'match-sorter';
-import { useForm } from 'antd/lib/form/util';
 import dayjs from 'dayjs';
 import 'assets/scss/antd-overrides.scss';
 
@@ -101,14 +100,12 @@ export default function EnrollmentTable({
       return enrollment.offer_id === offer;
     });
   }
-
   const [enrollModalOpen, setEnrollModalOpen] = useState(false);
   const [selectedEnrollment, setSelectedEnrollment] = useState(null);
   const [enrollments, setEnrollments] = useState([]);
-  const [form] = useForm();
-
+  // const [form] = useForm();
+  const [form] = Form.useForm();
   const enrollmentStore = EnrollmentStore.useContainer();
-
   const updateEnrollment = async (enrollment) => {
     return axiosInstance.put(`/enrollments/${enrollment.id}`, {
       status: 'Approved',

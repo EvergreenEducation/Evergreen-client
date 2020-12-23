@@ -35,7 +35,7 @@ export default function DataFieldTable({
   }
 
   function submit() {
-    const data = form.getFieldsValue(['name', 'description']);
+    const data = form.getFieldsValue(['name', 'description','industry']);
     createDataField({
       ...data,
       type,
@@ -73,6 +73,11 @@ export default function DataFieldTable({
     description: (
       <Form.Item className="mb-0" name="description">
         <Input className="rounded" name="description" />
+      </Form.Item>
+    ),
+    industry: (
+      <Form.Item className="mb-0" name="industry">
+        <Input className="rounded" name="industry" />
       </Form.Item>
     ),
     add: (

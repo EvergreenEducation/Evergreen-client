@@ -7,7 +7,16 @@ import { find } from 'lodash';
 import dayjs from 'dayjs';
 import { LearnAndEarnIcons, UnitTag } from 'components/shared';
 import './info-card.scss';
-
+import useGlobalStore from 'store/GlobalStore';
+import {
+  last,
+  each,
+  groupBy,
+  sortBy,
+  reject,
+  flowRight,
+  orderBy,
+} from 'lodash';
 const statuses = {
   Inactivate: {
     substituteStatus: 'Applied',
@@ -64,7 +73,7 @@ function InfoCardFooter(props) {
               ? statuses[enrollment.status].textColor
               : null
             : 'text-gray'
-        } font-bold info-card__statusText`}
+          } font-bold info-card__statusText`}
         style={{ minWidth: 68 }}
       >
         {enrollment.status === 'Completed' || enrollment.status === 'Failed' ? (
@@ -109,10 +118,49 @@ export default function ({
   actions = [],
   enableStatus = false,
   latestEnrollment,
+  outlook,
+  earnings,
+  outEarvValue,
+  bannerImage,
+  mainImage,
+  GroupsOfOffers=[],
+  OutlookCost,
+  OutlookPay,
+  OutlookCredit
 }) {
   if (!data) {
     return null;
   }
+  const { offer: offerStore } = useGlobalStore();
+  let totalPay = 0;
+  let totalCredit = 0;
+  let totalCost = 0;
+  //  let parseMainImage = (mainImage)
+  //  let parseBannerImage = JSON.parse(bannerImage)
+  console.log("ooooooooo", offerStore)
+  const groups = groupBy(GroupsOfOffers, 'group_name');
+  
+  if(data){
+    
+    each(Object.values(groups), function (_group) {
+      each(_group, function (o) {
+        const offer = offerStore.entities[o];
+        debugger
+        if (offer) {
+          if (offer.pay) {
+            totalPay += offer.pay;
+          }
+          if (offer.credit) {
+            totalCredit += offer.credit;
+          }
+          if (offer.cost) {
+            totalCost += offer.cost;
+          }
+        }
+      });
+    });
+  }
+
 
   let {
     name,
@@ -126,7 +174,9 @@ export default function ({
     frequency,
     provider_id,
     start_date,
+    Provider,
   } = data;
+  console.log('daata cost',cost )
 
   if (start_date) {
     start_date = dayjs(start_date).format('MMM DD, YYYY');
@@ -137,9 +187,9 @@ export default function ({
   const frequencyUnit = find(groupedDataFields.frequency_unit, ({ id }) => {
     return id === Number(frequency_unit);
   });
-
+  // console.log('\n provider,,,',provider)
   return (
-    <div className={`flex flex-row shadow ${className}`}>
+    <div className={`flex flex-row shadow margin_bt_20 ${className}`}>
       <Card className={`info-card`} style={style}>
         <Row>
           <Col span={12}>
@@ -148,7 +198,7 @@ export default function ({
               <Link
                 className={`text-xs font-normal text-left ${
                   provider_id ? '' : 'pointer-events-none'
-                }`}
+                  }`}
                 to={`/home/provider/${provider_id}`}
                 onClick={(e) => e.stopPropagation()}
               >
@@ -161,7 +211,7 @@ export default function ({
             <Row className="my-1">
               <div>
                 <FontAwesomeIcon icon={faMapMarkerAlt} />{' '}
-                {provider && provider.location ? provider.location : '-'}
+                {Provider && Provider.location ? Provider.location : '-'}
               </div>
             </Row>
             <Row className="mt-1">
@@ -174,22 +224,37 @@ export default function ({
               <li>
                 Cost :{' '}
                 {`$${
-                  Number(cost).toLocaleString(undefined, {
+                 OutlookCost?OutlookCost: cost ? Number(cost).toLocaleString(undefined, {
                     maximumFractionDigits: 2,
                   }) || '---'
-                }`}
+                  : 0}`}
               </li>
               <li>
                 Pay :{' '}
                 {`$${
-                  Number(pay).toLocaleString(undefined, {
+                OutlookPay?OutlookPay:  pay ? Number(pay).toLocaleString(undefined, {
                     maximumFractionDigits: 2,
-                  }) || '---'
-                }`}
+                  }) || '---' : 0
+                  }`}
               </li>
-              <li>Credit : {`${Number(credit).toLocaleString() || '---'}`}</li>
+              {outEarvValue ? <li>Credit : {`${OutlookCredit?  OutlookCredit : Number(credit).toLocaleString() || '---'}`}</li> : null}
+              {outEarvValue ? <li>
+                Outlook : {outlook && outlook ? outlook : '-'}</li> : null}
+              {outEarvValue ? <li>
+                Earnings : {earnings && earnings ? earnings : '-'}
+              </li> : null}
             </ol>
           </Col>
+          {/* <Col>
+          <div className="outlook_img">
+          {mainImage && mainImage.length && mainImage.map(item => {
+            let newItem = JSON.parse(item)
+            return (
+              <img src={newItem.original} alt={newItem.name} />
+            )
+          })}
+          </div>
+          </Col> */}
         </Row>
       </Card>
       {(enableStatus && <InfoCardFooter enrollment={latestEnrollment} />) ||

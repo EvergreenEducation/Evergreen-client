@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Modal, Form, Table, Button, notification } from 'antd';
 import useAxios, { configure } from 'axios-hooks';
 import axiosInstance from 'services/AxiosInstance';
@@ -18,13 +18,16 @@ configure({
 
 const { Column } = Table;
 
+var parse = require('html-react-parser');
+
+
 export default function OfferUpdateModal({
   offer,
   onCancel,
   visible,
   offerStore,
   scopedToProvider = false,
-  role,
+  role, getOfferListData,getOffersList
 }) {
   const formRef = useRef(null);
   const { id: userId, provider_id } = AuthService.currentSession;
@@ -64,6 +67,12 @@ export default function OfferUpdateModal({
   const submitUpdate = async () => {
     try {
       const values = await form.validateFields([
+        'banner_image',
+        'main_image',
+        'generic_type',
+        'is_generic',
+        'rubric_attachment',
+        'location_type',
         'category',
         'description',
         'learn_and_earn',
@@ -93,6 +102,10 @@ export default function OfferUpdateModal({
         data: {
           ...values,
           updatedAt: new dayjs().toISOString(),
+          'rubric_attachment': getUpdateValue,
+          'banner_image': getBannerImage,
+          'main_image': getMainImage,
+          'description': descriptionValue
         },
       });
 
@@ -101,7 +114,11 @@ export default function OfferUpdateModal({
 
       if (data && userId) {
         const offerEntity = offerStore.entities[data.id];
-        filePayload = [...offerEntity.Files];
+        if (offerEntity.Files) {
+          if (offerEntity.Files.length) {
+            filePayload = [...offerEntity.Files];
+          }
+        }
 
         if (onFileChange && newFile) {
           const results = await UploaderService.uploadFile(newFile, {
@@ -162,6 +179,7 @@ export default function OfferUpdateModal({
           description: 'Successfully updated offer',
         });
         onCancel();
+        getOfferListData();
       }
     } catch (error) {
       console.error(error);
@@ -201,6 +219,7 @@ export default function OfferUpdateModal({
     }
     if (formRef.current) {
       populateFields(offer);
+      saveDescription(offer);
     }
     if (offer.Files) {
       let groupedFiles = flow([
@@ -224,7 +243,42 @@ export default function OfferUpdateModal({
       }
     }
   }, [offer, updateOfferError, formRef, file, bannerFile]);
+  // const [getPdfUrl, setGetPdfUrl] = useState()
+  const [getUpdateValue, setGetUpdatedValue] = useState()
+  const [getMainImage, setGetMainImage] = useState()
+  const [getBannerImage, setGetBannerImage] = useState()
 
+  const handlePropData = (getPdfUrl, getUpdateValue) => {
+    // setGetPdfUrl(getPdfUrl)
+    setGetUpdatedValue(getUpdateValue)
+    // setDeleteValue(getDeleteValue)
+  }
+  const handleUpadteMain = (getMainImage) => {
+    setGetMainImage(getMainImage)
+    // setDeleteValue(getDeleteValue)
+  }
+  const handleUpadteBanner = (getBannerImage) => {
+    setGetBannerImage(getBannerImage)
+    // setDeleteValue(getDeleteValue)
+  }
+
+  function saveDescription(p) {
+    if (p && p.description) {
+      setTimeout(function delay() {
+        // setCount(count => count + 1);
+        setDescriptionValue(p.description)
+      }, 100);
+      // handleDescriptionValue(p.description)
+      // setDescriptionValue()
+    }
+  }
+
+  const [descriptionValue, setDescriptionValue] = useState('');
+
+  const handleDescriptionValue = (value) => {
+    setDescriptionValue(value)
+  }
+  console.log('update model',offer)
   return (
     <Modal
       destroyOnClose={true}
@@ -255,6 +309,12 @@ export default function OfferUpdateModal({
             role={role}
             bannerFile={bannerFile}
             onChangeBannerUpload={onChangeBannerUpload}
+            handlePropData={handlePropData}
+            handleUpadteMain={handleUpadteMain}
+            handleUpadteBanner={handleUpadteBanner}
+            descriptionValue={descriptionValue}
+            handleDescriptionValue={handleDescriptionValue}
+            getOffersList={getOffersList}
           />
           <section className="mt-2">
             <label className="mb-2 block">Pathways - Table</label>
@@ -296,7 +356,7 @@ export default function OfferUpdateModal({
                 render={(text, record) => {
                   let children = 'N/A';
                   if (text.length) {
-                    children = text;
+                    children = parse(text);
                   }
                   return {
                     children: children,
@@ -309,29 +369,13 @@ export default function OfferUpdateModal({
             </Table>
           </section>
         </div>
-        <section
-          className="bg-white px-6 pt-5 pb-1 flex justify-center"
+        <section className="bg-white px-6 pt-5 pb-1 flex justify-center"
           style={{
             borderTop: '1px solid #f0f0f0',
           }}
         >
-          <Button
-            className="mr-3 px-10 rounded"
-            size="small"
-            type="primary"
-            htmlType="submit"
-            onClick={submitUpdate}
-          >
-            Update
-          </Button>
-          <Button
-            className="px-10 rounded"
-            size="small"
-            type="dashed"
-            onClick={() => onCancel()}
-          >
-            Cancel
-          </Button>
+          <Button className="mr-3 px-10 rounded" size="small" type="primary" htmlType="submit" onClick={submitUpdate}>Update</Button>
+          <Button className="px-10 rounded" size="small" type="dashed" onClick={() => onCancel()}>Cancel</Button>
         </section>
       </Form>
     </Modal>

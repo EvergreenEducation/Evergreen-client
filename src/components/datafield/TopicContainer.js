@@ -68,6 +68,12 @@ export default function TopicContainer(props) {
             className: 'antd-col',
           },
           {
+            title: 'Topic Industry',
+            dataIndex: 'industry',
+            key: 'industry',
+            className: 'antd-col',
+          },
+          {
             title: 'add',
             dataIndex: 'add',
             key: 'add',

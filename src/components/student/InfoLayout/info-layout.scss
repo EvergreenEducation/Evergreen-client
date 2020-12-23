@@ -3,3 +3,15 @@ $width: 100%;
 .infoLayout {
   width: $width;
 }
+.unitTags {
+    p {
+      display: flex;
+    }
+}
+.new-data-icons {
+  display: flex;
+  margin-right: 10px;
+  img {
+    height: 20px;
+  }
+}

@@ -3,10 +3,10 @@ import './learn-and-earn-icons.scss';
 
 export default function ({ learnAndEarn, align = 'left', style }) {
   if (learnAndEarn === 'learn') {
-    return <div className="learn-earn-icon learn-earn-icon--purple">L</div>;
+    return <div className="learn-earn-icon learn-earn-icon--purple">Learn</div>;
   }
   if (learnAndEarn === 'earn') {
-    return <div className="learn-earn-icon learn-earn-icon--blue">E</div>;
+    return <div className="learn-earn-icon learn-earn-icon--blue">Earn</div>;
   }
   if (learnAndEarn === 'both') {
     return (
@@ -21,13 +21,13 @@ export default function ({ learnAndEarn, align = 'left', style }) {
           className="learn-earn-icon mr-1 learn-earn-icon--purple"
           style={{ width: 23, order: align === 'right' ? 1 : 0 }}
         >
-          L
+          Learn
         </div>{' '}
         <div
           className="learn-earn-icon learn-earn-icon--blue"
           style={{ width: 24 }}
         >
-          E
+          Earn
         </div>
       </div>
     );

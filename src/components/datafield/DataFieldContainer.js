@@ -8,6 +8,10 @@ import {
   OfferCategoryContainer,
   TopicContainer,
   ProviderTypeContainer,
+  AccedrationContainer,
+  GenericContainer,
+  CreatePageContainer,
+  IndustryContainer
 } from 'components/datafield';
 import { LogOutTopbar } from 'components/shared';
 
@@ -46,6 +50,10 @@ export default function ({ openProviderUpdateModal, role }) {
         <OfferCategoryContainer />
         <SelectOptionsContainer />
         <TopicContainer />
+        <AccedrationContainer />
+        <GenericContainer />
+        <IndustryContainer />
+        <CreatePageContainer />
       </Content>
     </Layout>
   );
