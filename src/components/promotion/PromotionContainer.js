@@ -246,9 +246,14 @@ export default function (props) {
 
   const handleDataAfterSearch = (data, keys = ['name', 'keywords']) => {
     return data && data.length ? data.filter(x => {
+      // console.log("x",x)
       if (x.type) {
+        if(x.entity_type == "pathway"){
+          return true
+        }else {
+          return false
+        }
         // console.log('handleDataAfterSearch', x.type)
-        return true
       } else {
         
         return true
