@@ -1,9 +1,10 @@
-import React, { } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from 'antd';
 import {  filter, orderBy } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './promo-card.scss';
+const axios = require('axios').default;
 
 export default function ({
   data,
@@ -56,19 +57,54 @@ export default function ({
         `${data.image_url}`); 
     }
   }
+  const [imageValue, setImageValue] = useState()
+
+  const getImageurl = async (item) => {
+    debugger
+    if(item){
+      let getimage = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/files/get_image_url/${item.original}/${item.name}`, {
+      })
+      debugger
+      return getimage
+    }else{
+      return false
+    }
+  }
   // console.log('promocard render',data)
+  const handleImage = async () => {
+    let getImageArr = []
+    for (let i=0; i<= getLastData.length; i++){
+      debugger
+      let imageData = await getImageurl(getLastData[i]);
+      debugger
+      console.log('imageData',imageData)
+      if(imageData){
+debugger
+        getImageArr.push(imageData.data.data)
+      }
+
+    }
+    setImageValue(getImageArr)
+    // getLastData && getLastData.length && getLastData.map(async item => {
+    // })
+  }
+
+  useEffect(() => {
+    handleImage()
+  },[])
   // console.log("getLastData", getLastData)
+  console.log("imageData", imageValue);
   return (
     <Link to={link} key={`Link-Card-${data.id}`} className="text-base font-bold promoCard__link" onClick={() => handleCheckButton(data)} key={data.id}>
       <Card
       key={`Card-${data.id}`}
         className={`promoCard ${className}`}
         cover={
-          getLastData !== null ? [0].map((item,i) => {
+          imageValue !== null ? [0].map((item,i) => {
             return (
               <img
                 className="object-cover bg-gray-200"
-                src={getLastData && getLastData.length ? getLastData[0].original : ""}
+                src={imageValue && imageValue.length ? imageValue[0] : ""}
                 alt={`${slideType}-${data.id}`}
                 style={{ height: size !== 'small' ? 325 : 220 }}
                 key={`getLastData-${data.id}`}

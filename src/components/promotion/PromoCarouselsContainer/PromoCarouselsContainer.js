@@ -118,7 +118,7 @@ export default function (props) {
     //   }
     // });
 
-    //  console.log("FinalImageData",FinalImageData)
+     console.log("FinalImageData",FinalImageData)
      
   return (
     <div className="h-auto w-full">

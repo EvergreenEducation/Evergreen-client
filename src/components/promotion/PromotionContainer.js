@@ -35,6 +35,8 @@ export default function (props) {
   // const [searchString, setSearchString] = useState('');
   const [showPromoted, setShowPromoted] = useState(true);
   const [fileData, setFileData] = useState()
+  const [imageFile,setimageFile] = useState()
+  const [settleImage,setSettleImage]= useState()
   const [inputFile, setInputFile] = useState({
     files: [],
     name: ""
@@ -248,14 +250,14 @@ export default function (props) {
     return data && data.length ? data.filter(x => {
       // console.log("x",x)
       if (x.type) {
-        if(x.entity_type == "pathway"){
+        if (x.entity_type == "pathway") {
           return true
-        }else {
+        } else {
           return false
         }
         // console.log('handleDataAfterSearch', x.type)
       } else {
-        
+
         return true
       }
     }) : []
@@ -269,8 +271,8 @@ export default function (props) {
   if (showPromoted) {
     showData = showData.filter((d) => {
       // check if local and main are true
-      let 
-      // isBothTrue = d.is_local_promo && d.is_main_promo,
+      let
+        // isBothTrue = d.is_local_promo && d.is_main_promo,
         // check if local and main are true then we set local false
         // isLocalPromoTrue = isBothTrue ? false : d.is_local_promo,
         // check if local and main are true then we set main false
@@ -359,7 +361,6 @@ export default function (props) {
     }
   }
 
-
   useEffect(() => {
     if (getPathways) {
       pathwayStore.addMany(getPathways);
@@ -427,7 +428,7 @@ export default function (props) {
   //     console.log(error, "errroor")
   //   })
   // }
-
+  const getImageArr =[]
   const onChangeUpload = (e) => {
     let emailvalue = { ...inputFile, files: e.target.files }
     setInputFile(emailvalue)
@@ -435,16 +436,20 @@ export default function (props) {
       handleButton(e.target.files)
     }
   }
-
   const handleButton = async (files) => {
     // console.log(files)
     await fileDataApi(files).then(async resp => {
-      // console.log(resp, "responssssssssssss")
+      console.log(resp.data.data, "nnnnnnnnnnnnnnnnnnnnnnnnn")
       setFileData(resp.data.data)
+      let imageData = await getImageurl(resp.data.data);
+      getImageArr.push(imageData.data)
+      setimageFile(getImageArr)
+      console.log("imageData", getImageArr);
     }).catch(error => {
       console.log(error, "erorrr")
     })
   }
+  console.log("imageData", imageFile)
   const notify = msg => {
     if (msg == "error") {
       toast.error("Please send the valid params")
@@ -577,32 +582,32 @@ export default function (props) {
   const getUpdateTopicList = (selectedTopicValue, page_url_check, page_id) => {
     updateTopicRoute(selectedTopicValue, page_url_check, page_id).then(resp => {
       // console.log(resp, "reeeeeeeee")
-      topicToastMessage('success','Topics Saved Successfully')
+      topicToastMessage('success', 'Topics Saved Successfully')
       getTopicsList();
     }).catch(error => {
       console.log(error, "errroor")
-      topicToastMessage('error','Something went wrong')
+      topicToastMessage('error', 'Something went wrong')
     })
   }
 
   const getUpdateRemovedTopicList = (selectedTopicValue, page_url_check, page_id) => {
     deleteTopicRoute(selectedTopicValue, page_url_check, page_id).then(resp => {
       // console.log(resp, "reeeeeeeee")
-      topicToastMessage('success','Topics Removed Successfully')
+      topicToastMessage('success', 'Topics Removed Successfully')
       getTopicsList();
     }).catch(error => {
       console.log(error, "errroor")
-      topicToastMessage('error','Something went wrong')
+      topicToastMessage('error', 'Something went wrong')
     })
   }
-// showing toast message when topic added or removed
-  function topicToastMessage(status,message){
+  // showing toast message when topic added or removed
+  function topicToastMessage(status, message) {
     if (status == "error") {
-   return toast.error(message)
+      return toast.error(message)
     } else if (status == "success") {
-   return toast.success(message)
+      return toast.success(message)
     } else if (status == "netork") {
-     return toast.network("Network error Please check again")
+      return toast.network("Network error Please check again")
     }
   }
 
@@ -698,6 +703,14 @@ export default function (props) {
     }).catch(error => {
       console.log(error, "error")
     })
+  }
+
+  const getImageurl = async (item) => {
+    console.log("iteeeeeeeee",item)
+    let getimage = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/files/get_image_url/${item[0].original}/${item[0].name}`, {
+    })
+    console.log("geeeeeeee", getimage)
+    return getimage
   }
 
   // console.log('\nshowData', showData)
@@ -834,11 +847,12 @@ export default function (props) {
             </div>
             <input className="landing_browse" placeholder={isHide ? inputFile.name : "Please Enter URL"} onChange={(e) => handleInput(e)} value={inputFile?.name}></input>
             <div className="image_block_opportunity">
-              {fileData && fileData.length > 0 ? fileData.map((item, i) => {
+              {imageFile && imageFile.length && imageFile.map((item, i) => {
+                console.log("===========",item)
                 return (
-                  <img src={item.original} alt={""} />
+                  <img src={item.data} alt={""} key={i} />
                 )
-              }) : null}
+              })}
             </div>
             <div className="submit_btn">
               <button onClick={() => handleSubmit()}>Submit</button>
