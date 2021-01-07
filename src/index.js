@@ -14,6 +14,7 @@ const render = (Component) => {
   );  
 }
 
+
 render(App);
 
 serviceWorker.unregister();
