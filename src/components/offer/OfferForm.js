@@ -368,6 +368,7 @@ let preRequestOffers=null;
           {offer && offer.banner_image && offer.banner_image.length ? <p>
             {offer.banner_image && offer.banner_image.map(item => {
               let item1 = JSON.parse(item)
+              console.log("iteeeeeeeeee",item1)
               return (
                 <div className="delete-pathway">
                   <p className=""></p>
