@@ -12,7 +12,7 @@ import {
   orderBy,
 } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { DefaultPlayer as Video } from 'react-html5video';                       
+import { DefaultPlayer as Video } from 'react-html5video';
 import {
   faMapMarkerAlt,
   faCalendarAlt,
@@ -88,6 +88,8 @@ export default function ({
   const [outllokData, setOutLookData] = useState()
   const [imageData, setImageData] = useState({})
   const [isCheck, setIsCheck] = useState(false)
+  const [imagevalue, setImageValue] = useState([])
+
   // const [imagedata, setImageData] = useState()
   // const { Column } = Table;
   const getData = async (data) => {
@@ -244,7 +246,7 @@ export default function ({
 
   if (type === 'pathway') {
     const groups = groupBy(GroupsOfOffers, 'group_name');
-    console.log("GroupsOfOffers",GroupsOfOffers)
+    console.log("GroupsOfOffers", GroupsOfOffers)
     each(Object.values(groups), function (_group) {
       each(_group, function (o) {
         const offer = offerStore.entities[o.offer_id];
@@ -360,6 +362,57 @@ export default function ({
     let fullUrl = isUrlValid ? '' : 'https://' + string;
     redirectToExternalLink(fullUrl)
   };
+  const getImageurl = async (item) => {
+    if (item) {
+      // debugger
+      let newItem = JSON.parse(item)
+      if (newItem) {
+        // console.log("iteeeeeeeeeee", newItem.original)
+        let getimage = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/files/get_image_url/${newItem.original}/${newItem.name}`, {
+          headers: {
+            "Access-Control-Allow-Origin": "*"
+          }
+        }
+        )
+        return getimage
+      }
+    } else {
+      return false
+    }
+  }
+  const  [imageSetter, setImageSetter] = useState([]);
+  useEffect(() => {
+    if (main_image && main_image.length) {
+      handleImage()
+    }
+  }, [])
+
+  // console.log('promocard render',data)
+  let getImageArr = [];
+  const handleImage = async () => {
+    console.log("main_image", main_image)
+    for (let i = 0; i <= main_image.length; i++) {
+      // debugger
+      let imageData = await getImageurl(main_image[i]);
+      console.log('imageData', imageData)
+      if (imageData) {
+        getImageArr.push(imageData.data)
+      }
+    }
+    console.log("getImageArr", getImageArr);
+    callsetStateForimages(getImageArr);
+    // setImageSetter(getImageArr);
+    // debugger
+    // getLastData && getLastData.length && getLastData.map(async item => {
+    // })
+  }
+
+  // 
+  function callsetStateForimages(getImageArr) {
+    console.log("getImageArr ", getImageArr);
+    setImageSetter(getImageArr);
+  }
+
 
   let Arr = []
   let newArr = location_type && location_type.map(item => {
@@ -410,18 +463,21 @@ export default function ({
       >
         <Col>
           <Carousel showArrows={true} >
-            {main_image && main_image.length && main_image.map(item => {
-              let newItem = JSON.parse(item),
+            {imageSetter && imageSetter.length && imageSetter.map(item => {
+              console.log("item ==> 467", item);
+              // debugger
+              let newItem = item,
                 fileExtension = newItem.name.slice((Math.max(0, newItem.name.lastIndexOf(".")) || Infinity) + 1),
                 finalExtension = '.' + fileExtension,
                 checkType = ALL_VIDEO_FORMAT_REGEX.test(finalExtension);
               // let checkType = newItem.name.toString().endsWith("mp4");
+              // debugger
               if (checkType) {
                 return (
                   <div className="modal_block" id="myBtn" onClick={() => handleDivmain(newItem)}>
                     <video>
                       {/*accept="video/mp4,video/wmv,video/flv,video/mkv,video/mp4,video/webm,video/ogg"*/}
-                      <source src={newItem.original} accept={`video/${fileExtension}`} onClick={() => handleImgmain(newItem)} />
+                      <source src={newItem.data} accept={`video/${fileExtension}`} onClick={() => handleImgmain(newItem)} />
                     </video>
                     <div className="play_btn">
                       <img className="video_block" src={PlayIcon}></img>
@@ -430,7 +486,7 @@ export default function ({
               } else {
                 return (
                   <div className="modal_block" id="myBtn" onClick={() => handleDivmain(newItem)}>
-                    <img src={newItem.original} onClick={() => handleImgmain(newItem)} alt="" />
+                    <img src={newItem.data} onClick={() => handleImgmain(newItem)} alt="" />
                   </div>)
               }
             })}
@@ -454,11 +510,11 @@ export default function ({
                 onCanPlayThrough={() => {
                   // Do stuff
                 }}>
-                <source  src={demo.original} />
+                <source src={demo.data} />
                 {/* <track label="English" kind="subtitles" srcLang="en" src="http://source.vtt" default /> */}
               </Video>
               :
-              <img src={demo ? demo.original : null} alt="" />}
+              <img src={demo ? demo.data : null} alt="" />}
           </div>
         </div>
         <Row className="py-2">

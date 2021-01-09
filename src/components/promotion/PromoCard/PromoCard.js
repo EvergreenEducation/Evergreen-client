@@ -74,12 +74,11 @@ export default function ({
   const handleImage = async () => {
     let getImageArr = []
     for (let i=0; i<= getLastData.length; i++){
-      debugger
+      // debugger
       let imageData = await getImageurl(getLastData[i]);
       debugger
       console.log('imageData',imageData)
       if(imageData){
-debugger
         getImageArr.push(imageData.data.data)
       }
 
