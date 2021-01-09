@@ -133,7 +133,7 @@ export default function (props) {
          emulateTouch={false}
          showStatus={false}
          showThumbs={false}
-         interval={3000}
+         interval={7000}
          autoPlay={true}
          swipeScrollTolerance={FinalImageData.length}
          showThumbs={true}
@@ -162,7 +162,7 @@ export default function (props) {
         emulateTouch={true}
         showStatus={false}
         showThumbs={false}
-        interval={3000}
+        interval={4000}
         autoPlay={true}
         swipeScrollTolerance={localPromos.length}
         key={`localPromos-slide-local`}

@@ -11,7 +11,7 @@ function ImageUploadFunction({ handleImageUrl, type }) {
   const [inputFile, setInputFile] = useState({
     files: []
   })
-  var getImageArr = [];
+  const getImageArr = [];
   const [loader, setLoader] = useState()
   const [imageValue, setImageValue] = useState([])
   const [newImage, setNewImage] = useState()
@@ -28,16 +28,28 @@ function ImageUploadFunction({ handleImageUrl, type }) {
     // console.log(files)
     pdfFileData(files).then(async resp => {
       if (resp.status === 200) {
-        let pdfItem = resp.data.data
+        let pdfItem = resp.data.data;
         console.log(pdfItem, "responssssssssssss")
-        pdfItem && pdfItem.map(async item => {
-          let imageData = await getImageurl(item);
-          getImageArr.push(imageData.data)
-          console.log("imageData", getImageArr);
-          setNewImage(getImageArr)
-        })
-        handleImageUrl(pdfItem)
-        setImageValue(pdfItem)
+        for (let i=0; i < pdfItem.length; i++){
+          // debugger
+          let imageData = await getImageurl(pdfItem[i]);
+          console.log('imageData',imageData)
+          if(imageData){
+            getImageArr.push(imageData.data)
+          }
+        }
+        // setImageValue(getImageArr)
+        // pdfItem && pdfItem.map(async item => {
+        //   let imageData = await getImageurl(item);
+        //   getImageArr.push(imageData.data)
+        //   console.log("getImageArr  36 ", getImageArr);
+        // })
+
+        console.log("real sizes   38 ", getImageArr);
+
+        setNewImage(getImageArr);
+        handleImageUrl(pdfItem);
+        setImageValue(pdfItem);
         console.log(imageValue, "imageValue")
         setLoader(false)
         // notify("success")
@@ -63,6 +75,7 @@ function ImageUploadFunction({ handleImageUrl, type }) {
   }
 
   const getImageurl = async (item) => {
+    console.log("item ", item);
     let getimage = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/files/get_image_url/${item.original}/${item.name}`, {
     })
     return getimage
@@ -74,6 +87,15 @@ function ImageUploadFunction({ handleImageUrl, type }) {
   //     toast.success("File upload successfully")
   //   }
   // }
+  const ImagesAndVieos = ({  title, img,}) => {
+    console.log("rererererere", title);
+    return (
+      <>
+        <img src={img} alt={title} />
+      </>
+    );
+  };
+
   console.log("getImageArr", newImage)
   return (
     <Layout className="h-auto mb-6 opportunity_choose">
@@ -90,11 +112,13 @@ function ImageUploadFunction({ handleImageUrl, type }) {
           width={100}
         /> : null}
         <div className="image_block_opportunity">
-          {newImage && newImage.length > 0 ? newImage.map((item, i) => {
-            console.log("oo", item)
+          {newImage && newImage.length > 0 && newImage.map((item, i) => {
+            console.log(newImage.length, "oo", item)
+            // return <ImagesAndVieos title={item.name} img={item.data} />
             if (item.name.match(/(\.jpg|\.jpeg|\.bmp|\.gif|\.png)$/i)) {
               return (
-                <img src={item.data} alt={item.name} />)
+                <img src={item.data} alt={item.name} key={i} />
+              )
             } else {
               return (
                 <video loop autoplay>
@@ -102,7 +126,7 @@ function ImageUploadFunction({ handleImageUrl, type }) {
                 </video>
               )
             }
-          }) : null}
+          })}
         </div>
       </Col>
     </Layout>

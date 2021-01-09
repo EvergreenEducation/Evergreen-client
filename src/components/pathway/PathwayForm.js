@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import { toast } from 'react-toastify';
 import { TitleDivider } from 'components/shared';
-import {  ImageUploadFunction } from 'components/shared';
+import { ImageUploadFunction } from 'components/shared';
 import { PdfUploadFunction } from 'components/shared'
 import { groupBy, property, isNil, compact } from 'lodash';
 import 'assets/scss/antd-overrides.scss';
@@ -150,7 +150,7 @@ export default function PathwayForm({
       });
       // setGetPdfUrl(getPdfUrl)
       handleUpadteMain(getPdfUrl, resArr)
-    }if (pathway && Object.keys(pathway).length !== 0) {
+    } if (pathway && Object.keys(pathway).length !== 0) {
       console.log("inssssssssssssss")
       var result = pathway.main_image.reduce(function (prev, value) {
         var isDuplicate = false;
@@ -180,8 +180,8 @@ export default function PathwayForm({
       // setGetPdfUrl(getPdfUrl)
       handleUpadteMain(getPdfUrl, resArr)
     }
-     else {
-      console.log("getqqqqqqqqqq",getPdfUrl)
+    else {
+      console.log("getqqqqqqqqqq", getPdfUrl)
       // setGetPdfUrl(getPdfUrl)
       handleImageData(getPdfUrl)
       // handleBannerImage(getPdfUrl)
@@ -247,7 +247,7 @@ export default function PathwayForm({
       });
       // setGetPdfUrl(getPdfUrl)
       handleUpadteBanner(getPdfUrl, resArr)
-    } 
+    }
     else {
       // setGetPdfUrl(getPdfUrl)
       // handleImageData(getPdfUrl)
@@ -289,7 +289,50 @@ export default function PathwayForm({
     const data = editor.getData();
     handleDescriptionValue(data)
   }
-  // console.log("getUrl", pathway, getPdfUrl)
+  const getImageArr = []
+  const getBannerArr = []
+  const [newImage, setNewImage] = useState()
+  const [newbannerimage, setnewbannerimage] = useState()
+  const handleImage = async () => {
+    if (pathway && pathway.main_image && pathway.main_image.length) {
+      for (let i = 0; i < pathway.main_image.length; i++) {
+        let imageData = await getImageurl(pathway.main_image[i]);
+        if (imageData) {
+          getImageArr.push(imageData.data)
+        }
+      }
+      setNewImage(getImageArr)
+    }
+  }
+
+  const handleBaneerImage = async () => {
+    if (pathway && pathway.banner_image && pathway.banner_image.length) {
+      for (let i = 0; i < pathway.banner_image.length; i++) {
+        let imagebannerData = await getImageurl(pathway.banner_image[i]);
+        if (imagebannerData) {
+          getBannerArr.push(imagebannerData.data)
+        }
+      }
+      setnewbannerimage(getBannerArr)
+    }
+  }
+
+  const getImageurl = async (item) => {
+
+    console.log("item ", item);
+    let newItem = JSON.parse(item)
+    let getimage = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/files/get_image_url/${newItem.original}/${newItem.name}`, {
+    })
+    return getimage
+  }
+
+  useEffect(() => {
+    if (pathway) {
+      handleImage()
+      handleBaneerImage()
+    }
+  }, [pathway])
+  
   return (
     <Layout>
       {/* <ImageUploadAndNameInputs
@@ -320,13 +363,12 @@ export default function PathwayForm({
         </Form.Item>
         {pathway && pathway !== null ? <div>
           {pathway && pathway.main_image && pathway.main_image.length ? <p>
-            {pathway.main_image && pathway.main_image.map(item => {
-              let item1 = JSON.parse(item)
+            {newImage && newImage.map(item => {
               return (
                 <div className="delete-pathway">
                   <p className=""></p>
-                  <Avatar src={item1.original} alt={item1.name} />
-                  <p>{item1.name}</p>
+                  <Avatar src={item.data} alt={item.name} />
+                  <p>{item.name}</p>
                 </div>)
             })}
           </p> : null}
@@ -352,33 +394,32 @@ export default function PathwayForm({
         </Form.Item>
         {pathway && pathway !== null ? <div>
           {pathway && pathway.banner_image && pathway.banner_image.length ? <p>
-            {pathway.banner_image && pathway.banner_image.map(item => {
-              let item1 = JSON.parse(item)
+            {newbannerimage && newbannerimage.map(item => {
               return (
                 <div className="delete-pathway">
                   <p className=""></p>
-                  <Avatar src={item1.original} alt={item1.name} />
-                  <p>{item1.name}</p>
+                  <Avatar src={item.data} alt={item.name} />
+                  <p>{item.name}</p>
                 </div>)
             })}
           </p> : null}
         </div> : null}
       </Col>
       <Col
-       span={9}
-       xs={24}
-       sm={24}>
-      <Form.Item
-        label="Description"
-        name="description"
-        labelAlign={'left'}
-        colon={false}
-        className="mb-0 inherit descrption_block"
-        rules={[{ required: true, message: 'Please fill in this field' }]}
-      >
-        <CKEditor editor={ClassicEditor} data={descriptionValue} onChange={handleChange} />
-        {/* <Input.TextArea className="rounded" rows={2} /> */}
-      </Form.Item>
+        span={9}
+        xs={24}
+        sm={24}>
+        <Form.Item
+          label="Description"
+          name="description"
+          labelAlign={'left'}
+          colon={false}
+          className="mb-0 inherit descrption_block"
+          rules={[{ required: true, message: 'Please fill in this field' }]}
+        >
+          <CKEditor editor={ClassicEditor} data={descriptionValue} onChange={handleChange} />
+          {/* <Input.TextArea className="rounded" rows={2} /> */}
+        </Form.Item>
       </Col>
       {pathway && pathway !== null ? <div className="rubric_block">
         <Form.Item
@@ -440,21 +481,21 @@ export default function PathwayForm({
         </Col>
       </Row>
       <Row className="offsers_Table">
-      <Col xs={24} sm={24} md={24}>
-        <OfferGroupTable
-          offerStore={offerStore}
-          pathway={pathway}
-          groupsOfOffers={groupsOfOffers}
-          setGroupsOfOffers={setGroupsOfOffers}
-          form={form}
-        />
-        <div
-          className="w-full mb-4"
-          style={{
-            backgroundColor: '#e2e8f0',
-            height: '1px',
-          }}
-        />
+        <Col xs={24} sm={24} md={24}>
+          <OfferGroupTable
+            offerStore={offerStore}
+            pathway={pathway}
+            groupsOfOffers={groupsOfOffers}
+            setGroupsOfOffers={setGroupsOfOffers}
+            form={form}
+          />
+          <div
+            className="w-full mb-4"
+            style={{
+              backgroundColor: '#e2e8f0',
+              height: '1px',
+            }}
+          />
         </Col>
       </Row>
       <Row className="items-center mb-0">
