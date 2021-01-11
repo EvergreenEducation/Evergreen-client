@@ -101,7 +101,7 @@ export default function ProviderSimpleUpdateModal(props) {
     // ]);
 
     try {
-      debugger
+      // debugger
 
       let url=`${process.env.REACT_APP_API_URL}/api/v1/providers/${provider.id}`,
       data= {
@@ -116,9 +116,9 @@ export default function ProviderSimpleUpdateModal(props) {
 
         if (status && status === 200) {
           providerStore.updateOne(data);
-          debugger
+          // debugger
           if (data && file && userId) {
-            debugger
+            // debugger
             const { name, type } = file;
             const results =  UploaderService.upload({
               name,
@@ -134,7 +134,7 @@ export default function ProviderSimpleUpdateModal(props) {
             });
             providerStore.updateOne(providerEntity);
           }
-          debugger
+          // debugger
           notification.success({
             message: status,
             description: 'Successfully updated provider',

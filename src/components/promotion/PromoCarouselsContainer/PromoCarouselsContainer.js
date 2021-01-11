@@ -133,7 +133,7 @@ export default function (props) {
          emulateTouch={false}
          showStatus={false}
          showThumbs={false}
-         interval={7000}
+         interval={8000}
          autoPlay={true}
          swipeScrollTolerance={FinalImageData.length}
          showThumbs={true}
@@ -162,7 +162,7 @@ export default function (props) {
         emulateTouch={true}
         showStatus={false}
         showThumbs={false}
-        interval={4000}
+        interval={8000}
         autoPlay={true}
         swipeScrollTolerance={localPromos.length}
         key={`localPromos-slide-local`}
@@ -170,7 +170,7 @@ export default function (props) {
         {localPromos.map((promo, index) => {
           // console.log('localdata map running', promo)
           return (
-            <PromoCard key={`localPromos-slide-${promo.id}`} index={index} data={promo} size="small" className="mx-1" slideType='localPromos' type="local" />
+            <PromoCard key={`localPromos-slide-${promo.id}`} index={index} data={promo} banner={true} size="small" className="mx-1" slideType='localPromos' type="local" />
           );
         })}
       </Carousel>

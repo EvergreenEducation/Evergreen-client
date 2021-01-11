@@ -58,13 +58,14 @@ export default function ({
     }
   }
   const [imageValue, setImageValue] = useState()
+  const [imageName,setImageName]  = useState()
 
   const getImageurl = async (item) => {
-    debugger
+    // debugger
     if(item){
       let getimage = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/files/get_image_url/${item.original}/${item.name}`, {
       })
-      debugger
+      // debugger
       return getimage
     }else{
       return false
@@ -73,23 +74,30 @@ export default function ({
   // console.log('promocard render',data)
   const handleImage = async () => {
     let getImageArr = []
+    // debugger
     for (let i=0; i<= getLastData.length; i++){
       // debugger
-      let imageData = await getImageurl(getLastData[i]);
-      debugger
-      console.log('imageData',imageData)
-      if(imageData){
-        getImageArr.push(imageData.data.data)
-      }
-
+      await getImageurl(getLastData[i]).then(async resp => {
+        if(resp.data){
+          console.log("respsssssssssss",resp)
+          await getImageArr.push(resp.data.data)
+        }
+      })
+      // debugger
+      
     }
     setImageValue(getImageArr)
+    console.log('imageData==========',getImageArr)
     // getLastData && getLastData.length && getLastData.map(async item => {
     // })
   }
 
   useEffect(() => {
-    handleImage()
+    // setTimeout(() => {
+      if(getLastData && getLastData.length){
+      handleImage()
+      }
+    // }, 700);
   },[])
   // console.log("getLastData", getLastData)
   console.log("imageData", imageValue);
@@ -102,11 +110,12 @@ export default function ({
           imageValue !== null ? [0].map((item,i) => {
             return (
               <img
-                className="object-cover bg-gray-200"
+                decoding="differ"
+                className="object-cover bg-gray-200 newwwwwwwwww"
                 src={imageValue && imageValue.length ? imageValue[0] : ""}
                 alt={`${slideType}-${data.id}`}
                 style={{ height: size !== 'small' ? 325 : 220 }}
-                key={`getLastData-${data.id}`}
+                key={`getLastData-${i}`}
               />
             )
           })
@@ -122,11 +131,11 @@ export default function ({
             </div>
         }
       >
-        {data.entity_type && (
+        {/* {data.entity_type && (
           <span className="block font-normal absolute promoCard__entityType py-1 px-3 bg-black text-white bg-opacity-50 capitalize">
             {data.entity_type}
           </span>
-        )}
+        )} */}
         <span className="block promoCard__link text-base">{data.name}</span>
       </Card>
     </Link >
