@@ -145,7 +145,7 @@ export default function ({
     each(Object.values(groups), function (_group) {
       each(_group, function (o) {
         const offer = offerStore.entities[o];
-        debugger
+        // debugger
         if (offer) {
           if (offer.pay) {
             totalPay += offer.pay;
