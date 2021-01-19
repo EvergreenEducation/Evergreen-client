@@ -213,10 +213,8 @@ export default function (props) {
       if (offer && offer.provider_id && offer.Provider) {
         p = offer.Provider;
       }
-      console.log('offer.DataFields',offer.DataFields)
       return offer.DataFields.length ? offer.DataFields.map((value, id) => {
         if (value.is_check_topic === true && value.id === activeTopicId) {
-          console.log('offer.cost',offer)
           return (
             <Link to={`/home/offer/${offer.id}`} key={index}>
               <InfoCard
@@ -429,7 +427,6 @@ export default function (props) {
     selectedEarningData.sort((a, b) => parseFloat(b.earnings) - parseFloat(a.earnings));
 
     return selectedEarningData.map((offer, index) => {
-      console.log('currentOffers', offerStore.entities)
     let OutlookPay=getOutlookPay(offer.GroupsOfOffers);
       let testArr = []
       // let test = [offerStore.entities]

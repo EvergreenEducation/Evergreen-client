@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import useGlobalStore from 'store/GlobalStore';
 import { Carousel } from 'react-responsive-carousel';
+// import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 import { TitleDivider } from 'components/shared';
 import PromoCard from 'components/promotion/PromoCard/PromoCard';
 import 'assets/scss/responsive-carousel-override.scss';
@@ -14,6 +16,25 @@ export default function (props) {
     provider: providerStore,
     pathway: pathwayStore,
   } = useGlobalStore();
+  const responsive = {
+    superLargeDesktop: {
+      // the naming can be any, depends on you.
+      breakpoint: { max: 4000, min: 3000 },
+      items: 5
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1
+    }
+  };
   const [bannerImage, setBannerImage] = useState({})
   let { activePageId } = props;
   //  console.log("------------",pathwayStore)
@@ -47,15 +68,15 @@ export default function (props) {
   });
 
   const data = [...offers, ...pathways, ...providers];
-
   const localPromos = data.filter((d) => {
-    return d.custom_page_local_ids.includes(activePageId.id);
+    // debugger
+    console.log("activePageId",activePageId)
+    return d.custom_page_local_ids.length?d.custom_page_local_ids.includes(activePageId.id):false;
   });
-
   const mainPromos = data.filter((d) => {
-    return d.custom_page_promo_ids.includes(activePageId.id);
+    return d.custom_page_promo_ids.length?d.custom_page_promo_ids.includes(activePageId.id):false;
   });
-  // console.log("mainPromos",activePageId)
+  console.log("localPromos ...",localPromos)
 
   useEffect(() => {
     const handleSliderPercentOnResize = () => {
@@ -118,12 +139,22 @@ export default function (props) {
     //   }
     // });
 
+     function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+  let cpount = getRandomArbitrary(1, 9000);
+
+  function getRandomArbitraryForLocals(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+  let localCounts = getRandomArbitraryForLocals(10000, 1000000000);
+
      console.log("FinalImageData",FinalImageData)
      
   return (
     <div className="h-auto w-full">
-      <Carousel
-         className="custom-carousel promoCarousel mb-2 cursor-grab"
+     <Carousel
+        className="custom-carousel promoCarousel mb-2 cursor-grab"
          centerMode
          infiniteLoop
          centerSlidePercentage={100}
@@ -138,11 +169,11 @@ export default function (props) {
          swipeScrollTolerance={FinalImageData.length}
          showThumbs={true}
          key={`mainPromos-slide-local`}
-        //  onClickItem={false}
+         onClickItem={false}
          >
         {FinalImageData.map((promo, index) => {
           // console.log("pro", promo)
-          return <PromoCard key={`mainPromos-slide-${promo.id}`} index={index} data={promo} banner={true} bannerImage={bannerImage} slideType='mainPromos' type="main" />;
+          return <PromoCard key={`mainPromos-slide-${cpount}`} data={promo} size="small"  className="mx-1" slideType='mainPromos' type="main" />;
         })}
       </Carousel>
       <TitleDivider
@@ -151,7 +182,7 @@ export default function (props) {
         classNames={{ middleSpan: 'text-base' }}
       />
 
-      {localPromos.length ? <Carousel
+      {localPromos.length ?<Carousel responsive={responsive}
         className="custom-carousel promoCarousel mb-2 cursor-grab"
         centerMode
         infiniteLoop
@@ -162,15 +193,13 @@ export default function (props) {
         emulateTouch={true}
         showStatus={false}
         showThumbs={false}
-        interval={8000}
+        interval={7000}
         autoPlay={true}
-        swipeScrollTolerance={localPromos.length}
-        key={`localPromos-slide-local`}
+        swipeScrollTolerance={1}
       >
         {localPromos.map((promo, index) => {
-          // console.log('localdata map running', promo)
           return (
-            <PromoCard key={`localPromos-slide-${promo.id}`} index={index} data={promo} banner={true} size="small" className="mx-1" slideType='localPromos' type="local" />
+            <PromoCard key={`mainPromos-slide-${localCounts}`}  data={promo} size="small" className="mx-1" slideType='localPromos' type="local" />
           );
         })}
       </Carousel>
