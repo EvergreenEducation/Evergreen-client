@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from 'antd';
-import {  filter, orderBy } from 'lodash';
+import { filter, orderBy } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './promo-card.scss';
 const axios = require('axios').default;
@@ -15,19 +15,22 @@ export default function ({
   slideType,
   type
 }) {
-  let getLastData 
-  if(type === "main"){
-    getLastData = data && data.banner_image.map(item => {
-      let parseData = JSON.parse(item)
-      return parseData
-    })
-  }if(type === "local"){
-    getLastData = data && data.main_image.map(item => {
-      let parseData = JSON.parse(item)
-      return parseData
-    })
-  }
-  
+  const [imageValue, setImageValue] = useState([])
+  const [isImageCheck, setIsImageCheck] = useState([])
+  const [image, setImage] = useState([])
+
+  var getLastData
+  useEffect(() => {
+    if (type === "main") {
+      let parseData = JSON.parse(data.banner_image[0]);
+      getLastData = parseData
+
+    } else {
+      let parseData = JSON.parse(data.main_image[0]);
+      getLastData = parseData
+    }
+    handleImage()
+  }, [])
 
   let files = [];
   if (banner) {
@@ -54,71 +57,52 @@ export default function ({
   const handleCheckButton = (data) => {
     if (data.image_url) {
       window.open(
-        `${data.image_url}`); 
+        `${data.image_url}`);
     }
   }
-  const [imageValue, setImageValue] = useState()
-  const [imageName,setImageName]  = useState()
+
 
   const getImageurl = async (item) => {
-    // debugger
-    if(item){
+    if (getLastData) {
       let getimage = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/files/get_image_url/${item.original}/${item.name}`, {
+
       })
-      // debugger
       return getimage
-    }else{
+    } else {
       return false
     }
   }
-  // console.log('promocard render',data)
+
   const handleImage = async () => {
-    let getImageArr = []
-    // debugger
-    for (let i=0; i<= getLastData.length; i++){
-      // debugger
-      await getImageurl(getLastData[i]).then(async resp => {
-        if(resp.data){
-          console.log("respsssssssssss",resp)
-          await getImageArr.push(resp.data.data)
-        }
-      })
-      // debugger
-      
-    }
+    let getImageArr = [];
+    await getImageurl(getLastData).then(async resp => {
+      if (resp.data) {
+        getImageArr.push(resp.data)
+      }
+    })
     setImageValue(getImageArr)
-    console.log('imageData==========',getImageArr)
-    // getLastData && getLastData.length && getLastData.map(async item => {
-    // })
   }
 
-  useEffect(() => {
-    // setTimeout(() => {
-      if(getLastData && getLastData.length){
-      handleImage()
-      }
-    // }, 700);
-  },[])
-  // console.log("getLastData", getLastData)
-  console.log("imageData", imageValue);
   return (
     <Link to={link} key={`Link-Card-${data.id}`} className="text-base font-bold promoCard__link" onClick={() => handleCheckButton(data)} key={data.id}>
+
       <Card
-      key={`Card-${data.id}`}
+        key={`Card-${data.id}`}
         className={`promoCard ${className}`}
         cover={
-          imageValue !== null ? [0].map((item,i) => {
+          imageValue && imageValue.length ? imageValue.map((item, i) => {
             return (
               <img
-                decoding="differ"
-                className="object-cover bg-gray-200 newwwwwwwwww"
-                src={imageValue && imageValue.length ? imageValue[0] : ""}
-                alt={`${slideType}-${data.id}`}
+                decoding="async"
+                className="object-cover bg-gray-200"
+                src={item.data}
+                alt={`${slideType}-${data.id}-${i}`}
                 style={{ height: size !== 'small' ? 325 : 220 }}
-                key={`getLastData-${i}`}
+                key={`getLastData-${data.id}`}
               />
             )
-          })
+          }
+          )
             :
             <div
               className="flex bg-gray-200"
@@ -126,7 +110,7 @@ export default function ({
             >
               <FontAwesomeIcon
                 className="text-6xl text-gray-400 m-auto block"
-                icon={bannerImage}
+                icon={`bannerImage`}
               />
             </div>
         }
