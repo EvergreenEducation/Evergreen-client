@@ -154,7 +154,7 @@ export default function (props) {
   return (
     <div className="h-auto w-full">
       {mainPromos && mainPromos.length > 0 ? <Carousel responsive={responsive}
-        className="custom-carousel promoCarousel mb-2 cursor-grab"
+        className="custom-carousel promoCarousel mb-2 cursor-grab main-bain"
         centerMode
         infiniteLoop
         centerSlidePercentage={100}
@@ -176,12 +176,12 @@ export default function (props) {
       
       <TitleDivider
         title={'LOCAL PROMOS'}
-        align="center"
+        align="center"                        
         classNames={{ middleSpan: 'text-base' }}
       />
 
       {localPromos.length ? <Carousel responsive={responsive}
-        className="custom-carousel promoCarousel mb-2 cursor-grab"
+        className="custom-carousel promoCarousel mb-2 cursor-grab local-pro"
         centerMode
         infiniteLoop
         centerSlidePercentage={localSliderPercentage}

@@ -10,3 +10,37 @@
     background: hsl(225, 84%, 17%);
   }
 }
+.main-bain {
+  .slider {
+    .slide {
+      .ant-card {
+        margin: 0;
+        .ant-card-cover {
+          img {
+            height: 325px !important;
+          }
+        }
+      }
+    }
+  }
+}
+.carousel .control-prev.control-arrow {
+  &:before {
+    opacity: 0.5;
+  }
+  &:hover {
+    &:before {
+      opacity: 1;
+    }
+  }
+}
+.carousel .control-next.control-arrow {
+  &:before {
+    opacity: 0.5;
+  }
+  &:hover {
+    &:before {
+      opacity: 1;
+    }
+  }
+}
