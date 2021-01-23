@@ -16,7 +16,7 @@
     "@uppy/core": "^1.9.0",
     "antd": "^4.2.5",
     "autoprefixer": "^9.7.5",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "axios-hooks": "^1.9.0",
     "chart.js": "^2.9.3",
     "cuid": "^2.1.8",
