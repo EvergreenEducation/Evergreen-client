@@ -18,6 +18,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 // import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import { getData } from 'components/datafield/AccedrationContainer';
 import { getindustryData } from 'components/datafield/IndustryContainer'
+const axios = require('axios').default;
 
 const { Option } = Select;
 
@@ -185,7 +186,51 @@ const ProviderForm = (props) => {
     // console.log('handleChange data',data, Array.from( editor.ui.componentFactory.names()))
     handleDescriptionValue(data)
   }
+  const getImageArr = []
+  const getBannerArr = []
+  const [newImage, setNewImage] = useState()
+  const [newbannerimage, setnewbannerimage] = useState()
+  const handleImage = async () => {
+    if (handleData && handleData.main_image && handleData.main_image.length) {
+      for (let i = 0; i < handleData.main_image.length; i++) {
+        let imageData = await getImageurl(handleData.main_image[i]);
+        if (imageData) {
+          getImageArr.push(imageData.data)
+        }
+      }
+      setNewImage(getImageArr)
+    }
+  }
 
+  const handleBaneerImage = async () => {
+    if (handleData && handleData.banner_image && handleData.banner_image.length) {
+      for (let i = 0; i < handleData.banner_image.length; i++) {
+        let imagebannerData = await getImageurl(handleData.banner_image[i]);
+        if (imagebannerData) {
+          getBannerArr.push(imagebannerData.data)
+        }
+      }
+      setnewbannerimage(getBannerArr)
+    }
+  }
+
+  const getImageurl = async (item) => {
+
+    console.log("item ", item);
+    let newItem = JSON.parse(item)
+    let getimage = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/files/get_image_url/${newItem.original}/${newItem.name}`, {
+    })
+    return getimage
+  }
+
+  useEffect(() => {
+    if (handleData) {
+      handleImage()
+      handleBaneerImage()
+    }
+  }, [handleData])
+  
+ console.log("handleData",handleData,newImage)
   return (
     <Layout>
       {/* <ImageUploadAndNameInputs
@@ -215,14 +260,15 @@ const ProviderForm = (props) => {
             type="multiple" />
         </Form.Item>
         <div>
-          {handleData && handleData.main_image && handleData.main_image.length ? <p>
-            {handleData.main_image && handleData.main_image.map(item => {
-              let item1 = JSON.parse(item)
+          {newImage && newImage.length ? <p>
+            {newImage && newImage.map(item => {
+              // let item1 = JSON.parse(item)
+              console.log("data",item)
               return (
                 <div className="delete-pathway">
                   <p className=""></p>
-                  <Avatar src={item1.original} alt={item1.name} />
-                  <p>{item1.name}</p>
+                  <Avatar src={item.data} alt={item.name} />
+                  <p>{item.name}</p>
                 </div>)
             })}
           </p> : null}
@@ -244,15 +290,14 @@ const ProviderForm = (props) => {
             handleImageUrl={BannerUploadFunction}
             type="single" />
         </Form.Item>
-        {handleData && handleData !== null ? <div>
-          {handleData && handleData.banner_image && handleData.banner_image.length ? <p>
-            {handleData.banner_image && handleData.banner_image.map(item => {
-              let item1 = JSON.parse(item)
+        {newbannerimage && newbannerimage !== null ? <div>
+          {newbannerimage && newbannerimage.length ? <p>
+            {newbannerimage && newbannerimage.map(item => {
               return (
                 <div className="delete-pathway">
                   <p className=""></p>
-                  <Avatar src={item1.original} alt={item1.name} />
-                  <p>{item1.name}</p>
+                  <Avatar src={item.data} alt={item.name} />
+                  <p>{item.name}</p>
                 </div>)
             })}
           </p> : null}

@@ -23,7 +23,7 @@ const axios = require('axios').default;
 const { Option } = Select;
 
 const preloadOptions = (data = []) =>
-data && data.length && data.map((item, index) => {
+  data && data.length && data.map((item, index) => {
     return (
       <Option value={item.id} key={index.toString()}>
         {item.name}
@@ -32,15 +32,15 @@ data && data.length && data.map((item, index) => {
   });
 
 const preloadOptionsOffer = (data = []) =>
-data.map((item, index) => {
-  return (
-    <Option value={item.id} key={index.toString()}>
-      {item.name}
-    </Option>
-  );
-});
+  data.map((item, index) => {
+    return (
+      <Option value={item.id} key={index.toString()}>
+        {item.name}
+      </Option>
+    );
+  });
 
-    // <Option value={`${item.id}`} key={index.toString()}
+// <Option value={`${item.id}`} key={index.toString()}
 
 export default function OfferForm({
   datafields = [],
@@ -74,16 +74,16 @@ export default function OfferForm({
   } = grouped;
 
   let offerOptions = null;
-  console.log('offer updated modal',offer)
+  console.log('offer updated modal', offer)
 
   if (!isNil(offers) && offers.length) {
     const updatedOffers = remove(offers, (o) => {
       return !(o.id === offer.id);
     });
-    console.log('updatedOffers...',updatedOffers)
+    console.log('updatedOffers...', updatedOffers)
     offerOptions = preloadOptions(updatedOffers);
   }
-  
+
   const [getvalues, setGetValues] = useState([])
   const getData = async () => {
     let pdfData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/files/get_generic`)
@@ -223,20 +223,20 @@ export default function OfferForm({
     }
   }
   // console.log("offreeee", offer)
- 
+
 
   let offerOptiondata = null
   if (!isNil(offers) && offers.length) {
     const updatedOffers = remove(offers, (o) => {
       return !(o.name === offer.name);
     });
-    console.log('preloadOptionsOffer...',updatedOffers)
+    console.log('preloadOptionsOffer...', updatedOffers)
     offerOptiondata = preloadOptionsOffer(updatedOffers);
   }
 
-let preRequestOffers=null;
-  if(getOffersList && getOffersList.length){
-    console.log('getOffersList...',getOffersList)
+  let preRequestOffers = null;
+  if (getOffersList && getOffersList.length) {
+    console.log('getOffersList...', getOffersList)
     // const updatedOffers = remove(getOffersList, (o) => {
     //   console.log('!(o.name === offer.name)',!(o.name === getOffersList.name))
     //   console.log('o.name',o.name,getOffersList.name)
@@ -282,7 +282,7 @@ let preRequestOffers=null;
     }
   }
   useEffect(() => {
-    console.log("offer=============",offer)
+    console.log("offer=============", offer)
     if (offer && offer.learn_and_earn == "learn") {
       // console.log("eeeeeeeeeeeeeee")
       setIsCheckEarn(false)
@@ -290,7 +290,7 @@ let preRequestOffers=null;
     } if (offer && offer.learn_and_earn == "earn") {
       setIsCheckLearn(false)
       setIsCheckEarn(true)
-    } if (offer  && offer.learn_and_earn == "both") {
+    } if (offer && offer.learn_and_earn == "both") {
       setIsCheckEarn(true)
       setIsCheckLearn(true)
     }
@@ -302,7 +302,51 @@ let preRequestOffers=null;
     handleDescriptionValue(data)
   }
 
-  console.log('preRequestOffers', preRequestOffers)
+  const getImageArr = []
+  const getBannerArr = []
+  const [newImage, setNewImage] = useState()
+  const [newbannerimage, setnewbannerimage] = useState()
+  const handleImage = async () => {
+    if (offer && offer.main_image && offer.main_image.length) {
+      for (let i = 0; i < offer.main_image.length; i++) {
+        let imageData = await getImageurl(offer.main_image[i]);
+        if (imageData) {
+          getImageArr.push(imageData.data)
+        }
+      }
+      setNewImage(getImageArr)
+    }
+  }
+
+  const handleBaneerImage = async () => {
+    if (offer && offer.banner_image && offer.banner_image.length) {
+      for (let i = 0; i < offer.banner_image.length; i++) {
+        let imagebannerData = await getImageurl(offer.banner_image[i]);
+        if (imagebannerData) {
+          getBannerArr.push(imagebannerData.data)
+        }
+      }
+      setnewbannerimage(getBannerArr)
+    }
+  }
+
+  const getImageurl = async (item) => {
+
+    console.log("item ", item);
+    let newItem = JSON.parse(item)
+    let getimage = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/files/get_image_url/${newItem.original}/${newItem.name}`, {
+    })
+    return getimage
+  }
+
+  useEffect(() => {
+    if (offer) {
+      handleImage()
+      handleBaneerImage()
+    }
+  }, [offer])
+
+  console.log('newbannerimage================', offer)
   return (
     <Layout>
       {/* <ImageUploadAndNameInputs
@@ -332,15 +376,14 @@ let preRequestOffers=null;
             handleImageUrl={handleImageUrl}
             type="multiple" />
         </Form.Item>
-        {offer && offer !== null ? <div>
-          {offer && offer.main_image && offer.main_image.length ? <p>
-            {offer.main_image && offer.main_image.map(item => {
-              let item1 = JSON.parse(item)
+        {newImage && newImage !== null ? <div>
+          {newImage && newImage.length ? <p>
+            {newImage && newImage.map(item => {
               return (
                 <div className="delete-pathway">
                   <p className=""></p>
-                  <Avatar src={item1.original} alt={item1.name} />
-                  <p>{item1.name}</p>
+                  <Avatar src={item.data} alt={item.name} />
+                  <p>{item.name}</p>
                 </div>)
             })}
           </p> : null}
@@ -353,7 +396,7 @@ let preRequestOffers=null;
         md={role === 'provider' ? 10 : 9}
         className="media-margin-top main_img"
       >
-        <Form.Item
+         <Form.Item
           label="Banner Image"
           name="banner_image"
           labelAlign={'left'}
@@ -364,15 +407,15 @@ let preRequestOffers=null;
             handleImageUrl={BannerUploadFunction}
             type="single" />
         </Form.Item>
-        {offer && offer !== null ? <div>
-          {offer && offer.banner_image && offer.banner_image.length ? <p>
-            {offer.banner_image && offer.banner_image.map(item => {
-              let item1 = JSON.parse(item)
+        {newbannerimage && newbannerimage !== null ? <div>
+          {newbannerimage && newbannerimage.length ? <p>
+            {newbannerimage && newbannerimage.map(item => {
+              console.log("iteeeeeeeeee", item)
               return (
                 <div className="delete-pathway">
                   <p className=""></p>
-                  <Avatar src={item1.original} alt={item1.name} />
-                  <p>{item1.name}</p>
+                  <Avatar src={item.data} alt={item.name} />
+                  <p>{item.name}</p>
                 </div>)
             })}
           </p> : null}
@@ -536,7 +579,7 @@ let preRequestOffers=null;
           labelAlign={'left'}
           colon={false}
           className="inherit"
-          // rules={[{ required: true, message: 'Please provide a description' }]}
+        // rules={[{ required: true, message: 'Please provide a description' }]}
         >
           {/* <Input.TextArea rows={4} className="rounded" /> */}
           <CKEditor editor={ClassicEditor} data={descriptionValue} onChange={handleChange} />
@@ -552,7 +595,7 @@ let preRequestOffers=null;
             showSearch
             mode="multiple"
           >
-            {preRequestOffers &&preRequestOffers.length? preRequestOffers:   offerOptions && offerOptions.length && offerOptions}
+            {preRequestOffers && preRequestOffers.length ? preRequestOffers : offerOptions && offerOptions.length && offerOptions}
             {/* {preRequestOffers && preRequestOffers.length && preRequestOffers} */}
           </Select>
         </Form.Item>
@@ -567,7 +610,7 @@ let preRequestOffers=null;
             showSearch
             mode="multiple"
           >
-            {preRequestOffers &&preRequestOffers.length? preRequestOffers:   offerOptions && offerOptions.length && offerOptions}
+            {preRequestOffers && preRequestOffers.length ? preRequestOffers : offerOptions && offerOptions.length && offerOptions}
           </Select>
         </Form.Item>
       </Row>
@@ -589,7 +632,7 @@ let preRequestOffers=null;
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            // rules={[{ required: true, message: 'Please select an option' }]}
+          // rules={[{ required: true, message: 'Please select an option' }]}
           >
             <Select name="location_type" className="custom-select" mode="multiple">
               <Option value="Online"><img className="social_distancing" src="/icons/online.png" alt="" /> Online</Option>
@@ -609,7 +652,7 @@ let preRequestOffers=null;
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            // rules={[{ required: true, message: 'Please select an option' }]}
+          // rules={[{ required: true, message: 'Please select an option' }]}
           >
             <Select className="rounded custom-select" onClick={(e) => handleSelect(e)}>
               <Option className="learn" value="learn">Learn</Option>
@@ -625,7 +668,7 @@ let preRequestOffers=null;
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            // rules={[{ required: true, message: 'Please fill in this field' }]}
+          // rules={[{ required: true, message: 'Please fill in this field' }]}
           >
             <InputNumber className="rounded w-full" />
           </Form.Item>
@@ -637,7 +680,7 @@ let preRequestOffers=null;
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            // rules={[{ required: true, message: 'Please select an option' }]}
+          // rules={[{ required: true, message: 'Please select an option' }]}
           >
             <Select className="rounded custom-select">
               {!isNil(frequency_unit) && frequency_unit.length
@@ -655,7 +698,7 @@ let preRequestOffers=null;
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            // rules={[{ required: true, message: 'Please fill in this field' }]}
+          // rules={[{ required: true, message: 'Please fill in this field' }]}
           >
             <InputNumber className="rounded w-full" />
           </Form.Item>
@@ -682,8 +725,8 @@ let preRequestOffers=null;
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            
-            // rules={[{ required: true, message: 'Please fill in this field' }]}
+
+          // rules={[{ required: true, message: 'Please fill in this field' }]}
           >
             <InputNumber className="rounded w-full" />
           </Form.Item>
@@ -695,7 +738,7 @@ let preRequestOffers=null;
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            // rules={[{ required: true, message: 'Please select an option' }]}
+          // rules={[{ required: true, message: 'Please select an option' }]}
           >
             <Select className="rounded custom-select">
               {!isNil(credit_unit) && credit_unit.length
@@ -713,7 +756,7 @@ let preRequestOffers=null;
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            // rules={[{ required: true, message: 'Please fill in this field' }]}
+          // rules={[{ required: true, message: 'Please fill in this field' }]}
           >
             <InputNumber className="rounded w-full" />
           </Form.Item>
@@ -725,7 +768,7 @@ let preRequestOffers=null;
             labelAlign={'left'}
             colon={false}
             className="mb-0 inherit"
-            // rules={[{ required: true, message: 'Please select an option' }]}
+          // rules={[{ required: true, message: 'Please select an option' }]}
           >
             <Select className="rounded custom-select">
               {!isNil(payment_unit) && payment_unit.length

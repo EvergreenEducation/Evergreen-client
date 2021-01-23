@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import useGlobalStore from 'store/GlobalStore';
 import { Carousel } from 'react-responsive-carousel';
+// import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 import { TitleDivider } from 'components/shared';
 import PromoCard from 'components/promotion/PromoCard/PromoCard';
 import 'assets/scss/responsive-carousel-override.scss';
@@ -14,6 +16,25 @@ export default function (props) {
     provider: providerStore,
     pathway: pathwayStore,
   } = useGlobalStore();
+  const responsive = {
+    superLargeDesktop: {
+      // the naming can be any, depends on you.
+      breakpoint: { max: 4000, min: 3000 },
+      items: 5
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1
+    }
+  };
   const [bannerImage, setBannerImage] = useState({})
   let { activePageId } = props;
   //  console.log("------------",pathwayStore)
@@ -47,15 +68,15 @@ export default function (props) {
   });
 
   const data = [...offers, ...pathways, ...providers];
-
   const localPromos = data.filter((d) => {
-    return d.custom_page_local_ids.includes(activePageId.id);
+    // debugger
+    console.log("activePageId", activePageId)
+    return d.custom_page_local_ids.length ? d.custom_page_local_ids.includes(activePageId.id) : false;
   });
-
   const mainPromos = data.filter((d) => {
-    return d.custom_page_promo_ids.includes(activePageId.id);
+    return d.custom_page_promo_ids.length ? d.custom_page_promo_ids.includes(activePageId.id) : false;
   });
-  // console.log("mainPromos",activePageId)
+  console.log("localPromos ...", localPromos)
 
   useEffect(() => {
     const handleSliderPercentOnResize = () => {
@@ -77,21 +98,21 @@ export default function (props) {
     return () =>
       window.removeEventListener('resize', handleSliderPercentOnResize);
   }, [localSliderPercentage]);
- let newA = []
- let windowUrl = window.location.pathname
- windowUrl = windowUrl.split('/').pop()
-//  console.log("inssssssssss",windowUrl)
+  let newA = []
+  let windowUrl = window.location.pathname
+  windowUrl = windowUrl.split('/').pop()
+  //  console.log("inssssssssss",windowUrl)
 
   useEffect(() => {
     getBannerApi().then(async resp => {
       if (resp.status === 200) {
-        var output = await resp.data.data.map(s => ({ banner_image: s.landing_image, id: s.id, image_url: s.image_url,page_url_check: s.page_url_check }));
+        var output = await resp.data.data.map(s => ({ banner_image: s.landing_image, id: s.id, image_url: s.image_url, page_url_check: s.page_url_check }));
         var defaultFilterData = await output && output.length && output.map(newItem => {
-          if(newItem.page_url_check === windowUrl){
-            console.log("inside",newItem)
+          if (newItem.page_url_check === windowUrl) {
+            console.log("inside", newItem)
             newA.push(newItem)
             setBannerImage(newA)
-          }else if(windowUrl == "home" && newItem.page_url_check == "default"){
+          } else if (windowUrl == "home" && newItem.page_url_check == "default") {
             // console.log("outside",newItem)
             newA.push(newItem)
             setBannerImage(newA)
@@ -110,49 +131,57 @@ export default function (props) {
   const FinalImageData = concat(bannerImage, mainPromos)
   // console.log('localPromos', localPromos)
 
-    // const finalPromoData = localPromos.filter(function (item, index, inputArray) {
-    //   if (item === null || item === undefined) {
-    //     return false
-    //   } else {
-    //     return inputArray.indexOf(item) == index;
-    //   }
-    // });
+  // const finalPromoData = localPromos.filter(function (item, index, inputArray) {
+  //   if (item === null || item === undefined) {
+  //     return false
+  //   } else {
+  //     return inputArray.indexOf(item) == index;
+  //   }
+  // });
 
-    //  console.log("FinalImageData",FinalImageData)
-     
+  function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+  let cpount = getRandomArbitrary(1, 9000);
+
+  function getRandomArbitraryForLocals(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+  let localCounts = getRandomArbitraryForLocals(10000, 1000000000);
+
+  console.log("FinalImageData", FinalImageData)
+
   return (
     <div className="h-auto w-full">
-      <Carousel
-         className="custom-carousel promoCarousel mb-2 cursor-grab"
-         centerMode
-         infiniteLoop
-         centerSlidePercentage={100}
-         showArrows={true}
-         showIndicators={false}
-         swipeable={true}
-         emulateTouch={false}
-         showStatus={false}
-         showThumbs={false}
-         interval={3000}
-         autoPlay={true}
-         swipeScrollTolerance={FinalImageData.length}
-         showThumbs={true}
-         key={`mainPromos-slide-local`}
-        //  onClickItem={false}
-         >
+      {mainPromos && mainPromos.length > 0 ? <Carousel responsive={responsive}
+        className="custom-carousel promoCarousel mb-2 cursor-grab main-bain"
+        centerMode
+        infiniteLoop
+        centerSlidePercentage={100}
+        showArrows={true}
+        showIndicators={false}
+        swipeable={true}
+        emulateTouch={true}
+        showStatus={false}
+        showThumbs={false}
+        interval={5000}
+        autoPlay={true}
+        swipeScrollTolerance={1}
+      >
         {FinalImageData.map((promo, index) => {
           // console.log("pro", promo)
-          return <PromoCard key={`mainPromos-slide-${promo.id}`} index={index} data={promo} banner={true} bannerImage={bannerImage} slideType='mainPromos' type="main" />;
+          return <PromoCard key={`mainPromos-slide-${cpount}`} data={promo} size="small" className="mx-1" slideType='mainPromos' type="main" />;
         })}
-      </Carousel>
+      </Carousel> : ""}
+      
       <TitleDivider
         title={'LOCAL PROMOS'}
-        align="center"
+        align="center"                        
         classNames={{ middleSpan: 'text-base' }}
       />
 
-      {localPromos.length ? <Carousel
-        className="custom-carousel promoCarousel mb-2 cursor-grab"
+      {localPromos.length ? <Carousel responsive={responsive}
+        className="custom-carousel promoCarousel mb-2 cursor-grab local-pro"
         centerMode
         infiniteLoop
         centerSlidePercentage={localSliderPercentage}
@@ -162,15 +191,13 @@ export default function (props) {
         emulateTouch={true}
         showStatus={false}
         showThumbs={false}
-        interval={3000}
+        interval={5000}
         autoPlay={true}
-        swipeScrollTolerance={localPromos.length}
-        key={`localPromos-slide-local`}
+        swipeScrollTolerance={1}
       >
         {localPromos.map((promo, index) => {
-          // console.log('localdata map running', promo)
           return (
-            <PromoCard key={`localPromos-slide-${promo.id}`} index={index} data={promo} size="small" className="mx-1" slideType='localPromos' type="local" />
+            <PromoCard key={`mainPromos-slide-${localCounts}`} data={promo} size="small" className="mx-1" slideType='localPromos' type="local" />
           );
         })}
       </Carousel>

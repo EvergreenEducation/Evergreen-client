@@ -137,7 +137,6 @@ export default function ({
   let totalCost = 0;
   //  let parseMainImage = (mainImage)
   //  let parseBannerImage = JSON.parse(bannerImage)
-  console.log("ooooooooo", offerStore)
   const groups = groupBy(GroupsOfOffers, 'group_name');
   
   if(data){
@@ -145,7 +144,7 @@ export default function ({
     each(Object.values(groups), function (_group) {
       each(_group, function (o) {
         const offer = offerStore.entities[o];
-        debugger
+        // debugger
         if (offer) {
           if (offer.pay) {
             totalPay += offer.pay;
@@ -176,7 +175,6 @@ export default function ({
     start_date,
     Provider,
   } = data;
-  console.log('daata cost',cost )
 
   if (start_date) {
     start_date = dayjs(start_date).format('MMM DD, YYYY');
